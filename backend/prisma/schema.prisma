@@ -12,3 +12,92 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id            String        @id @default(uuid())
+  email         String        @unique @db.VarChar(200)
+  password      String        @db.VarChar(200)
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+  userProfile   UserProfile?
+
+  @@index([email])
+  @@map("users")
+}
+
+enum UserStatus {
+  USER
+  BLOCKED
+  ADMIN
+}
+
+model UserProfile {
+  userId       String       @id @map("user_id")
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String       @db.VarChar(100)
+  username     String       @unique
+  reputation   Int          @default(0)
+  about        String       @db.Text
+  status       UserStatus   @default(USER)
+  questions    Question[]
+  answers      Answer[]
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+
+  @@index([username])
+  @@map("user_profile")
+}
+
+enum QuestionStatus {
+  ACTIVE
+  CLOSED
+}
+
+model Question {
+  id            String             @id @default(uuid())
+  userId        String             @map("user_id")
+  userProfile   UserProfile        @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  title         String             @db.VarChar(255)
+  rate          Int                @default(0)
+  status        QuestionStatus     @default(ACTIVE)
+  answers       Answer[]
+  tags          QuestionTags[]
+  createdAt     DateTime           @default(now()) @map("created_at")
+  updatedAt     DateTime           @updatedAt @map("updated_at")
+
+  @@map("questions")
+}
+
+model Answer {
+  id            String        @id @default(uuid())
+  userId        String        @map("user_id")
+  userProfile   UserProfile   @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  questionId    String        @map("question_id")
+  question      Question      @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  text          String        @db.Text
+  rate          Int           @default(0)
+  isSolution    Boolean       @default(false)
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+
+  @@map("answers")
+}
+
+model Tag {
+  id          String            @id @default(uuid())
+  name        String            @db.VarChar(100)
+  questions   QuestionTags[]
+
+  @@map("tags")
+}
+
+model QuestionTags {
+  questionId    String      @map("question_id")
+  quesiton      Question    @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  tagId         String      @map("tag_id")
+  tag           Tag         @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([questionId, tagId])
+  @@map("question_tags")
+}
+
