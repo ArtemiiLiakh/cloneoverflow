@@ -37,7 +37,7 @@ model UserProfile {
   name         String       @db.VarChar(100)
   username     String       @unique
   reputation   Int          @default(0)
-  about        String       @db.Text
+  about        String?      @db.Text
   status       UserStatus   @default(USER)
   questions    Question[]
   answers      Answer[]

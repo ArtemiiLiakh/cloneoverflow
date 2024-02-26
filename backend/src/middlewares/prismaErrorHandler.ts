@@ -15,6 +15,7 @@ export const prismaErrorHandler = (err: Prisma.PrismaClientKnownRequestError, re
       res.send({
         error: `${modelName} must have unique fields [${target}]`,
       });
+      break;
     default:
       console.log('Prisma error');
       console.log(err);

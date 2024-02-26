@@ -1,50 +1,40 @@
 import { Request, Response } from 'express';
 import { AuthLoginDTO } from '../dtos/auth.login.dto';
-import { AuthSignInDTO } from '../dtos/auth.signin.dto';
+import { AuthSignupDTO } from '../dtos/auth.signup.dto';
 import { AuthService } from '../services/auth.service';
 import { AuthRequest, RequestWithBody } from '../types/Requests';
 import { AccessTokenResponse } from '../responses/accessToken.response';
-import { TokenPayload } from '../types/TokenPayload';
 import { AuthChangePasswordDTO } from '../dtos/auth.changePassword.dto';
+import { AuthMapper } from '../mappers/auth.mapper';
+import { MeResponse } from '../responses/me.response';
 
 export class AuthController {
   constructor (
     private authService = new AuthService(),
+    private authMapper = new AuthMapper(),
   ) {}
 
   async login ({ body }: RequestWithBody<AuthLoginDTO>, res: Response<AccessTokenResponse>) {
-    const { access_token, refresh_token } = await this.authService.login(body);
-    res
-      .cookie('refresh_token', refresh_token, { 
-        httpOnly: true, 
-        sameSite: 'strict',
-        maxAge: 7*24*60*60*1000,
-      })
-      .send({
-        access_token,
-      });
+    const tokens = await this.authService.login(body);
+    res.send(tokens);
   }
 
-  async signin ({ body }: RequestWithBody<AuthSignInDTO>, res: Response<AccessTokenResponse>) {
-    const { access_token, refresh_token } = await this.authService.signin(body);
-    res
-      .cookie('refresh_token', refresh_token, { 
-        httpOnly: true, 
-        sameSite: 'strict',
-        maxAge: 7*24*60*60*1000,
-      })
-      .send({
-        access_token,
-      });
+  async signup ({ body }: RequestWithBody<AuthSignupDTO>, res: Response<AccessTokenResponse>) {
+    const tokens = await this.authService.signup(body);
+    res.send(tokens);
   } 
 
-  me (req: AuthRequest, res: Response<TokenPayload>) {
-    res.send(req.body._user);
+  async getMe (req: AuthRequest, res: Response<MeResponse>) {
+    const user = await this.authService.getMe(req.body._user.userId);
+    res.send(this.authMapper.getMe(user));
   }
 
   async refreshToken (req: Request, res: Response<AccessTokenResponse>) {
-    const access_token = await this.authService.refreshToken(req.cookies['refresh_token'])
-    res.send(access_token);
+    const { access_token } = await this.authService.refreshToken(req.cookies['refresh_token'])
+    res.send({
+      access_token,
+      refresh_token: req.cookies['refresh_token'],
+    });
   }
 
   async changePassword (req: AuthRequest<AuthChangePasswordDTO>, res: Response) {

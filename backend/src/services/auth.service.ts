@@ -1,6 +1,6 @@
 import config from '../config';
 import { AuthLoginDTO } from '../dtos/auth.login.dto';
-import { AuthSignInDTO } from '../dtos/auth.signin.dto';
+import { AuthSignupDTO } from '../dtos/auth.signup.dto';
 import { UserRepository } from '../repositories/user.repository';
 import { AlreadyRegisteredException } from '../utils/exceptions/AlreadyRegisteredException';
 import { LoginException } from '../utils/exceptions/LoginExceptioin';
@@ -30,7 +30,7 @@ export class AuthService {
     return this.getToken(user);
   }
 
-  async signin ({ email, password, name, username, about }: AuthSignInDTO) {
+  async signup ({ email, password, name, username }: AuthSignupDTO) {
     const userExists = await this.userRepository.find({
       OR: [
         { email },
@@ -54,7 +54,6 @@ export class AuthService {
         create: {
           name,
           username,
-          about,
         },
       },
     });
@@ -90,6 +89,10 @@ export class AuthService {
     await this.userRepository.updateById(userId, {
       password: passwordHash,
     });
+  }
+
+  async getMe (userId: string) {
+    return await this.userRepository.findById(userId);
   }
 
   private getToken (user: DbUser) {
