@@ -11,5 +11,5 @@ export const hash = async (value: string, salt?: string) => {
 
 export const compare = async (value: string, hashValue: string) => {
   const [realValue, salt] = hashValue.split('.');
-  return realValue === await hash(value, salt);
+  return hashValue === await hash(value, salt);
 }

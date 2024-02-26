@@ -1,7 +1,7 @@
 import { Prisma, PrismaClient } from "@prisma/client";
-import { DbAnswer } from "../utils/types/DbAnswer";
+import { DbAnswer } from "../types/database/DbAnswer";
 
-export class AnswerRepository{
+export class AnswerRepository {
     private include: Prisma.AnswerInclude = {
         userProfile: true,
         question: true,
@@ -15,7 +15,7 @@ export class AnswerRepository{
         });
     }
 
-    find<R=DbAnswer> (where: Prisma.AnswerWhereInput, args?: Prisma.AnswerFindFirstArgs){
+    find<R=DbAnswer> (where: Prisma.AnswerWhereInput, args?: Prisma.AnswerFindFirstArgs) {
         return this.prisma.answer.findFirst({
             where,
             include: this.include,
