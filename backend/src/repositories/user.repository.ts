@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient } from '@prisma/client';
-import { DbUser } from '../utils/types/DbUser';
+import { DbUser } from '../types/database/DbUser';
 
 export class UserRepository {
   private include: Prisma.UserInclude = {
@@ -23,6 +23,12 @@ export class UserRepository {
     }) as unknown as Promise<R>;
   }
 
+  findById<R=DbUser> (id: string, args?: Prisma.UserFindFirstArgs) {
+    return this.find<R>({
+      id,
+    }, args);
+  }
+
   findMany<R=DbUser> (where: Prisma.UserWhereInput, args: Prisma.UserFindManyArgs) {
     return this.prisma.user.findMany({
       where,
@@ -39,6 +45,11 @@ export class UserRepository {
     });
   }
 
+  updateById (id: string, data: Prisma.UserUncheckedUpdateInput) {
+    return this.update({
+      id,
+    }, data);
+  }
 
   delete (where: Prisma.UserWhereUniqueInput) {
     return this.prisma.user.delete({

@@ -1,4 +1,4 @@
-import { SerializedError } from '../types/SerializedError';
+import { SerializedError } from '../../types/SerializedError';
 
 export abstract class Exception extends Error {
   abstract message: any;
