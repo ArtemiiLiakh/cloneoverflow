@@ -1,7 +1,7 @@
 import { IsEmail, IsNotEmpty } from 'class-validator';
 import { validationMessage } from '../utils/functionUtils';
 
-export class AuthSignInDTO {
+export class AuthSignupDTO {
   @IsNotEmpty(validationMessage('Email is required'))
   @IsEmail({}, validationMessage('Email must be in email format'))
     email: string;
@@ -14,7 +14,4 @@ export class AuthSignInDTO {
   
   @IsNotEmpty(validationMessage('Username is required'))
     username: string;
-  
-  @IsNotEmpty(validationMessage('About is required'))
-    about: string;
 }

@@ -6,5 +6,5 @@ export class DbUser {
   password: string;
   createdAt: Date;
   updatedAt: Date;
-  userProfile: UserProfile | null;
+  userProfile: UserProfile;
 };

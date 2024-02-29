@@ -1,0 +1,22 @@
+.auth {
+  width: 40vw;
+  margin: 20px auto;
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.auth .form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.auth .change-password {
+  margin-top: 10px;
+}
+
+.auth .error-message {
+  display: block;
+  color: red;
+}

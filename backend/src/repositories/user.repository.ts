@@ -12,7 +12,7 @@ export class UserRepository {
     return this.prisma.user.create({
       data,
       include: this.include,
-    });
+    }) as unknown as Promise<DbUser>;
   }
 
   find<R=DbUser> (where: Prisma.UserWhereInput, args?: Prisma.UserFindFirstArgs) {
@@ -34,15 +34,15 @@ export class UserRepository {
       where,
       include: this.include,
       ...args,
-    }) as unknown as Promise<R>;
+    }) as unknown as Promise<R[]>;
   }
   
-  update (where: Prisma.UserWhereUniqueInput, data: Prisma.UserUncheckedUpdateInput){
+  update<R=DbUser> (where: Prisma.UserWhereUniqueInput, data: Prisma.UserUncheckedUpdateInput) {
     return this.prisma.user.update({
       where,
       data,
       include: this.include,
-    });
+    }) as unknown as Promise<R>;
   }
 
   updateById (id: string, data: Prisma.UserUncheckedUpdateInput) {
@@ -55,6 +55,6 @@ export class UserRepository {
     return this.prisma.user.delete({
       where,
       include: this.include,
-    });
+    }) as unknown as Promise<DbUser>;
   }
 }
