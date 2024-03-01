@@ -2,47 +2,49 @@ import { Prisma, PrismaClient } from "@prisma/client";
 import { DbAnswer } from "../types/database/DbAnswer";
 
 export class AnswerRepository {
-    private include: Prisma.AnswerInclude = {
-        userProfile: true,
-        question: true,
-    }
-    constructor(private prisma = new PrismaClient()) {}
+  private include: Prisma.AnswerInclude = {
+    userProfile: true,
+    question: true,
+  }
 
-    create (data: Prisma.AnswerUncheckedCreateInput) {
-        return this.prisma.answer.create({
-            data,
-            include: this.include,
-        });
-    }
+  constructor(private prisma = new PrismaClient()) {
+  }
 
-    find<R=DbAnswer> (where: Prisma.AnswerWhereInput, args?: Prisma.AnswerFindFirstArgs) {
-        return this.prisma.answer.findFirst({
-            where,
-            include: this.include,
-            ...args,
-        }) as unknown as Promise<R>;
-    }
+  create(data: Prisma.AnswerUncheckedCreateInput) {
+    return this.prisma.answer.create({
+      data,
+      include: this.include,
+    });
+  }
 
-    findMany<R=DbAnswer> (where: Prisma.AnswerWhereInput, args: Prisma.AnswerFindManyArgs){
-        return this.prisma.answer.findMany({
-            where,
-            include: this.include,
-            ...args,
-        }) as unknown as Promise<R>;
-    }
+  find<R=DbAnswer>(where: Prisma.AnswerWhereInput, args?: Prisma.AnswerFindFirstArgs) {
+    return this.prisma.answer.findFirst({
+      where,
+      include: this.include,
+      ...args,
+    }) as unknown as Promise<R>;
+  }
 
-    update (where: Prisma.AnswerWhereUniqueInput, data: Prisma.AnswerUncheckedUpdateInput) {
-        return this.prisma.answer.update({
-            where,
-            data,
-            include: this.include,
-        });
-    }
+  findMany<R=DbAnswer>(where: Prisma.AnswerWhereInput, args: Prisma.AnswerFindManyArgs) {
+    return this.prisma.answer.findMany({
+      where,
+      include: this.include,
+      ...args,
+    }) as unknown as Promise<R>;
+  }
 
-    delete (where: Prisma.UserWhereUniqueInput) {
-        return this.prisma.user.delete({
-            where,
-            include: this.include,
-        });
-    }
+  update(where: Prisma.AnswerWhereUniqueInput, data: Prisma.AnswerUncheckedUpdateInput) {
+    return this.prisma.answer.update({
+      where,
+      data,
+      include: this.include,
+    });
+  }
+
+  delete(where: Prisma.UserWhereUniqueInput) {
+    return this.prisma.user.delete({
+      where,
+      include: this.include,
+    });
+  }
 }
