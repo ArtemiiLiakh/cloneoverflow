@@ -6,6 +6,7 @@ import { errorHandler } from './middlewares/errorHandler';
 import { auth } from './routers/auth';
 import { prismaErrorHandler } from './middlewares/prismaErrorHandler';
 import cookieParser from 'cookie-parser';
+import { user } from "./routers/user";
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(cookieParser());
 
 const api = express.Router(); 
 api.use('/auth', auth);
+api.use('/users', user)
 
 app.use('/api', api);
 app.use(prismaErrorHandler);
