@@ -25,7 +25,7 @@ export class AnswerRepository {
     }) as unknown as Promise<R>;
   }
 
-  findMany<R=DbAnswer>(where: Prisma.AnswerWhereInput, args: Prisma.AnswerFindManyArgs) {
+  findMany<R=DbAnswer>(where: Prisma.AnswerWhereInput, args?: Prisma.AnswerFindManyArgs) {
     return this.prisma.answer.findMany({
       where,
       include: this.include,
@@ -46,5 +46,9 @@ export class AnswerRepository {
       where,
       include: this.include,
     });
+  }
+
+  count(where: Prisma.AnswerWhereInput) {
+    return this.prisma.answer.count({ where });
   }
 }

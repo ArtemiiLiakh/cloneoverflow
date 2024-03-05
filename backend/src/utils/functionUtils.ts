@@ -5,4 +5,4 @@ export const validationMessage = (message: string, each?: boolean): ValidationOp
     message,
     each,
   };
-}
+};

@@ -2,11 +2,11 @@ import { Request, Response } from 'express';
 import { AuthLoginDTO } from '../dtos/auth.login.dto';
 import { AuthSignupDTO } from '../dtos/auth.signup.dto';
 import { AuthService } from '../services/auth.service';
-import { AuthRequest, RequestWithBody } from '../types/Requests';
+import { AuthReq, Body } from '../types/Requests';
 import { AccessTokenResponse } from '../responses/accessToken.response';
 import { AuthChangePasswordDTO } from '../dtos/auth.changePassword.dto';
 import { AuthMapper } from '../mappers/auth.mapper';
-import { MeResponse } from '../responses/me.response';
+import { GetMeResponse } from '../responses/auth.getMe.response';
 
 export class AuthController {
   constructor (
@@ -14,17 +14,17 @@ export class AuthController {
     private authMapper = new AuthMapper(),
   ) {}
 
-  async login ({ body }: RequestWithBody<AuthLoginDTO>, res: Response<AccessTokenResponse>) {
+  async login ({ body }: Body<AuthLoginDTO>, res: Response<AccessTokenResponse>) {
     const tokens = await this.authService.login(body);
     res.send(tokens);
   }
 
-  async signup ({ body }: RequestWithBody<AuthSignupDTO>, res: Response<AccessTokenResponse>) {
+  async signup ({ body }: Body<AuthSignupDTO>, res: Response<AccessTokenResponse>) {
     const tokens = await this.authService.signup(body);
     res.send(tokens);
   } 
 
-  async getMe (req: AuthRequest, res: Response<MeResponse>) {
+  async getMe (req: AuthReq, res: Response<GetMeResponse>) {
     const user = await this.authService.getMe(req.body._user.userId);
     res.send(this.authMapper.getMe(user));
   }
@@ -37,7 +37,7 @@ export class AuthController {
     });
   }
 
-  async changePassword (req: AuthRequest<AuthChangePasswordDTO>, res: Response) {
+  async changePassword (req: AuthReq & Body<AuthChangePasswordDTO>, res: Response) {
     await this.authService.changePassword(req.body._user.userId, req.body);
     res.send({
       message: 'ok',

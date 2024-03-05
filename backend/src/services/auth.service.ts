@@ -99,8 +99,7 @@ export class AuthService {
     const access_token = jwt.sign(
       {
         userId: user.id,
-        name: user.userProfile?.name,
-        username: user.userProfile?.username,
+        status: user.userProfile.status,
       }, 
       config.TOKEN_SECRET, 
       {

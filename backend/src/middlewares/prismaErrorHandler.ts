@@ -13,6 +13,7 @@ export const prismaErrorHandler = (err: Prisma.PrismaClientKnownRequestError, re
       const target = err.meta?.target as string[];
       const modelName = err.meta?.modelName as string;
       res.send({
+        type: err.constructor.name,
         error: `${modelName} must have unique fields [${target}]`,
       });
       break;

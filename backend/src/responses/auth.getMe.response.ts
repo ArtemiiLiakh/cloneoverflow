@@ -1,6 +1,6 @@
 import { UserStatus } from '@prisma/client';
 
-export class MeResponse {
+export class GetMeResponse {
   id: string;
   name: string;
   username: string;

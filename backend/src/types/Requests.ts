@@ -1,12 +1,20 @@
 import { Request } from 'express';
 import { TokenPayload } from './TokenPayload';
 
-export interface RequestWithBody<B=any> extends Request {
+export interface Body<B=any> extends Request {
   body: B;
 }
 
-export interface AuthRequest<D extends { [key: string]: any } = any> extends Request {
+export interface Query<Q extends {}> extends Request {
+  query: Q;
+}
+
+export interface Params<P extends {}> extends Request {
+  params: P;
+}
+
+export interface AuthReq extends Request {
   body: {
     _user: TokenPayload;
-  } & D;
+  };
 }
