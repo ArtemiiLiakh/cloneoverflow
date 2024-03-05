@@ -58,6 +58,7 @@ model Question {
   userId        String             @map("user_id")
   userProfile   UserProfile        @relation(fields: [userId], references: [userId], onDelete: Cascade)
   title         String             @db.VarChar(255)
+  text          String             @db.Text @default("")
   rate          Int                @default(0)
   status        QuestionStatus     @default(ACTIVE)
   answers       Answer[]

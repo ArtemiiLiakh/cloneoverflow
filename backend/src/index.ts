@@ -1,11 +1,12 @@
-import express, { Request, Response } from 'express';
-import 'express-async-errors';
 import bodyParser from 'body-parser';
-import cors from 'cors';
-import { errorHandler } from './middlewares/errorHandler';
-import { auth } from './routers/auth';
-import { prismaErrorHandler } from './middlewares/prismaErrorHandler';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import express from 'express';
+import 'express-async-errors';
+import 'reflect-metadata';
+import { errorHandler } from './middlewares/errorHandler';
+import { prismaErrorHandler } from './middlewares/prismaErrorHandler';
+import { auth } from './routers/auth';
 import { user } from "./routers/user";
 
 const app = express();

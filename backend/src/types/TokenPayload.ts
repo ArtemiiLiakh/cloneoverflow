@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsUUID } from 'class-validator';
+import { UserStatus } from '@prisma/client';
+import { IsEnum, IsNotEmpty, IsUUID } from 'class-validator';
 import { JwtPayload } from 'jsonwebtoken';
 
 export class TokenPayload implements JwtPayload {
@@ -7,8 +8,6 @@ export class TokenPayload implements JwtPayload {
     userId: string;
   
   @IsNotEmpty()
-    name: string;
-  
-  @IsNotEmpty()
-    username: string;
+  @IsEnum(UserStatus)
+    status: UserStatus;
 }

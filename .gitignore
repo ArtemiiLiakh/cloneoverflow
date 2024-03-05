@@ -3,4 +3,7 @@
 # dependencies
 /**/node_modules
 /**/.env
+
+/backend/prisma/migrations
+
 /kubernetes

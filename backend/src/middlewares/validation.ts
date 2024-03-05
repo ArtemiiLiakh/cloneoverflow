@@ -4,13 +4,21 @@ import { AuthLoginDTO } from '../dtos/auth.login.dto'
 import { validate } from 'class-validator';
 import { ValidationException } from '../utils/exceptions/ValidationException';
 
-export const validateBody = (type: new () => any) => {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    const body = plainToInstance(type, req.body);
-    const errors = await validate(body);
+interface RequestFields {
+  params?: new () => any;
+  query?: new () => any;
+  body?: new () => any;
+}
 
-    if (errors.length) {
-      throw new ValidationException(errors);
+export const validateRequest = (fiedls: RequestFields) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    for (const [key, type] of Object.entries(fiedls)) {
+      const data = plainToInstance(type, req[key]);
+      const errors = await validate(data);
+      if (errors.length) {
+        throw new ValidationException(errors, key);
+      }
+      req[key] = data;
     }
 
     next();

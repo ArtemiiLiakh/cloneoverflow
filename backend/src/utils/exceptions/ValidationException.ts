@@ -3,20 +3,32 @@ import { SerializedError } from '../../types/SerializedError';
 import { Exception } from './Exception';
 
 export class ValidationException extends Exception {
-  message: string[] = [];
+  message: string[];
   statusCode = 400;
 
-  constructor (public errors: ValidationError[]) {
+  constructor (public errors: ValidationError[], public field='body') {
     super();
   }
 
-  serializeError(): SerializedError {
-    for (const error of this.errors) {
-      const messages = Object.values(error.constraints ?? {});
-      messages.forEach((message) => {
-        this.message.push(`obj.${error.property}: ${message}`);
-      });
+  private parseErrors(errors: ValidationError[], field: string) {
+    let message: string[] = [];
+    for (const error of errors) {
+      if (error?.children?.length) {
+        message = message.concat(this.parseErrors(error.children, `${field}.${error.property}`));
+      }
+      else {
+        const messages = Object.values(error.constraints ?? {});
+        messages.forEach((msg) => {
+          message.push(`${field}.${error.property}: ${msg}`);
+        });
+      }
     }
+
+    return message;
+  }
+
+  serializeError(): SerializedError {
+    this.message = this.parseErrors(this.errors, `obj.${this.field}`);
 
     return {
       message: this.message,
