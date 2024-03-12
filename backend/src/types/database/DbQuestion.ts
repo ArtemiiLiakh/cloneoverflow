@@ -1,4 +1,4 @@
-import { UserProfile, QuestionStatus, Answer, QuestionTags } from "@prisma/client";
+import { UserProfile, QuestionStatus, Answer, Tag } from "@prisma/client";
 
 export class DbQuestion {
   id: string;
@@ -9,7 +9,7 @@ export class DbQuestion {
   rate: number;
   status: QuestionStatus;
   answers: Answer[];
-  tags: QuestionTags[];
+  tags: Tag[];
   createdAt: Date;
   updatedAt: Date;
 };
