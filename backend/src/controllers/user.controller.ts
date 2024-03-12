@@ -1,6 +1,6 @@
 import { UserService } from "../services/user.service";
 import { UserMapper } from "../mappers/user.mapper";
-import { AuthReq, Body, Query } from "../types/Requests";
+import { AuthRequest, Body, Query } from "../types/Requests";
 import { UserUpdateDto } from "../dtos/user.update.dto";
 import { UserUpdateResponse } from "../responses/user.update.response";
 import { Response } from "express";
@@ -15,13 +15,13 @@ export class UserController {
   ) {
   }
 
-  async update(req: AuthReq & Body<UserUpdateDto>, res: Response<UserUpdateResponse>) {
-    const user = await this.userService.update(req.params.userId, req.body);
+  async update({ params, body }: AuthRequest & Body<UserUpdateDto>, res: Response<UserUpdateResponse>) {
+    const user = await this.userService.update(params.userId, body);
     res.send(this.userMapper.update(user));
   }
 
-  async getAnswers(req: AuthReq & Query<UserGetAnswersDTO>, res: Response<UserGetAnswersResponse>) {
-    const { data, pagination } = await this.userService.getAnswers(req.params.userId, req.query);
+  async getAnswers({ params, query }: AuthRequest & Query<UserGetAnswersDTO>, res: Response<UserGetAnswersResponse>) {
+    const { data, pagination } = await this.userService.getAnswers(params.userId, query);
     const answers = this.userMapper.getAnswers(data);
     res.send({
       answers,

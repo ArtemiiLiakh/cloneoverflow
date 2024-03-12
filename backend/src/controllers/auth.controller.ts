@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { AuthLoginDTO } from '../dtos/auth.login.dto';
 import { AuthSignupDTO } from '../dtos/auth.signup.dto';
 import { AuthService } from '../services/auth.service';
-import { AuthReq, Body } from '../types/Requests';
+import { AuthRequest, Body } from '../types/Requests';
 import { AccessTokenResponse } from '../responses/accessToken.response';
 import { AuthChangePasswordDTO } from '../dtos/auth.changePassword.dto';
 import { AuthMapper } from '../mappers/auth.mapper';
@@ -24,21 +24,21 @@ export class AuthController {
     res.send(tokens);
   } 
 
-  async getMe (req: AuthReq, res: Response<GetMeResponse>) {
-    const user = await this.authService.getMe(req.body._user.userId);
+  async getMe ({ body: { _user } }: AuthRequest, res: Response<GetMeResponse>) {
+    const user = await this.authService.getMe(_user.userId);
     res.send(this.authMapper.getMe(user));
   }
 
-  async refreshToken (req: Request, res: Response<AccessTokenResponse>) {
-    const { access_token } = await this.authService.refreshToken(req.cookies['refresh_token'])
+  async refreshToken ({ cookies }: Request, res: Response<AccessTokenResponse>) {
+    const { access_token } = await this.authService.refreshToken(cookies['refresh_token'])
     res.send({
       access_token,
-      refresh_token: req.cookies['refresh_token'],
+      refresh_token: cookies['refresh_token'],
     });
   }
 
-  async changePassword (req: AuthReq & Body<AuthChangePasswordDTO>, res: Response) {
-    await this.authService.changePassword(req.body._user.userId, req.body);
+  async changePassword ({ body }: AuthRequest & Body<AuthChangePasswordDTO>, res: Response) {
+    await this.authService.changePassword(body._user.userId, body);
     res.send({
       message: 'ok',
     });

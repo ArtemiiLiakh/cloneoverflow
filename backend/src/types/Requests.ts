@@ -13,7 +13,7 @@ export interface Params<P extends {}> extends Request {
   params: P;
 }
 
-export interface AuthReq extends Request {
+export interface AuthRequest extends Request {
   body: {
     _user: TokenPayload;
   };

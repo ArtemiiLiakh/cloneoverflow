@@ -36,7 +36,7 @@ export const AuthAccess = (status: UserStatus = 'USER') => {
           throw new ForbiddenException();
         }
   
-        req.body["_user"] = payload;
+        req.body._user = payload;
         
         next();
       }
