@@ -62,7 +62,7 @@ model Question {
   rate          Int                @default(0)
   status        QuestionStatus     @default(ACTIVE)
   answers       Answer[]
-  tags          QuestionTags[]
+  tags          Tag[]
   createdAt     DateTime           @default(now()) @map("created_at")
   updatedAt     DateTime           @updatedAt @map("updated_at")
 
@@ -86,19 +86,8 @@ model Answer {
 
 model Tag {
   id          String            @id @default(uuid())
-  name        String            @db.VarChar(100)
-  questions   QuestionTags[]
+  name        String            @unique @db.VarChar(100)
+  questions   Question[]
 
   @@map("tags")
 }
-
-model QuestionTags {
-  questionId    String      @map("question_id")
-  quesiton      Question    @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  tagId         String      @map("tag_id")
-  tag           Tag         @relation(fields: [tagId], references: [id], onDelete: Cascade)
-
-  @@id([questionId, tagId])
-  @@map("question_tags")
-}
-
