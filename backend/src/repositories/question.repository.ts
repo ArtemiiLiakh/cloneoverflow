@@ -1,7 +1,7 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import { DbQuestion } from "../types/database/DbQuestion";
 
-export class QuestionRepository{
+export class QuestionRepository {
   private include: Prisma.QuestionInclude = {
     userProfile: true,
     tags: true,
