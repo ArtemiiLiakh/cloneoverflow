@@ -14,14 +14,36 @@ export class AuthController {
     private authMapper = new AuthMapper(),
   ) {}
 
-  async login ({ body }: Body<AuthLoginDTO>, res: Response<AccessTokenResponse>) {
-    const tokens = await this.authService.login(body);
-    res.send(tokens);
+  async login ({ body }: Body<AuthLoginDTO>, res: Response<GetMeResponse>) {
+    const { access_token, refresh_token, user } = await this.authService.login(body);
+    res.cookie('access_token', access_token, {
+        httpOnly: true,
+        sameSite: 'strict',
+        maxAge: 15 * 60 * 1000,
+      })
+      .cookie('refresh_token', refresh_token, {
+        httpOnly: true,
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      })
+      .send(this.authMapper.getMe(user));
   }
 
-  async signup ({ body }: Body<AuthSignupDTO>, res: Response<AccessTokenResponse>) {
-    const tokens = await this.authService.signup(body);
-    res.send(tokens);
+  async signup ({ body }: Body<AuthSignupDTO>, res: Response<GetMeResponse>) {
+    console.log(body);
+    const { access_token, refresh_token, user } = await this.authService.signup(body);
+    res
+      .cookie('access_token', access_token, {
+        httpOnly: true,
+        sameSite: 'strict',
+        maxAge: 15 * 60 * 1000,
+      })
+      .cookie('refresh_token', refresh_token, {
+        httpOnly: true,
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      })
+      .send(this.authMapper.getMe(user));
   } 
 
   async getMe ({ body: { _user } }: AuthRequest, res: Response<GetMeResponse>) {
@@ -31,7 +53,11 @@ export class AuthController {
 
   async refreshToken ({ cookies }: Request, res: Response<AccessTokenResponse>) {
     const { access_token } = await this.authService.refreshToken(cookies['refresh_token'])
-    res.send({
+    res.cookie('access_token', access_token, {
+      maxAge: 15 * 60 * 1000,
+      httpOnly: true,
+      sameSite: 'strict',
+    }).send({
       access_token,
       refresh_token: cookies['refresh_token'],
     });

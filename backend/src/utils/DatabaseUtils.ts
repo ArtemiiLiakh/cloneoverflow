@@ -12,7 +12,7 @@ export class DbUtils {
       skip: page * pageSize,
     });
     const totalAmount = await repository.count((args as any).where);
-    const totalPages = Math.floor(totalAmount / pageSize);
+    const totalPages = Math.ceil(totalAmount / pageSize);
 
     const prevElems = page ? pageSize : 0;
     let nextElems = totalAmount - (page + 1) * pageSize;

@@ -7,12 +7,16 @@ import { AnswerRepository } from '../repositories/answer.repository';
 import { Prisma } from '@prisma/client';
 import { OrderBy } from '../types/OrderBy';
 import { DbUtils } from '../utils/DatabaseUtils';
-import { DbAnswer, DbAnswerQuestion } from '../types/database/DbAnswer';
+import { DbAnswer } from '../types/database/DbAnswer';
+import { UserGQSortBy, UserGetQuestionsDTO } from '../dtos/user.getQuestions.dto';
+import { DbQuestion } from '../types/database/DbQuestion';
+import { QuestionRepository } from '../repositories/question.repository';
 
 export class UserService {
   constructor(
     private userRepository = new UserRepository(),
     private answerRepository = new AnswerRepository(),
+    private questionRepository = new QuestionRepository(),
   ) {}
 
   async update(userId: string, {name, username, about, reputation, status}: UserUpdateDto) {
@@ -44,18 +48,15 @@ export class UserService {
   }
 
   getAnswers(userId: string, {sortBy, orderBy, pagination}: UserGetAnswersDTO) {
-    return DbUtils.paginate<Prisma.AnswerFindManyArgs, DbAnswerQuestion>(this.answerRepository, {
+    return DbUtils.paginate<Prisma.AnswerFindManyArgs, DbAnswer>(this.answerRepository, {
       where: {
         userId,
       },
-      orderBy: this.getSortBy(sortBy, orderBy),
-      include: {
-        question: true,
-      }
+      orderBy: this.getAnswersSortBy(sortBy, orderBy),
     }, pagination ?? {});
   }
 
-  private getSortBy(sortBy?: UserGASortBy, orderBy?: OrderBy): Prisma.AnswerOrderByWithRelationInput {
+  private getAnswersSortBy(sortBy?: UserGASortBy, orderBy?: OrderBy): Prisma.AnswerOrderByWithRelationInput {
     switch (sortBy) {
       case UserGASortBy.RATE:
         return {
@@ -68,6 +69,48 @@ export class UserService {
       case UserGASortBy.SOLUTION:
         return {
           isSolution: orderBy ?? 'desc',
+        };
+    }
+    return {};
+  }
+
+  getQuestions (userId: string, {sortBy, orderBy, minRate, search, tags, pagination}: UserGetQuestionsDTO) {
+    return DbUtils.paginate<Prisma.QuestionFindManyArgs, DbQuestion>(this.questionRepository, {
+      where: {
+        userId,
+        rate: {
+          gte: minRate,
+        },
+        title: {
+          contains: search,
+        },
+        tags: {
+          some: {
+            name: {
+              in: tags,
+            },
+          },
+        },
+      },
+      orderBy: this.getQuestionsSortBy(sortBy, orderBy),
+    }, pagination ?? {});
+  }
+  
+  private getQuestionsSortBy(sortBy?: UserGQSortBy, orderBy?: OrderBy): Prisma.QuestionOrderByWithRelationInput {
+    switch (sortBy) {
+      case UserGQSortBy.ANSWERS:
+        return {
+          answers: {
+            _count: orderBy ?? 'desc',
+          },
+        };
+      case UserGQSortBy.DATE:
+        return {
+          createdAt: orderBy ?? 'asc',
+        };
+      case UserGQSortBy.RATE:
+        return {
+          rate: orderBy ?? 'desc',
         };
     }
     return {};

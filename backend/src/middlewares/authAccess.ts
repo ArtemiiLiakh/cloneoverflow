@@ -10,13 +10,7 @@ import config from '../config';
 
 export const AuthAccess = (status: UserStatus = 'USER') => {
   return async (req: Request, res: Response, next: NextFunction) => {
-    const authHeader = req.headers.authorization;
-  
-    if (!authHeader?.startsWith('Bearer ')) {
-      throw new UnauthorizedException();
-    }
-  
-    const access_token = authHeader.split(' ')[1];
+    const access_token = req.cookies['access_token'];
   
     jwt.verify(
       access_token,

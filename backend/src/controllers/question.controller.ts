@@ -11,6 +11,7 @@ export class QuestionController {
     private questionService = new QuestionService(),
     private questionMapper = new QuestionMapper(),
   ) {}
+  
   async create(req: AuthRequest & Body<QuestionCreateDTO>, res: Response<QuestionCreateResponse>) {
     const question = await this.questionService.create(req.body._user.userId, req.body);
     res.send(this.questionMapper.create(question));

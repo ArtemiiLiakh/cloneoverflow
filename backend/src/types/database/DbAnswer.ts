@@ -1,4 +1,4 @@
-import { Question, UserProfile } from "@prisma/client";
+import { Question, User, UserProfile } from "@prisma/client";
 
 export class DbAnswer {
   id: string;
@@ -12,15 +12,3 @@ export class DbAnswer {
   question: Question;
   userProfile: UserProfile;
 };
-
-export class DbAnswerQuestion {
-  id: string;
-  userId: string;
-  questionId: string;
-  text: string;
-  rate: number;
-  isSolution: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  question: Question;
-}

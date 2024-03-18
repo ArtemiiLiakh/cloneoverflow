@@ -7,6 +7,8 @@ import { Response } from "express";
 import { UserGetAnswersDTO } from '../dtos/user.getAnswers.dto';
 import { PaginatedData } from '../types/PaginatedData';
 import { UserGetAnswersResponse } from '../responses/user.getAnswers.response';
+import { UserGetQuestionsDTO } from '../dtos/user.getQuestions.dto';
+import { UserGetQuestionResponse } from '../responses/user.getQuestion.response';
 
 export class UserController {
   constructor(
@@ -25,6 +27,15 @@ export class UserController {
     const answers = this.userMapper.getAnswers(data);
     res.send({
       answers,
+      pagination,
+    });
+  }
+
+  async getQuestions ({ params, query }: AuthRequest & Query<UserGetQuestionsDTO>, res: Response<UserGetQuestionResponse>) {
+    const { data, pagination } = await this.userService.getQuestions(params.userId, query);
+    const questions = this.userMapper.getQuestions(data);
+    res.send({
+      questions,
       pagination,
     });
   }

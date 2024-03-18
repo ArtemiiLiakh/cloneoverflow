@@ -59,4 +59,10 @@ export class QuestionRepository {
       include: this.include,
     }) as unknown as Promise<DbQuestion>;
   }
+
+  count (where: Prisma.QuestionWhereInput) {
+    return this.prisma.question.count({
+      where,
+    })
+  }
 }

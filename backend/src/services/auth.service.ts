@@ -27,7 +27,10 @@ export class AuthService {
       throw new LoginException();
     }
 
-    return this.getToken(user);
+    return {
+      user,
+      ...this.getToken(user),
+    };
   }
 
   async signup ({ email, password, name, username }: AuthSignupDTO) {
@@ -58,7 +61,10 @@ export class AuthService {
       },
     });
 
-    return this.getToken(user);
+    return {
+      user,
+      ...this.getToken(user),
+    };
   }
 
   async refreshToken (refresh_token: string) {
@@ -103,7 +109,7 @@ export class AuthService {
       }, 
       config.TOKEN_SECRET, 
       {
-        expiresIn: "1h",
+        expiresIn: "15m",
       },
     );
 
