@@ -9,17 +9,22 @@ import { prismaErrorHandler } from './middlewares/prismaErrorHandler';
 import { auth } from './routers/auth';
 import { user } from "./routers/user";
 import { question } from "./routers/question";
+import { answer } from './routers/answer';
 
 const app = express();
 
 app.use(bodyParser.json())
-app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
+app.use(cors({ 
+  origin: 'http://localhost:3000',
+  credentials: true, 
+}));
 app.use(cookieParser());
 
 const api = express.Router(); 
 api.use('/auth', auth);
 api.use('/users', user);
 api.use('/questions', question);
+api.use('/answers', answer);
 
 app.use('/api', api);
 app.use(prismaErrorHandler);
