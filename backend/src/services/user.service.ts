@@ -11,6 +11,7 @@ import { DbAnswer } from '../types/database/DbAnswer';
 import { UserGQSortBy, UserGetQuestionsDTO } from '../dtos/user.getQuestions.dto';
 import { DbQuestion } from '../types/database/DbQuestion';
 import { QuestionRepository } from '../repositories/question.repository';
+import { DbUserGetProfile } from '../types/database/DbUser';
 
 export class UserService {
   constructor(
@@ -45,6 +46,52 @@ export class UserService {
       }
     })
     return await this.userRepository.findById(userId);
+  }
+
+  async getProfile(userId: string) {
+    const user = await this.userRepository.findById<DbUserGetProfile>(userId, {
+      include: {
+        userProfile: {
+          include: {
+            _count: {
+              select: {
+                answers: true,
+                questions: true,
+              },
+            },
+            answers: {
+              take: 1,
+              orderBy: {
+                rate: 'desc',
+              },
+              include: {
+                question: true,
+              }
+            },
+            questions: {
+              take: 1,
+              include: {
+                _count: {
+                  select: {
+                    answers: true,
+                  },
+                },
+                tags: true,
+              },
+              orderBy: {
+                rate: 'desc',
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!user) {
+      throw new NoEntityWithIdException('User');
+    }
+
+    return user;
   }
 
   getAnswers(userId: string, {sortBy, orderBy, pagination}: UserGetAnswersDTO) {

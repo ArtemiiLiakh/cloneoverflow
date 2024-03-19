@@ -9,6 +9,7 @@ import { PaginatedData } from '../types/PaginatedData';
 import { UserGetAnswersResponse } from '../responses/user.getAnswers.response';
 import { UserGetQuestionsDTO } from '../dtos/user.getQuestions.dto';
 import { UserGetQuestionResponse } from '../responses/user.getQuestion.response';
+import { UserGetProfileResponse } from '../responses/user.getProfile.response';
 
 export class UserController {
   constructor(
@@ -20,6 +21,11 @@ export class UserController {
   async update({ params, body }: AuthRequest & Body<UserUpdateDto>, res: Response<UserUpdateResponse>) {
     const user = await this.userService.update(params.userId, body);
     res.send(this.userMapper.update(user));
+  }
+
+  async getProfile({ params }: AuthRequest, res: Response<UserGetProfileResponse>) {
+    const user = await this.userService.getProfile(params.userId);
+    res.send(this.userMapper.getProfile(user));
   }
 
   async getAnswers({ params, query }: AuthRequest & Query<UserGetAnswersDTO>, res: Response<UserGetAnswersResponse>) {
