@@ -7,6 +7,8 @@ import { AccessTokenResponse } from '../responses/accessToken.response';
 import { AuthChangePasswordDTO } from '../dtos/auth.changePassword.dto';
 import { AuthMapper } from '../mappers/auth.mapper';
 import { GetMeResponse } from '../responses/auth.getMe.response';
+import config from '../config';
+import { OkResponse } from '../responses/ok.response';
 
 export class AuthController {
   constructor (
@@ -16,33 +18,16 @@ export class AuthController {
 
   async login ({ body }: Body<AuthLoginDTO>, res: Response<GetMeResponse>) {
     const { access_token, refresh_token, user } = await this.authService.login(body);
-    res.cookie('access_token', access_token, {
-        httpOnly: true,
-        sameSite: 'strict',
-        maxAge: 15 * 60 * 1000,
-      })
-      .cookie('refresh_token', refresh_token, {
-        httpOnly: true,
-        sameSite: 'strict',
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      })
+    res.cookie('access_token', access_token, config.accessTokenConfig)
+      .cookie('refresh_token', refresh_token, config.refreshTokenConfig)
       .send(this.authMapper.getMe(user));
   }
 
   async signup ({ body }: Body<AuthSignupDTO>, res: Response<GetMeResponse>) {
     console.log(body);
     const { access_token, refresh_token, user } = await this.authService.signup(body);
-    res
-      .cookie('access_token', access_token, {
-        httpOnly: true,
-        sameSite: 'strict',
-        maxAge: 15 * 60 * 1000,
-      })
-      .cookie('refresh_token', refresh_token, {
-        httpOnly: true,
-        sameSite: 'strict',
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      })
+    res.cookie('access_token', access_token, config.accessTokenConfig)
+      .cookie('refresh_token', refresh_token, config.refreshTokenConfig)
       .send(this.authMapper.getMe(user));
   } 
 
@@ -51,19 +36,14 @@ export class AuthController {
     res.send(this.authMapper.getMe(user));
   }
 
-  async refreshToken ({ cookies }: Request, res: Response<AccessTokenResponse>) {
+  async refreshToken ({ cookies }: Request, res: Response<OkResponse>) {
     const { access_token } = await this.authService.refreshToken(cookies['refresh_token'])
-    res.cookie('access_token', access_token, {
-      maxAge: 15 * 60 * 1000,
-      httpOnly: true,
-      sameSite: 'strict',
-    }).send({
-      access_token,
-      refresh_token: cookies['refresh_token'],
+    res.cookie('access_token', access_token, config.accessTokenConfig).send({
+      message: 'ok',
     });
   }
 
-  async changePassword ({ body }: AuthRequest & Body<AuthChangePasswordDTO>, res: Response) {
+  async changePassword ({ body }: AuthRequest & Body<AuthChangePasswordDTO>, res: Response<OkResponse>) {
     await this.authService.changePassword(body._user.userId, body);
     res.send({
       message: 'ok',

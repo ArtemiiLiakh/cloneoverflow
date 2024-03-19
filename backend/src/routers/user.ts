@@ -17,6 +17,12 @@ router.patch('/:userId/update',
   controller.update.bind(controller)
 );
 
+router.get(
+  '/:userId/profile',
+  AuthAccess(),
+  controller.getProfile.bind(controller), 
+);
+
 router.get('/:userId/answers',
   AuthAccess(),
   validateRequest({
