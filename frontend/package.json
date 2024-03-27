@@ -10,6 +10,7 @@
     "@types/node": "^16.18.82",
     "@types/react": "^18.2.57",
     "@types/react-dom": "^18.2.19",
+    "@uiw/react-md-editor": "^4.0.4",
     "axios": "^1.6.7",
     "bootstrap": "^5.3.3",
     "class-transformer": "^0.5.1",

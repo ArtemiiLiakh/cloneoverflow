@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, Matches } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, Matches } from 'class-validator';
 import { ValidateByFunction } from '../../utils/validationConstraints';
 
 export class SignupData {

@@ -3,4 +3,5 @@ export interface AuthSignupDTO {
   password: string;
   name: string;
   username: string;
+  about?: string;
 }

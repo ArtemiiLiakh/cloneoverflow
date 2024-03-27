@@ -1,3 +1,3 @@
 export interface ServerException {
-  error: string;
+  error: string | string[];
 }

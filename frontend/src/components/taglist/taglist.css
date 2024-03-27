@@ -1,0 +1,14 @@
+.taglist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.taglist li {
+  display: inline;
+  margin-right: 5px;
+}
+
+.taglist li a {
+  text-decoration: none;
+}

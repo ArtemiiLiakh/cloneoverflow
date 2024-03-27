@@ -1,0 +1,53 @@
+.profile {
+  margin: 10px 10vw;
+}
+
+.profile .user-info p {
+  display: inline;
+  margin-right: 10px;
+}
+
+.profile .user-info .username {
+  margin-right: 10px;
+}
+
+.profile .created-date {
+  font-size: 0.8em;
+  color: #666;
+}
+
+.profile .profile-menu {
+  gap: 10px;
+  margin-top: 20px;
+  border: none;
+}
+
+.profile .profile-tabs .tab-pane {
+  margin-top: 20px;
+}
+
+.profile .profile-menu .nav-link {
+  padding: 5px 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  background-color: #f0f0f0;
+  color: black;
+} 
+
+.profile .profile-menu .nav-link a {
+  color: black;
+  text-decoration: none;
+} 
+
+.profile .profile-menu .nav-link.active {
+  background-color: #c9c9c9;
+}
+
+.profile .profile-menu .nav-link:hover {
+  background-color: #c9c9c9;
+}
+
+.profile .block-header {
+  font-weight: 500;
+  font-size: 1.2em;
+}
