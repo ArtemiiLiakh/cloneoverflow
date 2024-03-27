@@ -1,0 +1,25 @@
+.user-questions .question-filter {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 1rem;
+}
+
+.user-questions .question-filter .filter-block {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-questions .question-filter .filter-block label {
+  text-wrap: nowrap;
+  margin: 0;
+}
+
+.user-questions .question-filter .filter-block button.orderBy {
+  background: none;
+  border: none;
+  font-size: 20px;
+}

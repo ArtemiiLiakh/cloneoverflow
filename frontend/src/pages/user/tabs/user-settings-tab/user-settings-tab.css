@@ -1,0 +1,20 @@
+.user-settings {
+  padding: 0 40px 50px;
+}
+
+.user-settings .settings-block {
+  margin-bottom: 10px;
+}
+
+.user-settings .settings-block .error-message {
+  color: #f44336;
+  font-size: 14px;
+  font-weight: 500;
+  display: block;
+}
+
+.user-settings .settings-block .success-message {
+  color: #4caf50;
+  font-size: 14px;
+  font-weight: 500;
+}

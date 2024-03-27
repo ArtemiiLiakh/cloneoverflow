@@ -1,11 +1,12 @@
 import * as React from 'react';
 import './menu.css';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { Navbar, Form, Container, Col } from 'react-bootstrap';
 import { useAuth } from '../../hooks/useAuth';
 
 export const Menu = () => {
   const { user, loading } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <Navbar className='navbar'>
@@ -21,14 +22,16 @@ export const Menu = () => {
         <Col sm className='account-container'>
           {
             loading ? <></> 
-            : <button className='profile'>
-                { user ? 
-                  <>
-                    <Navbar.Text>{user?.name}</Navbar.Text>
-                    <Navbar.Text className='reputation'>● {user?.reputation ?? 0}</Navbar.Text>
-                  </> 
-                  : <Navbar.Text>Login</Navbar.Text>
+            : <button className='user' onClick={() => {
+                if (user) {
+                  navigate(`/user/${user.id}`);
+                } else {
+                  navigate('/auth/login');
                 }
+              }}>
+                <span>
+                  { user ? `${user?.name} ● ${user?.reputation ?? 0}` : 'Login'}
+                </span>
               </button>
           }
         </Col>

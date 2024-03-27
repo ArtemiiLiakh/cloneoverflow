@@ -1,0 +1,74 @@
+.profile .user-about {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.profile .user-about .about {
+  flex-shrink: 0;
+  flex-basis: 80%;
+  flex-grow: 0;
+}
+
+.profile .user-about .about-block {
+  text-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.profile .user-about .stats {
+  flex-basis: 20%;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+.profile .user-about .stats .stats-info {
+  border: #999999 1px solid;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.profile .user-about .about-block.best-stats {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: flex-center;
+}
+
+.profile .user-about .about-block.best-stats .about-block-item {
+  padding: 20px;
+  border: #999999 1px solid;
+  border-radius: 10px;
+}
+
+.profile .user-about .about-block.best-stats .about-block-item p {
+  margin-bottom: 5px;
+}
+
+.profile .user-about .about-block.best-stats .about-block-item.best-question .taglist {
+  margin-bottom: 10px;
+}
+
+.profile .user-about .about-block.best-stats .about-block-item {
+  padding: 20px;
+  border: #999999 1px solid;
+  border-radius: 10px;
+}
+
+.profile .user-about .about-block.best-stats .about-block-item:hover {
+  background-color: #f0f0f0;
+}
+
+.profile .user-about .about-block.best-stats .about-block-item button {
+  display: block;
+  margin: 0 auto;
+}
+
+.profile .user-about .about-block .about-block-header {
+  border-bottom: #999999 1px solid;
+  margin-bottom: 10px;
+}
+
+.profile .user-about .about-block .about-block-header p {
+  display: inline;
+  margin-right: 10px;
+}
