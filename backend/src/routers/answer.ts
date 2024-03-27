@@ -11,4 +11,8 @@ router.post('/create', AuthAccess(), validateRequest({
   body: AnswerCreateDTO,
 }), controller.create.bind(controller));
 
+router.patch('/:answerId/update', AuthAccess(), validateRequest({
+  body: AnswerCreateDTO,
+}), controller.create.bind(controller));
+
 export { router as answer };
