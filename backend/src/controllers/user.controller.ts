@@ -10,12 +10,17 @@ import { UserGetAnswersResponse } from '../responses/user.getAnswers.response';
 import { UserGetQuestionsDTO } from '../dtos/user.getQuestions.dto';
 import { UserGetQuestionResponse } from '../responses/user.getQuestion.response';
 import { UserGetProfileResponse } from '../responses/user.getProfile.response';
+import { UserGetResponse } from '../responses/user.get.response';
 
 export class UserController {
   constructor(
     private userService = new UserService(),
     private userMapper = new UserMapper(),
-  ) {
+  ) {}
+
+  async get ({ params }: AuthRequest, res: Response<UserGetResponse>) {
+    const user = await this.userService.get(params.userId);
+    res.send(this.userMapper.get(user));
   }
 
   async update({ params, body }: AuthRequest & Body<UserUpdateDto>, res: Response<UserUpdateResponse>) {

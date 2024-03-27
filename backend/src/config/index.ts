@@ -25,7 +25,7 @@ export default {
     },
   }),
   accessTokenConfig: {
-    httpOnly: true,
+    httpOnly: false,
     sameSite: 'strict',
     maxAge: 15 * 60 * 1000,
   } as CookieOptions,

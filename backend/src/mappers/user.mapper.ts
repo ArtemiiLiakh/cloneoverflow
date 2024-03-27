@@ -5,8 +5,22 @@ import { DbAnswer } from '../types/database/DbAnswer';
 import { DbQuestion } from '../types/database/DbQuestion';
 import { MappedUserGetQuestionResponse } from '../responses/user.getQuestion.response';
 import { UserGetProfileResponse } from '../responses/user.getProfile.response';
+import { UserGetResponse } from '../responses/user.get.response';
 
 export class UserMapper {
+  get(user: DbUser): UserGetResponse {
+    return {
+      id: user.id,
+      name: user.userProfile.name,
+      email: user.email,
+      username: user.userProfile.username,
+      reputation: user.userProfile.reputation,
+      about: user.userProfile.about ?? '',
+      status: user.userProfile.status,
+      createdAt: user.userProfile.createdAt,
+    };
+  }
+
   update({id, userProfile}: DbUser): UserUpdateResponse {
     return {
       id,
@@ -87,7 +101,7 @@ export class UserMapper {
       text: question.text,
       rate: question.rate,
       status: question.status,
-      tags: question.tags,
+      tags: question.tags.map(tag => tag.name),
       answersAmount: question.answers.length,
       createdAt: question.createdAt,
       updatedAt: question.updatedAt,

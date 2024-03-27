@@ -9,6 +9,11 @@ import { UserGetQuestionsDTO } from '../dtos/user.getQuestions.dto';
 const router = express.Router();
 const controller = new UserController();
 
+router.get('/:userId/get', 
+  AuthAccess(), 
+  controller.get.bind(controller)
+);
+
 router.patch('/:userId/update', 
   AuthAccess(), 
   validateRequest({

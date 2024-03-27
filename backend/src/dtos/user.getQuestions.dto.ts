@@ -19,10 +19,6 @@ export class UserGetQuestionsDTO {
     tags?: string[];
   
   @IsOptional()
-  @IsNumber({}, validationMessage('MinRate must be a number'))
-    minRate?: number;
-  
-  @IsOptional()
   @IsEnum(UserGQSortBy, validationMessage('SortBy must be a valid enum value: date, rate, answers'))
     sortBy?: UserGQSortBy;
   

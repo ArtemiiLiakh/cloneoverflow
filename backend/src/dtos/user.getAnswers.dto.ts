@@ -23,4 +23,7 @@ export class UserGetAnswersDTO {
   @Type(() => PaginationDTO)
   @ValidateNested()
     pagination?: PaginationDTO;
+
+  @IsOptional()
+    questionTitle?: string;
 }

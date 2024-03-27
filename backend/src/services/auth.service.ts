@@ -33,7 +33,7 @@ export class AuthService {
     };
   }
 
-  async signup ({ email, password, name, username }: AuthSignupDTO) {
+  async signup ({ email, password, name, username, about }: AuthSignupDTO) {
     const userExists = await this.userRepository.find({
       OR: [
         { email },
@@ -57,6 +57,7 @@ export class AuthService {
         create: {
           name,
           username,
+          about,
         },
       },
     });

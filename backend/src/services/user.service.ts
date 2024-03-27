@@ -20,32 +20,40 @@ export class UserService {
     private questionRepository = new QuestionRepository(),
   ) {}
 
-  async update(userId: string, {name, username, about, reputation, status}: UserUpdateDto) {
+  async get(userId: string) {
     const user = await this.userRepository.findById(userId);
     if (!user) {
       throw new NoEntityWithIdException('User');
     }
-    const userExists = await this.userRepository.find({
-      userProfile: {
-        username: username,
-      }
-    })
-    if (userExists.userProfile?.userId !== userId) {
-      throw new BadBodyException("Username already exists");
+    return user;
+  }
+
+  async update(userId: string, {name, username, about}: UserUpdateDto) {
+    const user = await this.userRepository.findById(userId);
+    if (!user) {
+      throw new NoEntityWithIdException('User');
     }
 
-    await this.userRepository.updateById(userId, {
+    if (username) {
+      const userExists = await this.userRepository.find({
+        userProfile: {
+          username,
+        }
+      })
+      if (userExists && userExists.id !== userId) {
+        throw new BadBodyException("Username already exists");
+      }
+    }
+
+    return await this.userRepository.updateById(userId, {
       userProfile: {
         update: {
-          name: name,
-          username: username,
-          about: about,
-          reputation: reputation,
-          status: status,
+          name,
+          username,
+          about,
         }
       }
-    })
-    return await this.userRepository.findById(userId);
+    });
   }
 
   async getProfile(userId: string) {
@@ -94,10 +102,16 @@ export class UserService {
     return user;
   }
 
-  getAnswers(userId: string, {sortBy, orderBy, pagination}: UserGetAnswersDTO) {
+  getAnswers(userId: string, {sortBy, orderBy, questionTitle, pagination}: UserGetAnswersDTO) {
     return DbUtils.paginate<Prisma.AnswerFindManyArgs, DbAnswer>(this.answerRepository, {
       where: {
         userId,
+        question: {
+          title: {
+            contains: questionTitle,
+            mode: 'insensitive',
+          },
+        },
       },
       orderBy: this.getAnswersSortBy(sortBy, orderBy),
     }, pagination ?? {});
@@ -121,15 +135,13 @@ export class UserService {
     return {};
   }
 
-  getQuestions (userId: string, {sortBy, orderBy, minRate, search, tags, pagination}: UserGetQuestionsDTO) {
+  getQuestions (userId: string, {sortBy, orderBy, search, tags, pagination}: UserGetQuestionsDTO) {
     return DbUtils.paginate<Prisma.QuestionFindManyArgs, DbQuestion>(this.questionRepository, {
       where: {
         userId,
-        rate: {
-          gte: minRate,
-        },
         title: {
           contains: search,
+          mode: 'insensitive',
         },
         tags: {
           some: {

@@ -7,7 +7,7 @@ export class MappedUserGetQuestionResponse {
   title: string;
   text: string;
   rate: number;
-  tags: Tag[];
+  tags: string[];
   createdAt: Date;
   updatedAt: Date;
   status: QuestionStatus;
