@@ -2,7 +2,7 @@ import { IsEnum, IsOptional, ValidateNested } from 'class-validator';
 import { OrderBy } from '../types/OrderBy';
 import { Type } from 'class-transformer';
 import { PaginationDTO } from './pagination.dto';
-import { validationMessage } from '../utils/functionUtils';
+import { validationMessage } from '../utils/validationUtils';
 
 export enum UserGASortBy {
   RATE = 'rate',

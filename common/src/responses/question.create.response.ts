@@ -1,4 +1,4 @@
-import { QuestionStatus } from "@prisma/client";
+import { QuestionStatus } from '../types/QuestionStatus';
 
 export class QuestionCreateResponse {
   id: string;

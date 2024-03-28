@@ -1,16 +1,17 @@
 import { UserService } from "../services/user.service";
 import { UserMapper } from "../mappers/user.mapper";
 import { AuthRequest, Body, Query } from "../types/Requests";
-import { UserUpdateDto } from "../dtos/user.update.dto";
-import { UserUpdateResponse } from "../responses/user.update.response";
 import { Response } from "express";
-import { UserGetAnswersDTO } from '../dtos/user.getAnswers.dto';
-import { PaginatedData } from '../types/PaginatedData';
-import { UserGetAnswersResponse } from '../responses/user.getAnswers.response';
-import { UserGetQuestionsDTO } from '../dtos/user.getQuestions.dto';
-import { UserGetQuestionResponse } from '../responses/user.getQuestion.response';
-import { UserGetProfileResponse } from '../responses/user.getProfile.response';
-import { UserGetResponse } from '../responses/user.get.response';
+import { 
+  UserGetResponse, 
+  UserUpdateResponse, 
+  UserGetProfileResponse, 
+  UserGetAnswersDTO, 
+  UserGetAnswersResponse, 
+  UserGetQuestionsDTO, 
+  UserGetQuestionResponse, 
+  UserUpdateDTO, 
+} from '@clone-overflow/common';
 
 export class UserController {
   constructor(
@@ -23,7 +24,7 @@ export class UserController {
     res.send(this.userMapper.get(user));
   }
 
-  async update({ params, body }: AuthRequest & Body<UserUpdateDto>, res: Response<UserUpdateResponse>) {
+  async update({ params, body }: AuthRequest & Body<UserUpdateDTO>, res: Response<UserUpdateResponse>) {
     const user = await this.userService.update(params.userId, body);
     res.send(this.userMapper.update(user));
   }

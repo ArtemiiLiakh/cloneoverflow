@@ -2,8 +2,7 @@ import express from "express";
 import { QuestionController } from "../controllers/question.controller";
 import { AuthAccess } from "../middlewares/authAccess";
 import { validateRequest } from "../middlewares/validation";
-import { QuestionCreateDTO } from "../dtos/question.create.dto";
-import { QuestionUpdateDTO } from "../dtos/question.update.dto";
+import { QuestionCreateDTO, QuestionUpdateDTO } from '@clone-overflow/common';
 
 const router = express.Router();
 const controller = new QuestionController();

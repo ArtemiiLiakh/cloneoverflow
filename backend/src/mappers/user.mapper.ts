@@ -1,11 +1,15 @@
 import { DbUserGetProfile, DbUser } from "../types/database/DbUser";
-import { UserUpdateResponse } from "../responses/user.update.response";
-import { MappedUserGetAnswerResponse, UserGetAnswersResponse } from '../responses/user.getAnswers.response';
 import { DbAnswer } from '../types/database/DbAnswer';
 import { DbQuestion } from '../types/database/DbQuestion';
-import { MappedUserGetQuestionResponse } from '../responses/user.getQuestion.response';
-import { UserGetProfileResponse } from '../responses/user.getProfile.response';
-import { UserGetResponse } from '../responses/user.get.response';
+import { 
+  UserGetResponse, 
+  UserUpdateResponse, 
+  UserGetProfileResponse, 
+  MappedUserGetAnswerResponse, 
+  MappedUserGetQuestionResponse, 
+  UserStatus,
+  QuestionStatus
+} from '@clone-overflow/common';
 
 export class UserMapper {
   get(user: DbUser): UserGetResponse {
@@ -16,7 +20,7 @@ export class UserMapper {
       username: user.userProfile.username,
       reputation: user.userProfile.reputation,
       about: user.userProfile.about ?? '',
-      status: user.userProfile.status,
+      status: user.userProfile.status as UserStatus,
       createdAt: user.userProfile.createdAt,
     };
   }
@@ -28,7 +32,7 @@ export class UserMapper {
       username: userProfile.username,
       about: userProfile.about,
       reputation: userProfile.reputation,
-      status: userProfile.status,
+      status: userProfile.status as UserStatus,
       createdAt: userProfile.createdAt,
       updatedAt: userProfile.updatedAt,
     };
@@ -56,7 +60,7 @@ export class UserMapper {
         id: questions[0].id,
         title: questions[0].title,
         rate: questions[0].rate,
-        status: questions[0].status,
+        status: questions[0].status as QuestionStatus,
         tags: questions[0].tags.map(tag => tag.name),
         answersAmount: questions[0]._count.answers,
         createdAt: questions[0].createdAt,

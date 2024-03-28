@@ -1,5 +1,5 @@
+import { Exception } from '@clone-overflow/common';
 import { NextFunction, Request, Response } from 'express';
-import { Exception } from '../utils/exceptions/Exception';
 
 export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
   let message = 'Internal server error';

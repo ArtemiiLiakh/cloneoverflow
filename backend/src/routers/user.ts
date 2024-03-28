@@ -2,9 +2,7 @@ import express from "express";
 import { UserController } from "../controllers/user.controller";
 import { AuthAccess } from "../middlewares/authAccess";
 import { validateRequest } from "../middlewares/validation";
-import { UserUpdateDto } from "../dtos/user.update.dto";
-import { UserGetAnswersDTO } from '../dtos/user.getAnswers.dto';
-import { UserGetQuestionsDTO } from '../dtos/user.getQuestions.dto';
+import { UserGetAnswersDTO, UserGetQuestionsDTO, UserUpdateDTO } from '@clone-overflow/common';
 
 const router = express.Router();
 const controller = new UserController();
@@ -17,7 +15,7 @@ router.get('/:userId/get',
 router.patch('/:userId/update', 
   AuthAccess(), 
   validateRequest({
-    body: UserUpdateDto,
+    body: UserUpdateDTO,
   }), 
   controller.update.bind(controller)
 );

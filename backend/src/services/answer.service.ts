@@ -1,9 +1,6 @@
-import { AnswerCreateDTO } from '../dtos/answer.create.dto';
+import { AnswerCreateDTO, BadBodyException, AnswerUpdateDTO, ForbiddenException } from '@clone-overflow/common';
 import { AnswerRepository } from '../repositories/answer.repository';
 import { QuestionRepository } from '../repositories/question.repository';
-import { BadBodyException } from '../utils/exceptions/BadBodyException';
-import { AnswerUpdateDTO } from "../dtos/answer.update.dto";
-import { ForbiddenException } from "../utils/exceptions/ForbiddenExceptioin";
 
 export class AnswerService {
   constructor (

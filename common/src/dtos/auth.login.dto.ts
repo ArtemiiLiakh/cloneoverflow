@@ -1,5 +1,5 @@
 import { IsEmail, IsNotEmpty } from 'class-validator';
-import { validationMessage } from '../utils/functionUtils';
+import { validationMessage } from '../utils/validationUtils';
 
 export class AuthLoginDTO {
   @IsNotEmpty(validationMessage('Email is required'))

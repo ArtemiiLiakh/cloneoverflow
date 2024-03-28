@@ -1,5 +1,5 @@
 import { IsArray, IsNotEmpty } from "class-validator";
-import { validationMessage } from "../utils/functionUtils";
+import { validationMessage } from "../utils/validationUtils";
 
 export class QuestionCreateDTO {
   @IsNotEmpty(validationMessage('Title is required'))

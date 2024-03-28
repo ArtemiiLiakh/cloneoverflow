@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 import { IsOptional, IsNumber } from 'class-validator';
-import { validationMessage } from '../utils/functionUtils';
+import { validationMessage } from '../utils/validationUtils';
 
 export class PaginationDTO {
   @IsOptional()

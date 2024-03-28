@@ -1,5 +1,5 @@
 import { ValidationError } from 'class-validator';
-import { SerializedError } from '../../types/SerializedError';
+import { SerializedError } from '../types/SerializedError';
 import { Exception } from './Exception';
 
 export class ValidationException extends Exception {

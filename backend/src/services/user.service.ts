@@ -1,17 +1,21 @@
-import { UserRepository } from "../repositories/user.repository";
-import { UserUpdateDto } from "../dtos/user.update.dto";
-import { BadBodyException } from "../utils/exceptions/BadBodyException";
-import { NoEntityWithIdException } from "../utils/exceptions/NoEntityWithIdException";
-import { UserGASortBy, UserGetAnswersDTO } from '../dtos/user.getAnswers.dto';
-import { AnswerRepository } from '../repositories/answer.repository';
 import { Prisma } from '@prisma/client';
-import { OrderBy } from '../types/OrderBy';
+import { UserRepository } from "../repositories/user.repository";
+import { AnswerRepository } from '../repositories/answer.repository';
 import { DbUtils } from '../utils/DatabaseUtils';
 import { DbAnswer } from '../types/database/DbAnswer';
-import { UserGQSortBy, UserGetQuestionsDTO } from '../dtos/user.getQuestions.dto';
 import { DbQuestion } from '../types/database/DbQuestion';
 import { QuestionRepository } from '../repositories/question.repository';
 import { DbUserGetProfile } from '../types/database/DbUser';
+import { 
+  NoEntityWithIdException, 
+  BadBodyException, 
+  UserGetAnswersDTO, 
+  UserGASortBy, 
+  OrderBy, 
+  UserGetQuestionsDTO, 
+  UserGQSortBy, 
+  UserUpdateDTO
+} from '@clone-overflow/common';
 
 export class UserService {
   constructor(
@@ -28,7 +32,7 @@ export class UserService {
     return user;
   }
 
-  async update(userId: string, {name, username, about}: UserUpdateDto) {
+  async update(userId: string, {name, username, about}: UserUpdateDTO) {
     const user = await this.userRepository.findById(userId);
     if (!user) {
       throw new NoEntityWithIdException('User');

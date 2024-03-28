@@ -1,10 +1,8 @@
 import express from 'express';
 import { AuthController } from '../controllers/auth.controller';
 import { validateRequest } from '../middlewares/validation';
-import { AuthLoginDTO } from '../dtos/auth.login.dto';
-import { AuthSignupDTO } from '../dtos/auth.signup.dto';
 import { AuthAccess } from '../middlewares/authAccess';
-import { AuthChangePasswordDTO } from '../dtos/auth.changePassword.dto';
+import { AuthLoginDTO, AuthSignupDTO, AuthChangePasswordDTO } from '@clone-overflow/common';
 
 const router = express.Router();
 const controller = new AuthController();

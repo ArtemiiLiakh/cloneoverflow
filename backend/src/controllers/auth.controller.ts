@@ -1,14 +1,15 @@
+import {
+  AuthChangePasswordDTO,
+  AuthLoginDTO,
+  AuthSignupDTO,
+  GetMeResponse,
+  OkResponse
+} from '@clone-overflow/common';
 import { Request, Response } from 'express';
-import { AuthLoginDTO } from '../dtos/auth.login.dto';
-import { AuthSignupDTO } from '../dtos/auth.signup.dto';
+import config from '../config';
+import { AuthMapper } from '../mappers/auth.mapper';
 import { AuthService } from '../services/auth.service';
 import { AuthRequest, Body } from '../types/Requests';
-import { AccessTokenResponse } from '../responses/accessToken.response';
-import { AuthChangePasswordDTO } from '../dtos/auth.changePassword.dto';
-import { AuthMapper } from '../mappers/auth.mapper';
-import { GetMeResponse } from '../responses/auth.getMe.response';
-import config from '../config';
-import { OkResponse } from '../responses/ok.response';
 
 export class AuthController {
   constructor (

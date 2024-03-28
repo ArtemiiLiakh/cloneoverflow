@@ -1,4 +1,4 @@
-import { UserStatus } from '@prisma/client';
+import { UserStatus } from '../types/UserStatus';
 
 export class UserGetResponse {
   id: string;

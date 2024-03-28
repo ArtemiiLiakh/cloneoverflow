@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express';
-import { Exception } from '../utils/exceptions/Exception';
 import { Prisma } from '@prisma/client';
 
 export const prismaErrorHandler = (err: Prisma.PrismaClientKnownRequestError, req: Request, res: Response, next: NextFunction) => {

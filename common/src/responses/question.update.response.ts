@@ -1,4 +1,5 @@
-import { QuestionStatus, Tag } from "@prisma/client";
+import { QuestionStatus } from '../types/QuestionStatus';
+import { Tag } from '../types/Tag';
 
 export class QuestionUpdateResponse{
   id: string;
