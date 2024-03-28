@@ -1,15 +1,13 @@
 import React, { FormEvent, useEffect } from 'react';
 import { useState } from 'react';
-import { UserGetResponse } from '../../../../api/response/user.get.response';
 import { Button, Form } from 'react-bootstrap';
 import MDEditor from '@uiw/react-md-editor';
 import './user-settings-tab.css';
 import { UserService } from '../../../../api/services/user.service';
-import { UserUpdateDto } from '../../../../api/dtos/user.update.dto';
 import { AxiosError } from 'axios';
-import { ServerException } from '../../../../api/types/ServerException';
-import { AuthService } from '../../../../api/services/auth.service';
 import { formatArray } from '../../../../utils/stringUtils';
+import { ExceptionResponse, UserGetResponse, UserUpdateDTO } from '@clone-overflow/common';
+import { AuthService } from '../../../../api/services/auth.service';
 
 interface UserSettingsTabProps {
   user: UserGetResponse;
@@ -22,8 +20,8 @@ interface ChangePasswordData {
 }
 
 const UserSettingsTab = ({ user }: UserSettingsTabProps) => {
-  const [oldUser, setOldUser] = useState<UserUpdateDto>(user);
-  const [newUser, setNewUser] = useState<UserUpdateDto>({});
+  const [oldUser, setOldUser] = useState<UserUpdateDTO>(user);
+  const [newUser, setNewUser] = useState<UserUpdateDTO>({});
   const [changePasswordData, setChangePasswordData] = useState<ChangePasswordData>({
     oldPassword: '',
     newPassword: '',
@@ -43,7 +41,7 @@ const UserSettingsTab = ({ user }: UserSettingsTabProps) => {
 
   const onChangeSettings = async (event: FormEvent) => {
     event.preventDefault();
-    const res = await UserService.update(user.id, newUser).catch((error: AxiosError<ServerException>) => {
+    const res = await UserService.update(user.id, newUser).catch((error: AxiosError<ExceptionResponse>) => {
       setSettingsErrors(formatArray(error.response?.data.error) ?? ['Server error']);
     });
     if (res) {
@@ -62,7 +60,7 @@ const UserSettingsTab = ({ user }: UserSettingsTabProps) => {
     const res = await AuthService.changePassword({
       oldPassword: changePasswordData.oldPassword,
       newPassword: changePasswordData.newPassword,
-    }).catch((error: AxiosError<ServerException>) => {
+    }).catch((error: AxiosError<ExceptionResponse>) => {
       setPasswordErrors(formatArray(error.response?.data.error) ?? ['Server error']);
     });
 

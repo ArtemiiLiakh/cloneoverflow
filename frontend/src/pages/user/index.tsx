@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import './profile.css';
-import Username from '../../components/username/username';
+import { UserGetResponse, UserStatus } from '@clone-overflow/common';
+import { useEffect, useState } from 'react';
 import { Tab, Tabs } from 'react-bootstrap';
-import { UserGetResponse } from '../../api/response/user.get.response';
+import { useParams } from 'react-router-dom';
 import { UserService } from '../../api/services/user.service';
-import { UserStatus } from '../../api/types/UserStatus';
-import { GetPassedDate } from '../../utils/stringUtils';
-import UserAboutTab from './tabs/user-about-tab';
-import UserQuestionsTab from './tabs/user-questions-tab';
-import UserAnswersTab from './tabs/user-answers-tab';
-import UserSettingsTab from './tabs/user-settings-tab';
+import Username from '../../components/username/username';
 import { useAuth } from '../../hooks/useAuth';
+import { GetPassedDate } from '../../utils/stringUtils';
+import './profile.css';
+import UserAboutTab from './tabs/user-about-tab';
+import UserAnswersTab from './tabs/user-answers-tab';
+import UserQuestionsTab from './tabs/user-questions-tab';
+import UserSettingsTab from './tabs/user-settings-tab';
 
 
 const UserProfile = () => {
@@ -24,7 +23,7 @@ const UserProfile = () => {
     username: '',
     reputation: 0,
     about: '',
-    status: UserStatus.ACTIVE,
+    status: UserStatus.USER,
     createdAt: new Date(),
   });
 

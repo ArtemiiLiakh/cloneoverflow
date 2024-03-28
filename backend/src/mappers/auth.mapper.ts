@@ -7,7 +7,7 @@ export class AuthMapper {
       id,
       name: userProfile.name,
       username: userProfile.username,
-      reptutation: userProfile.reputation,
+      reputation: userProfile.reputation,
       status: userProfile.status as UserStatus,
     };
   }

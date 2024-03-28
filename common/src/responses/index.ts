@@ -1,4 +1,5 @@
 export * from './accessToken.response';
+export * from './exception.response';
 
 export * from './answer.create.response';
 export * from './answer.update.response';

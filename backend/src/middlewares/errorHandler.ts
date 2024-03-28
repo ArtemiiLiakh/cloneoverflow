@@ -1,7 +1,12 @@
-import { Exception } from '@clone-overflow/common';
+import { Exception, ExceptionResponse } from '@clone-overflow/common';
 import { NextFunction, Request, Response } from 'express';
 
-export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
+export const errorHandler = (
+  err: Error, 
+  req: Request, 
+  res: Response<ExceptionResponse>, 
+  next: NextFunction
+) => {
   let message = 'Internal server error';
   let statusCode = 500;
 
@@ -16,7 +21,7 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
   }
 
   res.status(statusCode).send({
-    type: err.constructor.name,
+    name: err.constructor.name,
     error: message,
   });
 }

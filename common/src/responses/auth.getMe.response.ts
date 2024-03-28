@@ -4,6 +4,6 @@ export class GetMeResponse {
   id: string;
   name: string;
   username: string;
-  reptutation: number;
+  reputation: number;
   status: UserStatus;
 }

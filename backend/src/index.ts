@@ -3,7 +3,6 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
 import 'express-async-errors';
-import 'reflect-metadata';
 import { errorHandler } from './middlewares/errorHandler';
 import { prismaErrorHandler } from './middlewares/prismaErrorHandler';
 import { auth } from './routers/auth';

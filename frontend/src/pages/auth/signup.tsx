@@ -1,13 +1,13 @@
+import MDEditor, { codeEdit, codePreview } from '@uiw/react-md-editor';
 import { AxiosError } from 'axios';
 import { FormEvent, useState } from 'react';
 import { Form } from 'react-bootstrap';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { ServerException } from '../../api/types/ServerException';
-import { SignupData } from './SignupData';
 import { useAuth } from '../../hooks/useAuth';
-import { validateData } from '../../utils/validateData';
-import MDEditor, { codeEdit, codePreview } from '@uiw/react-md-editor';
 import { formatArray } from '../../utils/stringUtils';
+import { validateData } from '../../utils/validateData';
+import { SignupData } from './SignupData';
+import { ExceptionResponse } from '@clone-overflow/common';
 
 const Signup = () => {
   const { singup } = useAuth();
@@ -32,7 +32,7 @@ const Signup = () => {
       email: data.email,
       password: data.password,
       about,
-    }).catch((err: AxiosError<ServerException>) => {
+    }).catch((err: AxiosError<ExceptionResponse>) => {
       setErrMsg(formatArray(err.response?.data.error) ?? ['Server error']);
     });
 

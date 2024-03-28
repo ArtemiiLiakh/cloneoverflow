@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { MappedUserGetQuestionResponse, UserGetQuestionResponse } from '../../../../api/response/user.getQuestion.response';
-import { Pagination } from '../../../../api/types/Pagination';
 import { UserService } from '../../../../api/services/user.service';
 import { Form, Table } from 'react-bootstrap';
 import { GetPassedDate } from '../../../../utils/stringUtils';
 import Taglist from '../../../../components/taglist/taglist';
 import './user-questions-tab.css';
-import { UserGQSortBy, UserGetQuestionsDTO } from '../../../../api/dtos/user.getQuestion.dto';
+import { 
+  MappedUserGetQuestionResponse, 
+  UserGetQuestionsDTO, 
+  UserGQSortBy, 
+  UserGetQuestionResponse, 
+  OrderBy
+} from '@clone-overflow/common';
 
 interface UserQuestionsTabProps {
   userId?: string;   
@@ -16,7 +20,7 @@ const UserQuestionsTab = ({ userId }: UserQuestionsTabProps) => {
   const [questions, setQuestions] = useState<MappedUserGetQuestionResponse[]>();
   const [request, setRequest] = useState<UserGetQuestionsDTO>({
     sortBy: UserGQSortBy.RATE,
-    orderBy: 'desc',
+    orderBy: OrderBy.DESC,
     pagination: {
       page: 0,
       pageSize: 10,
@@ -80,10 +84,10 @@ const UserQuestionsTab = ({ userId }: UserQuestionsTabProps) => {
           <button id='orderBy' className='orderBy' onClick={() => {
             handleRequest({
               ...request,
-              orderBy: request.orderBy === 'asc' ? 'desc' : 'asc',
+              orderBy: request.orderBy === OrderBy.ASC ? OrderBy.DESC : OrderBy.ASC,
             });
           }}>
-            {request.orderBy === 'asc' ? '↑' : '↓'}
+            {request.orderBy === OrderBy.ASC ? '↑' : '↓'}
           </button>
         </div>
         <div className="filter-block">

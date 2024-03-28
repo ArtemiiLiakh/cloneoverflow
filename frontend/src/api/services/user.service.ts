@@ -1,19 +1,21 @@
-import { UserGetProfileResponse } from '../response/user.getProfile.response';
-import urls from '../../utils/urls';
+import {
+  UserGetAnswersDTO,
+  UserGetAnswersResponse,
+  UserGetProfileResponse,
+  UserGetQuestionResponse,
+  UserGetQuestionsDTO,
+  UserGetResponse,
+  UserUpdateDTO
+} from '@clone-overflow/common';
 import api from '..';
-import { UserGetResponse } from '../response/user.get.response';
-import { UserGetQuestionsDTO } from '../dtos/user.getQuestion.dto';
-import { UserGetAnswersDTO } from '../dtos/user.getAnswer.dto';
-import { UserUpdateDto } from '../dtos/user.update.dto';
-import { UserGetAnswersResponse } from '../response/user.getAnswers.response';
-import { UserGetQuestionResponse } from '../response/user.getQuestion.response';
+import urls from '../../utils/urls';
 
 export class UserService {
   static get(userId: string): Promise<UserGetResponse> {
     return api.get(urls.get(userId));
   }
 
-  static update(userId: string, data: UserUpdateDto): Promise<UserGetResponse> {
+  static update(userId: string, data: UserUpdateDTO): Promise<UserGetResponse> {
     return api.patch(urls.update(userId), data); 
   }
 

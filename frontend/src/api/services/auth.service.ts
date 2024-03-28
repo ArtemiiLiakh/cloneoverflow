@@ -1,40 +1,42 @@
-import { AuthLoginDTO } from '../dtos/auth.login.dto';
-import { AuthSignupDTO } from '../dtos/auth.signup.dto';
-import { MePayload } from '../types/MePayload';
-import urls from '../../utils/urls';
-import { OkMessage } from '../response/ok.message';
+import {
+  AuthChangePasswordDTO,
+  AuthLoginDTO,
+  AuthSignupDTO,
+  GetMeResponse,
+  OkResponse
+} from '@clone-overflow/common';
 import api from '..';
-import { AuthChangePasswordDTO } from '../dtos/auth.changePassword.dto';
+import urls from '../../utils/urls';
 
 export class AuthService {
   static async login(body: AuthLoginDTO) {
-    return api.post<AuthLoginDTO, MePayload>(
+    return api.post<AuthLoginDTO, GetMeResponse>(
       urls.login, 
       body,
     );
   }
 
-  static async signup(body: AuthSignupDTO): Promise<MePayload> {
-    return api.post<AuthLoginDTO, MePayload>(
+  static async signup(body: AuthSignupDTO): Promise<GetMeResponse> {
+    return api.post<AuthLoginDTO, GetMeResponse>(
       urls.signup, 
       body,
     );
   }
 
   static async getMe() {
-    return api.get<AuthLoginDTO, MePayload>(
+    return api.get<AuthLoginDTO, GetMeResponse>(
       urls.me,
     );
   }
 
-  static async refreshToken(): Promise<OkMessage> {
-    return api.post<AuthLoginDTO, OkMessage>(
+  static async refreshToken(): Promise<OkResponse> {
+    return api.post<AuthLoginDTO, OkResponse>(
       urls.refreshToken, {},
     );
   }
 
-  static async changePassword(body: AuthChangePasswordDTO): Promise<OkMessage> {
-    return api.patch<AuthChangePasswordDTO, OkMessage>(
+  static async changePassword(body: AuthChangePasswordDTO): Promise<OkResponse> {
+    return api.patch<AuthChangePasswordDTO, OkResponse>(
       urls.changePassword, 
       body,
     );

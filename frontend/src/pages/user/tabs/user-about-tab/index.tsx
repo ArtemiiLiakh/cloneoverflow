@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import './user-about-tab.css';
 import { NavLink } from 'react-router-dom';
 import Taglist from '../../../../components/taglist/taglist';
-import { UserGetProfileResponse } from '../../../../api/response/user.getProfile.response';
 import { UserService } from '../../../../api/services/user.service';
 import { GetPassedDate, ShortText } from '../../../../utils/stringUtils';
 import MDEditor from '@uiw/react-md-editor';
+import { UserGetProfileResponse } from '@clone-overflow/common';
 
 interface UserAboutTabProps {
   userId?: string;

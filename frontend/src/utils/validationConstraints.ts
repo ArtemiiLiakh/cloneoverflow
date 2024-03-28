@@ -1,4 +1,10 @@
-import { ValidationOptions, registerDecorator, ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
+import { 
+  ValidationOptions, 
+  registerDecorator, 
+  ValidationArguments, 
+  ValidatorConstraint, 
+  ValidatorConstraintInterface 
+} from 'class-validator';
 
 export function ValidateByFunction (property: (value: any, o: any) => boolean, validationOptions?: ValidationOptions) {
   return function (object: Object, propertyName: string) {

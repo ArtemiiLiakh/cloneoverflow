@@ -2,12 +2,12 @@ import { AxiosError } from 'axios';
 import { FormEvent, useState } from 'react';
 import { Form } from 'react-bootstrap';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { ServerException } from '../../api/types/ServerException';
+import { useAuth } from '../../hooks/useAuth';
+import { formatArray } from '../../utils/stringUtils';
+import { validateData } from '../../utils/validateData';
 import { LoginData } from './LoginData';
 import './auth.css';
-import { useAuth } from '../../hooks/useAuth';
-import { validateData } from '../../utils/validateData';
-import { formatArray } from '../../utils/stringUtils';
+import { ExceptionResponse } from '@clone-overflow/common';
 
 const Login = () => {
   const { login } = useAuth();
@@ -25,7 +25,7 @@ const Login = () => {
       return;
     }
 
-    const tokens = await login(data).catch((error: AxiosError<ServerException>) => {
+    const tokens = await login(data).catch((error: AxiosError<ExceptionResponse>) => {
       setErrMsg(formatArray(error.response?.data.error) ?? ['Server error']);
     });
 

@@ -1,8 +1,7 @@
 import { useContext } from 'react';
 import { AuthContext } from '../contexts/authContext';
 import { AuthService } from '../api/services/auth.service';
-import { AuthLoginDTO } from '../api/dtos/auth.login.dto';
-import { AuthSignupDTO } from '../api/dtos/auth.signup.dto';
+import { AuthLoginDTO, AuthSignupDTO } from '@clone-overflow/common';
 
 export const useAuth = () => {
   const { user, loading, setUser } = useContext(AuthContext);

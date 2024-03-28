@@ -1,11 +1,10 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { Form, Table } from 'react-bootstrap';
-import { UserGASortBy, UserGetAnswersDTO } from '../../../../api/dtos/user.getAnswer.dto';
-import { UserGetAnswersResponse } from '../../../../api/response/user.getAnswers.response';
 import { UserService } from '../../../../api/services/user.service';
 import { GetPassedDate } from '../../../../utils/stringUtils';
 import './user-answers-tab.css';
+import { OrderBy, UserGASortBy, UserGetAnswersDTO, UserGetAnswersResponse } from '@clone-overflow/common';
 
 interface UserAnswersTabProps {
   userId?: string;   
@@ -14,7 +13,7 @@ interface UserAnswersTabProps {
 const UserAnswersTab = ({ userId }: UserAnswersTabProps) => {
   const [request, setRequest] = useState<UserGetAnswersDTO>({
     sortBy: UserGASortBy.RATE,
-    orderBy: 'desc',
+    orderBy: OrderBy.DESC,
     pagination: {
       page: 0,
       pageSize: 10,
@@ -62,10 +61,10 @@ const UserAnswersTab = ({ userId }: UserAnswersTabProps) => {
           <button id='orderBy' className='orderBy' onClick={() => {
             handleRequest({
               ...request,
-              orderBy: request.orderBy === 'asc' ? 'desc' : 'asc',
+              orderBy: request.orderBy === OrderBy.ASC ? OrderBy.DESC : OrderBy.ASC,
             });
           }}>
-            {request.orderBy === 'asc' ? '↑' : '↓'}
+            {request.orderBy === OrderBy.ASC ? '↑' : '↓'}
           </button>
         </div>
         <div className="filter-block">

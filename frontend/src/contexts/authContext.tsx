@@ -1,11 +1,10 @@
 import { PropsWithChildren, createContext, useEffect, useState } from 'react';
-import { useCookie } from '../hooks/useCookie';
-import { MePayload } from '../api/types/MePayload';
 import { AuthService } from '../api/services/auth.service';
+import { GetMeResponse } from '@clone-overflow/common';
 
 interface AuthContextProps {
-  user: MePayload | null;
-  setUser(user: MePayload | null): void;
+  user: GetMeResponse | null;
+  setUser(user: GetMeResponse | null): void;
   loading: boolean;
 }
 
@@ -16,7 +15,7 @@ export const AuthContext = createContext<AuthContextProps>({
 });
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
-  const [user, setUser] = useState<MePayload | null>(null);
+  const [user, setUser] = useState<GetMeResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
