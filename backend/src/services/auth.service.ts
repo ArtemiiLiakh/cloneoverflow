@@ -1,17 +1,19 @@
 import config from '../config';
-import { AuthLoginDTO } from '../dtos/auth.login.dto';
-import { AuthSignupDTO } from '../dtos/auth.signup.dto';
 import { UserRepository } from '../repositories/user.repository';
-import { AlreadyRegisteredException } from '../utils/exceptions/AlreadyRegisteredException';
-import { LoginException } from '../utils/exceptions/LoginExceptioin';
 import { compare, hash } from '../utils/hash';
 import jwt from 'jsonwebtoken';
 import { DbUser } from '../types/database/DbUser';
-import { UnauthorizedException } from '../utils/exceptions/UnauthorizedExceptioin';
-import { ForbiddenException } from '../utils/exceptions/ForbiddenExceptioin';
-import { AuthChangePasswordDTO } from '../dtos/auth.changePassword.dto';
-import { WrongPasswordException } from '../utils/exceptions/WrongPasswordExceptioin';
-import { BadBodyException } from '../utils/exceptions/BadBodyException';
+import { 
+  AuthLoginDTO, 
+  LoginException, 
+  AuthSignupDTO, 
+  BadBodyException, 
+  AlreadyRegisteredException, 
+  UnauthorizedException, 
+  ForbiddenException, 
+  AuthChangePasswordDTO, 
+  WrongPasswordException 
+} from '@clone-overflow/common';
 
 export class AuthService {
   constructor (

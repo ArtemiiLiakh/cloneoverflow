@@ -1,4 +1,5 @@
-import { Question, QuestionStatus, UserStatus } from '@prisma/client';
+import { QuestionStatus } from '../types/QuestionStatus';
+import { UserStatus } from '../types/UserStatus';
 
 class MappedUserBestAnswer {
   id: string;

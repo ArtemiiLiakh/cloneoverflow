@@ -1,12 +1,11 @@
-import { NextFunction, Request, Response } from 'express';
-import { UnauthorizedException } from '../utils/exceptions/UnauthorizedExceptioin';
-import { ForbiddenException } from '../utils/exceptions/ForbiddenExceptioin';
-import { plainToInstance } from 'class-transformer';
-import { TokenPayload } from '../types/TokenPayload';
-import { validateSync } from 'class-validator'
-import jwt from 'jsonwebtoken';
+import { ForbiddenException } from '@clone-overflow/common';
 import { UserStatus } from '@prisma/client';
+import { plainToInstance } from 'class-transformer';
+import { validateSync } from 'class-validator';
+import { NextFunction, Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
 import config from '../config';
+import { TokenPayload } from '../types/TokenPayload';
 
 export const AuthAccess = (status: UserStatus = 'USER') => {
   return async (req: Request, res: Response, next: NextFunction) => {

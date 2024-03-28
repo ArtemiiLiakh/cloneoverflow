@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import { plainToInstance } from 'class-transformer';
-import { AuthLoginDTO } from '../dtos/auth.login.dto'
 import { validate } from 'class-validator';
-import { ValidationException } from '../utils/exceptions/ValidationException';
+import { ValidationException } from '@clone-overflow/common';
 
 interface RequestFields {
   params?: new () => any;

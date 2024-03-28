@@ -1,11 +1,13 @@
+import {
+  AnswerCreateDTO,
+  AnswerCreateResponse,
+  AnswerUpdateDTO,
+  AnswerUpdateResponse
+} from '@clone-overflow/common';
 import { Response } from 'express';
-import { AnswerCreateDTO } from '../dtos/answer.create.dto';
-import { AuthRequest, Body } from '../types/Requests';
-import { AnswerService } from '../services/answer.service';
-import { AnswerCreateResponse } from '../responses/answer.create.response';
 import { AnswerMapper } from '../mappers/answer.mapper';
-import { AnswerUpdateDTO } from "../dtos/answer.update.dto";
-import { AnswerUpdateResponse } from "../responses/answer.update.response";
+import { AnswerService } from '../services/answer.service';
+import { AuthRequest, Body } from '../types/Requests';
 
 export class AnswerController {
   constructor (

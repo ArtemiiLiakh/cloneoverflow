@@ -1,12 +1,13 @@
-import { QuestionService } from "../services/question.service";
-import { QuestionMapper } from "../mappers/question.mapper";
-import { Body } from "../types/Requests";
+import { 
+  QuestionCreateDTO, 
+  QuestionCreateResponse, 
+  QuestionUpdateDTO, 
+  QuestionUpdateResponse 
+} from '@clone-overflow/common';
 import { Response } from "express";
-import { QuestionCreateDTO } from "../dtos/question.create.dto";
-import { QuestionCreateResponse } from "../responses/question.create.response";
-import { AuthRequest } from "../types/Requests";
-import { QuestionUpdateDTO } from "../dtos/question.update.dto";
-import { QuestionUpdateResponse } from "../responses/question.update.response";
+import { QuestionMapper } from "../mappers/question.mapper";
+import { QuestionService } from "../services/question.service";
+import { AuthRequest, Body } from "../types/Requests";
 
 export class QuestionController {
   constructor(

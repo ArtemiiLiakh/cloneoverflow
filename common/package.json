@@ -1,0 +1,26 @@
+{
+  "name": "@clone-overflow/common",
+  "version": "1.0.4",
+  "description": "",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "clean": "del-cli ./dist/*",
+    "build": "npm run clean && tsc",
+    "pub": "npm run build && npm version patch && npm publish"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "del-cli": "^5.1.0",
+    "typescript": "^5.4.3"
+  },
+  "dependencies": {
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1"
+  }
+}

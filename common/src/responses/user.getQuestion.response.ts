@@ -1,4 +1,4 @@
-import { QuestionStatus, Tag } from '@prisma/client';
+import { QuestionStatus } from '../types/QuestionStatus';
 import { PaginationResponse } from './pagination.response';
 
 export class MappedUserGetQuestionResponse {

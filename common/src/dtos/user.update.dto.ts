@@ -1,7 +1,6 @@
-import { UserStatus } from "@prisma/client";
-import { IsEnum, IsNotEmpty, IsNumber, IsOptional } from "class-validator";
+import { IsNotEmpty, IsOptional } from "class-validator";
 
-export class UserUpdateDto {
+export class UserUpdateDTO {
   @IsOptional()
   @IsNotEmpty()
   name?: string;

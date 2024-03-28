@@ -1,6 +1,5 @@
-import { AnswerCreateResponse } from '../responses/answer.create.response';
+import { AnswerCreateResponse, AnswerUpdateResponse } from '@clone-overflow/common';
 import { DbAnswer } from '../types/database/DbAnswer';
-import { AnswerUpdateResponse } from "../responses/answer.update.response";
 
 export class AnswerMapper {
   getAnswer (answer: DbAnswer): AnswerCreateResponse {

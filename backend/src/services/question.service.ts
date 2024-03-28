@@ -1,9 +1,7 @@
+import { QuestionCreateDTO, QuestionUpdateDTO, ForbiddenException } from '@clone-overflow/common';
 import { QuestionRepository } from "../repositories/question.repository";
-import { QuestionCreateDTO } from "../dtos/question.create.dto";
-import { QuestionUpdateDTO } from "../dtos/question.update.dto";
-import { ForbiddenException } from "../utils/exceptions/ForbiddenExceptioin";
 
-export class QuestionService{
+export class QuestionService {
   constructor(
     private questionRepository = new QuestionRepository(),
   ) {}
