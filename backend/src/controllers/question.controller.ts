@@ -1,13 +1,15 @@
-import { 
-  QuestionCreateDTO, 
-  QuestionCreateResponse, 
-  QuestionUpdateDTO, 
-  QuestionUpdateResponse 
+import {
+  QuestionCreateDTO,
+  QuestionCreateResponse,
+  QuestionGetAllDTO,
+  QuestionGetAllResponse,
+  QuestionUpdateDTO,
+  QuestionUpdateResponse,
 } from '@clone-overflow/common';
 import { Response } from "express";
 import { QuestionMapper } from "../mappers/question.mapper";
 import { QuestionService } from "../services/question.service";
-import { AuthRequest, Body } from "../types/Requests";
+import { AuthRequest, Body, Query } from "../types/Requests";
 
 export class QuestionController {
   constructor(
@@ -23,5 +25,13 @@ export class QuestionController {
   async update({ params, body }: AuthRequest & Body<QuestionUpdateDTO>, res: Response<QuestionUpdateResponse>) {
     const question = await this.questionService.update(params.questionId, body._user.userId, body);
     res.send(this.questionMapper.update(question));
+  }
+
+  async getAll({ query }: Query<QuestionGetAllDTO>, res: Response<QuestionGetAllResponse>) {
+    const { data, pagination } = await this.questionService.getAll(query);
+    res.send({
+      questions: this.questionMapper.getAll(data),
+      pagination,
+    });
   }
 }

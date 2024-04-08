@@ -11,6 +11,7 @@ export * from './pagination.response';
 
 export * from './question.create.response';
 export * from './question.update.response';
+export * from './question.getAll.response';
 
 export * from './user.get.response';
 export * from './user.getAnswers.response';
