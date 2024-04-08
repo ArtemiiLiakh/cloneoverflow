@@ -29,6 +29,6 @@ app.use('/api', api);
 app.use(prismaErrorHandler);
 app.use(errorHandler);
 
-app.listen(4000, () => {
-  console.log('Started on http://127.0.0.1:4000');
+app.listen(8000, () => {
+  console.log('Started on http://127.0.0.1:8000');
 });
