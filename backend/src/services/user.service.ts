@@ -1,21 +1,21 @@
+import {
+  BadBodyException,
+  NoEntityWithIdException,
+  OrderBy,
+  UserGASortBy,
+  UserGQSortBy,
+  UserGetAnswersDTO,
+  UserGetQuestionsDTO,
+  UserUpdateDTO
+} from '@cloneoverflow/common';
 import { Prisma } from '@prisma/client';
-import { UserRepository } from "../repositories/user.repository";
 import { AnswerRepository } from '../repositories/answer.repository';
-import { DbUtils } from '../utils/DatabaseUtils';
+import { QuestionRepository } from '../repositories/question.repository';
+import { UserRepository } from "../repositories/user.repository";
 import { DbAnswer } from '../types/database/DbAnswer';
 import { DbQuestion } from '../types/database/DbQuestion';
-import { QuestionRepository } from '../repositories/question.repository';
 import { DbUserGetProfile } from '../types/database/DbUser';
-import { 
-  NoEntityWithIdException, 
-  BadBodyException, 
-  UserGetAnswersDTO, 
-  UserGASortBy, 
-  OrderBy, 
-  UserGetQuestionsDTO, 
-  UserGQSortBy, 
-  UserUpdateDTO
-} from '@clone-overflow/common';
+import { DbUtils } from '../utils/DatabaseUtils';
 
 export class UserService {
   constructor(

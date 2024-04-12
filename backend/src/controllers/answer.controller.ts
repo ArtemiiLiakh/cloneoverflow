@@ -3,7 +3,7 @@ import {
   AnswerCreateResponse,
   AnswerUpdateDTO,
   AnswerUpdateResponse
-} from '@clone-overflow/common';
+} from '@cloneoverflow/common';
 import { Response } from 'express';
 import { AnswerMapper } from '../mappers/answer.mapper';
 import { AnswerService } from '../services/answer.service';

@@ -1,0 +1,17 @@
+{
+  "name": "cloneoverflow",
+  "version": "1.0.0",
+  "description": "Nothing special just a copy of https://stackoverflow.com/",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "workspaces": [
+    "backend",
+    "common",
+    "frontend"
+  ]
+}

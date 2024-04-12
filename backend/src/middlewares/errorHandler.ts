@@ -1,4 +1,4 @@
-import { Exception, ExceptionResponse } from '@clone-overflow/common';
+import { Exception, ExceptionResponse } from '@cloneoverflow/common';
 import { NextFunction, Request, Response } from 'express';
 
 export const errorHandler = (

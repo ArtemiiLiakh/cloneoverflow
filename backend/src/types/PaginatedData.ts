@@ -1,4 +1,4 @@
-import { PaginationResponse } from '@clone-overflow/common';
+import { PaginationResponse } from '@cloneoverflow/common';
 
 export class PaginatedData<D> {
   data: D[];

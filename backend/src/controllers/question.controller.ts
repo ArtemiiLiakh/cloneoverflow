@@ -5,7 +5,7 @@ import {
   QuestionGetAllResponse,
   QuestionUpdateDTO,
   QuestionUpdateResponse,
-} from '@clone-overflow/common';
+} from '@cloneoverflow/common';
 import { Response } from "express";
 import { QuestionMapper } from "../mappers/question.mapper";
 import { QuestionService } from "../services/question.service";

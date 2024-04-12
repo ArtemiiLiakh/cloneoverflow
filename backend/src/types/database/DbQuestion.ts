@@ -1,4 +1,4 @@
-import { QuestionStatus, Tag } from '@clone-overflow/common';
+import { QuestionStatus, Tag } from '@cloneoverflow/common';
 import { UserProfile, Answer } from "@prisma/client";
 
 export class DbQuestion {

@@ -1,15 +1,15 @@
-import { DbUserGetProfile, DbUser } from "../types/database/DbUser";
+import {
+  MappedUserGetAnswerResponse,
+  MappedUserGetQuestionResponse,
+  QuestionStatus,
+  UserGetProfileResponse,
+  UserGetResponse,
+  UserStatus,
+  UserUpdateResponse
+} from '@cloneoverflow/common';
 import { DbAnswer } from '../types/database/DbAnswer';
 import { DbQuestion } from '../types/database/DbQuestion';
-import { 
-  UserGetResponse, 
-  UserUpdateResponse, 
-  UserGetProfileResponse, 
-  MappedUserGetAnswerResponse, 
-  MappedUserGetQuestionResponse, 
-  UserStatus,
-  QuestionStatus
-} from '@clone-overflow/common';
+import { DbUser, DbUserGetProfile } from "../types/database/DbUser";
 
 export class UserMapper {
   get(user: DbUser): UserGetResponse {

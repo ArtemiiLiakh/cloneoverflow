@@ -1,4 +1,4 @@
-import { AnswerCreateDTO, BadBodyException, AnswerUpdateDTO, ForbiddenException } from '@clone-overflow/common';
+import { AnswerCreateDTO, AnswerUpdateDTO, BadBodyException, ForbiddenException } from '@cloneoverflow/common';
 import { AnswerRepository } from '../repositories/answer.repository';
 import { QuestionRepository } from '../repositories/question.repository';
 

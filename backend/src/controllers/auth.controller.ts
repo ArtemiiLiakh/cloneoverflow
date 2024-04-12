@@ -4,7 +4,7 @@ import {
   AuthSignupDTO,
   GetMeResponse,
   OkResponse
-} from '@clone-overflow/common';
+} from '@cloneoverflow/common';
 import { Request, Response } from 'express';
 import config from '../config';
 import { AuthMapper } from '../mappers/auth.mapper';
@@ -25,12 +25,19 @@ export class AuthController {
   }
 
   async signup ({ body }: Body<AuthSignupDTO>, res: Response<GetMeResponse>) {
-    console.log(body);
     const { access_token, refresh_token, user } = await this.authService.signup(body);
     res.cookie('access_token', access_token, config.accessTokenConfig)
       .cookie('refresh_token', refresh_token, config.refreshTokenConfig)
       .send(this.authMapper.getMe(user));
   } 
+
+  async signout (req: Request, res: Response<OkResponse>) {
+    res.cookie('access_token', '', { maxAge: 0 })
+      .cookie('refresh_token', '', { maxAge: 0 })
+      .send({
+        message: 'ok',
+      });
+  }
 
   async getMe ({ body: { _user } }: AuthRequest, res: Response<GetMeResponse>) {
     const user = await this.authService.getMe(_user.userId);

@@ -1,6 +1,6 @@
 {
-  "name": "@clone-overflow/common",
-  "version": "1.0.24",
+  "name": "@cloneoverflow/common",
+  "version": "1.0.25",
   "description": "",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

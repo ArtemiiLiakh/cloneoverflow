@@ -11,7 +11,7 @@ import {
   UserGetQuestionsDTO, 
   UserGetQuestionResponse, 
   UserUpdateDTO, 
-} from '@clone-overflow/common';
+} from '@cloneoverflow/common';
 
 export class UserController {
   constructor(

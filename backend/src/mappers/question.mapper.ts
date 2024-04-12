@@ -1,6 +1,5 @@
-import { MappedGetAllResponse, QuestionCreateResponse, QuestionGetAllResponse, QuestionUpdateResponse } from '@clone-overflow/common';
+import { MappedGetAllResponse, QuestionCreateResponse, QuestionUpdateResponse } from '@cloneoverflow/common';
 import { DbGetAllQuestions, DbQuestion } from "../types/database/DbQuestion";
-import { question } from '../routers/question';
 
 export class QuestionMapper {
   create(question: DbQuestion): QuestionCreateResponse {

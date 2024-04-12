@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { Prisma } from '@prisma/client';
-import { ExceptionResponse } from '@clone-overflow/common';
+import { ExceptionResponse } from '@cloneoverflow/common';
 
 export const prismaErrorHandler = (
   err: Prisma.PrismaClientKnownRequestError, 

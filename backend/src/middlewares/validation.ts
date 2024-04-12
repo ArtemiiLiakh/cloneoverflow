@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
-import { ValidationException } from '@clone-overflow/common';
+import { ValidationException } from '@cloneoverflow/common';
 
 interface RequestFields {
   params?: new () => any;

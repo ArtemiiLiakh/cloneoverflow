@@ -1,4 +1,4 @@
-import { GetMeResponse, UserStatus } from '@clone-overflow/common';
+import { GetMeResponse, UserStatus } from '@cloneoverflow/common';
 import { DbUser } from '../types/database/DbUser';
 
 export class AuthMapper {

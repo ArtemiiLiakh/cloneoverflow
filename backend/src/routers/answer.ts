@@ -2,7 +2,7 @@ import express from 'express';
 import { AnswerController } from '../controllers/answer.controller';
 import { AuthAccess } from '../middlewares/authAccess';
 import { validateRequest } from '../middlewares/validation';
-import { AnswerCreateDTO, AnswerUpdateDTO } from '@clone-overflow/common';
+import { AnswerCreateDTO, AnswerUpdateDTO } from '@cloneoverflow/common';
 
 const router = express.Router();
 const controller = new AnswerController();

@@ -1,4 +1,4 @@
-import { PaginationDTO } from '@clone-overflow/common';
+import { PaginationDTO } from '@cloneoverflow/common';
 import { PaginatedData } from '../types/PaginatedData';
 
 export class DbUtils {

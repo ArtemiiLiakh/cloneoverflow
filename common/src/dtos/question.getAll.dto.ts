@@ -22,10 +22,6 @@ export class QuestionGetAllDTO {
     search?: string;
   
   @IsOptional()
-  @IsArray(validationMessage('Tags must be an array of strings'))
-    tags?: string[];
-  
-  @IsOptional()
   @IsEnum(QuestionFilterBy, validationMessage('FilterBy must be a valid enum value: answered, weekly, monthly'))
     filterBy?: QuestionFilterBy;
   

@@ -1,4 +1,4 @@
-import { ForbiddenException } from '@clone-overflow/common';
+import { ForbiddenException } from '@cloneoverflow/common';
 import { UserStatus } from '@prisma/client';
 import { plainToInstance } from 'class-transformer';
 import { validateSync } from 'class-validator';
