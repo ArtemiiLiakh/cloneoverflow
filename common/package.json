@@ -10,6 +10,7 @@
   "scripts": {
     "clean": "del-cli ./dist/*",
     "build": "npm run clean && tsc",
+    "package": "npm run build && cd ../backend && npm install @cloneoverflow/common && cd ../frontend && npm install @cloneoverflow/common",
     "pub": "npm run build && npm version patch && npm publish"
   },
   "keywords": [],

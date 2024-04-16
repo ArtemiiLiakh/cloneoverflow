@@ -1,14 +1,17 @@
-.taglist {
+.tagNames {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.taglist li {
+.tagNames li {
   display: inline;
   margin-right: 5px;
+  background-color: #edf5fd;
+  padding: 5px;
+  color: #155ca2;
 }
 
-.taglist li a {
+.tagNames li a {
   text-decoration: none;
 }

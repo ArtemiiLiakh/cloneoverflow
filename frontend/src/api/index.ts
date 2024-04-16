@@ -1,5 +1,5 @@
 import axios, { AxiosError } from 'axios';
-import urls from '../utils/urls';
+import urls from './urls';
 
 const api = axios.create({
   withCredentials: true,

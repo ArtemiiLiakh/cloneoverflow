@@ -1,10 +1,14 @@
 .navbar {
+  background-color: white;
   border-bottom: 2px solid #ccc;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .logo {
   display: block;
-  background-image: url('./../../../public/logo.png');
+  background-image: url('./../../public/logo.png');
   background-size: contain;
   background-repeat: no-repeat;
   width: 150px;

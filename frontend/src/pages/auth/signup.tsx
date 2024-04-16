@@ -1,3 +1,4 @@
+import { ExceptionResponse } from '@cloneoverflow/common';
 import MDEditor, { codeEdit, codePreview } from '@uiw/react-md-editor';
 import { AxiosError } from 'axios';
 import { FormEvent, useState } from 'react';
@@ -7,7 +8,6 @@ import { useAuth } from '../../hooks/useAuth';
 import { formatArray } from '../../utils/stringUtils';
 import { validateData } from '../../utils/validateData';
 import { SignupData } from './SignupData';
-import { ExceptionResponse } from '@clone-overflow/common';
 
 const Signup = () => {
   const { singup } = useAuth();

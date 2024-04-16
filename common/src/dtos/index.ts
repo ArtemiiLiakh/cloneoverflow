@@ -9,7 +9,9 @@ export * from './pagination.dto';
 
 export * from './question.create.dto';
 export * from './question.update.dto';
-export * from './question.getAll.dto';
+
+export * from './search.questions.dto';
+export * from './search.tags.dto';
 
 export * from './user.getAnswers.dto';
 export * from './user.getQuestions.dto';

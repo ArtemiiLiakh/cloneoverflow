@@ -1,4 +1,4 @@
-import { UserGetResponse, UserStatus } from '@clone-overflow/common';
+import { UserGetResponse, UserStatus } from '@cloneoverflow/common';
 import { useEffect, useState } from 'react';
 import { Tab, Tabs } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
@@ -6,12 +6,10 @@ import { UserService } from '../../api/services/user.service';
 import Username from '../../components/username/username';
 import { useAuth } from '../../hooks/useAuth';
 import { GetPassedDate } from '../../utils/stringUtils';
-import './profile.css';
 import UserAboutTab from './tabs/user-about-tab';
 import UserAnswersTab from './tabs/user-answers-tab';
 import UserQuestionsTab from './tabs/user-questions-tab';
 import UserSettingsTab from './tabs/user-settings-tab';
-
 
 const UserProfile = () => {
   const { userId } = useParams();

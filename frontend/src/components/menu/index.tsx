@@ -1,12 +1,13 @@
-import * as React from 'react';
-import './menu.css';
-import { NavLink, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { NavLink, createSearchParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { Navbar, Form, Container, Col } from 'react-bootstrap';
 import { useAuth } from '../../hooks/useAuth';
 
 export const Menu = () => {
-  const { user, loading } = useAuth();
+  const [search, setSearch] = useState('');
+  const { user, authLoading } = useAuth();
   const navigate = useNavigate();
+  const [searchParams, setSearchParam] = useSearchParams();
 
   return (
     <Navbar className='navbar'>
@@ -15,13 +16,22 @@ export const Menu = () => {
           <NavLink to="/" className="logo"/>
         </Col>
         <Col sm={8}>
-          <Form>
-            <Form.Control type="text" placeholder="Search" className="searchBar" />
+          <Form onSubmit={(e) => {
+            e.preventDefault();
+            setSearchParam('?q=' + search);
+            navigate({
+              pathname: '/questions',
+              search: search ? createSearchParams({
+                'q': search,
+              }).toString() : undefined,
+            });
+          }}>
+            <Form.Control type="text" placeholder="Search" className="searchBar" onChange={(e) => setSearch(e.target.value)}/>
           </Form>
         </Col>
         <Col sm className='account-container'>
           {
-            loading ? <></> 
+            authLoading ? <></> 
             : <button className='user' onClick={() => {
                 if (user) {
                   navigate(`/user/${user.id}`);

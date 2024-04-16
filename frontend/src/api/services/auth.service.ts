@@ -4,9 +4,10 @@ import {
   AuthSignupDTO,
   GetMeResponse,
   OkResponse
-} from '@clone-overflow/common';
+} from '@cloneoverflow/common';
 import api from '..';
-import urls from '../../utils/urls';
+import urls from '../urls';
+import { AxiosResponse } from 'axios';
 
 export class AuthService {
   static async login(body: AuthLoginDTO) {
@@ -20,6 +21,12 @@ export class AuthService {
     return api.post<AuthLoginDTO, GetMeResponse>(
       urls.signup, 
       body,
+    );
+  }
+
+  static async signout(): Promise<AxiosResponse<OkResponse>> {
+    return api.get<OkResponse>(
+      urls.signout,
     );
   }
 

@@ -3,8 +3,7 @@ import { useState, useEffect } from 'react';
 import { Form, Table } from 'react-bootstrap';
 import { UserService } from '../../../../api/services/user.service';
 import { GetPassedDate } from '../../../../utils/stringUtils';
-import './user-answers-tab.css';
-import { OrderBy, UserGASortBy, UserGetAnswersDTO, UserGetAnswersResponse } from '@clone-overflow/common';
+import { OrderBy, UserGASortBy, UserGetAnswersDTO, UserGetAnswersResponse } from '@cloneoverflow/common';
 
 interface UserAnswersTabProps {
   userId?: string;   

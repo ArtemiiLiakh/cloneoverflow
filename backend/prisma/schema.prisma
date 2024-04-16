@@ -87,6 +87,8 @@ model Answer {
 model Tag {
   id          String            @id @default(uuid())
   name        String            @unique @db.VarChar(100)
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
   questions   Question[]
 
   @@map("tags")

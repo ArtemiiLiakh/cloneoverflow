@@ -1,0 +1,61 @@
+.home {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.home .sidebar {
+  display: block;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  flex: 1;
+  position: sticky;
+  top: 90px;
+}
+
+.home .content {
+  width: 100%;
+  height: 100%;
+  flex: 6;
+  border-left: 2px solid #e0e0e0;
+  padding: 30px;
+}
+
+.home .content .search {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.home .content .header .sort {
+  max-width: fit-content;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.home .content .header .sort .nav {
+  gap: 5px;
+}
+
+.home .content .header .sort .nav-item .nav-link {
+  color: #3b4045;
+  font-weight: 400;
+  font-size: 12px;
+}
+
+.home .content .header .sort .nav-item .nav-link.active {
+  font-weight: 500;
+  background-color: #e3e6e8;
+}
+
+.home .content .header .askQuestion {
+  margin-top: 20px;
+}
+
+.home .content .pagination {
+  margin: 50px 0 30vh 0;
+}

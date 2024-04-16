@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { NavLink } from 'react-router-dom';
-import './taglist.css';
 
 interface TaglistProps {
   tags?: string[];
 }
 
-const Taglist = ({ tags }: TaglistProps) => {
+const TagNames = ({ tags }: TaglistProps) => {
   const renderedTags = tags?.map((tag, index) => (
     <li key={index}>
       <NavLink to={`/?tags=[${tag}]`}>#{tag}</NavLink>
@@ -14,10 +13,10 @@ const Taglist = ({ tags }: TaglistProps) => {
   ));
 
   return (
-    <ul className='taglist'>
+    <ul className='tagNames'>
       {renderedTags}
     </ul>
   );
 }
  
-export default Taglist;
+export default TagNames;
