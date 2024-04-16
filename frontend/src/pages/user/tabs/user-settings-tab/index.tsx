@@ -2,11 +2,10 @@ import React, { FormEvent, useEffect } from 'react';
 import { useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import MDEditor from '@uiw/react-md-editor';
-import './user-settings-tab.css';
 import { UserService } from '../../../../api/services/user.service';
 import { AxiosError } from 'axios';
 import { formatArray } from '../../../../utils/stringUtils';
-import { ExceptionResponse, UserGetResponse, UserUpdateDTO } from '@clone-overflow/common';
+import { ExceptionResponse, UserGetResponse, UserUpdateDTO } from '@cloneoverflow/common';
 import { AuthService } from '../../../../api/services/auth.service';
 
 interface UserSettingsTabProps {
@@ -69,6 +68,14 @@ const UserSettingsTab = ({ user }: UserSettingsTabProps) => {
       setIsUpdatedPassword(true);
     }
   };
+
+  const onLeaveAccount = async () => {
+    const res = await AuthService.signout().catch((error: AxiosError<ExceptionResponse>) => {});
+    if (res) {
+      setSettingsErrors(undefined);
+      window.location.assign('/');
+    }
+  }
 
   return (
     <div className='user-settings'>
@@ -192,6 +199,9 @@ const UserSettingsTab = ({ user }: UserSettingsTabProps) => {
           <Button type='submit'>Save password</Button>
         </Form.Group>
       </Form>
+      <Form.Group className='settings-block'>
+        <Button type='button' variant='danger' onClick={onLeaveAccount}>Leave account</Button>
+      </Form.Group>
     </div>
   );
 }

@@ -1,10 +1,10 @@
 import { useContext } from 'react';
 import { AuthContext } from '../contexts/authContext';
 import { AuthService } from '../api/services/auth.service';
-import { AuthLoginDTO, AuthSignupDTO } from '@clone-overflow/common';
+import { AuthLoginDTO, AuthSignupDTO } from '@cloneoverflow/common';
 
 export const useAuth = () => {
-  const { user, loading, setUser } = useContext(AuthContext);
+  const { user, authLoading, setUser, setAuthLoading } = useContext(AuthContext);
 
   const login = async (data: AuthLoginDTO) => {
     const user = await AuthService.login(data);
@@ -24,10 +24,11 @@ export const useAuth = () => {
 
   return {
     user,
-    loading,
+    authLoading,
     login,
     singup,
     refresh,
     setUser,
+    setAuthLoading,
   };
 }

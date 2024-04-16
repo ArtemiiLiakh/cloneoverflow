@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import './user-about-tab.css';
 import { NavLink } from 'react-router-dom';
-import Taglist from '../../../../components/taglist/taglist';
+import TagNames from '../../../../components/tagNames/tagNames';
 import { UserService } from '../../../../api/services/user.service';
 import { GetPassedDate, ShortText } from '../../../../utils/stringUtils';
 import MDEditor from '@uiw/react-md-editor';
-import { UserGetProfileResponse } from '@clone-overflow/common';
+import { UserGetProfileResponse } from '@cloneoverflow/common';
 
 interface UserAboutTabProps {
   userId?: string;
@@ -47,7 +46,7 @@ const UserAboutTab = ({ userId }: UserAboutTabProps) => {
             <p>{ShortText(bestQuestionTitle, 100)}</p>
             <p>Rate: {user?.bestQuestion?.rate}</p>
             <p>Answers: {user?.bestQuestion?.answersAmount}</p>
-            <Taglist tags={user?.bestQuestion?.tags}/>
+            <TagNames tags={user?.bestQuestion?.tags}/>
             <button className='btn btn-primary'>Go to the question</button>
           </div>
           <div className="about-block-item best-answer">

@@ -6,9 +6,9 @@ import {
   UserGetQuestionsDTO,
   UserGetResponse,
   UserUpdateDTO
-} from '@clone-overflow/common';
+} from '@cloneoverflow/common';
 import api from '..';
-import urls from '../../utils/urls';
+import urls from '../urls';
 
 export class UserService {
   static get(userId: string): Promise<UserGetResponse> {

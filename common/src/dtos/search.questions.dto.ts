@@ -4,30 +4,31 @@ import { PaginationDTO } from "./pagination.dto";
 import { validationMessage } from "../utils/validationUtils";
 import { Type } from "class-transformer";
 
-export enum QuestionGAQSortBy {
+export enum SearchQuestionSortBy {
   RATE = "rate",
   DATE = "date",
   ANSWERS = "answers",
   STATUS = "status"
 }
 
-export enum QuestionFilterBy {
-  ANSWERED = "answered",
+export enum SearchQuestionFilterBy {
+  CLOSED = "closed",
+  ACTIVE = "active",
   WEEKLY = "weekly",
   MONTHLY = "monthly"
 }
 
-export class QuestionGetAllDTO {
+export class SearchQuestionsDTO {
   @IsOptional()
     search?: string;
   
   @IsOptional()
-  @IsEnum(QuestionFilterBy, validationMessage('FilterBy must be a valid enum value: answered, weekly, monthly'))
-    filterBy?: QuestionFilterBy;
+  @IsEnum(SearchQuestionFilterBy, validationMessage('FilterBy must be a valid enum value: answered, weekly, monthly', true))
+    filterBy?: SearchQuestionFilterBy[];
   
   @IsOptional()
-  @IsEnum(QuestionGAQSortBy, validationMessage('SortBy must be a valid enum value: rate, date, answers, status'))
-    sortBy?: QuestionGAQSortBy;
+  @IsEnum(SearchQuestionSortBy, validationMessage('SortBy must be a valid enum value: rate, date, answers, status', true))
+    sortBy?: SearchQuestionSortBy[];
   
   @IsOptional()
   @IsEnum(OrderBy, validationMessage('OrderBy must be a valid enum value: asc, desc'))

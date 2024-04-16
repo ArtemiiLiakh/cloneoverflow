@@ -1,3 +1,4 @@
+import { ExceptionResponse } from '@cloneoverflow/common';
 import { AxiosError } from 'axios';
 import { FormEvent, useState } from 'react';
 import { Form } from 'react-bootstrap';
@@ -6,8 +7,6 @@ import { useAuth } from '../../hooks/useAuth';
 import { formatArray } from '../../utils/stringUtils';
 import { validateData } from '../../utils/validateData';
 import { LoginData } from './LoginData';
-import './auth.css';
-import { ExceptionResponse } from '@clone-overflow/common';
 
 const Login = () => {
   const { login } = useAuth();
@@ -61,12 +60,21 @@ const Login = () => {
           />
           <Form.Check 
             type="checkbox" 
-            label="Show password" 
+            id='show-password'
             className='show-password'
+            style={{
+              display: 'inline-block',
+              marginRight: '10px',
+            }}
             onChange={() => {
               setShowPassword(!showPassword);
             }}
           />
+          <Form.Label htmlFor='show-password' className='show-password-label' style={{
+            display: 'inline-block',
+          }}>
+            Show password
+          </Form.Label>
         </Form.Group>
         <Form.Group className='block'>
           {renderErrMsg}

@@ -2,15 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { UserService } from '../../../../api/services/user.service';
 import { Form, Table } from 'react-bootstrap';
 import { GetPassedDate } from '../../../../utils/stringUtils';
-import Taglist from '../../../../components/taglist/taglist';
-import './user-questions-tab.css';
+import TagNames from '../../../../components/tagNames/tagNames';
 import { 
   MappedUserGetQuestionResponse, 
   UserGetQuestionsDTO, 
   UserGQSortBy, 
   UserGetQuestionResponse, 
   OrderBy
-} from '@clone-overflow/common';
+} from '@cloneoverflow/common';
 
 interface UserQuestionsTabProps {
   userId?: string;   
@@ -133,7 +132,7 @@ const UserQuestionsTab = ({ userId }: UserQuestionsTabProps) => {
               <td>{question.answersAmount}</td>
               <td>{question.status}</td>
               <td>{GetPassedDate(question.createdAt)}</td>
-              <td><Taglist tags={question.tags}/></td>
+              <td><TagNames tags={question.tags}/></td>
             </tr>
           ))}
         </tbody>

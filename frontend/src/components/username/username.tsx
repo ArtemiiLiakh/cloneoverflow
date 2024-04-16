@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { NavLink } from 'react-router-dom';
-import './username.css';
 
 interface UsernameProps {
   userId: string;

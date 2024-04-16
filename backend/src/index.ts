@@ -9,6 +9,7 @@ import { auth } from './routers/auth';
 import { user } from "./routers/user";
 import { question } from "./routers/question";
 import { answer } from './routers/answer';
+import { tags } from './routers/tags';
 
 const app = express();
 
@@ -24,6 +25,7 @@ api.use('/auth', auth);
 api.use('/users', user);
 api.use('/questions', question);
 api.use('/answers', answer);
+api.use('/tags', tags);
 
 app.use('/api', api);
 app.use(prismaErrorHandler);

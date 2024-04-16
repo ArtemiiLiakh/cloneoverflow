@@ -2,9 +2,9 @@ import {
   ForbiddenException,
   OrderBy,
   QuestionCreateDTO,
-  QuestionFilterBy,
-  QuestionGAQSortBy,
-  QuestionGetAllDTO,
+  SearchQuestionSortBy,
+  SearchQuestionFilterBy,
+  SearchQuestionsDTO,
   QuestionUpdateDTO
 } from '@cloneoverflow/common';
 import { Prisma, QuestionStatus } from '@prisma/client';
@@ -12,6 +12,7 @@ import { QuestionRepository } from "../repositories/question.repository";
 import { QuestionSearchFilters } from '../types/QuestionSearchFilters';
 import { DbGetAllQuestions } from '../types/database/DbQuestion';
 import { DbUtils } from '../utils/DatabaseUtils';
+import { ArrayOrUndefinded } from '../utils/arrayUtils';
 
 export class QuestionService {
   constructor(
@@ -68,9 +69,8 @@ export class QuestionService {
     return await this.questionRepository.updateById(questionId, updateData);
   }
 
-  getAll({ search, pagination, orderBy, sortBy, filterBy }: QuestionGetAllDTO) {
+  getAll({ search, pagination, orderBy, sortBy, filterBy }: SearchQuestionsDTO) {
     const searchFilter = this.parseSearch(search);
-
     const where = this.getQuestionsFilterBy(searchFilter, filterBy);
   
     return DbUtils.paginate<Prisma.QuestionFindManyArgs, DbGetAllQuestions>(this.questionRepository, {
@@ -88,25 +88,26 @@ export class QuestionService {
     }, pagination);
   }
 
-  private parseSearch(search?: string): QuestionSearchFilters {
+  private parseSearch(search?: string) {
     if (!search) return {};
   
-    const searchReg = new RegExp(/(.*\$)|(.*)/, 'i').exec(search)?.[0];
-    const text = searchReg?.at(-1) === '$' ? searchReg.slice(0, -1) : searchReg;
-  
+    const searchText = new RegExp(/(.*?\?)|(.*)/, 'i').exec(search)?.[0];
+    let text = searchText?.at(-1) === '?' ? searchText.slice(0, -1) : searchText;
+    text = text?.replace(/(^\s+) | (\s+$)/g, '');
+
     const filters = search
-      .replace(searchReg ?? '', '')
-      .match(/\[(.*?)\]/g)
-      ?.map((filter) => filter.slice(1, -1));
+      .replace(searchText ?? '', '')
+      .match(/([\#\:]\w+)|(\".*\")/g)
+
     if (!filters) return { text };
   
-    let tags = filters.filter((filter) => filter.includes('#'));
-    let authors = filters.filter((filter) => filter.includes(':'));
-    let keywords = filters.filter((filter) => filter.includes('"')); 
+    let tags = ArrayOrUndefinded(filters.filter((filter) => filter.includes('#')));
+    let authors = ArrayOrUndefinded(filters.filter((filter) => filter.includes(':')));
+    let keywords = ArrayOrUndefinded(filters.filter((filter) => filter.includes('"'))); 
     
-    tags = tags.map((tag) => tag.replace('#', ''));
-    authors = authors.map((author) => author.replace(':', ''));
-    keywords = keywords.map((keyword) => keyword.replace(/"/g, ''));
+    tags = tags?.map((tag) => tag.replace('#', ''));
+    authors = authors?.map((author) => author.replace(':', ''));
+    keywords = keywords?.map((keyword) => keyword.replace(/"/g, ''));
   
     return {
       text,
@@ -116,42 +117,54 @@ export class QuestionService {
     };
   }
 
-  private getQuestionsSortBy(sortBy?: QuestionGAQSortBy, orderBy?: OrderBy): Prisma.QuestionOrderByWithRelationInput {
-    switch (sortBy) {
-      case QuestionGAQSortBy.RATE:
-        return {
+  private getQuestionsSortBy(sortBy?: SearchQuestionSortBy[], orderBy?: OrderBy): Prisma.QuestionOrderByWithRelationInput[] {
+    let sortByRes: Prisma.QuestionOrderByWithRelationInput[] = [];
+
+    for (const sort of sortBy ?? []) {
+      if (sort === SearchQuestionSortBy.RATE) {
+        sortByRes.push({
           rate: orderBy ?? 'desc',
-        };
-      case QuestionGAQSortBy.DATE:
-        return {
+        });
+      }
+      else if (sort === SearchQuestionSortBy.DATE) {
+        sortByRes.push({
           createdAt: orderBy ?? 'desc',
-        };
-      case QuestionGAQSortBy.ANSWERS:
-        return {
+        });
+      }
+      else if (sort === SearchQuestionSortBy.ANSWERS) {
+        sortByRes.push({
           answers: {
             _count: orderBy ?? 'desc',
           },
-        };
-      case QuestionGAQSortBy.STATUS:
-        return {
+        });
+      }
+      else if (sort === SearchQuestionSortBy.STATUS) {
+        sortByRes.push({
           status: orderBy ?? 'desc',
-        };
-    }
+        });
+      }
+    };
 
-    return {};
+    return sortByRes;
   }
 
-  private getQuestionsFilterBy ({ text, tags, authors, keywords }: QuestionSearchFilters, filterBy?: QuestionFilterBy): Prisma.QuestionWhereInput {
+  private getQuestionsFilterBy ({ text, tags, authors, keywords }: QuestionSearchFilters, filterBy?: SearchQuestionFilterBy[]): Prisma.QuestionWhereInput {
     const textFilter = keywords?.map((keyword) => ({ text: { contains: keyword, mode: "insensitive" } })) || [{}];
-    
+    const filterAND = [
+      {
+        OR: [
+          { title: { contains: text ?? '', mode: "insensitive" } },
+          { text: { contains: text ?? '', mode: "insensitive" } },
+        ],
+      },
+      ...textFilter,
+    ];
+
     let where: Prisma.QuestionWhereInput = {
-      AND: [
-        { text: { contains: text ?? '', mode: "insensitive" } },
-        ...textFilter,
-      ],
       userProfile: {
         name: {
           in: authors,
+          mode: "insensitive",
         },
       },
       tags: {
@@ -163,27 +176,34 @@ export class QuestionService {
       },
     };
 
-    switch (filterBy) {
-      case QuestionFilterBy.ANSWERED:
-        where = {
+    for (const filter of filterBy ?? []) {
+      if (filter === SearchQuestionFilterBy.CLOSED) {
+        filterAND.push({
           status: QuestionStatus.CLOSED,
-        };
-        break;
-      case QuestionFilterBy.WEEKLY:
-        where = {
+        });
+      }
+      else if (filter === SearchQuestionFilterBy.ACTIVE) {
+        filterAND.push({
+          status: QuestionStatus.ACTIVE,
+        });
+      }
+      else if (filter === SearchQuestionFilterBy.WEEKLY) {
+        filterAND.push({
           createdAt: {
             gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
           },
-        };
-        break;
-      case QuestionFilterBy.MONTHLY:
-        where = {
+        });
+      }
+      else if (filter === SearchQuestionFilterBy.MONTHLY) {
+        filterAND.push({
           createdAt: {
             gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
           },
-        };
-        break;
-    }
+        });
+      }
+    };
+
+    where.AND = filterAND;
     
     return where;
   }

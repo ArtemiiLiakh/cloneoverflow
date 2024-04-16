@@ -1,22 +1,24 @@
-import { PropsWithChildren, createContext, useEffect, useState } from 'react';
+import { Dispatch, PropsWithChildren, SetStateAction, createContext, useEffect, useState } from 'react';
 import { AuthService } from '../api/services/auth.service';
-import { GetMeResponse } from '@clone-overflow/common';
+import { GetMeResponse } from '@cloneoverflow/common';
 
 interface AuthContextProps {
   user: GetMeResponse | null;
   setUser(user: GetMeResponse | null): void;
-  loading: boolean;
+  authLoading: boolean;
+  setAuthLoading: Dispatch<SetStateAction<boolean>>;
 }
 
 export const AuthContext = createContext<AuthContextProps>({
   user: null,
   setUser: () => {},
-  loading: true
+  authLoading: true,
+  setAuthLoading: () => {},
 });
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [user, setUser] = useState<GetMeResponse | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [authLoading, setAuthLoading] = useState(true);
 
   useEffect(() => {
     const authorize = async () => {
@@ -29,11 +31,11 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       console.log('no token');
     };
     
-    authorize().finally(() => setLoading(false));
+    authorize().finally(() => setAuthLoading(false));
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, setUser }}>
+    <AuthContext.Provider value={{ user, authLoading, setUser, setAuthLoading }}>
       {children}
     </AuthContext.Provider>
   );

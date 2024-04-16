@@ -1,7 +1,7 @@
 import { QuestionStatus, Tag } from "../types";
 import { PaginationResponse } from "./pagination.response";
 
-export class MappedGetAllResponse {
+export class MappedSearchQuestionResponse {
   id: string;
   title: string;
   text: string;
@@ -18,7 +18,8 @@ export class MappedGetAllResponse {
   };
   answersAmount: number;
 }
-export class QuestionGetAllResponse {
-  questions: MappedGetAllResponse[];
+
+export class SearchQuestionsResponse {
+  questions: MappedSearchQuestionResponse[];
   pagination: PaginationResponse;
 }

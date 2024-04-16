@@ -1,17 +1,26 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { Home } from '../pages/home';
 import { App } from '../App';
 import Login from '../pages/auth/login';
 import Signup from '../pages/auth/signup';
+import { Home } from '../pages/home';
 import UserProfile from '../pages/user';
 import { PrivateRoute } from './PrivateRoute';
+import HomePage from '../pages/home/pages/homePage';
+import QuestionPage from '../pages/home/pages/questionPage';
+import TagsPage from '../pages/home/pages/tagsPage';
 
 export const router = createBrowserRouter([
   {
     path: '/',
     element: <App/>,
     children: [
-      { path: '/', element: <Home/> },
+      { 
+        path: '/', element: <Home/>, children: [
+          { path: '/', element: <HomePage/> },
+          { path: '/questions', element: <QuestionPage/> },
+          { path: '/tags', element: <TagsPage/> }
+        ] 
+      },
       { path: '/auth/login', element: <Login/> },
       { path: '/auth/signup', element: <Signup/> },
       { element: <PrivateRoute/>, children: [
