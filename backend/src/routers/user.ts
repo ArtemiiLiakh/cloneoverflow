@@ -2,7 +2,7 @@ import express from "express";
 import { UserController } from "../controllers/user.controller";
 import { AuthAccess } from "../middlewares/authAccess";
 import { validateRequest } from "../middlewares/validation";
-import { UserGetAnswersDTO, UserGetQuestionsDTO, UserUpdateDTO } from '@cloneoverflow/common';
+import { AuthLoginDTO, UserGetAnswersDTO, UserGetQuestionsDTO, UserUpdateDTO } from '@cloneoverflow/common';
 
 const router = express.Router();
 const controller = new UserController();
@@ -40,6 +40,14 @@ router.get('/:userId/questions',
     query: UserGetQuestionsDTO,
   }),
   controller.getQuestions.bind(controller),
+);
+
+router.delete('/:userId/delete',
+  AuthAccess(),
+  validateRequest({
+    body: AuthLoginDTO,
+  }),
+  controller.delete.bind(controller),
 );
 
 export { router as user };
