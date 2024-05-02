@@ -1,5 +1,7 @@
 import {
+  AuthLoginDTO,
   BadBodyException,
+  ForbiddenException,
   NoEntityWithIdException,
   OrderBy,
   UserGASortBy,
@@ -16,6 +18,8 @@ import { DbAnswer } from '../types/database/DbAnswer';
 import { DbQuestion } from '../types/database/DbQuestion';
 import { DbUserGetProfile } from '../types/database/DbUser';
 import { DbUtils } from '../utils/DatabaseUtils';
+import { compare } from '../utils/hash';
+import { TokenPayload } from '../types/TokenPayload';
 
 export class UserService {
   constructor(
@@ -178,5 +182,24 @@ export class UserService {
         };
     }
     return {};
+  }
+
+  async delete (userId: string, { email, password }: AuthLoginDTO, user: TokenPayload){
+    const confirmUser = await this.userRepository.find({
+      email,
+    });
+    if (!confirmUser){
+      throw new BadBodyException("Invalid email or password");
+    }
+    if (confirmUser.id !== user.userId){
+      throw new ForbiddenException();
+    }
+    if (confirmUser.id !== userId){
+      throw new BadBodyException("Invalid user id");
+    }
+    if (!await compare(password, confirmUser.password)){
+      throw new BadBodyException("Invalid email or password");
+    }
+    await this.userRepository.delete({id: userId});
   }
 }

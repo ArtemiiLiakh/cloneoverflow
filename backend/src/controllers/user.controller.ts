@@ -10,7 +10,9 @@ import {
   UserGetAnswersResponse, 
   UserGetQuestionsDTO, 
   UserGetQuestionResponse, 
-  UserUpdateDTO, 
+  UserUpdateDTO,
+  OkResponse,
+  AuthLoginDTO, 
 } from '@cloneoverflow/common';
 
 export class UserController {
@@ -50,5 +52,10 @@ export class UserController {
       questions,
       pagination,
     });
+  }
+
+  async delete({ params, body }: AuthRequest & Body<AuthLoginDTO>, res: Response<OkResponse>) {
+    await this.userService.delete(params.userId, body, body._user);
+    res.send({ message: "ok"});
   }
 }
