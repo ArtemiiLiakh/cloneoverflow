@@ -1,7 +1,7 @@
 import { MappedSearchQuestionResponse, PaginationResponse, SearchQuestionFilterBy, SearchQuestionSortBy, SearchQuestionsDTO } from '@cloneoverflow/common';
 import React, { useEffect, useState } from 'react';
 import { Button, ListGroup, Nav } from 'react-bootstrap';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { SearchService } from '../../../api/services/search.service';
 import Pagination from '../../../components/pagination/pagination';
 import config from '../../../config';
@@ -51,7 +51,8 @@ const QuestionPage = () => {
     totalAmount: 0,
   });
 
-  const [searchParams, setSearchParam] = useSearchParams();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     SearchService.searchQuestion({ 
@@ -96,7 +97,9 @@ const QuestionPage = () => {
             </Nav>
           </div>
         </div>
-        <Button variant='primary' className='askQuestion'>Ask a question</Button>
+        <Button variant='primary' className='askQuestion' onClick={() => {
+          navigate('/questions/ask');
+        }}>Ask a question</Button>
       </div>
       <ListGroup className='questionList' variant='flush'>
         {questions.map((question, index) => <QuestionItem key={index} question={question}/>)}

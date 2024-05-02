@@ -7,6 +7,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { formatArray } from '../../utils/stringUtils';
 import { validateData } from '../../utils/validateData';
 import { LoginData } from './LoginData';
+import ErrorList from '../../components/errorlist/ErrorList';
 
 const Login = () => {
   const { login } = useAuth();
@@ -32,11 +33,6 @@ const Login = () => {
     setErrMsg(null);
     navigator('/');
   }
-
-  const renderErrMsg = errMsg?.map(
-    (msg, index) => 
-    <Form.Text key={index} className='error-message'>{msg}</Form.Text>
-  );
 
   return ( 
     <div className='auth'>
@@ -77,7 +73,7 @@ const Login = () => {
           </Form.Label>
         </Form.Group>
         <Form.Group className='block'>
-          {renderErrMsg}
+          <ErrorList errors={errMsg}/>
         </Form.Group>
         <Form.Group className='block'>
           <Form.Text>

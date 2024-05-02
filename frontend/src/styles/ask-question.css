@@ -1,0 +1,92 @@
+.ask-question {
+  margin-top: 20px;
+}
+
+.ask-question .content {
+  width: 66vw;
+  margin: 0 auto;
+}
+
+.ask-question .content .question-item {
+  margin: 15px 0;
+}
+
+.ask-question .content .tags {
+  margin-top: 10px;
+}
+
+.ask-question .content .tags ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.ask-question .content .tags ul .tagItem {
+  background-color: #edf5fd;
+  padding: 5px;
+  color: #155ca2;
+}
+
+.ask-question .content .tags ul .tagItem button {
+  margin-left: 5px;
+  background-color: #edf5fd;
+  border: none;
+  color: #155ca2;
+  cursor: pointer;
+}
+
+.ask-question .content .btn-create-question {
+  margin-bottom: 100px;
+}
+
+#tags-suggestions {
+  border: 1px solid black;
+  background-color: white;
+  border-radius: 10px;
+}
+
+#tags-suggestions .tooltip-arrow {
+  display: none;
+}
+
+#tags-suggestions .tooltip-inner {
+  border: none;
+  border-radius: 0;
+  background: none;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  max-width: fit-content;
+}
+
+#tags-suggestions.show {
+  opacity: 1;
+}
+
+#tags-suggestions .tooltip-inner .row {
+  flex-wrap: nowrap;
+}
+
+#tags-suggestions .tag-suggestion .item {
+  text-wrap: nowrap;
+  padding: 5px;
+}
+
+#tags-suggestions .tag-suggestion .tagName {
+  font-weight: bold;
+  color: #155ca2;
+}
+
+#tags-suggestions .tag-suggestion .tagRate {
+  font-weight: 300;
+  color: black;
+}
+
+#tags-suggestions .tag-suggestion .item:hover {
+  background-color: #f3f3f3;
+  cursor: pointer;
+}
+

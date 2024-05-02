@@ -1,12 +1,13 @@
 import React, { FormEvent, useEffect } from 'react';
 import { useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
-import MDEditor from '@uiw/react-md-editor';
 import { UserService } from '../../../../api/services/user.service';
 import { AxiosError } from 'axios';
 import { formatArray } from '../../../../utils/stringUtils';
 import { ExceptionResponse, UserGetResponse, UserUpdateDTO } from '@cloneoverflow/common';
 import { AuthService } from '../../../../api/services/auth.service';
+import MDEditorCustom from '../../../../components/MDEditorCustom';
+import ErrorList from '../../../../components/errorlist/ErrorList';
 
 interface UserSettingsTabProps {
   user: UserGetResponse;
@@ -26,7 +27,7 @@ const UserSettingsTab = ({ user }: UserSettingsTabProps) => {
     newPassword: '',
     confirmPassword: '',
   });
-  const [settingsErrors, setSettingsErrors] = useState<string[]>();
+  const [errMsg, setErrMsg] = useState<string[]>();
   const [passwordErrors, setPasswordErrors] = useState<string[]>();
   const [isUpdatedPassword, setIsUpdatedPassword] = useState(false);
 
@@ -41,10 +42,10 @@ const UserSettingsTab = ({ user }: UserSettingsTabProps) => {
   const onChangeSettings = async (event: FormEvent) => {
     event.preventDefault();
     const res = await UserService.update(user.id, newUser).catch((error: AxiosError<ExceptionResponse>) => {
-      setSettingsErrors(formatArray(error.response?.data.error) ?? ['Server error']);
+      setErrMsg(formatArray(error.response?.data.error) ?? ['Server error']);
     });
     if (res) {
-      setSettingsErrors(undefined);
+      setErrMsg(undefined);
       window.location.reload();
     }
   };
@@ -72,7 +73,7 @@ const UserSettingsTab = ({ user }: UserSettingsTabProps) => {
   const onLeaveAccount = async () => {
     const res = await AuthService.signout().catch((error: AxiosError<ExceptionResponse>) => {});
     if (res) {
-      setSettingsErrors(undefined);
+      setErrMsg(undefined);
       window.location.assign('/');
     }
   }
@@ -121,24 +122,23 @@ const UserSettingsTab = ({ user }: UserSettingsTabProps) => {
         </Form.Group>
         <Form.Group className='settings-block' data-color-mode="light">
           <Form.Label hrmlFor='settings-about'>About</Form.Label>
-          <MDEditor id='settings-about' value={oldUser.about} onChange={(text?: string) => {
-            setOldUser({
-              ...oldUser,
-              about: text ?? '',
-            });
-            setNewUser({
-              ...newUser,
-              about: text ?? ''
-            });
-          }}/>
+          <MDEditorCustom 
+            id='settings-about' 
+            value={oldUser.about} 
+            onChange={(text?: string) => {
+              setOldUser({
+                ...oldUser,
+                about: text ?? '',
+              });
+              setNewUser({
+                ...newUser,
+                about: text ?? ''
+              });
+            }}
+          />
         </Form.Group>
         <Form.Group className='settings-block'>
-          {
-            settingsErrors?.map(
-              (msg, index) => 
-              <Form.Text key={index} className='error-message'>{msg}</Form.Text>
-            )
-          }
+          <ErrorList errors={errMsg}/>
         </Form.Group>
         <Form.Group className='settings-block'>
           <Button type='submit'>Save changes</Button>
@@ -188,12 +188,7 @@ const UserSettingsTab = ({ user }: UserSettingsTabProps) => {
             isUpdatedPassword && 
             <Form.Text className='success-message'>Password has been updated</Form.Text>
           }
-          {
-            passwordErrors?.map(
-              (msg, index) => 
-              <Form.Text key={index} className='error-message'>{msg}</Form.Text>
-            )
-          }
+          <ErrorList errors={passwordErrors}/>
         </Form.Group>
         <Form.Group className='settings-block'>
           <Button type='submit'>Save password</Button>

@@ -1,33 +1,36 @@
-import React, { useEffect } from 'react';
+import React, { PropsWithChildren, useEffect, useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useCookie } from '../hooks/useCookie';
 import { AuthService } from '../api/services/auth.service';
 
-export const PrivateRoute = () => {
-  const { user, setUser, authLoading, setAuthLoading } = useAuth();
+export const PrivateRoute = ({ children }: PropsWithChildren) => {
+  const { user, setUser, authLoading } = useAuth();
   const { get } = useCookie();
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    if (get('access_token')) return;
-
-    setAuthLoading(true);
+    if (get('access_token')) {
+      setLoading(false);
+      return;
+    };
 
     AuthService.getMe().then((user) => {
       setUser(user);
-    }).catch(() => {
+    }).catch((err) => {
+      console.log(err);
       setUser(null);
     }).finally(() => {
-      setAuthLoading(false);
+      setLoading(false);
     });
   }, []);
 
-  if (authLoading) {
+  if (loading || authLoading) {
     return <></>;
   }
 
   if (user) {
-    return <Outlet />;
+    return <>{children}</>;
   }
 
   return <Navigate to="/auth/login" />;

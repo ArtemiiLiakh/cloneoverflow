@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { MappedSearchTagsResponse, OrderBy, PaginationResponse, SearchTagsSortBy } from '@cloneoverflow/common';
 import { SearchService } from '../../../api/services/search.service';
 import config from '../../../config';
@@ -18,6 +18,7 @@ const TagsPage = () => {
     totalAmount: 0,
   });
   const [page, setPage] = useState<number>(0);
+  const currTimeout = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
     SearchService.searchTags({
@@ -68,7 +69,7 @@ const TagsPage = () => {
   }
 
   return ( 
-    <div className='page tagsPages'>
+    <div className='page tagsPage'>
       <div className="header">
         <h3>Tags</h3>
         <p>Total amount: {pagination.totalAmount}</p>
@@ -77,7 +78,11 @@ const TagsPage = () => {
             e.preventDefault();
           }}>
             <Form.Control type='text' placeholder='Search tags' onChange={(e) => {
-              setTimeout(() => {
+              if (currTimeout.current) {
+                clearTimeout(currTimeout.current);
+              }
+
+              currTimeout.current = setTimeout(() => {
                 setName(e.target.value);
               }, 1000);
             }}/>
@@ -100,7 +105,7 @@ const TagsPage = () => {
           </div>
         </div>
       </div>
-      <div className="tagList">
+      <div className="tags">
         { tagList }
         <Pagination page={page} setPage={setPage} totalPages={pagination.totalPages ?? 0}/>
       </div>

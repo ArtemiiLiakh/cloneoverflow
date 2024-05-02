@@ -1,5 +1,4 @@
 import { ExceptionResponse } from '@cloneoverflow/common';
-import MDEditor, { codeEdit, codePreview } from '@uiw/react-md-editor';
 import { AxiosError } from 'axios';
 import { FormEvent, useState } from 'react';
 import { Form } from 'react-bootstrap';
@@ -8,6 +7,8 @@ import { useAuth } from '../../hooks/useAuth';
 import { formatArray } from '../../utils/stringUtils';
 import { validateData } from '../../utils/validateData';
 import { SignupData } from './SignupData';
+import MDEditorCustom from '../../components/MDEditorCustom';
+import ErrorList from '../../components/errorlist/ErrorList';
 
 const Signup = () => {
   const { singup } = useAuth();
@@ -41,11 +42,6 @@ const Signup = () => {
     setErrMsg(null);
     navigator('/');
   }
-
-  const renderErrMsg = errMsg?.map(
-    (msg, index) => 
-    <Form.Text key={index} className='error-message'>{msg}</Form.Text>
-  );
 
   return ( 
     <div className='auth'>
@@ -112,19 +108,15 @@ const Signup = () => {
           />
         </Form.Group>
         <Form.Group className='block'>
-          {renderErrMsg}
+          <ErrorList errors={errMsg}/>
         </Form.Group>
         <Form.Group className='block' data-color-mode="light">
-          <MDEditor 
-            preview='edit' 
-            extraCommands={[
-              codeEdit,
-              codePreview,
-            ]}
+          <MDEditorCustom 
             value={about}
             onChange={(value) => {
               setAbout(value)
-            }}/>
+            }}
+          />
         </Form.Group>
 
         <Form.Group className='block'>

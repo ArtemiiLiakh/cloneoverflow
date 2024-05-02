@@ -15,8 +15,3 @@
 .auth .show-password {
   margin-top: 10px;
 }
-
-.auth .error-message {
-  display: block;
-  color: red;
-}

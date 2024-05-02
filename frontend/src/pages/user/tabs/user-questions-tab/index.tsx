@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { UserService } from '../../../../api/services/user.service';
 import { Form, Table } from 'react-bootstrap';
 import { GetPassedDate } from '../../../../utils/stringUtils';
-import TagNames from '../../../../components/tagNames/tagNames';
+import Taglist from '../../../../components/taglist/taglist';
 import { 
   MappedUserGetQuestionResponse, 
   UserGetQuestionsDTO, 
@@ -132,7 +132,7 @@ const UserQuestionsTab = ({ userId }: UserQuestionsTabProps) => {
               <td>{question.answersAmount}</td>
               <td>{question.status}</td>
               <td>{GetPassedDate(question.createdAt)}</td>
-              <td><TagNames tags={question.tags}/></td>
+              <td><Taglist tags={question.tags}/></td>
             </tr>
           ))}
         </tbody>

@@ -161,19 +161,29 @@ export class QuestionService {
     ];
 
     let where: Prisma.QuestionWhereInput = {
-      userProfile: {
-        name: {
-          in: authors,
-          mode: "insensitive",
-        },
-      },
-      tags: {
+      userProfile: authors ? {
+        OR: [
+          {
+            name: {
+              in: authors,
+              mode: "insensitive",
+            },
+          },
+          {
+            username: {
+              in: authors,
+              mode: "insensitive",
+            },
+          },
+        ]
+      } : undefined,
+      tags: tags ? {
         some: {
           name: {
             in: tags,
           },
         },
-      },
+      } : undefined,
     };
 
     for (const filter of filterBy ?? []) {

@@ -90,9 +90,10 @@ export class UserService {
                 },
                 tags: true,
               },
-              orderBy: {
-                rate: 'desc',
-              },
+              orderBy: [
+                { rate: OrderBy.DESC },
+                { answers: { _count: 'desc' } },
+              ],
             },
           },
         },

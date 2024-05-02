@@ -8,6 +8,7 @@ import { PrivateRoute } from './PrivateRoute';
 import HomePage from '../pages/home/pages/homePage';
 import QuestionPage from '../pages/home/pages/questionPage';
 import TagsPage from '../pages/home/pages/tagsPage';
+import AskQuestion from '../pages/askQuestion';
 
 export const router = createBrowserRouter([
   {
@@ -17,15 +18,14 @@ export const router = createBrowserRouter([
       { 
         path: '/', element: <Home/>, children: [
           { path: '/', element: <HomePage/> },
-          { path: '/questions', element: <QuestionPage/> },
-          { path: '/tags', element: <TagsPage/> }
-        ] 
+          { path: '/questions', element: <QuestionPage/>},
+          { path: '/tags', element: <TagsPage/> },
+        ]
       },
+      { path: '/questions/ask', element: <PrivateRoute><AskQuestion/></PrivateRoute>},
       { path: '/auth/login', element: <Login/> },
       { path: '/auth/signup', element: <Signup/> },
-      { element: <PrivateRoute/>, children: [
-        { path: '/user/:userId', element: <UserProfile/> },
-      ]}
+      { path: '/user/:userId', element: <PrivateRoute><UserProfile/></PrivateRoute>}
     ],
   }
 ]);

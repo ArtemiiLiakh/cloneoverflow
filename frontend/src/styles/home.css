@@ -59,3 +59,11 @@
 .home .content .pagination {
   margin: 50px 0 30vh 0;
 }
+
+.home .content .tagsPage .tags {
+  margin-top: 20px;
+}
+
+.home .content .tagsPage .tags .tagItem {
+  margin: 10px;
+}

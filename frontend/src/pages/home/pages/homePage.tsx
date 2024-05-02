@@ -4,6 +4,7 @@ import config from '../../../config';
 import QuestionItem from '../components/questionItem';
 import { MappedSearchQuestionResponse, SearchQuestionFilterBy, SearchQuestionSortBy, SearchQuestionsDTO } from '@cloneoverflow/common';
 import { SearchService } from '../../../api/services/search.service';
+import { useNavigate } from 'react-router-dom';
 
 enum HomePageSortEnum {
   INTERESTING = 'interesting',
@@ -36,6 +37,7 @@ const QuestionSortMapper: IQuestionSortMapper = {
 const HomePage = () => {
   const [questions, setQuestions] = useState<MappedSearchQuestionResponse[]>([]);
   const [activeTab, setActiveTab] = useState<HomePageSortEnum>(HomePageSortEnum.INTERESTING);
+  const navigate = useNavigate();
 
   useEffect(() => {
     SearchService.searchQuestion({ 
@@ -74,7 +76,9 @@ const HomePage = () => {
             </Nav>
           </div>
         </div>
-        <Button variant='primary' className='askQuestion'>Ask a question</Button>
+        <Button variant='primary' className='askQuestion' onClick={() => {
+          navigate('/questions/ask');
+        }}>Ask a question</Button>
       </div>
       <ListGroup className='questionList' variant='flush'>
         {questions.map((question, index) => <QuestionItem key={index} question={question}/>)}

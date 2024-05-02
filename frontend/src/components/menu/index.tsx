@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink, createSearchParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { Navbar, Form, Container, Col } from 'react-bootstrap';
 import { useAuth } from '../../hooks/useAuth';
@@ -8,6 +8,13 @@ export const Menu = () => {
   const { user, authLoading } = useAuth();
   const navigate = useNavigate();
   const [searchParams, setSearchParam] = useSearchParams();
+  
+  useEffect(() => {
+    const q = searchParams.get('q');
+    if (q) {
+      setSearch(q.replace('?q=', ''));
+    }
+  }, [searchParams])
 
   return (
     <Navbar className='navbar'>
@@ -26,7 +33,7 @@ export const Menu = () => {
               }).toString() : undefined,
             });
           }}>
-            <Form.Control type="text" placeholder="Search" className="searchBar" onChange={(e) => setSearch(e.target.value)}/>
+            <Form.Control type="text" placeholder="Search" className="searchBar" value={search} onChange={(e) => setSearch(e.target.value)}/>
           </Form>
         </Col>
         <Col sm className='account-container'>

@@ -1,5 +1,5 @@
 import React, { useState, SetStateAction, Dispatch } from 'react';
-import { Pagination as BootPagination } from 'react-bootstrap';
+import { Pagination as BSPagination } from 'react-bootstrap';
 
 interface BootPaginationProps {
   page: number;
@@ -14,35 +14,35 @@ const Pagination = ({ page, setPage, totalPages }: BootPaginationProps) => {
     const items = [];
     for (let number = minPages; number < maxPages; number++) {
       items.push(
-        <BootPagination.Item key={number} active={number === page} onClick={() => {
+        <BSPagination.Item key={number} active={number === page} onClick={() => {
           setPage(number);
         }}>
           {number+1}
-        </BootPagination.Item>,
+        </BSPagination.Item>,
       );
     }
     return items;
   }
 
-  const prev = <BootPagination.Prev disabled={page === 0} onClick={() => setPage(page > 0 ? page-1 : 0)}/>
-  const next = <BootPagination.Next disabled={page === totalPages} onClick={() => setPage(page < totalPages ? page+1 : totalPages)}/>
+  const prev = <BSPagination.Prev disabled={page === 0} onClick={() => setPage(page > 0 ? page-1 : 0)}/>
+  const next = <BSPagination.Next disabled={page === totalPages} onClick={() => setPage(page < totalPages ? page+1 : totalPages)}/>
 
   return (
-    <BootPagination>
+    <BSPagination>
       {prev}
-      <BootPagination.First onClick={() => {
+      <BSPagination.First onClick={() => {
         setPage(0);
-      }}>{1}</BootPagination.First>
+      }}>{1}</BSPagination.First>
 
-      <BootPagination.Ellipsis disabled/>     
+      <BSPagination.Ellipsis disabled/>     
       {getPageItems()}
-      <BootPagination.Ellipsis disabled/>
+      <BSPagination.Ellipsis disabled/>
 
-      <BootPagination.Last onClick={() => {
+      <BSPagination.Last onClick={() => {
         setPage(totalPages ?? 0);
-      }}>{(totalPages ?? 0)+1}</BootPagination.Last>
+      }}>{(totalPages ?? 0)+1}</BSPagination.Last>
       {next}
-    </BootPagination>
+    </BSPagination>
   );
 }
  

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import TagNames from '../../../../components/tagNames/tagNames';
+import Taglist from '../../../../components/taglist/taglist';
 import { UserService } from '../../../../api/services/user.service';
 import { GetPassedDate, ShortText } from '../../../../utils/stringUtils';
 import MDEditor from '@uiw/react-md-editor';
@@ -46,7 +46,7 @@ const UserAboutTab = ({ userId }: UserAboutTabProps) => {
             <p>{ShortText(bestQuestionTitle, 100)}</p>
             <p>Rate: {user?.bestQuestion?.rate}</p>
             <p>Answers: {user?.bestQuestion?.answersAmount}</p>
-            <TagNames tags={user?.bestQuestion?.tags}/>
+            <Taglist tags={user?.bestQuestion?.tags}/>
             <button className='btn btn-primary'>Go to the question</button>
           </div>
           <div className="about-block-item best-answer">
@@ -56,7 +56,7 @@ const UserAboutTab = ({ userId }: UserAboutTabProps) => {
             </div>
             <p>Text: {ShortText(bestAnswerText, 100)}</p>
             <p>Rate: {user?.bestAnswer?.rate}</p>
-            <NavLink to='/questions'>{ShortText(bestAnswerQuestionTitle, 100)}</NavLink>
+            <button className='btn btn-primary'>{ShortText(bestAnswerQuestionTitle, 100)}</button>
           </div>
         </div>
       </div>
