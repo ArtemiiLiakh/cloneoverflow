@@ -1,0 +1,123 @@
+.question {
+  margin-bottom: 30vh;
+}
+
+.question .head {
+  border-bottom: 2px solid #e0e0e0;
+  padding: 10px 0;
+}
+
+.question .head-pannel {
+  display: flex;
+  gap: 20px
+}
+
+.question .body {
+  margin: 30px 0;
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+}
+
+.question .body,
+.answer-item {
+  margin: 30px 0;
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+}
+
+.question .body .sidepanel,
+.answer-item .sidepanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.question .body .sidepanel .vote-btn, 
+.answer-item .sidepanel .vote-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 1.2em;
+  border: 1px solid #636b74;
+  background: transparent;
+}
+
+.question .body .sidepanel .vote-btn:hover,
+.answer-item .sidepanel .vote-btn:hover {
+  background: #fdf9ed;
+}
+
+.question .body .sidepanel .rating,
+.answer-item .body .sidepanel .rating {
+  font-size: 1.2em;
+  font-weight: 500;
+}
+
+.question .body .question-text .md-text,
+.answer-item .answer-content .answer-text {
+  margin-bottom: 30px;
+}
+
+.question .body .question-text,
+.question .answer-item .answer-content {
+  width: 100%;
+}
+
+.question .footer,
+.question  .answer-item .answer-pannel {
+  display: flex;
+  justify-content: right;
+  margin-top: 20px;
+}
+
+.question .question-content .footer .actions, 
+.question .answer-item .answer-content .answer-pannel .actions {
+  flex: 1;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.question .question-content .footer .actions .action-btn, 
+.question .answer-item .answer-content .answer-pannel .actions .action-btn {
+  display: block;
+  color: #636b74;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.question .question-content .footer .actions .action-btn:hover, 
+.question .answer-item .answer-content .answer-pannel .actions .action-btn:hover {
+  color: #3b4046;
+}
+
+.question .footer .author,
+.question .answer-item .answer-pannel .author {
+  background: #edf5fd;
+  padding: 10px;
+}
+
+.question .footer .author .askedDate,
+.question .answer-item .answer-pannel .answerDate {
+  color: #636b74;
+}
+
+.question .answer-block .answer-head {
+  margin: 20px 0;
+}
+
+.question .answer-block .answer-head .sortAnswers {
+  margin: 10px 0 0 5px;
+  width: 15vw;
+  padding: 5px;
+  outline: none;
+  border: 1px solid #636b74;
+}
+
+.question .answer-block .answer-create .answer-editor {
+  margin: 20px 0;
+}

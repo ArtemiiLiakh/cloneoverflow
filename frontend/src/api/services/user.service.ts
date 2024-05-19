@@ -12,11 +12,11 @@ import urls from '../urls';
 
 export class UserService {
   static get(userId: string): Promise<UserGetResponse> {
-    return api.get(urls.get(userId));
+    return api.get(urls.getUser(userId));
   }
 
   static update(userId: string, data: UserUpdateDTO): Promise<UserGetResponse> {
-    return api.patch(urls.update(userId), data); 
+    return api.patch(urls.updateUser(userId), data); 
   }
 
   static getQuestions(userId: string, query?: UserGetQuestionsDTO): Promise<UserGetQuestionResponse> {

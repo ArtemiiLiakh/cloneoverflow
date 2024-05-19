@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { MappedSearchTagsResponse, OrderBy, PaginationResponse, SearchTagsSortBy } from '@cloneoverflow/common';
+import { MappedSearchTagsResponse, PaginationResponse, SearchTagsSortBy } from '@cloneoverflow/common';
 import { SearchService } from '../../../api/services/search.service';
 import config from '../../../config';
 import { Card, Col, Form, Nav, Row } from 'react-bootstrap';
 import Pagination from '../../../components/pagination/pagination';
-import { GetPassedDate } from '../../../utils/stringUtils';
 import { Link, createSearchParams } from 'react-router-dom';
+import { GetPassedDate } from '../../../utils/dateUtils';
 
-const TagsPage = () => {
+const TagsTab = () => {
   const [tags, setTags] = useState<MappedSearchTagsResponse[]>([]);
   const [name, setName] = useState<string>('');
   const [sortBy, setSortBy] = useState<SearchTagsSortBy>(SearchTagsSortBy.POPULAR);
@@ -49,8 +49,8 @@ const TagsPage = () => {
             <Card.Body>
               <Card.Title>
                 <Link to={`/questions?${createSearchParams({
-                    'q': `?#${tag.name}`,
-                  })}`}
+                  'q': `?#${tag.name}`,
+                })}`}
                 >{tag.name}</Link>
               </Card.Title>
               <Card.Text>{GetPassedDate(tag.createdAt)}</Card.Text>
@@ -68,7 +68,7 @@ const TagsPage = () => {
     );
   }
 
-  return ( 
+  return (
     <div className='page tagsPage'>
       <div className="header">
         <h3>Tags</h3>
@@ -85,7 +85,7 @@ const TagsPage = () => {
               currTimeout.current = setTimeout(() => {
                 setName(e.target.value);
               }, 1000);
-            }}/>
+            }} />
           </Form>
           <div className="sort">
             <Nav variant='pills' defaultActiveKey={SearchTagsSortBy.POPULAR} onSelect={(e) => {
@@ -106,11 +106,11 @@ const TagsPage = () => {
         </div>
       </div>
       <div className="tags">
-        { tagList }
-        <Pagination page={page} setPage={setPage} totalPages={pagination.totalPages ?? 0}/>
+        {tagList}
+        <Pagination page={page} setPage={setPage} totalPages={pagination.totalPages ?? 0} />
       </div>
     </div>
   );
 }
- 
-export default TagsPage;
+
+export default TagsTab;

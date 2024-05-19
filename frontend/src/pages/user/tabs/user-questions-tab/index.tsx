@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { UserService } from '../../../../api/services/user.service';
 import { Form, Table } from 'react-bootstrap';
-import { GetPassedDate } from '../../../../utils/stringUtils';
 import Taglist from '../../../../components/taglist/taglist';
 import { 
   MappedUserGetQuestionResponse, 
@@ -10,6 +9,7 @@ import {
   UserGetQuestionResponse, 
   OrderBy
 } from '@cloneoverflow/common';
+import { GetPassedDate } from '../../../../utils/dateUtils';
 
 interface UserQuestionsTabProps {
   userId?: string;   

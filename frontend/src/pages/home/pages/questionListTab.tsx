@@ -39,10 +39,10 @@ const QuestionSortMapper: IQuestionSortMapper = {
   },
 }
 
-const QuestionPage = () => {
+const QuestionListTab = () => {
   const [questions, setQuestions] = useState<MappedSearchQuestionResponse[]>([]);
   const [activeTab, setActiveTab] = useState<QuestionPageSortEnum>(QuestionPageSortEnum.NEWEST);
-  
+
   const [page, setPage] = useState<number>(config.defaultPage);
   const [pagination, setPagination] = useState<Partial<PaginationResponse>>({
     page: config.defaultPage,
@@ -55,7 +55,7 @@ const QuestionPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    SearchService.searchQuestion({ 
+    SearchService.searchQuestion({
       search: searchParams.get('q') ?? '',
       ...QuestionSortMapper[activeTab],
       pagination: {
@@ -65,10 +65,10 @@ const QuestionPage = () => {
     }).then((res) => {
       setQuestions(res.questions);
       setPagination(res.pagination);
-    }); 
+    });
   }, [activeTab, page, searchParams]);
 
-  return ( 
+  return (
     <div className='page questionPage'>
       <div className="header">
         <h3>Questions</h3>
@@ -102,12 +102,12 @@ const QuestionPage = () => {
         }}>Ask a question</Button>
       </div>
       <ListGroup className='questionList' variant='flush'>
-        {questions.map((question, index) => <QuestionItem key={index} question={question}/>)}
+        {questions.map((question, index) => <QuestionItem key={index} question={question} />)}
       </ListGroup>
 
-      <Pagination page={page} setPage={setPage} totalPages={pagination.totalPages ?? 0}/>
+      <Pagination page={page} setPage={setPage} totalPages={pagination.totalPages ?? 0} />
     </div>
   );
 }
- 
-export default QuestionPage;
+
+export default QuestionListTab;

@@ -10,7 +10,7 @@ import {
   UserGetQuestionsDTO,
   UserUpdateDTO
 } from '@cloneoverflow/common';
-import { Prisma } from '@prisma/client';
+import { Prisma, UserQuestionStatus } from '@prisma/client';
 import { AnswerRepository } from '../repositories/answer.repository';
 import { QuestionRepository } from '../repositories/question.repository';
 import { UserRepository } from "../repositories/user.repository";
@@ -72,7 +72,11 @@ export class UserService {
             _count: {
               select: {
                 answers: true,
-                questions: true,
+                userQuestions: {
+                  where: {
+                    status: UserQuestionStatus.OWNER,
+                  },
+                },
               },
             },
             answers: {
@@ -84,19 +88,33 @@ export class UserService {
                 question: true,
               }
             },
-            questions: {
+            userQuestions: {
               take: 1,
               include: {
-                _count: {
-                  select: {
-                    answers: true,
+                question: {
+                  include: {
+                    _count: {
+                      select: {
+                        answers: true,
+                      },
+                    },
+                    tags: true,
                   },
                 },
-                tags: true,
               },
               orderBy: [
-                { rate: OrderBy.DESC },
-                { answers: { _count: 'desc' } },
+                {
+                  question: {
+                    rate: 'desc',
+                  },
+                },
+                {
+                  question: {
+                    answers: {
+                      _count: 'desc',
+                    },
+                  },
+                },
               ],
             },
           },

@@ -1,4 +1,4 @@
-import { AnswerCreateDTO, AnswerUpdateDTO, BadBodyException, ForbiddenException } from '@cloneoverflow/common';
+import { AnswerCreateDTO, AnswerUpdateDTO, BadBodyException, ForbiddenException, NoEntityWithIdException } from '@cloneoverflow/common';
 import { AnswerRepository } from '../repositories/answer.repository';
 import { QuestionRepository } from '../repositories/question.repository';
 
@@ -27,5 +27,17 @@ export class AnswerService {
     }
 
     return this.answerRepository.update({id: answerId}, {text: text});
+  }
+
+  async get (answerId: string) {
+    return await this.answerRepository.find({id: answerId});
+  }
+
+  async delete (answerId: string) {
+    const answer = await this.answerRepository.delete({ id: answerId });
+    
+    if (!answer) {
+      throw new NoEntityWithIdException('Answers')
+    }
   }
 }

@@ -41,7 +41,7 @@ export const Menu = () => {
             authLoading ? <></> 
             : <button className='user' onClick={() => {
                 if (user) {
-                  navigate(`/user/${user.id}`);
+                  navigate(`/users/${user.id}`);
                 } else {
                   navigate('/auth/login');
                 }

@@ -3,9 +3,17 @@ import { DbQuestion } from "../types/database/DbQuestion";
 
 export class QuestionRepository {
   private include: Prisma.QuestionInclude = {
-    userProfile: true,
+    userQuestions: {
+      include: {
+        userProfile: true,
+      },
+    },
     tags: true,
-    answers: true,
+    answers: {
+      include: {
+        userProfile: true,
+      },
+    },
   }
 
   constructor(private prisma = new PrismaClient()) {}

@@ -14,4 +14,5 @@ import './user-about-tab.css';
 import './user-answers-tab.css';
 import './user-questions-tab.css';
 import './user-settings-tab.css';
-import './ask-question.css';
+import './question-action.css';
+import './question.css';

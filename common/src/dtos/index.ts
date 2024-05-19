@@ -9,6 +9,7 @@ export * from './pagination.dto';
 
 export * from './question.create.dto';
 export * from './question.update.dto';
+export * from './question.get.dto';
 
 export * from './search.questions.dto';
 export * from './search.tags.dto';
