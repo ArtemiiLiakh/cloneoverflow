@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient, PrismaPromise } from '@prisma/client';
 import { DbUser } from '../types/database/DbUser';
 
 export class UserRepository {
@@ -12,7 +12,7 @@ export class UserRepository {
     return this.prisma.user.create({
       data,
       include: this.include,
-    }) as unknown as Promise<DbUser>;
+    }) as unknown as PrismaPromise<DbUser>;
   }
 
   find<R=DbUser> (where: Prisma.UserWhereInput, args?: Prisma.UserFindFirstArgs) {
@@ -20,7 +20,7 @@ export class UserRepository {
       where,
       include: this.include,
       ...args,
-    }) as unknown as Promise<R>;
+    }) as unknown as PrismaPromise<R>;
   }
 
   findById<R=DbUser> (id: string, args?: Prisma.UserFindFirstArgs) {
@@ -34,7 +34,7 @@ export class UserRepository {
       where,
       include: this.include,
       ...args,
-    }) as unknown as Promise<R[]>;
+    }) as unknown as PrismaPromise<R[]>;
   }
   
   update<R=DbUser> (where: Prisma.UserWhereUniqueInput, data: Prisma.UserUncheckedUpdateInput) {
@@ -42,7 +42,7 @@ export class UserRepository {
       where,
       data,
       include: this.include,
-    }) as unknown as Promise<R>;
+    }) as unknown as PrismaPromise<R>;
   }
 
   updateById (id: string, data: Prisma.UserUncheckedUpdateInput) {
@@ -55,6 +55,6 @@ export class UserRepository {
     return this.prisma.user.delete({
       where,
       include: this.include,
-    }) as unknown as Promise<DbUser>;
+    }) as unknown as PrismaPromise<DbUser>;
   }
 }

@@ -7,7 +7,8 @@ import {
   UserGetQuestionsDTO, 
   UserGQSortBy, 
   UserGetQuestionResponse, 
-  OrderBy
+  OrderBy,
+  QuestionStatus
 } from '@cloneoverflow/common';
 import { GetPassedDate } from '../../../../utils/dateUtils';
 

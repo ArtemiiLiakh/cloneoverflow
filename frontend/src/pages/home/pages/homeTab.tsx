@@ -19,17 +19,18 @@ interface IQuestionSortMapper {
 
 const QuestionSortMapper: IQuestionSortMapper = {
   [HomePageSortEnum.INTERESTING]: {
-    sortBy: [SearchQuestionSortBy.DATE, SearchQuestionSortBy.RATE, SearchQuestionSortBy.ANSWERS],
+    sortBy: [SearchQuestionSortBy.DATE, SearchQuestionSortBy.RATE, SearchQuestionSortBy.ANSWERS, SearchQuestionSortBy.VIEWS],
   },
   [HomePageSortEnum.HOT]: {
-    sortBy: [SearchQuestionSortBy.RATE, SearchQuestionSortBy.ANSWERS, SearchQuestionSortBy.DATE],
+    sortBy: [SearchQuestionSortBy.RATE, SearchQuestionSortBy.ANSWERS, SearchQuestionSortBy.VIEWS, SearchQuestionSortBy.DATE],
+    filterBy: [SearchQuestionFilterBy.MONTHLY],
   },
   [HomePageSortEnum.WEEK]: {
-    sortBy: [SearchQuestionSortBy.DATE, SearchQuestionSortBy.RATE, SearchQuestionSortBy.ANSWERS],
+    sortBy: [SearchQuestionSortBy.DATE, SearchQuestionSortBy.RATE, SearchQuestionSortBy.ANSWERS, SearchQuestionSortBy.VIEWS],
     filterBy: [SearchQuestionFilterBy.WEEKLY],
   },
   [HomePageSortEnum.MONTH]: {
-    sortBy: [SearchQuestionSortBy.DATE, SearchQuestionSortBy.RATE, SearchQuestionSortBy.ANSWERS],
+    sortBy: [SearchQuestionSortBy.DATE, SearchQuestionSortBy.RATE, SearchQuestionSortBy.ANSWERS, SearchQuestionSortBy.VIEWS],
     filterBy: [SearchQuestionFilterBy.MONTHLY],
   },
 }
@@ -46,8 +47,8 @@ const HomeTab = () => {
         page: config.defaultPage,
         pageSize: 30,
       },
-    }).then((res) => {
-      setQuestions(res.questions);
+    }).then((data) => {
+      setQuestions(data.questions);
     });
   }, [activeTab]);
 
@@ -81,7 +82,7 @@ const HomeTab = () => {
         }}>Ask a question</Button>
       </div>
       <ListGroup className='questionList' variant='flush'>
-        {questions.map((question, index) => <QuestionItem key={index} question={question} />)}
+        {questions.map((question) => <QuestionItem key={question.id} question={question} />)}
       </ListGroup>
     </div>
   );

@@ -1,8 +1,15 @@
 import express from "express";
+import { 
+  SearchQuestionsDTO, 
+  QuestionUpdateDTO, 
+  QuestionCreateDTO, 
+  QuestionGetDTO, 
+  VoteDTO, 
+  QuestionCloseDTO
+} from '@cloneoverflow/common';
 import { QuestionController } from "../controllers/question.controller";
-import { AuthAccess } from "../middlewares/authAccess";
+import { AuthAccess, GetAuth } from "../middlewares/authAccess";
 import { validateRequest } from "../middlewares/validation";
-import { SearchQuestionsDTO, QuestionUpdateDTO, QuestionCreateDTO, QuestionGetDTO } from '@cloneoverflow/common';
 import { SearchController } from "../controllers/search.controller";
 
 const router = express.Router();
@@ -27,12 +34,27 @@ router.get('/search',
 );
 
 router.get('/:questionId', 
+  GetAuth(),
   validateRequest({ query: QuestionGetDTO }),
   questionController.get.bind(questionController)
 );
 
 router.delete('/:questionId/delete', 
   questionController.delete.bind(questionController)
+);
+
+router.patch('/:questionId/closed', 
+  AuthAccess(),
+  validateRequest({
+    body: QuestionCloseDTO
+  }),
+  questionController.closeQuestion.bind(questionController),
+);
+
+router.patch('/:questionId/vote', 
+  AuthAccess(),
+  validateRequest({ body: VoteDTO }),
+  questionController.voteQuestion.bind(questionController),
 );
 
 export { router as question };

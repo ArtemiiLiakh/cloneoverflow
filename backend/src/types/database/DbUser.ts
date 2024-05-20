@@ -1,5 +1,5 @@
 import { Tag, UserStatus } from '@cloneoverflow/common';
-import { Answer, Question, User, UserProfile, UserQuestions } from '@prisma/client';
+import { Answer, Question, User, UserAnswers, UserProfile, UserQuestions } from '@prisma/client';
 
 export class DbUser implements User {
   id: string;
@@ -20,8 +20,10 @@ export class DbUserGetProfile extends DbUser {
     status: UserStatus;
     createdAt: Date;
     updatedAt: Date;
-    answers: (Answer & {
-      question: Question;
+    userAnswers: (UserAnswers & {
+      answer: Answer & {
+        question: Question;
+      };
     })[];
     userQuestions: (UserQuestions & {
       question: Question & {
@@ -32,7 +34,7 @@ export class DbUserGetProfile extends DbUser {
       };
     })[];
     _count: {
-      answers: number;
+      userAnswers: number;
       userQuestions: number;
     };
   };

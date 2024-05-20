@@ -1,30 +1,22 @@
 import axios, { AxiosError } from 'axios';
 import urls from './urls';
+import { useCookie } from '../hooks/useCookie';
+import axiosRetry from 'axios-retry';
 
 const api = axios.create({
   withCredentials: true,
 });
 
-api.interceptors.response.use((config) => config.data,
-  async (error: AxiosError) => {
-    const originalRequest = {
-      ...error.config,
-      _isRetry: true,
-    };
-
-    if (
-      error.response?.status === 401 || error.response?.status === 403
-    ) {
-      const resp = await axios.post(urls.refreshToken, {}, {
-        withCredentials: true,
-      }).catch(() => null);
-
-      if (resp) {
-        return api.request(originalRequest);
-      }  
-    }
-    return Promise.reject(error);
-  } 
-);
+axiosRetry(api, {
+  retries: 1,
+  onRetry: async (count) => {
+    await axios.post(urls.refreshToken, {}, {
+      withCredentials: true,
+    }).catch(() => null);
+  },
+  retryCondition: (error) => {
+    return error.response?.status === 401 || error.response?.status === 403;
+  }
+});
 
 export default api;

@@ -10,11 +10,11 @@ import {
   UserGetQuestionsDTO,
   UserUpdateDTO
 } from '@cloneoverflow/common';
-import { Prisma, UserQuestionStatus } from '@prisma/client';
+import { Prisma, UserAnswerStatus, UserQuestionStatus } from '@prisma/client';
 import { AnswerRepository } from '../repositories/answer.repository';
 import { QuestionRepository } from '../repositories/question.repository';
 import { UserRepository } from "../repositories/user.repository";
-import { DbAnswer } from '../types/database/DbAnswer';
+import { DbAnswer, DbAnswerWithQuestion } from '../types/database/DbAnswer';
 import { DbQuestion } from '../types/database/DbQuestion';
 import { DbUserGetProfile } from '../types/database/DbUser';
 import { DbUtils } from '../utils/DatabaseUtils';
@@ -71,7 +71,11 @@ export class UserService {
           include: {
             _count: {
               select: {
-                answers: true,
+                userAnswers: {
+                  where: {
+                    status: UserAnswerStatus.OWNER,
+                  },
+                },
                 userQuestions: {
                   where: {
                     status: UserQuestionStatus.OWNER,
@@ -79,14 +83,20 @@ export class UserService {
                 },
               },
             },
-            answers: {
+            userAnswers: {
               take: 1,
-              orderBy: {
-                rate: 'desc',
-              },
               include: {
-                question: true,
-              }
+                answer: {
+                  include: {
+                    question: true,
+                  },
+                },
+              },
+              orderBy: {
+                answer: {
+                  rate: 'desc',
+                },
+              },
             },
             userQuestions: {
               take: 1,
@@ -129,18 +139,36 @@ export class UserService {
     return user;
   }
 
-  getAnswers(userId: string, {sortBy, orderBy, questionTitle, pagination}: UserGetAnswersDTO) {
-    return DbUtils.paginate<Prisma.AnswerFindManyArgs, DbAnswer>(this.answerRepository, {
+  getAnswers(userId: string, { sortBy, orderBy, searchText, pagination }: UserGetAnswersDTO) {
+    return DbUtils.paginate<Prisma.AnswerFindManyArgs, DbAnswerWithQuestion>(this.answerRepository, {
       where: {
-        userId,
-        question: {
-          title: {
-            contains: questionTitle,
-            mode: 'insensitive',
+        userAnswers: {
+          some: {
+            userId,
+            status: UserAnswerStatus.OWNER,
           },
         },
+        OR: [
+          {
+            question: {
+              title: {
+                contains: searchText,
+                mode: 'insensitive',
+              },
+            },
+          },
+          {
+            text: {
+              contains: searchText,
+              mode: 'insensitive',
+            },
+          }
+        ]
       },
       orderBy: this.getAnswersSortBy(sortBy, orderBy),
+      include: {
+        question: true,
+      }
     }, pagination ?? {});
   }
 
@@ -165,7 +193,6 @@ export class UserService {
   getQuestions (userId: string, {sortBy, orderBy, search, tags, pagination}: UserGetQuestionsDTO) {
     return DbUtils.paginate<Prisma.QuestionFindManyArgs, DbQuestion>(this.questionRepository, {
       where: {
-        userId,
         title: {
           contains: search,
           mode: 'insensitive',
@@ -177,6 +204,12 @@ export class UserService {
             },
           },
         },
+        userQuestions: {
+          some: {
+            userId,
+            status: UserQuestionStatus.OWNER,
+          },
+        }
       },
       orderBy: this.getQuestionsSortBy(sortBy, orderBy),
     }, pagination ?? {});

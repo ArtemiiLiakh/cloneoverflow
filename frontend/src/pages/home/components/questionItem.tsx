@@ -17,6 +17,7 @@ const QuestionItem = ({ question }: QuestionItemProps) => {
       <div className="stats">
         <p>Rate: {question.rate}</p>
         <p>Answers: {question.answersAmount}</p>
+        <p>Views: {question.views}</p>
         {question.status === QuestionStatus.CLOSED && <p className='status-closed'><i className="fas fa-check-circle"></i> Answered</p>}
       </div>
       <div className="question-body">

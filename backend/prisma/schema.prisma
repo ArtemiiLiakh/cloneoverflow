@@ -39,7 +39,7 @@ model UserProfile {
   reputation      Int               @default(0)
   about           String?           @db.Text
   status          UserStatus        @default(USER)
-  answers         Answer[]
+  userAnswers     UserAnswers[]
   userQuestions   UserQuestions[]
   createdAt       DateTime          @default(now()) @map("created_at")
   updatedAt       DateTime          @updatedAt @map("updated_at")
@@ -55,10 +55,10 @@ enum QuestionStatus {
 
 model Question {
   id            String             @id @default(uuid())
-  userId        String             @map("user_id")
   title         String             @db.VarChar(255)
   text          String             @db.Text @default("")
   rate          Int                @default(0)
+  views         Int                @default(0)
   status        QuestionStatus     @default(ACTIVE)
   userQuestions UserQuestions[]       
   answers       Answer[]
@@ -76,21 +76,26 @@ enum UserQuestionStatus {
   VOTER
 }
 
+enum VoteType {
+  UP
+  DOWN
+}
+
 model UserQuestions {
   id            String                @id @default(uuid())
   userId        String                @map("user_id")
   questionId    String                @map("question_id")
   userProfile   UserProfile           @relation(fields: [userId], references: [userId], onDelete: Cascade)
   question      Question              @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  status        UserQuestionStatus    @default(VIEWER)
+  status        UserQuestionStatus    @default(OWNER)
+  voteType      VoteType?             @map("vote_type")
 
   @@map("user_questions")
 }
 
 model Answer {
   id            String        @id @default(uuid())
-  userId        String        @map("user_id")
-  userProfile   UserProfile   @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userAnswers   UserAnswers[]   
   questionId    String        @map("question_id")
   question      Question      @relation(fields: [questionId], references: [id], onDelete: Cascade)
   text          String        @db.Text
@@ -100,6 +105,23 @@ model Answer {
   updatedAt     DateTime      @updatedAt @map("updated_at")
 
   @@map("answers")
+}
+
+enum UserAnswerStatus {
+  OWNER
+  VOTER
+}
+
+model UserAnswers {
+  id            String                @id @default(uuid())
+  userId        String                @map("user_id")
+  answerId      String                @map("answer_id")
+  userProfile   UserProfile           @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  answer        Answer                @relation(fields: [answerId], references: [id], onDelete: Cascade)
+  status        UserAnswerStatus      @default(OWNER)
+  voteType      VoteType?             @map("vote_type")
+
+  @@map("user_answers")
 }
 
 model Tag {

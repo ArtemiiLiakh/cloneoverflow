@@ -20,6 +20,8 @@ class URLS {
   createQuestion = this.QUESTION + '/create';
   getQuestion = (questionId: string) => `${this.QUESTION}/${questionId}`;
   updateQuestion = (questionId: string) => `${this.QUESTION}/${questionId}/update`;
+  closeQuestion = (questionId: string) => `${this.QUESTION}/${questionId}/closed`;
+  voteQuestion = (questionId: string) => `${this.QUESTION}/${questionId}/vote`;
   deleteQuestion = (questionId: string) => `${this.QUESTION}/${questionId}/delete`;
   searchQuestion = this.QUESTION + '/search';
 
@@ -27,6 +29,7 @@ class URLS {
   createAnswer = this.ANSWER + '/create';
   updateAnswer = (answerId: string) => `${this.ANSWER}/${answerId}/update`;
   deleteAnswer = (answerId: string) => `${this.ANSWER}/${answerId}/delete`;
+  voteAnswer = (answerId: string) => `${this.ANSWER}/${answerId}/vote`;
 
   private TAG = this.API+'/tags';
   searchTags = this.TAG + '/search';

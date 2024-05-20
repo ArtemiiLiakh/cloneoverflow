@@ -1,14 +1,27 @@
-import { QuestionCreateResponse, QuestionGetResponse, QuestionUpdateResponse } from '@cloneoverflow/common';
+import { QuestionCreateResponse, QuestionGetResponse, QuestionUpdateResponse, VoteType } from '@cloneoverflow/common';
 import { DbQuestion } from "../types/database/DbQuestion";
+import { UserAnswerStatus, UserProfile, UserQuestionStatus } from '@prisma/client';
 
 export class QuestionMapper {
-  get(question: DbQuestion): QuestionGetResponse {
-    const owner = question.userQuestions[0].userProfile;
+  get(question: DbQuestion, voterId?: string): QuestionGetResponse {
+    const owner = question.userQuestions.find(
+      (userAnswer) => userAnswer.status === UserQuestionStatus.OWNER
+    )?.userProfile as UserProfile;
+
+    const voter = question.userQuestions.find(
+      (userQuestion) => userQuestion.status === UserQuestionStatus.VOTER && userQuestion.userId === voterId
+    );
+
+    console.log(owner);
+    console.log(voter);
+    console.log(voterId);
 
     return {
       id: question.id,
       title: question.title,
       rate: question.rate,
+      views: question.views,
+      voteType: voter?.voteType as VoteType,
       owner: {
         id: owner.userId,
         name: owner.name,
@@ -20,20 +33,31 @@ export class QuestionMapper {
       createdAt: new Date(question.createdAt),
       updatedAt: new Date(question.updatedAt),
       tags: question.tags,
-      answers: question.answers.map((answer) => ({
-        id: answer.id,
-        text: answer.text,
-        rate: answer.rate,
-        isSolution: answer.isSolution,
-        createdAt: answer.createdAt,
-        updatedAt: answer.updatedAt,
-        owner: {
-          id: answer.userId,
-          name: answer.userProfile.name,
-          username: answer.userProfile.username,
-          reputation: answer.userProfile.reputation,
-        },
-      })),
+      answers: question.answers.map((answer) => {
+        const owner = answer.userAnswers.find(
+          (userAnswer) => userAnswer.status === UserAnswerStatus.OWNER
+        )?.userProfile as UserProfile;
+
+        const voter = answer.userAnswers.find(
+          (userAnswer) => userAnswer.status === UserAnswerStatus.VOTER && userAnswer.userId === voterId
+        );
+
+        return {
+          id: answer.id,
+          text: answer.text,
+          rate: answer.rate,
+          isSolution: answer.isSolution,
+          createdAt: answer.createdAt,
+          updatedAt: answer.updatedAt,
+          voteType: voter?.voteType as VoteType,
+          owner: {
+            id: owner.userId,
+            name: owner.name,
+            username: owner.username,
+            reputation: owner.reputation,
+          },
+        };
+      }),
     };
   }
 
@@ -45,6 +69,7 @@ export class QuestionMapper {
       title: question.title,
       text: question.text,
       rate: question.rate,
+      views: question.views,
       status: question.status,
       createdAt: question.createdAt,
       updatedAt: question.updatedAt,
@@ -67,6 +92,7 @@ export class QuestionMapper {
       title: question.title,
       text: question.text,
       rate: question.rate,
+      views: question.views,
       status: question.status,
       createdAt: question.createdAt,
       updatedAt: question.createdAt,

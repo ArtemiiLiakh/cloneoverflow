@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient, PrismaPromise } from "@prisma/client";
 import { DbTag } from "../types/database/DbTag";
 
 export class TagsRepository {
@@ -15,7 +15,7 @@ export class TagsRepository {
       where,
       include: this.include,
       ...args,
-    }) as unknown as Promise<R[]>;
+    }) as unknown as PrismaPromise<R[]>;
   }
 
   count (where: Prisma.TagWhereInput) {

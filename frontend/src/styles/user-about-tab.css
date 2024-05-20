@@ -31,7 +31,6 @@
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  align-items: flex-center;
 }
 
 .profile .user-about .about-block.best-stats .about-block-item {

@@ -2,7 +2,7 @@ import express from 'express';
 import { AnswerController } from '../controllers/answer.controller';
 import { AuthAccess } from '../middlewares/authAccess';
 import { validateRequest } from '../middlewares/validation';
-import { AnswerCreateDTO, AnswerUpdateDTO } from '@cloneoverflow/common';
+import { AnswerCreateDTO, AnswerUpdateDTO, VoteDTO } from '@cloneoverflow/common';
 
 const router = express.Router();
 const controller = new AnswerController();
@@ -21,6 +21,12 @@ router.patch('/:answerId/update', AuthAccess(), validateRequest({
 
 router.delete('/:answerId/delete', 
   controller.delete.bind(controller)
+);
+
+router.patch('/:answerId/vote', 
+  AuthAccess(),
+  validateRequest({ body: VoteDTO }),
+  controller.voteAnswer.bind(controller),
 );
 
 export { router as answer };

@@ -7,7 +7,7 @@ import {
   UserStatus,
   UserUpdateResponse
 } from '@cloneoverflow/common';
-import { DbAnswer } from '../types/database/DbAnswer';
+import { DbAnswer, DbAnswerWithQuestion } from '../types/database/DbAnswer';
 import { DbQuestion } from '../types/database/DbQuestion';
 import { DbUser, DbUserGetProfile } from "../types/database/DbUser";
 
@@ -40,20 +40,22 @@ export class UserMapper {
 
   getProfile(user: DbUserGetProfile): UserGetProfileResponse {
     const { userProfile } = user;
-    const { answers, userQuestions } = userProfile;
+    const { userAnswers, userQuestions } = userProfile;
     let bestQuestion: any = null;
     let bestAnswer: any = null;
 
-    if (answers.length) {
+    if (userAnswers.length) {
+      const { answer } = userAnswers[0];
+
       bestAnswer = {
-        id: answers[0].id,
-        text: answers[0].text,
-        rate: answers[0].rate,
-        isSolution: answers[0].isSolution,
-        createdAt: answers[0].createdAt,
+        id: answer.id,
+        text: answer.text,
+        rate: answer.rate,
+        isSolution: answer.isSolution,
+        createdAt: answer.createdAt,
         question: {
-          id: answers[0].question.id,
-          title: answers[0].question.title,
+          id: answer.question.id,
+          title: answer.question.title,
         },
       };
     }
@@ -80,7 +82,7 @@ export class UserMapper {
       about: userProfile.about,
       reputation: userProfile.reputation,
       status: userProfile.status,
-      answersAmount: userProfile._count.answers,
+      answersAmount: userProfile._count.userAnswers,
       questionsAmount: userQuestions.length,
       bestAnswer,
       bestQuestion,
@@ -88,7 +90,7 @@ export class UserMapper {
     };
   }
 
-  getAnswers(answers: DbAnswer[]): MappedUserGetAnswerResponse[] {
+  getAnswers(answers: DbAnswerWithQuestion[]): MappedUserGetAnswerResponse[] {
     return answers.map(answer => ({
       id: answer.id,
       text: answer.text,
@@ -107,10 +109,10 @@ export class UserMapper {
   getQuestions(questions: DbQuestion[]): MappedUserGetQuestionResponse[] {
     return questions.map(question => ({
       id: question.id,
-      userId: question.userId,
       title: question.title,
       text: question.text,
       rate: question.rate,
+      views: question.views,
       status: question.status,
       tags: question.tags.map(tag => tag.name),
       answersAmount: question.answers.length,

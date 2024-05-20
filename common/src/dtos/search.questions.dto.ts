@@ -8,6 +8,7 @@ export enum SearchQuestionSortBy {
   RATE = "rate",
   DATE = "date",
   ANSWERS = "answers",
+  VIEWS = "views",
   STATUS = "status"
 }
 

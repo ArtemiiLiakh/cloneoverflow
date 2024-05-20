@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
-import { AnswerGetResponse } from '@cloneoverflow/common';
+import { AnswerGetResponse, QuestionGetResponse, VoteType } from '@cloneoverflow/common';
 import MDEditor from '@uiw/react-md-editor';
 import { Button } from 'react-bootstrap';
 import MDEditorCustom from '../../../components/MDEditorCustom';
 import { useAuth } from '../../../hooks/useAuth';
 import { AnswerService } from '../../../api/services/answer.service';
 import { GetPassedDate } from '../../../utils/dateUtils';
+import { QuestionService } from '../../../api/services/question.service';
 
 interface AnswerItemProps {
-  answer: AnswerGetResponse;
+  question: QuestionGetResponse;
+  item: AnswerGetResponse;
 }
 
-const AnswerItem = ({ answer }: AnswerItemProps) => {
+const AnswerItem = ({ question, item }: AnswerItemProps) => {
   const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
-  const [answerText, setAnswerText] = useState(answer.text);
+  const [answer, setAnswer] = useState<AnswerGetResponse>(item);
 
   const onRead = () => {
     return (
@@ -47,18 +49,24 @@ const AnswerItem = ({ answer }: AnswerItemProps) => {
 
   const onEdit = () => {
     return <>
-      <MDEditorCustom value={answerText} onChange={(e) => {
-        setAnswerText(e ?? '');
+      <MDEditorCustom value={answer.text} onChange={(e) => {
+        setAnswer({
+          ...answer,
+          text: e ?? ''
+        });
       }}/>
       <div className="answer-pannel">
         <div className="actions">
           <Button className='action-btn' onClick={() => {
-            AnswerService.update(answer.id, { text: answerText }).then((res) => {
+            AnswerService.update(answer.id, { text: answer.text }).then((res) => {
               window.location.reload();
             });
           }}>Save</Button>
           <Button className='action-btn' onClick={() => {
-            setAnswerText(answer.text);
+            setAnswer({
+              ...answer,
+              text: item.text
+            });
             setIsEditing(false);
           }}>Cancel</Button>
         </div>
@@ -69,9 +77,34 @@ const AnswerItem = ({ answer }: AnswerItemProps) => {
   return ( 
     <div className="answer-item">
       <div className="sidepanel">
-        <button className='vote-btn'><i className="fa-solid fa-arrow-up"></i></button>
+        <button className='vote-btn' disabled={answer.voteType === VoteType.UP} onClick={() => {
+          AnswerService.voteAnswer(answer.id, { vote: VoteType.UP }).then(() => {
+            setAnswer({
+              ...answer,
+              voteType: answer?.voteType ? null : VoteType.UP,
+              rate: answer.rate + 1
+            });
+          }).catch(() => {});
+        }}><i className="fa-solid fa-arrow-up"></i></button>
         <p className='rating'>{answer.rate}</p>
-        <button className='vote-btn'><i className="fa-solid fa-arrow-down"></i></button>
+        <button className='vote-btn' disabled={answer.voteType === VoteType.DOWN} onClick={() => {
+          AnswerService.voteAnswer(answer.id, { vote: VoteType.DOWN }).then(() => {
+            setAnswer({
+              ...answer,
+              voteType: answer?.voteType ? null : VoteType.DOWN,
+              rate: answer.rate - 1
+            });
+          }).catch(() => {});
+        }}><i className="fa-solid fa-arrow-down"></i></button>
+        {
+          question.owner.id === user?.id ?
+            <button className={`vote-btn ${answer.isSolution ? 'solution' : ''}`} onClick={() => {
+              QuestionService.closeQuestion(question.id, answer.id).then(() => {
+                window.location.reload();
+              });
+            }}><i className="fa-solid fa-check"></i></button>
+          : <></>
+        }
       </div>
       <div className="answer-content" data-color-mode="light">
         { isEditing ? onEdit() : onRead() }

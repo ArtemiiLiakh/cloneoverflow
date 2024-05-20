@@ -3,10 +3,10 @@ import { PaginationResponse } from './pagination.response';
 
 export class MappedUserGetQuestionResponse {
   id: string;
-  userId: string;
   title: string;
   text: string;
   rate: number;
+  views: number;
   tags: string[];
   createdAt: Date;
   updatedAt: Date;

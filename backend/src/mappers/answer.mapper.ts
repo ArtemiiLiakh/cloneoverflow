@@ -6,7 +6,7 @@ export class AnswerMapper {
     return {
       id: answer.id,
       questionId: answer.questionId,
-      userId: answer.userId,
+      userId: answer.userAnswers[0].userId,
       text: answer.text,
       rate: answer.rate,
       isSolution: answer.isSolution,
@@ -26,16 +26,18 @@ export class AnswerMapper {
   }
 
   get (answer: DbAnswer): AnswerGetResponse {
+    const owner = answer.userAnswers[0].userProfile;
+
     return {
       id: answer.id,
       text: answer.text,
       rate: answer.rate,
       isSolution: answer.isSolution,
       owner:{
-        id: answer.userProfile.userId,
-        name: answer.userProfile.name,
-        username: answer.userProfile.username,
-        reputation: answer.userProfile.reputation,
+        id: owner.userId,
+        name: owner.name,
+        username: owner.username,
+        reputation: owner.reputation,
       },
       createdAt: answer.createdAt,
       updatedAt: answer.updatedAt,
