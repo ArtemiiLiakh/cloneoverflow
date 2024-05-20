@@ -5,9 +5,12 @@ import {
   SearchQuestionSortBy,
   SearchQuestionFilterBy,
   SearchQuestionsDTO,
-  QuestionUpdateDTO
+  QuestionUpdateDTO,
+  NoEntityWithIdException,
+  QuestionGetDTO,
+  QuestionAnswersSortBy
 } from '@cloneoverflow/common';
-import { Prisma, QuestionStatus } from '@prisma/client';
+import { Prisma, QuestionStatus, UserQuestionStatus } from '@prisma/client';
 import { QuestionRepository } from "../repositories/question.repository";
 import { QuestionSearchFilters } from '../types/QuestionSearchFilters';
 import { DbGetAllQuestions } from '../types/database/DbQuestion';
@@ -33,6 +36,12 @@ export class QuestionService {
             create: { name: tag },
           };
         }),
+      },
+      userQuestions: {
+        create: {
+          userId,
+          status: UserQuestionStatus.OWNER,
+        },
       },
     });
   }
@@ -66,7 +75,61 @@ export class QuestionService {
       };
     }
 
+
     return await this.questionRepository.updateById(questionId, updateData);
+  }
+
+  async get(questionId: string, { answers }: QuestionGetDTO) {
+    interface QuestionAnswersSortMapper {
+      [key: string]: Prisma.AnswerOrderByWithRelationInput;
+    }
+    
+    const sortByAnswers: QuestionAnswersSortMapper = {
+      [QuestionAnswersSortBy.RATE]: {
+        rate: answers?.orderBy ?? 'desc',
+      },
+      [QuestionAnswersSortBy.DATE]: {
+        createdAt: answers?.orderBy ?? 'desc',
+      },
+    };
+
+    const question = await this.questionRepository.findById(questionId, {
+      include: {
+        userQuestions: {
+          where: {
+            status: UserQuestionStatus.OWNER,
+          },
+          include: {
+            userProfile: true,
+          }
+        },
+        tags: true,
+        answers: {
+          include: {
+            userProfile: true,
+          },
+          orderBy: sortByAnswers[answers?.sortBy ?? QuestionAnswersSortBy.DATE],
+        },
+      }
+    });
+    
+    if (!question) {
+      throw new NoEntityWithIdException('Question');
+    }
+
+    return question;
+  }
+
+  async delete(questionId: string) {
+    const question = await this.questionRepository.delete({
+      id: questionId,
+    });
+
+    if (!question) {
+      throw new NoEntityWithIdException('Question');
+    }
+
+    return question;
   }
 
   getAll({ search, pagination, orderBy, sortBy, filterBy }: SearchQuestionsDTO) {
@@ -82,7 +145,11 @@ export class QuestionService {
           },
         },
         tags: true,
-        userProfile: true,
+        userQuestions: {
+          include: {
+            userProfile: true
+          },
+        },
       },
       orderBy: this.getQuestionsSortBy(sortBy, orderBy),
     }, pagination);
@@ -161,22 +228,27 @@ export class QuestionService {
     ];
 
     let where: Prisma.QuestionWhereInput = {
-      userProfile: authors ? {
-        OR: [
-          {
-            name: {
-              in: authors,
-              mode: "insensitive",
-            },
-          },
-          {
-            username: {
-              in: authors,
-              mode: "insensitive",
-            },
-          },
-        ]
-      } : undefined,
+      userQuestions: {
+        some: {
+          status: UserQuestionStatus.OWNER,
+          userProfile: authors ? {
+            OR: [
+              {
+                name: {
+                  in: authors,
+                  mode: "insensitive",
+                },
+              },
+              {
+                username: {
+                  in: authors,
+                  mode: "insensitive",
+                },
+              },
+            ]
+          } : undefined,
+        },
+      },
       tags: tags ? {
         some: {
           name: {

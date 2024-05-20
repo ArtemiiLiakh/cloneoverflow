@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Taglist from '../../../../components/taglist/taglist';
 import { UserService } from '../../../../api/services/user.service';
-import { GetPassedDate, ShortText } from '../../../../utils/stringUtils';
+import { ShortText } from '../../../../utils/stringUtils';
 import MDEditor from '@uiw/react-md-editor';
 import { UserGetProfileResponse } from '@cloneoverflow/common';
+import { GetPassedDate } from '../../../../utils/dateUtils';
 
 interface UserAboutTabProps {
   userId?: string;
@@ -14,7 +15,7 @@ const UserAboutTab = ({ userId }: UserAboutTabProps) => {
   const [user, setUser] = useState<UserGetProfileResponse>()
   const bestQuestionTitle = user?.bestQuestion?.title ?? '';
   const bestAnswerText = user?.bestAnswer?.text ?? '';
-  const bestAnswerQuestionTitle = user?.bestAnswer?.question.title ?? '';
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (userId) {
@@ -38,30 +39,44 @@ const UserAboutTab = ({ userId }: UserAboutTabProps) => {
           <MDEditor.Markdown source={user?.about ?? ''} />
         </div>
         <div className="about-block best-stats">
-          <div className="about-block-item best-question">
-            <div className="about-block-header">
-              <p className='block-header'>Best Question</p>
-              <p className='created-date'>{GetPassedDate(user?.bestQuestion?.createdAt)}</p>
-            </div>
-            <p>{ShortText(bestQuestionTitle, 100)}</p>
-            <p>Rate: {user?.bestQuestion?.rate}</p>
-            <p>Answers: {user?.bestQuestion?.answersAmount}</p>
-            <Taglist tags={user?.bestQuestion?.tags}/>
-            <button className='btn btn-primary'>Go to the question</button>
-          </div>
-          <div className="about-block-item best-answer">
-            <div className="about-block-header">
-              <p className='block-header'>Best Answer</p>
-              <p className='created-date'>{GetPassedDate(user?.bestAnswer?.createdAt)}</p>
-            </div>
-            <p>Text: {ShortText(bestAnswerText, 100)}</p>
-            <p>Rate: {user?.bestAnswer?.rate}</p>
-            <button className='btn btn-primary'>{ShortText(bestAnswerQuestionTitle, 100)}</button>
-          </div>
+          {
+            user?.bestQuestion ?
+              <div className="about-block-item best-question">
+                <div className="about-block-header">
+                  <p className='block-header'>Best Question</p>
+                  <p className='created-date'>{GetPassedDate(user?.bestQuestion?.createdAt)}</p>
+                </div>
+                <p>{ShortText(bestQuestionTitle, 100)}</p>
+                <p>Rate: {user?.bestQuestion?.rate}</p>
+                <p>Answers: {user?.bestQuestion?.answersAmount}</p>
+                <Taglist tags={user?.bestQuestion?.tags} />
+                <button className='btn btn-primary' onClick={() => {
+                  navigate(`/questions/${user?.bestQuestion?.id}`);
+                }}>Go to the question</button>
+              </div>
+              :
+              <></>
+          }
+          {
+            user?.bestAnswer ?
+              <div className="about-block-item best-answer">
+                <div className="about-block-header">
+                  <p className='block-header'>Best Answer</p>
+                  <p className='created-date'>{GetPassedDate(user?.bestAnswer?.createdAt)}</p>
+                </div>
+                <p>Text: {ShortText(bestAnswerText, 100)}</p>
+                <p>Rate: {user?.bestAnswer?.rate}</p>
+                <button className='btn btn-primary' onClick={() => {
+                  navigate(`/questions/${user.bestAnswer?.question.id}`);
+                }}>Go to the answer</button>
+              </div>
+              :
+              <></>
+          }
         </div>
       </div>
     </div>
   );
 }
- 
+
 export default UserAboutTab;

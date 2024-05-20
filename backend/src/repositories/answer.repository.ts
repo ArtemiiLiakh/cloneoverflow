@@ -40,8 +40,8 @@ export class AnswerRepository {
     });
   }
 
-  delete (where: Prisma.UserWhereUniqueInput) {
-    return this.prisma.user.delete({
+  delete (where: Prisma.AnswerWhereUniqueInput) {
+    return this.prisma.answer.delete({
       where,
       include: this.include,
     });

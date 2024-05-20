@@ -2,7 +2,7 @@ import { Dispatch, PropsWithChildren, SetStateAction, createContext, useEffect, 
 import { AuthService } from '../api/services/auth.service';
 import { GetMeResponse } from '@cloneoverflow/common';
 
-interface AuthContextProps {
+export interface AuthContextProps {
   user: GetMeResponse | null;
   setUser(user: GetMeResponse | null): void;
   authLoading: boolean;
@@ -11,9 +11,9 @@ interface AuthContextProps {
 
 export const AuthContext = createContext<AuthContextProps>({
   user: null,
-  setUser: () => {},
+  setUser: () => { },
   authLoading: true,
-  setAuthLoading: () => {},
+  setAuthLoading: () => { },
 });
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
       console.log('no token');
     };
-    
+
     authorize().finally(() => setAuthLoading(false));
   }, []);
 

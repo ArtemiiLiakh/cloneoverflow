@@ -2,8 +2,8 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { Form, Table } from 'react-bootstrap';
 import { UserService } from '../../../../api/services/user.service';
-import { GetPassedDate } from '../../../../utils/stringUtils';
 import { OrderBy, UserGASortBy, UserGetAnswersDTO, UserGetAnswersResponse } from '@cloneoverflow/common';
+import { GetPassedDate } from '../../../../utils/dateUtils';
 
 interface UserAnswersTabProps {
   userId?: string;   

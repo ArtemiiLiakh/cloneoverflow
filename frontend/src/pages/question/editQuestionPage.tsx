@@ -1,18 +1,17 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button, Col, Form, Overlay, Row, Tooltip } from 'react-bootstrap';
 import MDEditorCustom from '../../components/MDEditorCustom';
-import { MappedSearchTagsResponse, QuestionCreateDTO, SearchTagsSortBy } from '@cloneoverflow/common';
+import { MappedSearchTagsResponse, QuestionUpdateDTO, SearchTagsSortBy } from '@cloneoverflow/common';
 import { SearchService } from '../../api/services/search.service';
 import { QuestionService } from '../../api/services/question.service';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import ErrorList from '../../components/errorlist/ErrorList';
+import { useAuth } from '../../hooks/useAuth';
 
-const AskQuestion = () => {
-  const [question, setQuestion] = useState<QuestionCreateDTO>({
-    title: '',
-    text: '',
-    tags: [],
-  });
+const EditQuestionPage = () => {
+  const { user } = useAuth();
+  const { questionId } = useParams();
+  const [question, setQuestion] = useState<QuestionUpdateDTO>();
   const [tag, setTag] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [suggestedTags, setSuggestedTags] = useState<MappedSearchTagsResponse[]>([]);
@@ -45,13 +44,13 @@ const AskQuestion = () => {
     }, 1000);
   };
 
-  const renderTags = question.tags.map((tag, index) => {
+  const renderTags = question?.tags?.map((tag, index) => {
     return <li key={index} className='tagItem'>
       <span>#{tag}</span>
       <button type='button' onClick={() => {
         setQuestion({
           ...question,
-          tags: question.tags.filter((t) => t !== tag),
+          tags: question.tags?.filter((t) => t !== tag),
         });
       }}
       >
@@ -75,12 +74,12 @@ const AskQuestion = () => {
             setTag('');
             setShowSuggestions(false);
 
-            if (question.tags.includes(tag.name)) {
+            if (question?.tags?.includes(tag.name)) {
               return;
             }
             setQuestion({
               ...question,
-              tags: [...question.tags, tag.name],
+              tags: question?.tags ? [...question?.tags, tag.name] : [tag.name],
             });
           }}>
             <p className='tagName'>{tag.name}</p>
@@ -97,14 +96,36 @@ const AskQuestion = () => {
     );
   }
 
+  useEffect(() => {
+    if (!questionId) {
+      navigate('');
+      return;
+    }
+    QuestionService.get(questionId).then((question) => {
+      if (question.owner.id !== user?.id) {
+        navigate(`/questions/${questionId}`);
+        return;
+      }
+      setQuestion({
+        title: question.title,
+        text: question.text,
+        tags: question.tags.map((tag) => tag.name),
+      });
+    });
+  }, []);
+
+  if (!question) {
+    return <></>;
+  }
+
   return (
     <div className="question-action">
       <div className="content">
-        <h1>Ask a question</h1>
+        <h1>Edit question</h1>
         <Form onSubmit={async (e) => {
           e.preventDefault();
-          await QuestionService.create(question).then(() => {
-            navigate('/questions');
+          await QuestionService.update(questionId ?? '', question ?? {}).then(() => {
+            navigate(`/questions/${questionId}`);
           }).catch((err) => {
             setErrMsg(err.response.data.error ?? ['Server error']);
           });
@@ -116,7 +137,7 @@ const AskQuestion = () => {
                 ...question,
                 title: e.target.value,
               });
-            }} />
+            }}/>
           </Form.Group>
 
           <Form.Group className='question-item'>
@@ -152,12 +173,12 @@ const AskQuestion = () => {
                 setShowSuggestions(false);
                 if (e.target.value.at(-1) === ' ') {
                   setTag('');
-                  if (question.tags.includes(e.target.value.trim())) {
+                  if (question.tags?.includes(e.target.value.trim())) {
                     return;
                   }
                   setQuestion({
                     ...question,
-                    tags: [...question.tags, tag.trim()],
+                    tags: question.tags ? [...question.tags, tag.trim()] : [tag.trim()],
                   });
                 }
                 else {
@@ -183,11 +204,11 @@ const AskQuestion = () => {
             <ErrorList errors={errMsg} />
           </Form.Group>
 
-          <Button variant="primary" type="submit" className='btn-create-question'>Create question</Button>
+          <Button variant="primary" type="submit" className='btn-create-question'>Edit question</Button>
         </Form>
       </div>
     </div>
   );
 }
 
-export default AskQuestion;
+export default EditQuestionPage;

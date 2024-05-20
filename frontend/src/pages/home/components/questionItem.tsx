@@ -2,9 +2,10 @@ import * as React from 'react';
 import { ListGroup } from 'react-bootstrap';
 import { MappedSearchQuestionResponse, QuestionStatus } from '@cloneoverflow/common';
 import { Link } from 'react-router-dom';
-import { GetPassedDate, ShortText } from '../../../utils/stringUtils';
+import { ShortText } from '../../../utils/stringUtils';
 import Taglist from '../../../components/taglist/taglist';
 import MDEditor from '@uiw/react-md-editor';
+import { checkModifiedData, GetPassedDate } from '../../../utils/dateUtils';
 
 interface QuestionItemProps {
   question: MappedSearchQuestionResponse;
@@ -29,13 +30,21 @@ const QuestionItem = ({ question }: QuestionItemProps) => {
           <Taglist tags={question.tags.map((tag) => tag.name)}/>
           <div className="user-meta">
             <div className="author">
-              <i className="fas fa-user" style={{
-                marginRight: '5px'
-              }}></i>
-              <Link to={`/users/${question.owner.id}`}>{question.owner.username}</Link>
+              <p>
+                <i className="fas fa-user" style={{
+                  marginRight: '5px'
+                }}></i> {question.owner.name}
+              </p>
+              <Link to={`/users/${question.owner.id}`}>@{question.owner.username}</Link>
             </div>
             <div className="date">
-              <p>{GetPassedDate(question.createdAt)}</p>
+              <p>
+                { checkModifiedData(question?.createdAt, question?.updatedAt) ? 
+                    'Modified ' + GetPassedDate(question.updatedAt)
+                  :
+                    'Asked ' + GetPassedDate(question.createdAt)
+                }
+              </p>
             </div>
           </div>
         </div>

@@ -9,6 +9,7 @@ export class QuestionCreateResponse {
   createdAt: Date;
   updatedAt: Date;
   user: {
+    id: string;
     name: string;
     username: string;
     reputation: number;

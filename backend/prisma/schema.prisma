@@ -32,17 +32,17 @@ enum UserStatus {
 }
 
 model UserProfile {
-  userId       String       @id @map("user_id")
-  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name         String       @db.VarChar(100)
-  username     String       @unique
-  reputation   Int          @default(0)
-  about        String?      @db.Text
-  status       UserStatus   @default(USER)
-  questions    Question[]
-  answers      Answer[]
-  createdAt    DateTime     @default(now()) @map("created_at")
-  updatedAt    DateTime     @updatedAt @map("updated_at")
+  userId          String            @id @map("user_id")
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name            String            @db.VarChar(100)
+  username        String            @unique
+  reputation      Int               @default(0)
+  about           String?           @db.Text
+  status          UserStatus        @default(USER)
+  answers         Answer[]
+  userQuestions   UserQuestions[]
+  createdAt       DateTime          @default(now()) @map("created_at")
+  updatedAt       DateTime          @updatedAt @map("updated_at")
 
   @@index([username])
   @@map("user_profile")
@@ -56,17 +56,35 @@ enum QuestionStatus {
 model Question {
   id            String             @id @default(uuid())
   userId        String             @map("user_id")
-  userProfile   UserProfile        @relation(fields: [userId], references: [userId], onDelete: Cascade)
   title         String             @db.VarChar(255)
   text          String             @db.Text @default("")
   rate          Int                @default(0)
   status        QuestionStatus     @default(ACTIVE)
+  userQuestions UserQuestions[]       
   answers       Answer[]
   tags          Tag[]
   createdAt     DateTime           @default(now()) @map("created_at")
   updatedAt     DateTime           @updatedAt @map("updated_at")
 
   @@map("questions")
+}
+
+enum UserQuestionStatus {
+  VIEWER
+  OWNER
+  ANSWERER
+  VOTER
+}
+
+model UserQuestions {
+  id            String                @id @default(uuid())
+  userId        String                @map("user_id")
+  questionId    String                @map("question_id")
+  userProfile   UserProfile           @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  question      Question              @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  status        UserQuestionStatus    @default(VIEWER)
+
+  @@map("user_questions")
 }
 
 model Answer {

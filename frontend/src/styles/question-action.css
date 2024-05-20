@@ -1,21 +1,21 @@
-.ask-question {
+.question-action {
   margin-top: 20px;
 }
 
-.ask-question .content {
+.question-action .content {
   width: 66vw;
   margin: 0 auto;
 }
 
-.ask-question .content .question-item {
+.question-action .content .question-item {
   margin: 15px 0;
 }
 
-.ask-question .content .tags {
+.question-action .content .tags {
   margin-top: 10px;
 }
 
-.ask-question .content .tags ul {
+.question-action .content .tags ul {
   list-style: none;
   padding: 0;
   margin: 0;
@@ -24,13 +24,13 @@
   gap: 5px;
 }
 
-.ask-question .content .tags ul .tagItem {
+.question-action .content .tags ul .tagItem {
   background-color: #edf5fd;
   padding: 5px;
   color: #155ca2;
 }
 
-.ask-question .content .tags ul .tagItem button {
+.question-action .content .tags ul .tagItem button {
   margin-left: 5px;
   background-color: #edf5fd;
   border: none;
@@ -38,7 +38,7 @@
   cursor: pointer;
 }
 
-.ask-question .content .btn-create-question {
+.question-action .content .btn-create-question {
   margin-bottom: 100px;
 }
 

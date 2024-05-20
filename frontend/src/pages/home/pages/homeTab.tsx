@@ -34,13 +34,13 @@ const QuestionSortMapper: IQuestionSortMapper = {
   },
 }
 
-const HomePage = () => {
+const HomeTab = () => {
   const [questions, setQuestions] = useState<MappedSearchQuestionResponse[]>([]);
   const [activeTab, setActiveTab] = useState<HomePageSortEnum>(HomePageSortEnum.INTERESTING);
   const navigate = useNavigate();
 
   useEffect(() => {
-    SearchService.searchQuestion({ 
+    SearchService.searchQuestion({
       ...QuestionSortMapper[activeTab],
       pagination: {
         page: config.defaultPage,
@@ -48,7 +48,7 @@ const HomePage = () => {
       },
     }).then((res) => {
       setQuestions(res.questions);
-    }); 
+    });
   }, [activeTab]);
 
   return (
@@ -81,10 +81,10 @@ const HomePage = () => {
         }}>Ask a question</Button>
       </div>
       <ListGroup className='questionList' variant='flush'>
-        {questions.map((question, index) => <QuestionItem key={index} question={question}/>)}
+        {questions.map((question, index) => <QuestionItem key={index} question={question} />)}
       </ListGroup>
     </div>
   );
 }
- 
-export default HomePage;
+
+export default HomeTab;

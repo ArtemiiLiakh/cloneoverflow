@@ -1,24 +1,30 @@
 import { QuestionStatus, Tag } from '@cloneoverflow/common';
-import { UserProfile, Answer } from "@prisma/client";
+import { UserProfile, Answer, UserQuestions, Question } from "@prisma/client";
 
-export class DbQuestion {
+export class DbQuestion implements Question {
   id: string;
   userId: string;
-  userProfile: UserProfile;
   title: string;
   text: string;
   rate: number;
   status: QuestionStatus;
-  answers: Answer[];
+  userQuestions: (UserQuestions & {
+    userProfile: UserProfile,
+  })[];
+  answers: (Answer & {
+    userProfile: UserProfile,
+  })[];
   tags: Tag[];
   createdAt: Date;
   updatedAt: Date;
 };
 
-export class DbGetAllQuestions {
+export class DbGetAllQuestions implements Question {
   id: string;
   userId: string;
-  userProfile: UserProfile;
+  userQuestions: (UserQuestions & {
+    userProfile: UserProfile,
+  })[];
   title: string;
   text: string;
   rate: number;

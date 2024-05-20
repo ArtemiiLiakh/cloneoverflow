@@ -40,10 +40,12 @@ export class UserMapper {
 
   getProfile(user: DbUserGetProfile): UserGetProfileResponse {
     const { userProfile } = user;
-    const { answers, questions } = userProfile;
-    
-    const bestAnswer = answers[0] ? 
-      {
+    const { answers, userQuestions } = userProfile;
+    let bestQuestion: any = null;
+    let bestAnswer: any = null;
+
+    if (answers.length) {
+      bestAnswer = {
         id: answers[0].id,
         text: answers[0].text,
         rate: answers[0].rate,
@@ -53,18 +55,23 @@ export class UserMapper {
           id: answers[0].question.id,
           title: answers[0].question.title,
         },
-      } : null;
+      };
+    }
 
-    const bestQuestion = questions[0] ?
-      {
-        id: questions[0].id,
-        title: questions[0].title,
-        rate: questions[0].rate,
-        status: questions[0].status as QuestionStatus,
-        tags: questions[0].tags.map(tag => tag.name),
-        answersAmount: questions[0]._count.answers,
-        createdAt: questions[0].createdAt,
-      } : null;
+    if (userQuestions.length) {
+      const { question } = userQuestions[0];
+
+      bestQuestion = {
+        id: question.id,
+        title: question.title,
+        rate: question.rate,
+        status: question.status as QuestionStatus,
+        tags: question.tags.map(tag => tag.name),
+        answersAmount: question._count.answers,
+        createdAt: question.createdAt,
+      };
+
+    }
 
     return {
       id: user.id,
@@ -74,7 +81,7 @@ export class UserMapper {
       reputation: userProfile.reputation,
       status: userProfile.status,
       answersAmount: userProfile._count.answers,
-      questionsAmount: userProfile._count.questions,
+      questionsAmount: userQuestions.length,
       bestAnswer,
       bestQuestion,
       createdAt: userProfile.createdAt,
