@@ -1,3 +1,5 @@
+import { VoteType } from "../types";
+
 export class AnswerGetResponse {
   id: string;
   text: string;
@@ -9,6 +11,7 @@ export class AnswerGetResponse {
     username: string;
     reputation: number;
   };
+  voteType?: VoteType | null;
   createdAt: Date;
   updatedAt: Date;
 }

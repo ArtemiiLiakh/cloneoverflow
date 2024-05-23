@@ -8,23 +8,27 @@ import {
   QuestionUpdateDTO,
   NoEntityWithIdException,
   QuestionGetDTO,
-  QuestionAnswersSortBy
+  QuestionAnswersSortBy,
+  VoteType,
+  QuestionCloseDTO
 } from '@cloneoverflow/common';
-import { Prisma, QuestionStatus, UserQuestionStatus } from '@prisma/client';
+import { Prisma, PrismaClient, QuestionStatus, UserAnswerStatus, UserQuestionStatus } from '@prisma/client';
 import { QuestionRepository } from "../repositories/question.repository";
 import { QuestionSearchFilters } from '../types/QuestionSearchFilters';
 import { DbGetAllQuestions } from '../types/database/DbQuestion';
 import { DbUtils } from '../utils/DatabaseUtils';
 import { ArrayOrUndefinded } from '../utils/arrayUtils';
+import { AnswerRepository } from '../repositories/answer.repository';
 
 export class QuestionService {
   constructor(
     private questionRepository = new QuestionRepository(),
+    private answerRepository = new AnswerRepository(),
+    private prisma = new PrismaClient(),
   ) {}
 
   async create(userId: string, {title, text, tags}: QuestionCreateDTO) {
     return await this.questionRepository.create({
-      userId: userId,
       title: title,
       text: text,
       rate: 0,
@@ -47,9 +51,16 @@ export class QuestionService {
   }
 
   async update(questionId: string, userId: string, {title, text, status, tags}: QuestionUpdateDTO) {
-    const existingQuestion = await this.questionRepository.findById(questionId);
+    const existingQuestion = await this.questionRepository.find({
+      id: questionId,
+      userQuestions: {
+        some: {
+          userId,
+        },
+      },
+    });
 
-    if(existingQuestion.userId !== userId){
+    if(existingQuestion?.userQuestions[0].userId !== userId){
       throw new ForbiddenException();
     }
 
@@ -76,10 +87,10 @@ export class QuestionService {
     }
 
 
-    return await this.questionRepository.updateById(questionId, updateData);
+    return await this.questionRepository.updateById(questionId, updateData,);
   }
 
-  async get(questionId: string, { answers }: QuestionGetDTO) {
+  async get(questionId: string, { answers }: QuestionGetDTO, userId: string) {
     interface QuestionAnswersSortMapper {
       [key: string]: Prisma.AnswerOrderByWithRelationInput;
     }
@@ -97,7 +108,15 @@ export class QuestionService {
       include: {
         userQuestions: {
           where: {
-            status: UserQuestionStatus.OWNER,
+            OR: [
+              {
+                status: UserQuestionStatus.OWNER,
+              },
+              {
+                userId,
+                status: UserQuestionStatus.VOTER,
+              }
+            ],
           },
           include: {
             userProfile: true,
@@ -106,7 +125,22 @@ export class QuestionService {
         tags: true,
         answers: {
           include: {
-            userProfile: true,
+            userAnswers: {
+              where: {
+                OR: [
+                  {
+                    status: UserAnswerStatus.OWNER,
+                  },
+                  {
+                    userId,
+                    status: UserAnswerStatus.VOTER,
+                  }
+                ],
+              },
+              include: {
+                userProfile: true,
+              },
+            }
           },
           orderBy: sortByAnswers[answers?.sortBy ?? QuestionAnswersSortBy.DATE],
         },
@@ -117,6 +151,35 @@ export class QuestionService {
       throw new NoEntityWithIdException('Question');
     }
 
+    if (!userId) {
+      return question;
+    }
+
+    const viewedQuestion = await this.questionRepository.find({
+      id: questionId,
+      userQuestions: {
+        some: {
+          userId,
+          status: UserQuestionStatus.VIEWER,
+        },
+      },
+    });
+
+    if (!viewedQuestion) {
+      await this.questionRepository.updateById(questionId, {
+        views: {
+          increment: 1,
+        },
+
+        userQuestions: {
+          create: {
+            userId,
+            status: UserQuestionStatus.VIEWER,
+          },
+        }
+      });
+    }
+    
     return question;
   }
 
@@ -146,6 +209,9 @@ export class QuestionService {
         },
         tags: true,
         userQuestions: {
+          where: {
+            status: UserQuestionStatus.OWNER,
+          },
           include: {
             userProfile: true
           },
@@ -185,31 +251,34 @@ export class QuestionService {
   }
 
   private getQuestionsSortBy(sortBy?: SearchQuestionSortBy[], orderBy?: OrderBy): Prisma.QuestionOrderByWithRelationInput[] {
+    interface SearchSortByMapper {
+      [key: string]: Prisma.QuestionOrderByWithRelationInput;
+    }
+    
+    const searchSortByMapper: SearchSortByMapper = {
+      [SearchQuestionSortBy.RATE]: {
+        rate: orderBy ?? 'desc',
+      },
+      [SearchQuestionSortBy.DATE]: {
+        createdAt: orderBy ?? 'desc',
+      },
+      [SearchQuestionSortBy.ANSWERS]: {
+        answers: {
+          _count: orderBy ?? 'desc',
+        }
+      },
+      [SearchQuestionSortBy.STATUS]: {
+        status: orderBy ?? 'desc',
+      },
+      [SearchQuestionSortBy.VIEWS]: {
+        views: orderBy ?? 'desc',
+      },
+    };
+
     let sortByRes: Prisma.QuestionOrderByWithRelationInput[] = [];
 
     for (const sort of sortBy ?? []) {
-      if (sort === SearchQuestionSortBy.RATE) {
-        sortByRes.push({
-          rate: orderBy ?? 'desc',
-        });
-      }
-      else if (sort === SearchQuestionSortBy.DATE) {
-        sortByRes.push({
-          createdAt: orderBy ?? 'desc',
-        });
-      }
-      else if (sort === SearchQuestionSortBy.ANSWERS) {
-        sortByRes.push({
-          answers: {
-            _count: orderBy ?? 'desc',
-          },
-        });
-      }
-      else if (sort === SearchQuestionSortBy.STATUS) {
-        sortByRes.push({
-          status: orderBy ?? 'desc',
-        });
-      }
+      sortByRes.push(searchSortByMapper[sort]);
     };
 
     return sortByRes;
@@ -288,5 +357,151 @@ export class QuestionService {
     where.AND = filterAND;
     
     return where;
+  }
+
+  async closeQuestion (questionId: string, answerId: string, userId: string) {
+    const question = await this.getQuestionWithOwner(questionId);
+    const answer = await this.answerRepository.findById(answerId);
+
+    if (question.userQuestions[0].userId !== userId) {
+      throw new ForbiddenException();
+    }
+
+    return this.questionRepository.updateById(questionId, {
+      status: !answer.isSolution ? QuestionStatus.CLOSED : QuestionStatus.ACTIVE,
+      answers: {
+        update: {
+          where: {
+            id: answerId,
+          },
+          data: {
+            isSolution: !answer.isSolution,
+          },
+        },
+        updateMany: {
+          where: {
+            id: {
+              not: answerId,
+            },
+            questionId,
+          },
+          data: {
+            isSolution: false,
+          },
+        },
+      },
+    });
+  }
+
+  async voteQuestion (questionId: string, userId: string, vote: VoteType) {
+    const votedQuestion = await this.questionRepository.find({
+      id: questionId,
+    }, {
+      include: {
+        userQuestions: {
+          where: {
+            OR: [
+              {
+                userId,
+                questionId,
+                status: UserQuestionStatus.OWNER,
+              }, 
+              {
+                userId,
+                questionId,
+                status: UserQuestionStatus.VOTER,
+              },
+            ],
+          },
+        },
+      }
+    });
+    
+    const { userQuestions: ownerQuestions } = await this.getQuestionWithOwner(questionId);
+    
+    if (!votedQuestion.userQuestions[0]) {
+      return this.questionRepository.updateById(questionId, {
+        rate: {
+          increment: vote === VoteType.UP ? 1 : -1,
+        },
+        userQuestions: {
+          create: {
+            userId,
+            voteType: vote,
+            status: UserQuestionStatus.VOTER,
+          },
+          update: {
+            where: {
+              id: ownerQuestions[0].id,
+            },
+            data: {
+              userProfile: {
+                update: {
+                    reputation: {
+                      increment: vote === VoteType.UP ? 1 : -1,
+                    },
+                  },
+                },
+              },
+            },
+          },
+      });
+    }
+
+    if (
+      votedQuestion.userQuestions[0].status === UserQuestionStatus.VOTER && 
+      votedQuestion.userQuestions[0].voteType !== vote
+    ) {
+      return this.prisma.$transaction([
+        this.questionRepository.updateById(questionId, {
+          userQuestions: {
+            update: {
+              where: {
+                id: ownerQuestions[0].id,
+              },
+              data: {
+                userProfile: {
+                  update: {
+                    reputation: {
+                      increment: vote === VoteType.UP ? 1 : -1
+                    },
+                  },
+                },
+              },
+            },
+          },
+        }),
+        this.questionRepository.updateById(questionId, {
+          rate: {
+            increment: vote === VoteType.UP ? 1 : -1,
+          },
+          userQuestions: {
+            update: {
+              where: {
+                id: votedQuestion.userQuestions[0].id,
+              },
+              data: {
+                voteType: votedQuestion.userQuestions[0].voteType ? null : vote,
+              },
+            },
+          },
+        }),
+      ], {
+        isolationLevel: 'ReadUncommitted',
+      });
+    }
+
+    throw new ForbiddenException();
+  }
+
+  private getQuestionWithOwner (questionId: string) {
+    return this.questionRepository.find({
+      id: questionId,
+      userQuestions: {
+        some: {
+          status: UserQuestionStatus.OWNER,
+        },
+      },
+    });
   }
 }

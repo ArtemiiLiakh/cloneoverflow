@@ -24,7 +24,7 @@ const QuestionSortMapper: IQuestionSortMapper = {
     sortBy: [SearchQuestionSortBy.DATE],
   },
   [QuestionPageSortEnum.ACTIVE]: {
-    sortBy: [SearchQuestionSortBy.DATE, SearchQuestionSortBy.RATE, SearchQuestionSortBy.ANSWERS],
+    sortBy: [SearchQuestionSortBy.DATE, SearchQuestionSortBy.RATE, SearchQuestionSortBy.ANSWERS, SearchQuestionSortBy.VIEWS],
     filterBy: [SearchQuestionFilterBy.ACTIVE],
   },
   [QuestionPageSortEnum.CLOSED]: {
@@ -32,7 +32,7 @@ const QuestionSortMapper: IQuestionSortMapper = {
     filterBy: [SearchQuestionFilterBy.CLOSED],
   },
   [QuestionPageSortEnum.TOP]: {
-    sortBy: [SearchQuestionSortBy.RATE, SearchQuestionSortBy.ANSWERS],
+    sortBy: [SearchQuestionSortBy.RATE, SearchQuestionSortBy.ANSWERS, SearchQuestionSortBy.VIEWS],
   },
   [QuestionPageSortEnum.MOSTANSWERED]: {
     sortBy: [SearchQuestionSortBy.ANSWERS, SearchQuestionSortBy.DATE],
@@ -102,7 +102,7 @@ const QuestionListTab = () => {
         }}>Ask a question</Button>
       </div>
       <ListGroup className='questionList' variant='flush'>
-        {questions.map((question, index) => <QuestionItem key={index} question={question} />)}
+        {questions.map((question) => <QuestionItem key={question.id} question={question} />)}
       </ListGroup>
 
       <Pagination page={page} setPage={setPage} totalPages={pagination.totalPages ?? 0} />

@@ -6,6 +6,7 @@ export class MappedSearchQuestionResponse {
   title: string;
   text: string;
   rate: number;
+  views: number;
   status: QuestionStatus;
   tags: Tag[];
   createdAt: Date;

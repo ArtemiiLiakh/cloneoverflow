@@ -1,9 +1,12 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient, PrismaPromise, UserAnswerStatus, UserQuestionStatus } from "@prisma/client";
 import { DbQuestion } from "../types/database/DbQuestion";
 
 export class QuestionRepository {
   private include: Prisma.QuestionInclude = {
     userQuestions: {
+      where: {
+        status: UserQuestionStatus.OWNER,
+      },
       include: {
         userProfile: true,
       },
@@ -11,7 +14,14 @@ export class QuestionRepository {
     tags: true,
     answers: {
       include: {
-        userProfile: true,
+        userAnswers: {
+          where: {
+            status: UserAnswerStatus.OWNER,
+          },
+          include: {
+            userProfile: true,
+          },
+        },
       },
     },
   }
@@ -22,7 +32,7 @@ export class QuestionRepository {
     return this.prisma.question.create({
       data,
       include: this.include,
-    }) as unknown as Promise<DbQuestion>;
+    }) as unknown as PrismaPromise<DbQuestion>;
   }
 
   find<R=DbQuestion> (where: Prisma.QuestionWhereInput, args?: Prisma.QuestionFindFirstArgs) {
@@ -30,7 +40,7 @@ export class QuestionRepository {
       where,
       include: this.include,
       ...args,
-    }) as unknown as Promise<R>;
+    }) as unknown as PrismaPromise<R>;
   }
 
   findById<R=DbQuestion> (id: string, args?: Prisma.QuestionFindFirstArgs) {
@@ -44,7 +54,7 @@ export class QuestionRepository {
       where,
       include: this.include,
       ...args,
-    }) as unknown as Promise<R[]>;
+    }) as unknown as PrismaPromise<R[]>;
   }
 
   update<R=DbQuestion> (where: Prisma.QuestionWhereUniqueInput, data: Prisma.QuestionUncheckedUpdateInput) {
@@ -52,7 +62,7 @@ export class QuestionRepository {
       where,
       data,
       include: this.include,
-    }) as unknown as Promise<R>;
+    }) as unknown as PrismaPromise<R>;
   }
 
   updateById (id: string, data: Prisma.QuestionUncheckedUpdateInput) {
@@ -65,7 +75,7 @@ export class QuestionRepository {
     return this.prisma.question.delete({
       where,
       include: this.include,
-    }) as unknown as Promise<DbQuestion>;
+    }) as unknown as PrismaPromise<DbQuestion>;
   }
 
   count (where: Prisma.QuestionWhereInput) {

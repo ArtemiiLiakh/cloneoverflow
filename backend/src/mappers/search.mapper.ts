@@ -12,11 +12,12 @@ export class SearchMapper {
         title: question.title,
         text: question.text,
         rate: question.rate,
+        views: question.views,
         status: question.status,
         createdAt: question.createdAt,
         updatedAt: question.updatedAt,
         owner: {
-          id: question.userId,
+          id: owner.userId,
           name: owner.name,
           username: owner.username,
           reputation: owner.reputation,

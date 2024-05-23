@@ -5,6 +5,7 @@ import {
   AnswerUpdateResponse,
   AnswerGetResponse,
   OkResponse,
+  VoteDTO,
 } from '@cloneoverflow/common';
 import { Response, query } from 'express';
 import { AnswerMapper } from '../mappers/answer.mapper';
@@ -33,7 +34,16 @@ export class AnswerController {
   }
 
   async delete(req: Params<{ answerId: string }>, res: Response<OkResponse>) {
-    const answer = await this.answerService.delete(req.params.answerId)
-    res.send({ message: "ok" });
+    await this.answerService.delete(req.params.answerId)
+    res.send({ 
+      message: "ok" 
+    });
+  }
+
+  async voteAnswer(req: Params<{ answerId: string }> & Body<VoteDTO> & AuthRequest, res: Response<OkResponse>) {
+    await this.answerService.voteAnswer(req.params.answerId, req.body._user.userId, req.body.vote);
+    res.send({ 
+      message: "ok" 
+    });
   }
 }

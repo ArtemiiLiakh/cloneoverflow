@@ -75,7 +75,7 @@ const UserAnswersTab = ({ userId }: UserAnswersTabProps) => {
             onChange={(e) => {
               setRequest({
                 ...request,
-                questionTitle: e.target.value,
+                searchText: e.target.value,
               });
             }}
             onBlur={() => {

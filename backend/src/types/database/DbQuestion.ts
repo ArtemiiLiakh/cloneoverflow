@@ -1,18 +1,20 @@
 import { QuestionStatus, Tag } from '@cloneoverflow/common';
-import { UserProfile, Answer, UserQuestions, Question } from "@prisma/client";
+import { UserProfile, Answer, UserQuestions, Question, UserAnswers } from "@prisma/client";
 
 export class DbQuestion implements Question {
   id: string;
-  userId: string;
   title: string;
   text: string;
   rate: number;
+  views: number;
   status: QuestionStatus;
   userQuestions: (UserQuestions & {
     userProfile: UserProfile,
   })[];
   answers: (Answer & {
-    userProfile: UserProfile,
+    userAnswers: (UserAnswers & {
+      userProfile: UserProfile,
+    })[],
   })[];
   tags: Tag[];
   createdAt: Date;
@@ -21,13 +23,13 @@ export class DbQuestion implements Question {
 
 export class DbGetAllQuestions implements Question {
   id: string;
-  userId: string;
   userQuestions: (UserQuestions & {
     userProfile: UserProfile,
   })[];
   title: string;
   text: string;
   rate: number;
+  views: number;
   status: QuestionStatus;
   tags: Tag[];
   createdAt: Date;

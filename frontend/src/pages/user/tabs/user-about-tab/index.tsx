@@ -46,7 +46,7 @@ const UserAboutTab = ({ userId }: UserAboutTabProps) => {
                   <p className='block-header'>Best Question</p>
                   <p className='created-date'>{GetPassedDate(user?.bestQuestion?.createdAt)}</p>
                 </div>
-                <p>{ShortText(bestQuestionTitle, 100)}</p>
+                <p>{ShortText(bestQuestionTitle, 30)}</p>
                 <p>Rate: {user?.bestQuestion?.rate}</p>
                 <p>Answers: {user?.bestQuestion?.answersAmount}</p>
                 <Taglist tags={user?.bestQuestion?.tags} />
@@ -64,7 +64,7 @@ const UserAboutTab = ({ userId }: UserAboutTabProps) => {
                   <p className='block-header'>Best Answer</p>
                   <p className='created-date'>{GetPassedDate(user?.bestAnswer?.createdAt)}</p>
                 </div>
-                <p>Text: {ShortText(bestAnswerText, 100)}</p>
+                <p>Text: {ShortText(bestAnswerText, 30)}</p>
                 <p>Rate: {user?.bestAnswer?.rate}</p>
                 <button className='btn btn-primary' onClick={() => {
                   navigate(`/questions/${user.bestAnswer?.question.id}`);

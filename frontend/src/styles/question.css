@@ -9,7 +9,13 @@
 
 .question .head-pannel {
   display: flex;
-  gap: 20px
+  gap: 20px;
+  align-items: center;
+}
+
+.question .head-pannel .closed {
+  padding: 10px;
+  background-color: #c3ffbb;
 }
 
 .question .body {
@@ -43,6 +49,10 @@
   font-size: 1.2em;
   border: 1px solid #636b74;
   background: transparent;
+}
+
+.answer-item .sidepanel .vote-btn.solution {
+  background: #c3ffbb;
 }
 
 .question .body .sidepanel .vote-btn:hover,

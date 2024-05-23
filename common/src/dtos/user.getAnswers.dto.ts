@@ -25,5 +25,5 @@ export class UserGetAnswersDTO {
     pagination?: PaginationDTO;
 
   @IsOptional()
-    questionTitle?: string;
+    searchText?: string;
 }

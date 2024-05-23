@@ -1,19 +1,25 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient, PrismaPromise, UserAnswerStatus } from "@prisma/client";
 import { DbAnswer } from "../types/database/DbAnswer";
 
 export class AnswerRepository {
   private include: Prisma.AnswerInclude = {
-    userProfile: true,
-    question: true,
+    userAnswers: {
+      where: {
+        status: UserAnswerStatus.OWNER,
+      },
+      include: {
+        userProfile: true,
+      },
+    },
   }
 
   constructor(private prisma = new PrismaClient()) {}
 
-  create (data: Prisma.AnswerUncheckedCreateInput) {
+  create<R=DbAnswer> (data: Prisma.AnswerUncheckedCreateInput) {
     return this.prisma.answer.create({
       data,
       include: this.include,
-    });
+    }) as unknown as PrismaPromise<R>;
   }
 
   find<R=DbAnswer> (where: Prisma.AnswerWhereInput, args?: Prisma.AnswerFindFirstArgs) {
@@ -21,23 +27,39 @@ export class AnswerRepository {
       where,
       include: this.include,
       ...args,
-    }) as unknown as Promise<R>;
+    }) as unknown as PrismaPromise<R>;
   }
 
-  findMany<R=DbAnswer> (where: Prisma.AnswerWhereInput, args?: Prisma.AnswerFindManyArgs) {
+  findById<R=DbAnswer> (id, args?: Prisma.AnswerFindFirstArgs) {
+    return this.prisma.answer.findFirst({
+      where: { id },
+      include: this.include,
+      ...args,
+    }) as unknown as PrismaPromise<R>;
+  }
+
+  findMany<R=DbAnswer[]> (where: Prisma.AnswerWhereInput, args?: Prisma.AnswerFindManyArgs) {
     return this.prisma.answer.findMany({
       where,
       include: this.include,
       ...args,
-    }) as unknown as Promise<R>;
+    }) as unknown as PrismaPromise<R>;
   }
 
-  update (where: Prisma.AnswerWhereUniqueInput, data: Prisma.AnswerUncheckedUpdateInput) {
+  update<R=DbAnswer> (where: Prisma.AnswerWhereUniqueInput, data: Prisma.AnswerUncheckedUpdateInput) {
     return this.prisma.answer.update({
       where,
       data,
       include: this.include,
-    });
+    }) as unknown as PrismaPromise<R>;
+  }
+
+  updateById<R=DbAnswer> (id: string, data: Prisma.AnswerUncheckedUpdateInput) {
+    return this.prisma.answer.update({
+      where: { id },
+      data,
+      include: this.include,
+    }) as unknown as PrismaPromise<R>;
   }
 
   delete (where: Prisma.AnswerWhereUniqueInput) {

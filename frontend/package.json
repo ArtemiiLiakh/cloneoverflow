@@ -12,6 +12,7 @@
     "@types/react-dom": "^18.2.19",
     "@uiw/react-md-editor": "^4.0.4",
     "axios": "^1.6.7",
+    "axios-retry": "^4.3.0",
     "bootstrap": "^5.3.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",

@@ -6,6 +6,7 @@ export class QuestionUpdateResponse{
   title: string;
   text: string;
   rate: number;
+  views: number;
   status: QuestionStatus;
   createdAt: Date;
   updatedAt: Date;
