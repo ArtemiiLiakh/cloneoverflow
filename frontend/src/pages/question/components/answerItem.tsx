@@ -77,7 +77,7 @@ const AnswerItem = ({ question, item }: AnswerItemProps) => {
   return ( 
     <div className="answer-item">
       <div className="sidepanel">
-        <button className='vote-btn' disabled={answer.voteType === VoteType.UP} onClick={() => {
+        <button className='vote-btn' disabled={answer.voteType === VoteType.UP || answer.owner.id === user?.id} onClick={() => {
           AnswerService.voteAnswer(answer.id, { vote: VoteType.UP }).then(() => {
             setAnswer({
               ...answer,
@@ -87,7 +87,7 @@ const AnswerItem = ({ question, item }: AnswerItemProps) => {
           }).catch(() => {});
         }}><i className="fa-solid fa-arrow-up"></i></button>
         <p className='rating'>{answer.rate}</p>
-        <button className='vote-btn' disabled={answer.voteType === VoteType.DOWN} onClick={() => {
+        <button className='vote-btn' disabled={answer.voteType === VoteType.DOWN || answer.owner.id === user?.id} onClick={() => {
           AnswerService.voteAnswer(answer.id, { vote: VoteType.DOWN }).then(() => {
             setAnswer({
               ...answer,
@@ -104,6 +104,11 @@ const AnswerItem = ({ question, item }: AnswerItemProps) => {
               });
             }}><i className="fa-solid fa-check"></i></button>
           : <></>
+        }
+        {
+          question.owner.id !== user?.id && answer.isSolution ?
+            <p className='solution'>Solution</p>
+          : <></> 
         }
       </div>
       <div className="answer-content" data-color-mode="light">

@@ -1,0 +1,57 @@
+version: "3.5"
+
+services:
+  database:
+    image: postgres
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: cloneoverflow
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - 5432:5432
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - database
+
+  backend:
+    image: cloneoverflow:backend
+    container_name: backend
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    ports:
+      - 8000:8000
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@database:5432/postgres?schema=public
+      - TOKEN_SECRET=secret
+      - SERVER_PORT=8000
+    command: bash -c "npm run db:sync && npm run start:prod"
+    
+    networks:
+      - database
+      - app
+    depends_on:
+      - database  
+
+  frontend:
+    image: cloneoverflow:frontend
+    container_name: frontend
+    build:
+      context: .
+      dockerfile: ./frontend/Dockerfile
+      args:
+        - REACT_APP_API_URL=http://localhost:8000
+    ports:
+      - 3000:3000
+    networks:
+      - app
+  
+volumes:
+  db-data:
+
+networks:
+  app:
+  database:

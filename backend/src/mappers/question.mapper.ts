@@ -12,10 +12,6 @@ export class QuestionMapper {
       (userQuestion) => userQuestion.status === UserQuestionStatus.VOTER && userQuestion.userId === voterId
     );
 
-    console.log(owner);
-    console.log(voter);
-    console.log(voterId);
-
     return {
       id: question.id,
       title: question.title,

@@ -1,29 +1,8 @@
-import envSchema from 'env-schema';
-import { EnvSchemaData } from 'env-schema';
-import path from 'path';
-import { ConfigSchema } from './config.schema';
 import { CookieOptions } from 'express';
 
-const schema: EnvSchemaData = {
-  type: 'object',
-  required: ['TOKEN_SECRET', 'DATABASE_URL'],
-  properties: {
-    TOKEN_SECRET: {
-      type: 'string',
-    },
-    DATABASE_URL: {
-      type: 'string',
-    },
-  },
-};
-
 export default {
-  ...envSchema<ConfigSchema>({
-    schema,
-    dotenv: {
-      path: path.join(__dirname, '../../.env'),
-    },
-  }),
+  SERVER_PORT: +(process.env.SERVER_PORT ?? 8000),
+  TOKEN_SECRET: process.env.TOKEN_SECRET ?? 'secret',
   accessTokenConfig: {
     httpOnly: false,
     sameSite: 'strict',

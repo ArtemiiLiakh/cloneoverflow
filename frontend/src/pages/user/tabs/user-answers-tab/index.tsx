@@ -4,6 +4,7 @@ import { Form, Table } from 'react-bootstrap';
 import { UserService } from '../../../../api/services/user.service';
 import { OrderBy, UserGASortBy, UserGetAnswersDTO, UserGetAnswersResponse } from '@cloneoverflow/common';
 import { GetPassedDate } from '../../../../utils/dateUtils';
+import { Link } from 'react-router-dom';
 
 interface UserAnswersTabProps {
   userId?: string;   
@@ -84,7 +85,7 @@ const UserAnswersTab = ({ userId }: UserAnswersTabProps) => {
           />
         </div>
       </div>
-      <Table>
+      <Table className='answer-table'>
         <thead>
           <tr>
             <th></th>
@@ -103,9 +104,9 @@ const UserAnswersTab = ({ userId }: UserAnswersTabProps) => {
               <td>{index + 1}</td>
               <td>{answer.text}</td>
               <td>{answer.rate}</td>
-              <td>{answer.isSolution ? 'Yes' : 'No'}</td>
+              <td className={answer.isSolution ? 'solution' : ''}>{answer.isSolution ? 'Yes' : 'No'}</td>
               <td>{GetPassedDate(answer.createdAt)}</td>
-              <td>{answer.question.title}</td>
+              <td><Link to={`/questions/${answer.question.id}`}>{answer.question.title}</Link></td>
             </tr>
           ))}
         </tbody>

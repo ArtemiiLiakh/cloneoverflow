@@ -141,7 +141,7 @@ const QuestionPage = () => {
         </div>
         <div className="body">
           <div className="sidepanel">
-            <button className='vote-btn' disabled={question?.voteType === VoteType.UP} onClick={() => {
+            <button className='vote-btn' disabled={question?.voteType === VoteType.UP || question?.owner.id === user?.id} onClick={() => {
               QuestionService.voteQuestion(questionId ?? '', {
                 vote: VoteType.UP,
               }).then(() => {
@@ -155,7 +155,7 @@ const QuestionPage = () => {
               }).catch(() => { });
             }}><i className="fa-solid fa-arrow-up"></i></button>
             <p className='rating'>{question?.rate}</p>
-            <button className='vote-btn' disabled={question?.voteType === VoteType.DOWN} onClick={() => {
+            <button className='vote-btn' disabled={question?.voteType === VoteType.DOWN || question?.owner.id === user?.id} onClick={() => {
               QuestionService.voteQuestion(questionId ?? '', {
                 vote: VoteType.DOWN,
               }).then(() => {
