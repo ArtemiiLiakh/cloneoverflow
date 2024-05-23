@@ -111,6 +111,7 @@ const Signup = () => {
           <ErrorList errors={errMsg}/>
         </Form.Group>
         <Form.Group className='block' data-color-mode="light">
+          <Form.Label>About</Form.Label>
           <MDEditorCustom 
             value={about}
             onChange={(value) => {

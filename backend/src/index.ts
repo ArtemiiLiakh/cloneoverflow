@@ -10,6 +10,7 @@ import { user } from "./routers/user";
 import { question } from "./routers/question";
 import { answer } from './routers/answer';
 import { tags } from './routers/tags';
+import config from './config';
 
 const app = express();
 
@@ -31,6 +32,6 @@ app.use('/api', api);
 app.use(prismaErrorHandler);
 app.use(errorHandler);
 
-app.listen(8000, () => {
+app.listen(config.SERVER_PORT, () => {
   console.log('Started on http://127.0.0.1:8000');
 });

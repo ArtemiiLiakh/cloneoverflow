@@ -110,7 +110,7 @@ const UserQuestionsTab = ({ userId }: UserQuestionsTabProps) => {
           />
         </div>
       </div>
-      <Table>
+      <Table className='question-table'>
         <thead>
           <tr>
             <th></th>
@@ -131,7 +131,7 @@ const UserQuestionsTab = ({ userId }: UserQuestionsTabProps) => {
               <td>{question.title}</td>
               <td>{question.rate}</td>
               <td>{question.answersAmount}</td>
-              <td>{question.status}</td>
+              <td className={question.status === QuestionStatus.CLOSED ? 'closed' : ''}>{question.status}</td>
               <td>{GetPassedDate(question.createdAt)}</td>
               <td><Taglist tags={question.tags}/></td>
             </tr>

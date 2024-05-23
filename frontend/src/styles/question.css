@@ -55,6 +55,11 @@
   background: #c3ffbb;
 }
 
+.answer-item .sidepanel .solution {
+  padding: 5px;
+  background: #c3ffbb;
+}
+
 .question .body .sidepanel .vote-btn:hover,
 .answer-item .sidepanel .vote-btn:hover {
   background: #fdf9ed;
