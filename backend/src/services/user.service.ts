@@ -94,7 +94,7 @@ export class UserService {
               },
               orderBy: {
                 answer: {
-                  rate: 'desc',
+                  rate: OrderBy.DESC,
                 },
               },
             },
@@ -115,13 +115,13 @@ export class UserService {
               orderBy: [
                 {
                   question: {
-                    rate: 'desc',
+                    rate: OrderBy.DESC,
                   },
                 },
                 {
                   question: {
                     answers: {
-                      _count: 'desc',
+                      _count: OrderBy.DESC,
                     },
                   },
                 },
@@ -176,15 +176,15 @@ export class UserService {
     switch (sortBy) {
       case UserGASortBy.RATE:
         return {
-          rate: orderBy ?? 'desc',
+          rate: orderBy ?? OrderBy.DESC,
         };
       case UserGASortBy.DATE:
         return {
-          createdAt: orderBy ?? 'asc',
+          createdAt: orderBy ?? OrderBy.ASC,
         };
       case UserGASortBy.SOLUTION:
         return {
-          isSolution: orderBy ?? 'desc',
+          isSolution: orderBy ?? OrderBy.DESC,
         };
     }
     return {};
@@ -220,16 +220,16 @@ export class UserService {
       case UserGQSortBy.ANSWERS:
         return {
           answers: {
-            _count: orderBy ?? 'desc',
+            _count: orderBy ?? OrderBy.DESC,
           },
         };
       case UserGQSortBy.DATE:
         return {
-          createdAt: orderBy ?? 'asc',
+          createdAt: orderBy ?? OrderBy.ASC,
         };
       case UserGQSortBy.RATE:
         return {
-          rate: orderBy ?? 'desc',
+          rate: orderBy ?? OrderBy.DESC,
         };
     }
     return {};

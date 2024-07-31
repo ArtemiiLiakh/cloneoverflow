@@ -3,8 +3,10 @@
 # dependencies
 /**/node_modules
 /**/dist
+/**/build
 /**/.env
 /**/.idea
+/**/package-lock.json
 
 /backend/prisma/migrations
 

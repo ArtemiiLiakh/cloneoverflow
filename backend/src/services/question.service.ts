@@ -10,15 +10,14 @@ import {
   QuestionGetDTO,
   QuestionAnswersSortBy,
   VoteType,
-  QuestionCloseDTO
 } from '@cloneoverflow/common';
 import { Prisma, PrismaClient, QuestionStatus, UserAnswerStatus, UserQuestionStatus } from '@prisma/client';
-import { QuestionRepository } from "../repositories/question.repository";
-import { QuestionSearchFilters } from '../types/QuestionSearchFilters';
-import { DbGetAllQuestions } from '../types/database/DbQuestion';
 import { DbUtils } from '../utils/DatabaseUtils';
 import { ArrayOrUndefinded } from '../utils/arrayUtils';
 import { AnswerRepository } from '../repositories/answer.repository';
+import { QuestionRepository } from '../repositories/question.repository';
+import { QuestionSearchFilters } from '../types/QuestionSearchFilters';
+import { DbGetAllQuestions } from '../types/database/DbQuestion';
 
 export class QuestionService {
   constructor(
@@ -32,7 +31,7 @@ export class QuestionService {
       title: title,
       text: text,
       rate: 0,
-      status: "ACTIVE",
+      status: QuestionStatus.ACTIVE,
       tags: {
         connectOrCreate: tags.map((tag) => {
           return {
@@ -50,9 +49,12 @@ export class QuestionService {
     });
   }
 
-  async update(questionId: string, userId: string, {title, text, status, tags}: QuestionUpdateDTO) {
+  async update(questionId: string, userId: string, { title, text, status, tags }: QuestionUpdateDTO) {
     const existingQuestion = await this.questionRepository.find({
       id: questionId,
+      text: {
+        mode: 'insensitive'
+      },
       userQuestions: {
         some: {
           userId,
@@ -97,10 +99,10 @@ export class QuestionService {
     
     const sortByAnswers: QuestionAnswersSortMapper = {
       [QuestionAnswersSortBy.RATE]: {
-        rate: answers?.orderBy ?? 'desc',
+        rate: answers?.orderBy ?? OrderBy.DESC,
       },
       [QuestionAnswersSortBy.DATE]: {
-        createdAt: answers?.orderBy ?? 'desc',
+        createdAt: answers?.orderBy ?? OrderBy.DESC,
       },
     };
 
@@ -257,21 +259,21 @@ export class QuestionService {
     
     const searchSortByMapper: SearchSortByMapper = {
       [SearchQuestionSortBy.RATE]: {
-        rate: orderBy ?? 'desc',
+        rate: orderBy ?? OrderBy.DESC,
       },
       [SearchQuestionSortBy.DATE]: {
-        createdAt: orderBy ?? 'desc',
+        createdAt: orderBy ?? OrderBy.DESC,
       },
       [SearchQuestionSortBy.ANSWERS]: {
         answers: {
-          _count: orderBy ?? 'desc',
+          _count: orderBy ?? OrderBy.DESC,
         }
       },
       [SearchQuestionSortBy.STATUS]: {
-        status: orderBy ?? 'desc',
+        status: orderBy ?? OrderBy.DESC,
       },
       [SearchQuestionSortBy.VIEWS]: {
-        views: orderBy ?? 'desc',
+        views: orderBy ?? OrderBy.DESC,
       },
     };
 

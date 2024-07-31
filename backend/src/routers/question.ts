@@ -4,8 +4,8 @@ import {
   QuestionUpdateDTO, 
   QuestionCreateDTO, 
   QuestionGetDTO, 
-  VoteDTO, 
-  QuestionCloseDTO
+  VoteDTO,
+  QuestionCloseDTO, 
 } from '@cloneoverflow/common';
 import { QuestionController } from "../controllers/question.controller";
 import { AuthAccess, GetAuth } from "../middlewares/authAccess";
@@ -46,7 +46,7 @@ router.delete('/:questionId/delete',
 router.patch('/:questionId/closed', 
   AuthAccess(),
   validateRequest({
-    body: QuestionCloseDTO
+    body: QuestionCloseDTO,
   }),
   questionController.closeQuestion.bind(questionController),
 );
