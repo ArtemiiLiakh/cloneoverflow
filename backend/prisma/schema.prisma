@@ -10,7 +10,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("POSTGRES_URL")
 }
 
 model User {
@@ -39,6 +39,8 @@ model UserProfile {
   reputation      Int               @default(0)
   about           String?           @db.Text
   status          UserStatus        @default(USER)
+  questions       Question[]
+  answers         Answer[]
   userAnswers     UserAnswers[]
   userQuestions   UserQuestions[]
   createdAt       DateTime          @default(now()) @map("created_at")
@@ -60,6 +62,8 @@ model Question {
   rate          Int                @default(0)
   views         Int                @default(0)
   status        QuestionStatus     @default(ACTIVE)
+  ownerId       String
+  owner         UserProfile        @relation(fields: [ownerId], references: [userId], onDelete: Cascade)
   userQuestions UserQuestions[]       
   answers       Answer[]
   tags          Tag[]
@@ -98,6 +102,8 @@ model Answer {
   userAnswers   UserAnswers[]   
   questionId    String        @map("question_id")
   question      Question      @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  ownerId       String
+  owner         UserProfile   @relation(fields: [ownerId], references: [userId], onDelete: Cascade)
   text          String        @db.Text
   rate          Int           @default(0)
   isSolution    Boolean       @default(false)
@@ -127,8 +133,8 @@ model UserAnswers {
 model Tag {
   id          String            @id @default(uuid())
   name        String            @unique @db.VarChar(100)
-  createdAt     DateTime      @default(now()) @map("created_at")
-  updatedAt     DateTime      @updatedAt @map("updated_at")
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
   questions   Question[]
 
   @@map("tags")

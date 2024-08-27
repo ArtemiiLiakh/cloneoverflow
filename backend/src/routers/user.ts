@@ -1,18 +1,19 @@
+import { UserController } from '@/controllers/user.controller';
+import { AuthAccess } from '@/middlewares/authAccess';
+import { validateRequest } from '@/middlewares/validation';
+import { userService } from '@/services';
+import { UserDeleteDTO, UserGetAnswersDTO, UserGetQuestionsDTO, UserUpdateDTO } from '@cloneoverflow/common';
 import express from "express";
-import { UserController } from "../controllers/user.controller";
-import { AuthAccess } from "../middlewares/authAccess";
-import { validateRequest } from "../middlewares/validation";
-import { AuthLoginDTO, UserGetAnswersDTO, UserGetQuestionsDTO, UserUpdateDTO } from '@cloneoverflow/common';
 
-const router = express.Router();
-const controller = new UserController();
+const user = express.Router();
+const controller = new UserController(userService);
 
-router.get('/:userId/get', 
+user.get('/:userId/get', 
   AuthAccess(), 
   controller.get.bind(controller)
 );
 
-router.patch('/:userId/update', 
+user.patch('/:userId/update', 
   AuthAccess(), 
   validateRequest({
     body: UserUpdateDTO,
@@ -20,13 +21,13 @@ router.patch('/:userId/update',
   controller.update.bind(controller)
 );
 
-router.get(
+user.get(
   '/:userId/profile',
   AuthAccess(),
   controller.getProfile.bind(controller), 
 );
 
-router.get('/:userId/answers',
+user.get('/:userId/answers',
   AuthAccess(),
   validateRequest({
     query: UserGetAnswersDTO,
@@ -34,7 +35,7 @@ router.get('/:userId/answers',
   controller.getAnswers.bind(controller),
 );
 
-router.get('/:userId/questions',
+user.get('/:userId/questions',
   AuthAccess(),
   validateRequest({
     query: UserGetQuestionsDTO,
@@ -42,12 +43,12 @@ router.get('/:userId/questions',
   controller.getQuestions.bind(controller),
 );
 
-router.delete('/:userId/delete',
+user.delete('/:userId/delete',
   AuthAccess(),
   validateRequest({
-    body: AuthLoginDTO,
+    body: UserDeleteDTO,
   }),
   controller.delete.bind(controller),
 );
 
-export { router as user };
+export { user };

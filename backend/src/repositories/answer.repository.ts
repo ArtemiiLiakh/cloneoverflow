@@ -1,19 +1,12 @@
-import { Prisma, PrismaClient, PrismaPromise, UserAnswerStatus } from "@prisma/client";
-import { DbAnswer } from "../types/database/DbAnswer";
+import { Prisma, PrismaClient, PrismaPromise } from "@prisma/client";
+import { DbAnswer } from "@/types/database/DbAnswer";
 
 export class AnswerRepository {
   private include: Prisma.AnswerInclude = {
-    userAnswers: {
-      where: {
-        status: UserAnswerStatus.OWNER,
-      },
-      include: {
-        userProfile: true,
-      },
-    },
+    owner: true,
   }
 
-  constructor(private prisma = new PrismaClient()) {}
+  constructor(private prisma: PrismaClient) {}
 
   create<R=DbAnswer> (data: Prisma.AnswerUncheckedCreateInput) {
     return this.prisma.answer.create({

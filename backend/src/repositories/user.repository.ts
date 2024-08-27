@@ -1,12 +1,12 @@
 import { Prisma, PrismaClient, PrismaPromise } from '@prisma/client';
-import { DbUser } from '../types/database/DbUser';
+import { DbUser } from '@/types/database/DbUser';
 
 export class UserRepository {
   private include: Prisma.UserInclude = {
     userProfile: true,
   }
 
-  constructor(private prisma = new PrismaClient()) {}
+  constructor(private prisma: PrismaClient) {}
 
   create (data: Prisma.UserUncheckedCreateInput) {
     return this.prisma.user.create({

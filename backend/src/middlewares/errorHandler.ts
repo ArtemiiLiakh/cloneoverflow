@@ -20,7 +20,6 @@ export const errorHandler = (
     console.log(err);
   }
 
-
   res.status(statusCode).send({
     name: err.constructor.name,
     error: message,

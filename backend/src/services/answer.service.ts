@@ -1,24 +1,29 @@
-import { 
-  AnswerCreateDTO, 
-  AnswerUpdateDTO, 
-  BadBodyException, 
-  ForbiddenException, 
+import { AnswerRepository } from '@/repositories/answer.repository';
+import { QuestionRepository } from '@/repositories/question.repository';
+import { UserRepository } from '@/repositories/user.repository';
+import { DbAnswer, AnswerUserRelation } from '@/types/database/DbAnswer';
+import { DbQuestion, QuestionAnswerRelation } from '@/types/database/DbQuestion';
+import {
+  AnswerCreateDTO,
+  AnswerUpdateDTO,
+  BadBodyException,
+  ForbiddenException,
   NoEntityWithIdException,
-  VoteType, 
+  QuestionStatus,
+  VoteType,
 } from '@cloneoverflow/common';
-import { AnswerRepository } from '../repositories/answer.repository';
-import { QuestionRepository } from '../repositories/question.repository';
-import { PrismaClient, PrismaPromise, QuestionStatus, UserAnswerStatus } from '@prisma/client';
+import { PrismaClient, UserAnswerStatus } from '@prisma/client';
 
 export class AnswerService {
   constructor (
-    private answerRepository = new AnswerRepository(),
-    private questionRepository = new QuestionRepository(),
-    private prisma = new PrismaClient(),
+    private userRepository: UserRepository,
+    private answerRepository: AnswerRepository,
+    private questionRepository: QuestionRepository,
+    private prisma: PrismaClient,
   ) {}
 
   async create (ownerId: string, { questionId, text }: AnswerCreateDTO) {
-    const question = await this.questionRepository.findById(questionId, {
+    const question = await this.questionRepository.findById<DbQuestion & QuestionAnswerRelation>(questionId, {
       include: {
         answers: {
           where: {
@@ -42,6 +47,7 @@ export class AnswerService {
     }
 
     return this.answerRepository.create({
+      ownerId,
       questionId,
       text,
       userAnswers: {
@@ -53,28 +59,51 @@ export class AnswerService {
   }
 
   async update (answerId: string, ownerId: string, { text }: AnswerUpdateDTO) {
-    const existingAnswer = await this.answerRepository.find({
+    const answer = await this.answerRepository.find({
       id: answerId,
     });
 
-    if(existingAnswer.userAnswers[0].userId !== ownerId){
+    if (!answer) {
+      throw new NoEntityWithIdException('Answer');
+    }
+
+    if (answer.ownerId !== ownerId){
       throw new ForbiddenException();
     }
 
     return this.answerRepository.updateById(answerId, { text });
   }
 
-  async get (answerId: string) {
-    return await this.answerRepository.find({
-      id: answerId,
+  async get (answerId: string, userId?: string) {
+    const answer =  await this.answerRepository.findById<DbAnswer & AnswerUserRelation>(answerId, {
+      include: {
+        owner: true,
+        userAnswers: {
+          where: {
+            answerId,
+            userId,
+            status: UserAnswerStatus.VOTER,
+          },
+        },
+      },
     });
+
+    if (!answer) {
+      throw new NoEntityWithIdException('Answer')
+    }
+
+    return answer;
   }
 
-  async delete (answerId: string) {
-    const answer = await this.answerRepository.delete({ id: answerId });
+  async delete (answerId: string, userId: string) {
+    const answer = await this.answerRepository.findById(answerId);
 
     if (!answer) {
       throw new NoEntityWithIdException('Answers')
+    }
+
+    if (answer.ownerId !== userId) {
+      throw new ForbiddenException('You cannot delete someone else\'s question');
     }
 
     if (answer.isSolution) {
@@ -82,82 +111,71 @@ export class AnswerService {
         status: QuestionStatus.ACTIVE,
       });
     }
+
+    return this.answerRepository.delete({
+      id: answerId,
+    });
   }
 
   async voteAnswer(answerId: string, userId: string, vote: VoteType) {
-    const votedAnswer = await this.answerRepository.find({
+    const votedAnswer = await this.answerRepository.find<DbAnswer & AnswerUserRelation>({
       id: answerId,
     }, {
       include: {
         userAnswers: {
           where: {
-            OR: [
-              {
-                userId,
-                answerId,
-                status: UserAnswerStatus.OWNER,
-              },
-              {
-                userId,
-                answerId,
-                status: UserAnswerStatus.VOTER,
-              },
-            ],
+            userId,
+            answerId,
+            status: UserAnswerStatus.VOTER,
           },
         },
+        owner: true,
       },
     });
 
-    const { userAnswers: ownerAnswers } = await this.answerRepository.findById(answerId);
+    if (!votedAnswer) {
+      throw new NoEntityWithIdException('Answer');
+    }
 
-    if (!votedAnswer.userAnswers[0]) {
-      return this.answerRepository.updateById(answerId, {
-        rate: {
-          increment: vote === VoteType.UP ? 1 : -1,
-        },
-        userAnswers: {
-          create: {
-            userId,
-            status: UserAnswerStatus.VOTER,
-            voteType: vote,
-          },
-          update: {
-            where: {
-              id: ownerAnswers[0].id,
-            },
-            data: {
-              userProfile: {
-                update: {
-                  reputation: {
-                    increment: vote === VoteType.UP ? 1 : -1,
-                  },
-                },
+    if (votedAnswer.ownerId === userId) {
+      throw new ForbiddenException('You cannot vote your own answer');
+    }
+
+    if (!votedAnswer.userAnswers.length) {
+      return this.prisma.$transaction([
+        this.userRepository.updateById(votedAnswer.ownerId, {
+          userProfile: {
+            update: {
+              reputation: {
+                increment: vote === VoteType.UP ? 1 : -1,
               },
             },
           },
-        },
-      });
+        }),
+        this.answerRepository.updateById(answerId, {
+          rate: {
+            increment: vote === VoteType.UP ? 1 : -1,
+          },
+          userAnswers: {
+            create: {
+              userId,
+              status: UserAnswerStatus.VOTER,
+              voteType: vote,
+            },
+          },
+        }),
+      ]);
     }
 
     if (
-      votedAnswer?.userAnswers[0].status === UserAnswerStatus.VOTER && 
       votedAnswer?.userAnswers[0].voteType?.toString() !== vote
     ) {
       return this.prisma.$transaction([
-        this.answerRepository.updateById(answerId, {
-          userAnswers: {
+        this.userRepository.updateById(votedAnswer.ownerId, {
+          userProfile: {
             update: {
-              where: {
-                id: ownerAnswers[0].id,
-              },
-              data: {
-                userProfile: {
-                  update: {
-                    reputation: {
-                      increment: vote === VoteType.UP ? 1 : -1,
-                    },
-                  },
-                },
+              reputation: {
+                increment: vote === VoteType.UP ? 1 : -1,
               },
             },
           },

@@ -1,12 +1,12 @@
+import { TagsRepository } from "@/repositories/tags.repository";
+import { DbTag } from "@/types/database/DbTag";
+import { DbUtils } from "@/utils/DatabaseUtils";
 import { OrderBy, SearchTagsDTO, SearchTagsSortBy } from "@cloneoverflow/common";
-import { TagsRepository } from "../repositories/tags.repository";
-import { DbUtils } from "../utils/DatabaseUtils";
 import { Prisma } from "@prisma/client";
-import { DbTag } from "../types/database/DbTag";
 
 export class TagsService {
   constructor (
-    private tagsRepository = new TagsRepository(),
+    private tagsRepository: TagsRepository,
   ) {}
 
   async getAll ({ name, sortBy, orderBy, pagination }: SearchTagsDTO) {

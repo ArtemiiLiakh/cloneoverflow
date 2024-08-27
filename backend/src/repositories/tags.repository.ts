@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient, PrismaPromise } from "@prisma/client";
-import { DbTag } from "../types/database/DbTag";
+import { DbTag } from "@/types/database/DbTag";
 
 export class TagsRepository {
   private include: Prisma.TagInclude = {
@@ -7,7 +7,7 @@ export class TagsRepository {
   }
 
   constructor (
-    private prisma = new PrismaClient(),
+    private prisma: PrismaClient,
   ) {}
 
   findMany<R=DbTag> (where: Prisma.TagWhereInput, args?: Prisma.TagFindManyArgs) {

@@ -1,12 +1,10 @@
 import { MappedSearchQuestionResponse, MappedSearchTagsResponse } from "@cloneoverflow/common";
-import { DbGetAllQuestions } from "../types/database/DbQuestion";
-import { DbTag } from "../types/database/DbTag";
+import { DbGetAllQuestions } from "@/types/database/DbQuestion";
+import { DbTag } from "@/types/database/DbTag";
 
 export class SearchMapper {
   getQuestions(questions: DbGetAllQuestions[]): MappedSearchQuestionResponse[] {
     return questions.map((question) => {
-      const owner = question.userQuestions[0].userProfile;
-
       return {
         id: question.id,
         title: question.title,
@@ -17,10 +15,10 @@ export class SearchMapper {
         createdAt: question.createdAt,
         updatedAt: question.updatedAt,
         owner: {
-          id: owner.userId,
-          name: owner.name,
-          username: owner.username,
-          reputation: owner.reputation,
+          id: question.owner.userId,
+          name: question.owner.name,
+          username: question.owner.username,
+          reputation: question.owner.reputation,
         },
         tags: question.tags.map((tag) => ({
           id: tag.id,

@@ -1,5 +1,5 @@
 import { PaginationDTO } from '@cloneoverflow/common';
-import { PaginatedData } from '../types/PaginatedData';
+import { PaginatedData } from '@/types/PaginatedData';
 
 export class DbUtils {
   static async paginate <Args=any, R=any>(repository: any, args: Args, pagination?: PaginationDTO): Promise<PaginatedData<R>> {

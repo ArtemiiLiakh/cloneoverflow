@@ -1,23 +1,31 @@
+import { forgotPasswordMessage } from '@/data/email/forgotPasswordMessage';
+import { GoogleService } from '@/google/google.service';
+import { UserRepository } from '@/repositories/user.repository';
+import { PasswordCodeData } from '@/types/cache/PasswordCodeData';
+import { CacheDatabase } from '@/types/database/CacheDatabase';
+import { DbUser } from '@/types/database/DbUser';
+import { compareHash, hash } from '@/utils/hash';
 import {
   AlreadyRegisteredException,
   AuthChangePasswordDTO,
+  AuthForgotPasswordResolveDTO,
   AuthLoginDTO,
   AuthSignupDTO,
   BadBodyException,
   ForbiddenException,
   LoginException,
+  RetriesExpiredException,
   UnauthorizedException,
-  WrongPasswordException
 } from '@cloneoverflow/common';
+import { randomBytes } from 'crypto';
 import jwt from 'jsonwebtoken';
 import config from '../config';
-import { UserRepository } from '../repositories/user.repository';
-import { DbUser } from '../types/database/DbUser';
-import { compare, hash } from '../utils/hash';
 
 export class AuthService {
   constructor (
-    private userRepository = new UserRepository(),
+    private googleService: GoogleService,
+    private userRepository: UserRepository,
+    private cacheDatabase: CacheDatabase,
   ) {}
 
   async login ({ email, password }: AuthLoginDTO) {
@@ -25,7 +33,7 @@ export class AuthService {
       email,
     });
 
-    if (!(user && await compare(password, user.password))) {
+    if (!(user && await compareHash(password, user.password))) {
       throw new LoginException();
     }
 
@@ -44,9 +52,6 @@ export class AuthService {
     });
 
     if (userExists) {
-      if (userExists.userProfile?.username === username) {
-        throw new BadBodyException("Username already exists");
-      }
       throw new AlreadyRegisteredException();
     }
 
@@ -87,11 +92,11 @@ export class AuthService {
     }
   }
 
-  async changePassword (userId: string, { oldPassword, newPassword }: AuthChangePasswordDTO) {
+  async changePassword (userId: string, { oldPassword, newPassword, email }: AuthChangePasswordDTO) {
     const user = await this.userRepository.findById(userId);
     
-    if (!(user && await compare(oldPassword, user.password))) {
-      throw new WrongPasswordException();
+    if (!(user && user.email === email && await compareHash(oldPassword, user.password))) {
+      throw new LoginException();
     }
 
     const passwordHash = await hash(newPassword);
@@ -130,5 +135,62 @@ export class AuthService {
       access_token,
       refresh_token,
     }
+  }
+
+  async forgotPassword (email: string) {
+    const user = await this.userRepository.find({
+      email,
+    });
+
+    if (!user) {
+      throw new BadBodyException('No user with this email');
+    }
+
+    const code = randomBytes(3).toString('hex');
+    await this.googleService.email.sendEmail(email, forgotPasswordMessage(code));
+
+    await this.cacheDatabase.setObject<PasswordCodeData>(`forgot:${user.id}`, {
+      code: await hash(code),
+      retries: 1,
+    }, {
+      expireAt: config.cache.CODE_EXPIRE_TIME,
+    });
+  }
+
+  async forgotPasswordResolve ({ email, code, newPassword }: AuthForgotPasswordResolveDTO) {
+    const user = await this.userRepository.find({
+      email,
+    });
+
+    if (!user) {
+      throw new BadBodyException('No user with this email');
+    }
+
+    const savedCode = await this.cacheDatabase.getObject<PasswordCodeData>(`forgot:${user.id}`);
+    
+    if (!savedCode) {
+      throw new BadBodyException('User does not have code');
+    }
+
+    if (savedCode.retries >= config.cache.CODE_RETRIES) {
+      await this.cacheDatabase.delete(`forgot:${user.id}`);
+
+      throw new RetriesExpiredException();
+    }
+    
+    if (!await compareHash(code, savedCode.code)) {
+      await this.cacheDatabase.setObject<PasswordCodeData>(`forgot:${user.id}`, {
+        code: savedCode.code,
+        retries: savedCode.retries+1,
+      });
+
+      throw new BadBodyException('Code does not match');
+    }
+
+    await this.cacheDatabase.delete(`forgot:${user.id}`);
+
+    await this.userRepository.updateById(user.id, {
+      password: await hash(newPassword),
+    });
   }
 }

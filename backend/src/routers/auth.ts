@@ -1,28 +1,48 @@
+import { AuthController } from '@/controllers/auth.controller';
+import { AuthAccess } from '@/middlewares/authAccess';
+import { validateRequest } from '@/middlewares/validation';
+import { authService } from '@/services';
+import {
+  AuthChangePasswordDTO,
+  AuthForgotPasswordDTO,
+  AuthForgotPasswordResolveDTO, 
+  AuthLoginDTO, 
+  AuthSignupDTO,
+} from '@cloneoverflow/common';
 import express from 'express';
-import { AuthController } from '../controllers/auth.controller';
-import { validateRequest } from '../middlewares/validation';
-import { AuthAccess } from '../middlewares/authAccess';
-import { AuthLoginDTO, AuthSignupDTO, AuthChangePasswordDTO } from '@cloneoverflow/common';
 
-const router = express.Router();
-const controller = new AuthController();
+const auth = express.Router();
+const controller = new AuthController(authService);
 
-router.post('/login', 
+auth.post('/login', 
   validateRequest({
     body: AuthLoginDTO,
   }), 
   controller.login.bind(controller),
 );
-router.post('/signup', 
+
+auth.post('/signup', 
   validateRequest({
     body: AuthSignupDTO,
   }), 
   controller.signup.bind(controller),
 );
-router.get('/signout', controller.signout.bind(controller));
-router.get('/me', AuthAccess(), controller.getMe.bind(controller));
-router.post('/refreshToken', controller.refreshToken.bind(controller));
-router.patch(
+
+auth.get('/signout', 
+  AuthAccess(),
+  controller.signout.bind(controller)
+);
+
+auth.get('/me', 
+  AuthAccess(), 
+  controller.getMe.bind(controller)
+);
+
+auth.post('/refreshToken', 
+  controller.refreshToken.bind(controller)
+);
+
+auth.post(
   '/changePassword', 
   AuthAccess(), 
   validateRequest({
@@ -31,4 +51,20 @@ router.patch(
   controller.changePassword.bind(controller),
 );
 
-export { router as auth };
+auth.post(
+  '/forgotPassword',
+  validateRequest({
+    body: AuthForgotPasswordDTO,
+  }),
+  controller.forgotPassword.bind(controller),
+);
+
+auth.post(
+  '/forgotPassword/resolve',
+  validateRequest({
+    body: AuthForgotPasswordResolveDTO,
+  }),
+  controller.forgotPasswordResolve.bind(controller),
+);
+
+export { auth };

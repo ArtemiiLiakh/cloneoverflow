@@ -9,7 +9,7 @@ export const hash = async (value: string, salt?: string) => {
   return `${hashBuffer.toString('hex')}.${salt}`;
 }
 
-export const compare = async (value: string, hashValue: string) => {
+export const compareHash = async (value: string, hashValue: string) => {
   const [realValue, salt] = hashValue.split('.');
   return hashValue === await hash(value, salt);
 }

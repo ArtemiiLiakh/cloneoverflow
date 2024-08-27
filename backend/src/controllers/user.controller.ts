@@ -1,23 +1,23 @@
-import { UserService } from "../services/user.service";
-import { UserMapper } from "../mappers/user.mapper";
-import { AuthRequest, Body, Query } from "../types/Requests";
-import { Response } from "express";
-import { 
-  UserGetResponse, 
-  UserUpdateResponse, 
-  UserGetProfileResponse, 
-  UserGetAnswersDTO, 
-  UserGetAnswersResponse, 
-  UserGetQuestionsDTO, 
-  UserGetQuestionResponse, 
-  UserUpdateDTO,
+import { UserMapper } from "@/mappers/user.mapper";
+import { UserService } from "@/services/user.service";
+import {
+  AuthLoginDTO,
   OkResponse,
-  AuthLoginDTO, 
+  UserGetAnswersDTO,
+  UserGetAnswersResponse,
+  UserGetProfileResponse,
+  UserGetQuestionResponse,
+  UserGetQuestionsDTO,
+  UserGetResponse,
+  UserUpdateDTO,
+  UserUpdateResponse,
 } from '@cloneoverflow/common';
+import { Response } from "express";
+import { AuthRequest, Body, Query } from "../types/Requests";
 
 export class UserController {
   constructor(
-    private userService = new UserService(),
+    private userService: UserService,
     private userMapper = new UserMapper(),
   ) {}
 
