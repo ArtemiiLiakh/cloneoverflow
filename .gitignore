@@ -4,9 +4,10 @@
 /**/node_modules
 /**/dist
 /**/build
-/**/.env
+/**/.env*
 /**/.idea
 /**/package-lock.json
+/backend/credentials.json
 
 /backend/prisma/migrations
 
