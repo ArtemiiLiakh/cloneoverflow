@@ -1,0 +1,60 @@
+name: Backend ci tests
+
+env:
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  POSTGRES_DB: postgres
+  REDIS_USER: admin
+  REDIS_USER_PASSWORD: admin_redis
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+  pull_request: 
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+
+jobs:
+  build: 
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        node-version: [20.x]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Setup common
+        run: cd common && npm ci
+      - name: Setup backend
+        run: cd backend && npm ci
+      - name: Generate prisma models
+        run: npm run test:db:generate
+      - name: Run build
+        run: npm run build
+  deploy:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        node-version: [20.x]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Setup common
+        run: cd common && npm ci
+      - name: Setup backend
+        run: cd backend && npm ci
+      - name: Generate prisma models
+        run: npm run test:db:generate
+      - name: Run backend tests
+        run: npm run test:docker
