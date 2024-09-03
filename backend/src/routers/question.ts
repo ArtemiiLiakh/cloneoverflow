@@ -1,49 +1,52 @@
-import express from "express";
-import { 
-  SearchQuestionsDTO, 
-  QuestionUpdateDTO, 
-  QuestionCreateDTO, 
-  QuestionGetDTO, 
+import { QuestionController } from "@/controllers/question.controller";
+import { SearchController } from "@/controllers/search.controller";
+import { AuthAccess, GetAuth } from "@/middlewares/authAccess";
+import { validateRequest } from "@/middlewares/validation";
+import { questionService, tagsService } from "@/services";
+import {
+  QuestionCloseDTO,
+  QuestionCreateDTO,
+  QuestionGetDTO,
+  QuestionUpdateDTO,
+  SearchQuestionsDTO,
   VoteDTO,
-  QuestionCloseDTO, 
 } from '@cloneoverflow/common';
-import { QuestionController } from "../controllers/question.controller";
-import { AuthAccess, GetAuth } from "../middlewares/authAccess";
-import { validateRequest } from "../middlewares/validation";
-import { SearchController } from "../controllers/search.controller";
+import express from "express";
 
-const router = express.Router();
-const questionController = new QuestionController();
-const searchController = new SearchController();
+const question = express.Router();
 
-router.post('/create', 
+const questionController = new QuestionController(questionService);
+const searchController = new SearchController(questionService, tagsService);
+
+question.post('/create', 
   AuthAccess(), 
   validateRequest({ body: QuestionCreateDTO }), 
   questionController.create.bind(questionController)
 );
 
-router.patch('/:questionId/update', 
+question.patch('/:questionId/update', 
   AuthAccess(), 
   validateRequest({ body: QuestionUpdateDTO }), 
   questionController.update.bind(questionController)
 );
 
-router.get('/search', 
+question.get('/search', 
   validateRequest({ query: SearchQuestionsDTO }), 
-  searchController.getQuestions.bind(searchController)
+  searchController.searchQuestions.bind(searchController)
 );
 
-router.get('/:questionId', 
+question.get('/:questionId/get', 
   GetAuth(),
   validateRequest({ query: QuestionGetDTO }),
   questionController.get.bind(questionController)
 );
 
-router.delete('/:questionId/delete', 
+question.delete('/:questionId/delete', 
+  AuthAccess(),
   questionController.delete.bind(questionController)
 );
 
-router.patch('/:questionId/closed', 
+question.patch('/:questionId/close', 
   AuthAccess(),
   validateRequest({
     body: QuestionCloseDTO,
@@ -51,10 +54,10 @@ router.patch('/:questionId/closed',
   questionController.closeQuestion.bind(questionController),
 );
 
-router.patch('/:questionId/vote', 
+question.patch('/:questionId/vote', 
   AuthAccess(),
   validateRequest({ body: VoteDTO }),
   questionController.voteQuestion.bind(questionController),
 );
 
-export { router as question };
+export { question };

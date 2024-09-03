@@ -1,15 +1,14 @@
-import express from 'express';
-import { SearchController } from '../controllers/search.controller';
-import { validateRequest } from '../middlewares/validation';
+import { SearchController } from '@/controllers/search.controller';
+import { validateRequest } from '@/middlewares/validation';
+import { questionService, tagsService } from '@/services';
 import { SearchTagsDTO } from '@cloneoverflow/common';
+import express from 'express';
 
-const router = express.Router();
-const searchController = new SearchController();
+const tags = express.Router();
+const searchController = new SearchController(questionService, tagsService);
 
-router.get('/search', validateRequest({
+tags.get('/search', validateRequest({
   query: SearchTagsDTO,
-}), searchController.getTags.bind(searchController));
+}), searchController.searchTags.bind(searchController));
 
-export {
-  router as tags,
-}
+export { tags };

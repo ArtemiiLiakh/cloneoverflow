@@ -1,6 +1,6 @@
 import { Exception } from './Exception';
 
 export class AlreadyRegisteredException extends Exception {
-  message = 'Email is already registered';
+  message = 'User with these credentials is already registered';
   statusCode = 400;
 }

@@ -1,60 +1,92 @@
-version: "3.5"
-name: cloneoverflow
+version: '3.7'
 
 services:
-  database:
-    image: postgres
-    container_name: postgres
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: cloneoverflow
-      PGDATA: /var/lib/postgresql/data/pgdata
-    ports:
-      - 5432:5432
-    volumes:
-      - db-data:/var/lib/postgresql/data
-    networks:
-      - database
-
   backend:
-    image: artemiiliakh/cloneoverflow:backend
-    pull_policy: if_not_present
+    image: cloneoverflow:backend
+    pull_policy: never
     container_name: backend
     build:
       context: .
       dockerfile: ./backend/Dockerfile
     ports:
       - 8000:8000
-    environment:
-      - DATABASE_URL=postgresql://postgres:postgres@database:5432/postgres?schema=public
-      - TOKEN_SECRET=secret
-      - SERVER_PORT=8000
-    command: bash -c "npm run db:sync && npm run start:prod"
-    
+    volumes:
+      - ./.env.prod:/app/backend/.env.prod
+      - ./credentials.json:/app/backend/credentials.json
     networks:
       - database
-      - app
     depends_on:
-      - database  
+      - postgres
+      - redis
 
-  frontend:
-    image: artemiiliakh/cloneoverflow:frontend
-    pull_policy: if_not_present
-    container_name: frontend
-    build:
-      context: .
-      dockerfile: ./frontend/Dockerfile
-      args:
-        - REACT_APP_API_URL=http://localhost:8000
+  postgres:
+    image: postgres:15.0
+    container_name: cloneoverflow-backend-test-postgres
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    restart: always
     ports:
-      - 3000:3000
+      - 5432:5432
+    volumes:
+      - postgresData:/var/lib/postgresql/data
     networks:
-      - app
-  
-volumes:
-  db-data:
+      - database
 
+  redis:
+    image: redis/redis-stack-server:7.4.0-v0
+    container_name: cloneoverflow-backend-test-redis
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_USER=${REDIS_USER}
+      - REDIS_USER_PASSWORD=${REDIS_USER_PASSWORD}
+    ports:
+      - 6379:6379
+    volumes:
+      - redisData:/data
+      - ./config/redis.conf:/usr/local/etc/redis/redis.conf
+    deploy:
+      resources:
+        limits:
+          cpus: 0.5
+          memory: '512M'
+        reservations:
+          cpus: 0.25
+          memory: '256M'
+    command: >
+      sh -c '
+        echo "user default on nopass -@all" >> /usr/local/etc/redis/users.acl &&
+        echo "user ${REDIS_USER} on >${REDIS_USER_PASSWORD} ~* +@all" >> /usr/local/etc/redis/users.acl &&
+        redis-stack-server /usr/local/etc/redis/redis.conf --aclfile /usr/local/etc/redis/users.acl
+      '
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "$REDIS_PASSWORD", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: always
+    networks:
+      - database
+
+  # frontend:
+  #   image: artemiiliakh/cloneoverflow:frontend
+  #   pull_policy: if_not_present
+  #   container_name: frontend
+  #   build:
+  #     context: .
+  #     dockerfile: ./frontend/Dockerfile
+  #     args:
+  #       - REACT_APP_API_URL=http://localhost:8000
+  #   ports:
+  #     - 3000:3000
+  #   networks:
+  #     - app
+  
 networks:
-  app:
   database:
+
+volumes:
+  postgresData:
+  redisData:

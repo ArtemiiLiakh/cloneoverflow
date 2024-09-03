@@ -4,6 +4,8 @@ export * from './answer.update.dto';
 export * from './auth.changePassword.dto';
 export * from './auth.login.dto';
 export * from './auth.signup.dto';
+export * from './auth.forgotPassword.dto';
+export * from './auth.forgotPasswordResolve.dto';
 
 export * from './pagination.dto';
 
@@ -18,5 +20,6 @@ export * from './search.tags.dto';
 export * from './user.getAnswers.dto';
 export * from './user.getQuestions.dto';
 export * from './user.update.dto';
+export * from './user.delete.dto';
 
 export * from './vote.dto';

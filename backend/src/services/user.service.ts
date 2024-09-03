@@ -1,3 +1,12 @@
+import { AnswerRepository } from '@/repositories/answer.repository';
+import { QuestionRepository } from '@/repositories/question.repository';
+import { UserRepository } from '@/repositories/user.repository';
+import { DbAnswerWithQuestion } from '@/types/database/DbAnswer';
+import { DbGetAllQuestions } from '@/types/database/DbQuestion';
+import { DbUserGetProfile } from '@/types/database/DbUser';
+import { TokenPayload } from '@/types/TokenPayload';
+import { DbUtils } from '@/utils/DatabaseUtils';
+import { compareHash } from '@/utils/hash';
 import {
   AuthLoginDTO,
   BadBodyException,
@@ -11,21 +20,12 @@ import {
   UserUpdateDTO
 } from '@cloneoverflow/common';
 import { Prisma, UserAnswerStatus, UserQuestionStatus } from '@prisma/client';
-import { AnswerRepository } from '../repositories/answer.repository';
-import { QuestionRepository } from '../repositories/question.repository';
-import { UserRepository } from "../repositories/user.repository";
-import { DbAnswer, DbAnswerWithQuestion } from '../types/database/DbAnswer';
-import { DbQuestion } from '../types/database/DbQuestion';
-import { DbUserGetProfile } from '../types/database/DbUser';
-import { DbUtils } from '../utils/DatabaseUtils';
-import { compare } from '../utils/hash';
-import { TokenPayload } from '../types/TokenPayload';
 
 export class UserService {
   constructor(
-    private userRepository = new UserRepository(),
-    private answerRepository = new AnswerRepository(),
-    private questionRepository = new QuestionRepository(),
+    private userRepository: UserRepository,
+    private answerRepository: AnswerRepository,
+    private questionRepository: QuestionRepository,
   ) {}
 
   async get(userId: string) {
@@ -139,7 +139,11 @@ export class UserService {
     return user;
   }
 
-  getAnswers(userId: string, { sortBy, orderBy, searchText, pagination }: UserGetAnswersDTO) {
+  async getAnswers(userId: string, { sortBy, orderBy, searchText, pagination }: UserGetAnswersDTO) {
+    if (!await this.userRepository.findById(userId)) {
+      throw new NoEntityWithIdException('User');
+    }
+
     return DbUtils.paginate<Prisma.AnswerFindManyArgs, DbAnswerWithQuestion>(this.answerRepository, {
       where: {
         userAnswers: {
@@ -190,20 +194,28 @@ export class UserService {
     return {};
   }
 
-  getQuestions (userId: string, {sortBy, orderBy, search, tags, pagination}: UserGetQuestionsDTO) {
-    return DbUtils.paginate<Prisma.QuestionFindManyArgs, DbQuestion>(this.questionRepository, {
+  async getQuestions (userId: string, {sortBy, orderBy, search, tags, pagination}: UserGetQuestionsDTO) {
+    if (!await this.userRepository.findById(userId)) {
+      throw new NoEntityWithIdException('User');
+    }
+    
+    const titleSearch = search ? {
+      contains: search,
+      mode: Prisma.QueryMode.insensitive,
+    } : undefined;
+
+    const tagSearch = tags?.length ? {
+      some: {
+        name: {
+          in: tags,
+        },
+      },
+    } : undefined;
+    
+    return DbUtils.paginate<Prisma.QuestionFindManyArgs, DbGetAllQuestions>(this.questionRepository, {
       where: {
-        title: {
-          contains: search,
-          mode: 'insensitive',
-        },
-        tags: {
-          some: {
-            name: {
-              in: tags,
-            },
-          },
-        },
+        title: titleSearch,
+        tags: tagSearch,
         userQuestions: {
           some: {
             userId,
@@ -212,6 +224,15 @@ export class UserService {
         }
       },
       orderBy: this.getQuestionsSortBy(sortBy, orderBy),
+      include: {
+        owner: true,
+        tags: true,
+        _count: {
+          select: {
+            answers: true,
+          },
+        },
+      },
     }, pagination ?? {});
   }
   
@@ -248,7 +269,7 @@ export class UserService {
     if (confirmUser.id !== userId){
       throw new BadBodyException("Invalid user id");
     }
-    if (!await compare(password, confirmUser.password)){
+    if (!await compareHash(password, confirmUser.password)){
       throw new BadBodyException("Invalid email or password");
     }
     await this.userRepository.delete({id: userId});

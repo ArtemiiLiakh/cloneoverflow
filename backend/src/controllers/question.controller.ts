@@ -1,22 +1,22 @@
+import { QuestionMapper } from '@/mappers/question.mapper';
+import { QuestionService } from '@/services/question.service';
+import { AuthRequest, Body, Params, Query } from '@/types/Requests';
 import {
+  OkResponse,
+  QuestionCloseDTO,
   QuestionCreateDTO,
   QuestionCreateResponse,
+  QuestionGetDTO,
+  QuestionGetResponse,
   QuestionUpdateDTO,
   QuestionUpdateResponse,
-  QuestionGetResponse,
-  OkResponse,
-  QuestionGetDTO,
-  VoteDTO,
-  QuestionCloseDTO
+  VoteDTO
 } from '@cloneoverflow/common';
 import { Response } from "express";
-import { QuestionMapper } from "../mappers/question.mapper";
-import { QuestionService } from "../services/question.service";
-import { AuthRequest, Body, Params, Query } from "../types/Requests";
 
 export class QuestionController {
   constructor(
-    private questionService = new QuestionService(),
+    private questionService: QuestionService,
     private questionMapper = new QuestionMapper(),
   ) {}
   
@@ -27,7 +27,7 @@ export class QuestionController {
 
   async create(req: AuthRequest & Body<QuestionCreateDTO>, res: Response<QuestionCreateResponse>) {
     const question = await this.questionService.create(req.body._user.userId, req.body);
-    res.send(this.questionMapper.create(question));
+    res.status(201).send(this.questionMapper.create(question));
   }
   
   async update({ params, body }: AuthRequest & Body<QuestionUpdateDTO>, res: Response<QuestionUpdateResponse>) {
@@ -35,8 +35,8 @@ export class QuestionController {
     res.send(this.questionMapper.update(question));
   }
 
-  async delete(req: Params<{ questionId: string }>, res: Response<OkResponse>) {
-    await this.questionService.delete(req.params.questionId);
+  async delete(req: AuthRequest & Params<{ questionId: string }>, res: Response<OkResponse>) {
+    await this.questionService.delete(req.params.questionId, req.body._user.userId);
     
     res.send({
       message: 'ok'

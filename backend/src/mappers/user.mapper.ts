@@ -1,3 +1,6 @@
+import { DbAnswerWithQuestion } from '@/types/database/DbAnswer';
+import { DbGetAllQuestions } from '@/types/database/DbQuestion';
+import { DbUser, DbUserGetProfile } from '@/types/database/DbUser';
 import {
   MappedUserGetAnswerResponse,
   MappedUserGetQuestionResponse,
@@ -7,9 +10,6 @@ import {
   UserStatus,
   UserUpdateResponse
 } from '@cloneoverflow/common';
-import { DbAnswer, DbAnswerWithQuestion } from '../types/database/DbAnswer';
-import { DbQuestion } from '../types/database/DbQuestion';
-import { DbUser, DbUserGetProfile } from "../types/database/DbUser";
 
 export class UserMapper {
   get(user: DbUser): UserGetResponse {
@@ -106,7 +106,7 @@ export class UserMapper {
     }));
   }
 
-  getQuestions(questions: DbQuestion[]): MappedUserGetQuestionResponse[] {
+  getQuestions(questions: DbGetAllQuestions[]): MappedUserGetQuestionResponse[] {
     return questions.map(question => ({
       id: question.id,
       title: question.title,
@@ -115,7 +115,7 @@ export class UserMapper {
       views: question.views,
       status: question.status,
       tags: question.tags.map(tag => tag.name),
-      answersAmount: question.answers.length,
+      answersAmount: question._count.answers,
       createdAt: question.createdAt,
       updatedAt: question.updatedAt,
     }));

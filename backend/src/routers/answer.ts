@@ -1,32 +1,45 @@
-import express from 'express';
-import { AnswerController } from '../controllers/answer.controller';
-import { AuthAccess } from '../middlewares/authAccess';
-import { validateRequest } from '../middlewares/validation';
+import { AnswerController } from '@/controllers/answer.controller';
+import { AuthAccess, GetAuth } from '@/middlewares/authAccess';
+import { validateRequest } from '@/middlewares/validation';
+import { answerService } from '@/services';
 import { AnswerCreateDTO, AnswerUpdateDTO, VoteDTO } from '@cloneoverflow/common';
+import express from 'express';
 
-const router = express.Router();
-const controller = new AnswerController();
+const answer = express.Router();
+const controller = new AnswerController(answerService);
 
-router.get('/:answersId', 
+answer.get('/:answersId/get', 
+  GetAuth(),
   controller.get.bind(controller)
 );
 
-router.post('/create', AuthAccess(), validateRequest({
-  body: AnswerCreateDTO,
-}), controller.create.bind(controller));
+answer.post('/create', 
+  AuthAccess(), 
+  validateRequest({
+    body: AnswerCreateDTO,
+  }), 
+  controller.create.bind(controller)
+);
 
-router.patch('/:answerId/update', AuthAccess(), validateRequest({
-  body: AnswerUpdateDTO,
-}), controller.update.bind(controller));
+answer.patch('/:answerId/update', 
+  AuthAccess(), 
+  validateRequest({
+    body: AnswerUpdateDTO,
+  }), 
+  controller.update.bind(controller)
+);
 
-router.delete('/:answerId/delete', 
+answer.delete('/:answerId/delete',
+  AuthAccess(),
   controller.delete.bind(controller)
 );
 
-router.patch('/:answerId/vote', 
+answer.patch('/:answerId/vote', 
   AuthAccess(),
-  validateRequest({ body: VoteDTO }),
+  validateRequest({ 
+    body: VoteDTO,
+  }),
   controller.voteAnswer.bind(controller),
 );
 
-export { router as answer };
+export { answer };

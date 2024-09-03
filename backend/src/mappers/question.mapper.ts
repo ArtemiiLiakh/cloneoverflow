@@ -1,13 +1,9 @@
 import { QuestionCreateResponse, QuestionGetResponse, QuestionUpdateResponse, VoteType } from '@cloneoverflow/common';
-import { DbQuestion } from "../types/database/DbQuestion";
-import { UserAnswerStatus, UserProfile, UserQuestionStatus } from '@prisma/client';
+import { DbQuestion, QuestionUserAnswerRelation, QuestionUserRelation } from "@/types/database/DbQuestion";
+import { UserAnswerStatus, UserQuestionStatus } from '@prisma/client';
 
 export class QuestionMapper {
-  get(question: DbQuestion, voterId?: string): QuestionGetResponse {
-    const owner = question.userQuestions.find(
-      (userAnswer) => userAnswer.status === UserQuestionStatus.OWNER
-    )?.userProfile as UserProfile;
-
+  get(question: DbQuestion & QuestionUserAnswerRelation & QuestionUserRelation, voterId?: string): QuestionGetResponse {
     const voter = question.userQuestions.find(
       (userQuestion) => userQuestion.status === UserQuestionStatus.VOTER && userQuestion.userId === voterId
     );
@@ -19,10 +15,10 @@ export class QuestionMapper {
       views: question.views,
       voteType: voter?.voteType as VoteType,
       owner: {
-        id: owner.userId,
-        name: owner.name,
-        username: owner.username,
-        reputation: owner.reputation,
+        id: question.owner.userId,
+        name: question.owner.name,
+        username: question.owner.username,
+        reputation: question.owner.reputation,
       },
       text: question.text,
       status: question.status,
@@ -30,10 +26,6 @@ export class QuestionMapper {
       updatedAt: new Date(question.updatedAt),
       tags: question.tags,
       answers: question.answers.map((answer) => {
-        const owner = answer.userAnswers.find(
-          (userAnswer) => userAnswer.status === UserAnswerStatus.OWNER
-        )?.userProfile as UserProfile;
-
         const voter = answer.userAnswers.find(
           (userAnswer) => userAnswer.status === UserAnswerStatus.VOTER && userAnswer.userId === voterId
         );
@@ -47,10 +39,10 @@ export class QuestionMapper {
           updatedAt: answer.updatedAt,
           voteType: voter?.voteType as VoteType,
           owner: {
-            id: owner.userId,
-            name: owner.name,
-            username: owner.username,
-            reputation: owner.reputation,
+            id: answer.owner.userId,
+            name: answer.owner.name,
+            username: answer.owner.username,
+            reputation: answer.owner.reputation,
           },
         };
       }),
@@ -58,8 +50,6 @@ export class QuestionMapper {
   }
 
   create(question: DbQuestion): QuestionCreateResponse {
-    const owner = question.userQuestions[0].userProfile;
-
     return {
       id: question.id,
       title: question.title,
@@ -70,10 +60,10 @@ export class QuestionMapper {
       createdAt: question.createdAt,
       updatedAt: question.updatedAt,
       user: {
-        id: owner.userId,
-        name: owner.name,
-        username: owner.username,
-        reputation: owner.reputation,
+        id: question.owner.userId,
+        name: question.owner.name,
+        username: question.owner.username,
+        reputation: question.owner.reputation,
       },
       tag: question.tags.map((tag) => ({
         id: tag.id,

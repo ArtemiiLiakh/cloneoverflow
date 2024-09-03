@@ -1,6 +1,27 @@
 import { QuestionStatus, Tag } from '@cloneoverflow/common';
 import { UserProfile, Answer, UserQuestions, Question, UserAnswers } from "@prisma/client";
 
+export class QuestionUserRelation {
+  userQuestions: (UserQuestions & {
+    userProfile: UserProfile,
+  })[];
+}
+
+export class QuestionUserAnswerRelation {
+  answers: (Answer & {
+    owner: UserProfile,
+    userAnswers: (UserAnswers & {
+      userProfile: UserProfile,
+    })[];
+  })[];
+}
+
+export class QuestionAnswerRelation {
+  answers: (Answer & {
+    owner: UserProfile,
+  })[];
+}
+
 export class DbQuestion implements Question {
   id: string;
   title: string;
@@ -8,14 +29,8 @@ export class DbQuestion implements Question {
   rate: number;
   views: number;
   status: QuestionStatus;
-  userQuestions: (UserQuestions & {
-    userProfile: UserProfile,
-  })[];
-  answers: (Answer & {
-    userAnswers: (UserAnswers & {
-      userProfile: UserProfile,
-    })[],
-  })[];
+  ownerId: string;
+  owner: UserProfile;
   tags: Tag[];
   createdAt: Date;
   updatedAt: Date;
@@ -23,9 +38,8 @@ export class DbQuestion implements Question {
 
 export class DbGetAllQuestions implements Question {
   id: string;
-  userQuestions: (UserQuestions & {
-    userProfile: UserProfile,
-  })[];
+  ownerId: string;
+  owner: UserProfile;
   title: string;
   text: string;
   rate: number;

@@ -18,7 +18,7 @@ class URLS {
 
   private QUESTION = this.API+'/questions';
   createQuestion = this.QUESTION + '/create';
-  getQuestion = (questionId: string) => `${this.QUESTION}/${questionId}`;
+  getQuestion = (questionId: string) => `${this.QUESTION}/${questionId}/get`;
   updateQuestion = (questionId: string) => `${this.QUESTION}/${questionId}/update`;
   closeQuestion = (questionId: string) => `${this.QUESTION}/${questionId}/closed`;
   voteQuestion = (questionId: string) => `${this.QUESTION}/${questionId}/vote`;

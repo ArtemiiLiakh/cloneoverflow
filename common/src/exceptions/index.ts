@@ -6,4 +6,4 @@ export * from './LoginExceptioin';
 export * from './NoEntityWithIdException';
 export * from './UnauthorizedExceptioin';
 export * from './ValidationException';
-export * from './WrongPasswordExceptioin';
+export * from './RetriesExpiredException';
