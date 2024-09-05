@@ -1,8 +1,8 @@
-import app from "@/app";
-import config from "@/config";
-import { PrismaDatabase } from "@/databases/prisma";
-import { RedisDatabase } from "@/databases/redis";
-import { GoogleService } from "@/google/google.service";
+import app from "@/v1/app";
+import config from "@/v1/config";
+import { PrismaDatabase } from "@/v1/databases/prisma";
+import { RedisDatabase } from "@/v1/databases/redis";
+import { GoogleService } from "@/v1/services/google/google.service";
 
 const startupConnection = async () => {
   new PrismaDatabase();
