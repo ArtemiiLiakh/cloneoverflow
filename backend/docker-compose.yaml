@@ -29,6 +29,7 @@ services:
     volumes:
       - testRedisData:/data
       - ./config/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./config/users.acl:/usr/local/etc/redis/users.acl
     deploy:
       resources:
         limits:
@@ -38,11 +39,7 @@ services:
           cpus: 0.25
           memory: '256M'
     command: >
-      sh -c '
-        echo "user default on nopass -@all" >> /usr/local/etc/redis/users.acl &&
-        echo "user ${REDIS_USER} on >${REDIS_USER_PASSWORD} ~* +@all" >> /usr/local/etc/redis/users.acl &&
-        redis-stack-server /usr/local/etc/redis/redis.conf --aclfile /usr/local/etc/redis/users.acl
-      '
+      sh -c 'redis-stack-server /usr/local/etc/redis/redis.conf --aclfile /usr/local/etc/redis/users.acl'
     healthcheck:
       test: ["CMD", "redis-cli", "-a", "$REDIS_PASSWORD", "ping"]
       interval: 30s

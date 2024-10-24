@@ -1,17 +1,17 @@
 import { IsEnum, IsOptional, ValidateNested } from "class-validator";
 import { OrderBy } from "../types";
 
-export enum QuestionAnswersSortBy {
+export enum QuestionAnswersSortByEnum {
   RATE = "rate",
   DATE = "date",
 }
 
 class AnswerDTO {
   @IsOptional()
-  @IsEnum(QuestionAnswersSortBy, {
-    message: `SortBy must be a valid enum value: ${Object.values(QuestionAnswersSortBy).join(', ')}`,
+  @IsEnum(QuestionAnswersSortByEnum, {
+    message: `SortBy must be a valid enum value: ${Object.values(QuestionAnswersSortByEnum).join(', ')}`,
   })
-    sortBy?: QuestionAnswersSortBy;
+    sortBy?: QuestionAnswersSortByEnum;
   
   @IsOptional()
   @IsEnum(OrderBy, {
@@ -22,5 +22,5 @@ class AnswerDTO {
 
 export class QuestionGetDTO {
   @ValidateNested()
-  answers?: AnswerDTO;
+    answers?: AnswerDTO;
 }

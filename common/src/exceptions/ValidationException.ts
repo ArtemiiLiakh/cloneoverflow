@@ -3,11 +3,11 @@ import { SerializedError } from '../types/SerializedError';
 import { Exception } from './Exception';
 
 export class ValidationException extends Exception {
-  message: string[];
-  statusCode = 400;
-
-  constructor (public errors: ValidationError[], public field='body') {
-    super();
+  constructor (
+    public errors: ValidationError[], 
+    public field='body'
+  ) {
+    super(`obj.${field}: wrong value`, 400);
   }
 
   private parseErrors(errors: ValidationError[], field: string) {
@@ -28,10 +28,10 @@ export class ValidationException extends Exception {
   }
 
   serializeError(): SerializedError {
-    this.message = this.parseErrors(this.errors, `obj.${this.field}`);
+    const message = this.parseErrors(this.errors, `obj.${this.field}`);
 
     return {
-      message: this.message,
+      message,
       statusCode: this.statusCode,
     }
   }

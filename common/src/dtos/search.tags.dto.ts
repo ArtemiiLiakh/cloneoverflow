@@ -4,7 +4,7 @@ import { validationMessage } from "../utils/validationUtils";
 import { PaginationDTO } from "./pagination.dto";
 import { Type } from "class-transformer";
 
-export enum SearchTagsSortBy {
+export enum SearchTagsSortByEnum {
   POPULAR = "popular",
   NAME = "name",
   NEWEST = "newest",
@@ -15,8 +15,8 @@ export class SearchTagsDTO {
     name?: string;
     
   @IsOptional()
-  @IsEnum(SearchTagsSortBy, validationMessage('SortBy must be a valid enum value: popular, name, newest'))
-    sortBy?: SearchTagsSortBy;
+  @IsEnum(SearchTagsSortByEnum, validationMessage('SortBy must be a valid enum value: popular, name, newest'))
+    sortBy?: SearchTagsSortByEnum;
     
   @IsOptional()
   @IsEnum(OrderBy, validationMessage('OrderBy must be a valid enum value: asc, desc'))

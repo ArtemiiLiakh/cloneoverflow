@@ -9,6 +9,7 @@
 /**/package-lock.json
 
 /backend/prisma/migrations
+/backend/prisma/.client
 /backend/credentials.json
 
 /Kubernetes

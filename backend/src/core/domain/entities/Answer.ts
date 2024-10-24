@@ -1,0 +1,49 @@
+import { Model } from "@common/model/Model";
+import { Timestamps } from "@common/model/Timestamp";
+import { randomUUID } from "crypto";
+
+export class Answer implements Model, Timestamps {
+  constructor (
+    public id: string,
+    public ownerId: string,
+    public questionId: string,
+    public text: string,
+    public rate: number,
+    public isSolution: boolean,
+    public createdAt: Date,
+    public updatedAt: Date,
+  ) {}
+
+  static new({
+    id,
+    ownerId,
+    questionId,
+    text,
+    rate,
+    isSolution,
+    createdAt,
+    updatedAt,
+  }: {
+    id?: string,
+    ownerId: string,
+    questionId: string,
+    text: string,
+    rate?: number,
+    isSolution?: boolean,
+    createdAt?: Date,
+    updatedAt?: Date,
+  }) {
+    const date = new Date();
+
+    return new Answer(
+      id ?? randomUUID(),
+      ownerId,
+      questionId,
+      text,
+      rate ?? 0,
+      isSolution ?? false,
+      createdAt ?? date,
+      updatedAt ?? date,
+    );
+  }
+}

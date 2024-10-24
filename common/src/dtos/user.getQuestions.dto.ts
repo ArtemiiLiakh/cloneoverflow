@@ -1,14 +1,9 @@
-import { Type } from 'class-transformer';
-import { IsArray, IsEnum, IsOptional, ValidateNested } from 'class-validator';
-import { OrderBy } from '../types/OrderBy';
-import { validationMessage } from '../utils/validationUtils';
-import { PaginationDTO } from './pagination.dto';
-
-export enum UserGQSortBy {
-  DATE = 'date',
-  RATE = 'rate',
-  ANSWERS = 'answers',
-}
+import { Type } from "class-transformer";
+import { IsArray, IsEnum, IsOptional, ValidateNested } from "class-validator";
+import { OrderBy } from "../types";
+import { validationMessage } from "../utils/validationUtils";
+import { PaginationDTO } from "./pagination.dto";
+import { QuestionsSortByEnum } from "./questions.getAll.dto";
 
 export class UserGetQuestionsDTO {
   @IsOptional()
@@ -19,8 +14,8 @@ export class UserGetQuestionsDTO {
     tags?: string[];
   
   @IsOptional()
-  @IsEnum(UserGQSortBy, validationMessage('SortBy must be a valid enum value: date, rate, answers'))
-    sortBy?: UserGQSortBy;
+  @IsEnum(QuestionsSortByEnum, validationMessage('SortBy must be a valid enum value: date, rate, answers'))
+    sortBy?: QuestionsSortByEnum;
   
   @IsOptional()
   @IsEnum(OrderBy, validationMessage('OrderBy must be a valid enum value: asc, desc'))

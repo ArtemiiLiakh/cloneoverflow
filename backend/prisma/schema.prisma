@@ -6,6 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  output = "./.client"
 }
 
 datasource db {
@@ -13,16 +14,16 @@ datasource db {
   url      = env("POSTGRES_URL")
 }
 
-model User {
+model UserCreds {
   id            String        @id @default(uuid())
   email         String        @unique @db.VarChar(200)
   password      String        @db.VarChar(200)
   createdAt     DateTime      @default(now()) @map("created_at")
-  updatedAt     DateTime      @updatedAt @map("updated_at")
-  userProfile   UserProfile?
+  updatedAt     DateTime      @default(now()) @updatedAt @map("updated_at")
+  user          User?
 
   @@index([email])
-  @@map("users")
+  @@map("users_creds")
 }
 
 enum UserStatus {
@@ -31,9 +32,9 @@ enum UserStatus {
   ADMIN
 }
 
-model UserProfile {
+model User {
   userId          String            @id @map("user_id")
-  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userCreds       UserCreds         @relation(fields: [userId], references: [id], onDelete: Cascade)
   name            String            @db.VarChar(100)
   username        String            @unique
   reputation      Int               @default(0)
@@ -44,10 +45,10 @@ model UserProfile {
   userAnswers     UserAnswers[]
   userQuestions   UserQuestions[]
   createdAt       DateTime          @default(now()) @map("created_at")
-  updatedAt       DateTime          @updatedAt @map("updated_at")
+  updatedAt       DateTime          @default(now()) @updatedAt @map("updated_at")
 
   @@index([username])
-  @@map("user_profile")
+  @@map("user")
 }
 
 enum QuestionStatus {
@@ -63,12 +64,12 @@ model Question {
   views         Int                @default(0)
   status        QuestionStatus     @default(ACTIVE)
   ownerId       String
-  owner         UserProfile        @relation(fields: [ownerId], references: [userId], onDelete: Cascade)
+  owner         User               @relation(fields: [ownerId], references: [userId], onDelete: Cascade)
   userQuestions UserQuestions[]       
   answers       Answer[]
   tags          Tag[]
   createdAt     DateTime           @default(now()) @map("created_at")
-  updatedAt     DateTime           @updatedAt @map("updated_at")
+  updatedAt     DateTime           @default(now()) @updatedAt @map("updated_at")
 
   @@map("questions")
 }
@@ -89,7 +90,7 @@ model UserQuestions {
   id            String                @id @default(uuid())
   userId        String                @map("user_id")
   questionId    String                @map("question_id")
-  userProfile   UserProfile           @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  user          User           @relation(fields: [userId], references: [userId], onDelete: Cascade)
   question      Question              @relation(fields: [questionId], references: [id], onDelete: Cascade)
   status        UserQuestionStatus    @default(OWNER)
   voteType      VoteType?             @map("vote_type")
@@ -103,12 +104,12 @@ model Answer {
   questionId    String        @map("question_id")
   question      Question      @relation(fields: [questionId], references: [id], onDelete: Cascade)
   ownerId       String
-  owner         UserProfile   @relation(fields: [ownerId], references: [userId], onDelete: Cascade)
+  owner         User   @relation(fields: [ownerId], references: [userId], onDelete: Cascade)
   text          String        @db.Text
   rate          Int           @default(0)
   isSolution    Boolean       @default(false)
   createdAt     DateTime      @default(now()) @map("created_at")
-  updatedAt     DateTime      @updatedAt @map("updated_at")
+  updatedAt     DateTime      @default(now()) @updatedAt @map("updated_at")
 
   @@map("answers")
 }
@@ -122,7 +123,7 @@ model UserAnswers {
   id            String                @id @default(uuid())
   userId        String                @map("user_id")
   answerId      String                @map("answer_id")
-  userProfile   UserProfile           @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  user          User           @relation(fields: [userId], references: [userId], onDelete: Cascade)
   answer        Answer                @relation(fields: [answerId], references: [id], onDelete: Cascade)
   status        UserAnswerStatus      @default(OWNER)
   voteType      VoteType?             @map("vote_type")
@@ -133,8 +134,8 @@ model UserAnswers {
 model Tag {
   id          String            @id @default(uuid())
   name        String            @unique @db.VarChar(100)
-  createdAt     DateTime        @default(now()) @map("created_at")
-  updatedAt     DateTime        @updatedAt @map("updated_at")
+  createdAt   DateTime          @default(now()) @map("created_at")
+  updatedAt   DateTime          @default(now()) @updatedAt @map("updated_at")
   questions   Question[]
 
   @@map("tags")

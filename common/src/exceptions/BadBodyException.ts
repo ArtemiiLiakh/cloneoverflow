@@ -1,6 +1,7 @@
 import { Exception } from './Exception';
 
 export class BadBodyException extends Exception {
-  message: string;
-  statusCode = 400;
+  constructor (message = 'Bad body') {
+    super(message, 400);
+  }
 }

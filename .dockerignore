@@ -10,6 +10,7 @@
 ./**/docker-compose.yaml
 
 /backend/prisma/migrations
+/backend/prisma/.client
 /backend/credentials.json
 
 /Kubernetes

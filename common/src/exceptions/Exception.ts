@@ -1,8 +1,12 @@
 import { SerializedError } from '../types/SerializedError';
 
-export abstract class Exception extends Error {
-  abstract message: any;
-  abstract statusCode: number;
+export class Exception extends Error {
+  constructor (
+    public message = 'Error',
+    public statusCode = 500, 
+  ) {
+    super(message);
+  }
 
   serializeError (): SerializedError {
     return {
