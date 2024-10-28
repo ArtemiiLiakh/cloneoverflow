@@ -1,19 +1,21 @@
 # ====================== BUILD ====================== 
 FROM node:17-slim as build
 
+WORKDIR /app
 COPY ./package.json /app/package.json
+COPY ./package-lock.json /app/package-lock.json
+
+COPY ./common/package.json /app/common/package.json
+RUN npm ci --workspace=common
+
+COPY ./backend/package.json /app/backend/package.json
+RUN npm ci --workspace=backend
 
 WORKDIR /app/common
-RUN npm ci
-
 COPY ./common /app/common
 RUN npm run build
 
 WORKDIR /app/backend
-
-COPY ./backend/package.json /app/backend/package.json
-RUN npm ci
-
 COPY ./backend /app/backend
 RUN npm run test:db:generate && \
     npm run build
@@ -21,15 +23,15 @@ RUN npm run test:db:generate && \
 # ====================== PACKAGE ======================
 FROM node:17-slim as package
 
+WORKDIR /app
 COPY ./package.json /app/package.json 
+COPY ./package-lock.json /app/package-lock.json
 
-WORKDIR /app/common
 COPY ./common/package.json /app/common/package.json
-RUN npm ci --omit=dev
+RUN npm ci --workspace=common --only=production
 
-WORKDIR /app/backend
 COPY ./backend/package.json /app/backend/package.json
-RUN npm ci --omit=dev
+RUN npm ci --workspace=backend --only=production
 
 # ====================== PRODUCTION ====================== 
 FROM node:17-slim as production

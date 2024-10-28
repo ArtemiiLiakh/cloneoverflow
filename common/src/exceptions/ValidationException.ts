@@ -1,8 +1,8 @@
 import { ValidationError } from 'class-validator';
-import { SerializedError } from '../types/SerializedError';
-import { Exception } from './Exception';
+import { HttpError } from '../types/SerializedError';
+import { HttpException } from './HttpException';
 
-export class ValidationException extends Exception {
+export class ValidationException extends HttpException {
   constructor (
     public errors: ValidationError[], 
     public field='body'
@@ -27,7 +27,7 @@ export class ValidationException extends Exception {
     return message;
   }
 
-  serializeError(): SerializedError {
+  serializeError(): HttpError {
     const message = this.parseErrors(this.errors, `obj.${this.field}`);
 
     return {

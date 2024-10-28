@@ -1,6 +1,6 @@
-import { SerializedError } from '../types/SerializedError';
+import { HttpError } from '../types/SerializedError';
 
-export class Exception extends Error {
+export class HttpException extends Error {
   constructor (
     public message = 'Error',
     public statusCode = 500, 
@@ -8,7 +8,7 @@ export class Exception extends Error {
     super(message);
   }
 
-  serializeError (): SerializedError {
+  serializeError (): HttpError {
     return {
       message: this.message,
       statusCode: this.statusCode,

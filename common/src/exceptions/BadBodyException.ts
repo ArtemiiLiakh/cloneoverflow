@@ -1,6 +1,6 @@
-import { Exception } from './Exception';
+import { HttpException } from './HttpException';
 
-export class BadBodyException extends Exception {
+export class BadBodyException extends HttpException {
   constructor (message = 'Bad body') {
     super(message, 400);
   }
