@@ -1,8 +1,8 @@
-import { PaginationDTO, VoteType } from "@cloneoverflow/common";
+import { PaginationInput, VoteTypeEnum } from "@cloneoverflow/common";
 import { QuestionRelation } from "@common/relations/QuestionRelation";
 import { CountOption } from "@common/repository/counts";
 import { IncludeRelations } from "@common/repository/include";
-import { RepositoryOptions, RepositoryFindManyOptions } from "@common/repository/options";
+import { RepositoryFindManyOptions, RepositoryOptions } from "@common/repository/options";
 import { OrderByOption } from "@common/repository/orderBy";
 import { Where } from "@common/repository/where";
 import { Question } from "@core/domain/entities/Question";
@@ -34,7 +34,7 @@ export namespace QuestionRepositoryInput {
 
   export type Paginate = {
     where: QuestionWhere;
-    pagination?: PaginationDTO;
+    pagination?: PaginationInput;
     options?: QuestionFindManyRepositoryOptions;
   };
 
@@ -57,7 +57,7 @@ export namespace QuestionRepositoryInput {
   
   export type VoteQuestion = {
     questionId: string;
-    voteType: VoteType;
+    voteType: VoteTypeEnum;
   };
 
   export type RefTags = {

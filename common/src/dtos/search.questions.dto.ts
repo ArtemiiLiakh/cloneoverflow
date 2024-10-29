@@ -1,23 +1,10 @@
-import { IsArray, IsEnum, IsOptional, ValidateNested } from "class-validator";
-import { OrderBy } from "../types";
-import { PaginationDTO } from "./pagination.dto";
-import { validationMessage } from "../utils/validationUtils";
 import { Type } from "class-transformer";
-
-export enum SearchQuestionSortByEnum {
-  RATE = "rate",
-  DATE = "date",
-  ANSWERS = "answers",
-  VIEWS = "views",
-  STATUS = "status"
-}
-
-export enum SearchQuestionFilterByEnum {
-  CLOSED = "closed",
-  ACTIVE = "active",
-  WEEKLY = "weekly",
-  MONTHLY = "monthly"
-}
+import { IsEnum, IsOptional, ValidateNested } from "class-validator";
+import { SearchQuestionFilterByEnum } from "../enums/filters/SearchQuestionsFilterBy";
+import { OrderByEnum } from "../enums/OrderBy";
+import { SearchQuestionSortByEnum } from "../enums/sorts/SearchQuestionsSortBy";
+import { validationMessage } from "../utils/validationUtils";
+import { PaginationDTO } from "./pagination.dto";
 
 export class SearchQuestionsDTO {
   @IsOptional()
@@ -32,8 +19,8 @@ export class SearchQuestionsDTO {
     sortBy?: SearchQuestionSortByEnum[];
   
   @IsOptional()
-  @IsEnum(OrderBy, validationMessage('OrderBy must be a valid enum value: asc, desc'))
-    orderBy?: OrderBy;
+  @IsEnum(OrderByEnum, validationMessage('OrderBy must be a valid enum value: asc, desc'))
+    orderBy?: OrderByEnum;
   
   @IsOptional()
   @Type(() => PaginationDTO)

@@ -1,5 +1,4 @@
-import { VoteType } from "@cloneoverflow/common";
-import { UserAnswerStatusEnum } from "@common/enums/UserAnswerStatus";
+import { UserAnswerStatusEnum, VoteTypeEnum } from "@cloneoverflow/common";
 import { AnswerUserStats } from "@core/domain/entities/AnswerUserStats";
 
 export namespace AnswerUserRepositoryInput {
@@ -17,7 +16,7 @@ export namespace AnswerUserRepositoryInput {
     where: AnswerUserWhere, 
     data: {
       status?: UserAnswerStatusEnum,
-      voteType?: VoteType | null,
+      voteType?: VoteTypeEnum | null,
     },
   };
 

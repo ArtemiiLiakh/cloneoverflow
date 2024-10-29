@@ -1,10 +1,10 @@
-import { ForbiddenException, NoEntityWithIdException, QuestionStatus } from "@cloneoverflow/common";
+import { ForbiddenException, NoEntityWithIdException, QuestionStatusEnum } from "@cloneoverflow/common";
 import { AnswerRepository } from "@core/domain/repositories/answer/AnswerRepository";
 import { QuestionRepository } from "@core/domain/repositories/question/QuestionRepository";
 import { UnitOfWork } from "@core/domain/repositories/UnitOfWork";
 import { QuestionServiceInput } from "../dto/QuestionServiceInput";
-import { IQuestionCloseUseCase } from "../types/usecases";
 import { QuestionServiceOutput } from "../dto/QuestionServiceOutput";
+import { IQuestionCloseUseCase } from "../types/usecases";
 
 export class QuestionCloseUseCase implements IQuestionCloseUseCase {
   constructor (
@@ -30,7 +30,7 @@ export class QuestionCloseUseCase implements IQuestionCloseUseCase {
       throw new ForbiddenException();
     }
 
-    const questionStatus = answer.entity.isSolution ? QuestionStatus.ACTIVE : QuestionStatus.CLOSED;
+    const questionStatus = answer.entity.isSolution ? QuestionStatusEnum.ACTIVE : QuestionStatusEnum.CLOSED;
 
     await this.unitOfWork.execute(async (unit) => {
       await unit.questionRepository.update({

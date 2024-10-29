@@ -31,7 +31,7 @@ export class ForgotPasswordResolveUseCase implements IForgotPasswordResolveUseCa
     const savedCode = await this.cacheRepository.getObject<PasswordCodeData>(`user:${user.creds.id}:forgotPassword`);  
   
     if (!savedCode) {
-      throw new BadBodyException('User does not have password refresh code')
+      throw new BadBodyException('User does not have verification code')
     }
   
     if (savedCode.retries > config.cache.CODE_RETRIES) {

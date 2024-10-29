@@ -1,6 +1,6 @@
 import { AdaptController } from '@app/adapters/AdaptController';
 import { AnswerController } from '@app/controllers/AnswerController';
-import { answerServiceFacadeDI } from '@app/di/service/AnswerServiceDI';
+import { answerServiceFacadeDI } from '@app/di/services/AnswerServiceDI';
 import { JwtAuthAccess, JwtGetAuth } from '@app/middlewares/JwtAuthAccess';
 import { validateRequest } from '@app/middlewares/validation';
 import {

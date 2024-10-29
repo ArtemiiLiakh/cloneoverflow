@@ -1,6 +1,6 @@
 import { AnswerRepository } from "@core/domain/repositories/answer/AnswerRepository";
-import { AnswerRepositoryOutput } from "@core/domain/repositories/answer/output/AnswerRepositoryOutput";
 import { AnswerRepositoryInput } from "@core/domain/repositories/answer/input/AnswerRepositoryInput";
+import { AnswerRepositoryOutput } from "@core/domain/repositories/answer/output/AnswerRepositoryOutput";
 import { AnswerIncludeAdapter } from "@infra/persistance/prisma/adapters/include/AnswerIncludeAdapter";
 import { AnswerOrderByAdapter } from "@infra/persistance/prisma/adapters/orderBy/AnswerOrderByAdapter";
 import { AnswerRepositoryMapper } from "@infra/persistance/prisma/adapters/repositories/AnswerRepositoryMapper";
@@ -42,7 +42,7 @@ export class PrismaAnswerRepository implements AnswerRepository {
 
   findById({ id, options }: AnswerRepositoryInput.FindById): Promise<AnswerRepositoryOutput.FindById> {
     return this.findOne({
-      where: { id: id },
+      where: { id },
       options,
     });
   }

@@ -1,4 +1,4 @@
-import { UserStatus } from '../types/UserStatus';
+import { UserStatusEnum } from "../enums/statuses/UserStatus";
 
 export class UserUpdateResponse {
   id: string;
@@ -6,7 +6,7 @@ export class UserUpdateResponse {
   username: string;
   about: string | null;
   reputation: number;
-  status: UserStatus;
+  status: UserStatusEnum;
   createdAt: Date;
   updatedAt: Date;
 }

@@ -1,6 +1,6 @@
+import { PaginatedData } from "@cloneoverflow/common";
 import { TagRelation } from "@common/relations/TagRelation";
-import { CountResult } from "@common/repository/counts"
-import { PaginatedData } from "@common/utils/PaginatedData";
+import { CountResult } from "@common/repository/counts";
 import { Tag } from "@core/domain/entities/Tag";
 
 type TagAdds = Partial<TagRelation & CountResult<TagRelation>>;

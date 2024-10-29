@@ -1,6 +1,6 @@
+import { PaginatedData } from "@cloneoverflow/common";
 import { AnswerRelation } from "@common/relations/AnswerRelation";
 import { CountResult } from "@common/repository/counts";
-import { PaginatedData } from "@common/utils/PaginatedData";
 import { Answer } from "@core/domain/entities/Answer";
 
 type AnswerAdds = Partial<AnswerRelation & CountResult<AnswerRelation>>;

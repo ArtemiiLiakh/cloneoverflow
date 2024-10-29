@@ -1,10 +1,10 @@
-import { UserAnswerStatusEnum } from "@common/enums/UserAnswerStatus";
 import { Answer } from "@core/domain/entities/Answer";
 import { AnswerUserStats } from "@core/domain/entities/AnswerUserStats";
 import { UnitOfWork } from "@core/domain/repositories/UnitOfWork";
 import { AnswerServiceInput } from "../dto/AnswerServiceInput";
 import { IAnswerCreateUseCase } from "../types/usecases";
 import { AnswerServiceOutput } from "../dto/AnswerServiceOutput";
+import { UserAnswerStatusEnum } from "@cloneoverflow/common";
 
 export class AnswerCreateUseCase implements IAnswerCreateUseCase {
   constructor (

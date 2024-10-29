@@ -1,27 +1,56 @@
-import { AuthLoginDTO, AuthSignupDTO, AuthChangePasswordDTO, AuthForgotPasswordResolveDTO } from "@cloneoverflow/common";
-
 export namespace AuthServiceInput {
-  export type Login = AuthLoginDTO;
+  export type Login = {
+    email: string,
+    password: string,
+  };
+  
+  export type SignUp = {
+    email: string;
+    password: string;
+    name: string;
+    username: string;
+    about: string;
+  };
 
-  export type CreateAccount = AuthSignupDTO;
+  export type GetMe = {
+    id: string,
+  };
 
   export type DeleteAccount = {
     userId: string, 
-    creds: AuthLoginDTO
+    creds: {
+      email: string,
+      password: string,
+    }
   }
 
   export type RefreshToken = {
-    userId: string
+    userId: string,
   };
 
   export type ChangePassword = {
     userId: string, 
-    data: AuthChangePasswordDTO,
+    data: {
+      email: string,
+      oldPassword: string,
+    },
+  };
+  
+  export type ChangePasswordResolve = {
+    userId: string, 
+    data: {
+      code: string,
+      newPassword: string,
+    },
   };
 
   export type ForgotPassword = {
     email: string
   };
 
-  export type ForgotPasswordResolve = AuthForgotPasswordResolveDTO;
+  export type ForgotPasswordResolve = {
+    email: string;
+    code: string;
+    newPassword: string;
+  };
 }

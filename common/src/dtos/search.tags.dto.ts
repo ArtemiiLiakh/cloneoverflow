@@ -1,14 +1,9 @@
+import { Type } from "class-transformer";
 import { IsEnum, IsOptional, ValidateNested } from "class-validator";
-import { OrderBy } from "../types";
+import { OrderByEnum } from "../enums/OrderBy";
+import { SearchTagsSortByEnum } from "../enums/sorts/SearchTagsSortBy";
 import { validationMessage } from "../utils/validationUtils";
 import { PaginationDTO } from "./pagination.dto";
-import { Type } from "class-transformer";
-
-export enum SearchTagsSortByEnum {
-  POPULAR = "popular",
-  NAME = "name",
-  NEWEST = "newest",
-}
 
 export class SearchTagsDTO {
   @IsOptional()
@@ -19,8 +14,8 @@ export class SearchTagsDTO {
     sortBy?: SearchTagsSortByEnum;
     
   @IsOptional()
-  @IsEnum(OrderBy, validationMessage('OrderBy must be a valid enum value: asc, desc'))
-    orderBy?: OrderBy;
+  @IsEnum(OrderByEnum, validationMessage('OrderBy must be a valid enum value: asc, desc'))
+    orderBy?: OrderByEnum;
 
   @IsOptional()
   @Type(() => PaginationDTO)

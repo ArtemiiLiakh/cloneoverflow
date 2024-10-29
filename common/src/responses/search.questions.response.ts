@@ -1,4 +1,4 @@
-import { QuestionStatus, Tag } from "../types";
+import { QuestionStatusEnum } from "../enums/statuses/QuestionStatus";
 import { PaginationResponse } from "./pagination.response";
 
 export class MappedSearchQuestionResponse {
@@ -7,8 +7,8 @@ export class MappedSearchQuestionResponse {
   text: string;
   rate: number;
   views: number;
-  status: QuestionStatus;
-  tags: Tag[];
+  status: QuestionStatusEnum;
+  tags: string[];
   createdAt: Date;
   updatedAt: Date;
   owner: {

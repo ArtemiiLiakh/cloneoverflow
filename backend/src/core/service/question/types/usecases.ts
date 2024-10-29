@@ -9,3 +9,4 @@ export interface IQuestionGetUseCase extends UseCase<QuestionServiceInput.Get, Q
 export interface IQuestionGetAllUseCase extends UseCase<QuestionServiceInput.GetAll, QuestionServiceOutput.GetAll> {}
 export interface IQuestionVoteUseCase extends UseCase<QuestionServiceInput.VoteQuestion, QuestionServiceOutput.VoteQuestion> {}
 export interface IQuestionCloseUseCase extends UseCase<QuestionServiceInput.CloseQuestion, QuestionServiceOutput.CloseQuestion> {}
+export interface IQuestionAddViewerUseCase extends UseCase<QuestionServiceInput.AddViewer, QuestionServiceOutput.AddViewer> {}

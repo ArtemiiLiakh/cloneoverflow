@@ -1,10 +1,10 @@
-import { SearchQuestionsDTO } from "@cloneoverflow/common";
 import { QuestionRepository } from "@core/domain/repositories/question/QuestionRepository";
 import { SearchQuestionsFilterBy } from "@core/service/utils/SearchServiceUtils/SearchQuestionFilterBy";
 import { SearchQuestionParse } from "@core/service/utils/SearchServiceUtils/SearchQuestionParse";
 import { SearchQuestionsSortBy } from "@core/service/utils/SearchServiceUtils/SearchQuestionSortBy";
 import { SearchServiceOutput } from "../dto/SearchServiceOutput";
 import { ISearchQuestionsUseCase } from "../types/usecases";
+import { SearchServiceInput } from "../dto/SearchServiceInput";
 
 export class SearchQuestionsUseCase implements ISearchQuestionsUseCase {
   constructor (
@@ -12,7 +12,7 @@ export class SearchQuestionsUseCase implements ISearchQuestionsUseCase {
   ) {}
 
   async execute(
-    { filterBy, search, sortBy, orderBy, pagination }: SearchQuestionsDTO
+    { filterBy, search, sortBy, orderBy, pagination }: SearchServiceInput.SearchQuestions
   ): Promise<SearchServiceOutput.SearchQuestions> {
     const searchFilter = SearchQuestionParse(search);
     const where = SearchQuestionsFilterBy(searchFilter, filterBy);
@@ -28,13 +28,13 @@ export class SearchQuestionsUseCase implements ISearchQuestionsUseCase {
         count: {
           answers: true,
         },
-        orderBy: sortBy?.map(sort => SearchQuestionsSortBy(sort, orderBy)),
+        orderBy: SearchQuestionsSortBy(sortBy, orderBy),
       },
     });
 
     return {
       data: questions.data.map(question => ({
-        question: question.entity,
+        entity: question.entity,
         owner: question.owner!,
         tags: question.tags!,
         answersAmount: question.counts?.answers ?? 0,

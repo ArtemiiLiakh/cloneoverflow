@@ -1,9 +1,9 @@
 import { Type } from "class-transformer";
 import { IsArray, IsEnum, IsOptional, ValidateNested } from "class-validator";
-import { OrderBy } from "../types";
+import { OrderByEnum } from "../enums/OrderBy";
+import { QuestionsSortByEnum } from "../enums/sorts/QuestionsSortBy";
 import { validationMessage } from "../utils/validationUtils";
 import { PaginationDTO } from "./pagination.dto";
-import { QuestionsSortByEnum } from "./questions.getAll.dto";
 
 export class UserGetQuestionsDTO {
   @IsOptional()
@@ -18,8 +18,8 @@ export class UserGetQuestionsDTO {
     sortBy?: QuestionsSortByEnum;
   
   @IsOptional()
-  @IsEnum(OrderBy, validationMessage('OrderBy must be a valid enum value: asc, desc'))
-    orderBy?: OrderBy;
+  @IsEnum(OrderByEnum, validationMessage('OrderBy must be a valid enum value: asc, desc'))
+    orderBy?: OrderByEnum;
   
   @IsOptional()
   @Type(() => PaginationDTO)

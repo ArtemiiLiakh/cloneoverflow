@@ -8,7 +8,4 @@ export class AuthChangePasswordDTO {
 
   @IsNotEmpty(validationMessage('Old password is required'))
     oldPassword: string;
-  
-  @IsNotEmpty(validationMessage('New password is required'))
-    newPassword: string;
 }

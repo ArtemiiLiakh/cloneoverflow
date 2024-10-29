@@ -1,6 +1,6 @@
-import { QuestionsGetAllDTO } from "@cloneoverflow/common";
 import { QuestionRepository } from "@core/domain/repositories/question/QuestionRepository";
 import { QuestionsSortBy } from "@core/service/utils/QuestionServiceUtils/QuestionsSortBy";
+import { QuestionServiceInput } from "../dto/QuestionServiceInput";
 import { QuestionServiceOutput } from "../dto/QuestionServiceOutput";
 import { IQuestionGetAllUseCase } from "../types/usecases";
 
@@ -18,7 +18,7 @@ export class QuestionGetAllUseCase implements IQuestionGetAllUseCase {
       sortBy, 
       orderBy, 
       pagination 
-    }: QuestionsGetAllDTO
+    }: QuestionServiceInput.GetAll
   ): Promise<QuestionServiceOutput.GetAll> {
     const orderByMap = QuestionsSortBy(sortBy, orderBy);
 
@@ -41,6 +41,7 @@ export class QuestionGetAllUseCase implements IQuestionGetAllUseCase {
       pagination,
       options: {
         include: {
+          owner: true,
           tags: true,
         },
         count: {

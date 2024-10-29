@@ -9,6 +9,19 @@ export class SearchServiceFacade {
     private searchTagsUseCase: SearchTagsUseCase,
   ) {}
 
+  static new ({
+    searchQuestionsUseCase,
+    searchTagsUseCase,
+  }: {
+    searchQuestionsUseCase: SearchQuestionsUseCase,
+    searchTagsUseCase: SearchTagsUseCase,
+  }) {
+    return new SearchServiceFacade(
+      searchQuestionsUseCase,
+      searchTagsUseCase,
+    );
+  }
+
   searchQuestions(payload: SearchServiceInput.SearchQuestions): Promise<SearchServiceOutput.SearchQuestions> {
     return this.searchQuestionsUseCase.execute(payload);
   }

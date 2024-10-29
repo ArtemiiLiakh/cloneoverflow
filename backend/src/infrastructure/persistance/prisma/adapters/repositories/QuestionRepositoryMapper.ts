@@ -1,4 +1,4 @@
-import { PaginatedData } from "@common/utils/PaginatedData";
+import { PaginatedData } from "@cloneoverflow/common/src/data/PaginatedData";
 import { QuestionRepositoryOutput } from "@core/domain/repositories/question/output/QuestionRepositoryOutput";
 import { QuestionRepository } from "@core/domain/repositories/question/QuestionRepository";
 import { QuestionMapper } from "../entityMappers/QuestionMapper";

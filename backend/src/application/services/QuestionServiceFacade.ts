@@ -21,6 +21,34 @@ export class QuestionServiceFacade {
     private questionCloseUseCase: IQuestionCloseUseCase,
   ) {}
 
+  static new ({
+    questionCreateUseCase,
+    questionUpdateUseCase,
+    questionGetUseCase,
+    questionDeleteUseCase,
+    questionGetAllUseCase,
+    questionVoteUseCase,
+    questionCloseUseCase,
+  }: {
+    questionCreateUseCase: IQuestionCreateUseCase,
+    questionUpdateUseCase: IQuestionUpdateUseCase,
+    questionGetUseCase: IQuestionGetUseCase,
+    questionDeleteUseCase: IQuestionDeleteUseCase,
+    questionGetAllUseCase: IQuestionGetAllUseCase,
+    questionVoteUseCase: IQuestionVoteUseCase,
+    questionCloseUseCase: IQuestionCloseUseCase,
+  }) {
+    return new QuestionServiceFacade(    
+      questionCreateUseCase,
+      questionUpdateUseCase,
+      questionGetUseCase,
+      questionDeleteUseCase,
+      questionGetAllUseCase,
+      questionVoteUseCase,
+      questionCloseUseCase,
+    );
+  }
+
   create(payload: QuestionServiceInput.Create): Promise<QuestionServiceOutput.Create> {
     return this.questionCreateUseCase.execute(payload);
   }

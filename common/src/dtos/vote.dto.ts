@@ -1,8 +1,8 @@
 import { IsEnum } from "class-validator";
 import { validationMessage } from "../utils/validationUtils";
-import { VoteType } from "../types";
+import { VoteTypeEnum } from "../enums/VoteType";
 
 export class VoteDTO {
-  @IsEnum(VoteType, validationMessage('Vote must be enum: up, down'))
-    vote: VoteType;
+  @IsEnum(VoteTypeEnum, validationMessage('Vote must be enum: up, down'))
+    vote: VoteTypeEnum;
 }

@@ -1,4 +1,4 @@
-import { UserStatus } from "@cloneoverflow/common";
+import { UserStatusEnum } from "@cloneoverflow/common";
 import { IsEnum, IsNotEmpty, IsUUID } from "class-validator";
 
 export class AuthPayload {
@@ -7,6 +7,6 @@ export class AuthPayload {
     userId: string;
   
   @IsNotEmpty()
-  @IsEnum(UserStatus)
-    status: UserStatus;
+  @IsEnum(UserStatusEnum)
+    status: UserStatusEnum;
 }

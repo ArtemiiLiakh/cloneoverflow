@@ -1,27 +1,5 @@
-import { QuestionStatus } from '../types/QuestionStatus';
-import { UserStatus } from '../types/UserStatus';
-
-class MappedUserBestAnswer {
-  id: string;
-  text: string;
-  rate: number;
-  isSolution: boolean;
-  createdAt: Date;
-  question: {
-    id: string;
-    title: string;
-  };
-}
-
-class MappedUserBestQuestion {
-  id: string;
-  title: string;
-  rate: number;
-  status: QuestionStatus;
-  tags: string[];
-  answersAmount: number;
-  createdAt: Date;
-}
+import { QuestionStatusEnum } from "../enums/statuses/QuestionStatus";
+import { UserStatusEnum } from "../enums/statuses/UserStatus";
 
 export class UserGetProfileResponse {
   id: string;
@@ -29,10 +7,31 @@ export class UserGetProfileResponse {
   username: string;
   about: string | null;
   reputation: number;
-  status: UserStatus;
+  status: UserStatusEnum;
   answersAmount: number;
   questionsAmount: number;
-  bestAnswer: MappedUserBestAnswer | null;
-  bestQuestion: MappedUserBestQuestion | null;
+  bestAnswer: {
+    id: string;
+    text: string;
+    rate: number;
+    isSolution: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+    question: {
+      id: string;
+      title: string;
+    };
+  } | null;
+  bestQuestion: {
+    id: string;
+    title: string;
+    rate: number;
+    status: QuestionStatusEnum;
+    tags: string[];
+    answersAmount: number;
+    createdAt: Date;
+    updatedAt: Date;
+  } | null;
   createdAt: Date;
+  updatedAt: Date;
 }

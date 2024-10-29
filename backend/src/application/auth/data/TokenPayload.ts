@@ -1,4 +1,4 @@
-import { IsEnum, IsIn, IsNotEmpty } from 'class-validator';
+import { IsEnum, IsNotEmpty } from 'class-validator';
 import { AuthPayload } from './AuthPayload';
 
 export enum TokenType {

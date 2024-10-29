@@ -1,9 +1,10 @@
-import { QuestionStatus, Tag, UserStatus, VoteType } from "../types";
+import { QuestionStatusEnum } from "../enums/statuses/QuestionStatus";
+import { VoteTypeEnum } from "../enums/VoteType";
 import { AnswerGetResponse } from "./answer.get.response";
 
 export class QuestionGetResponse {
   id: string;
-  owner: {
+  owner?: {
     id: string;
     name: string;
     username: string;
@@ -13,10 +14,10 @@ export class QuestionGetResponse {
   text: string;
   rate: number;
   views: number;
-  status: QuestionStatus;
-  voteType?: VoteType | null;
-  answers: AnswerGetResponse[];
-  tags: Tag[];
+  status: QuestionStatusEnum;
   createdAt: Date;
   updatedAt: Date;
+  voteType?: VoteTypeEnum | null;
+  answers?: AnswerGetResponse[];
+  tags?: string[];
 }

@@ -1,6 +1,6 @@
+import { UserStatusEnum } from "@cloneoverflow/common";
 import { Model } from "@common/model/Model";
 import { Timestamps } from "@common/model/Timestamp";
-import { UserStatus } from "@cloneoverflow/common";
 import { randomUUID } from "crypto";
 
 export class UserCreds implements Model, Timestamps {
@@ -42,7 +42,7 @@ export class User implements Model, Timestamps {
     public name: string,
     public username: string,
     public reputation: number,
-    public status: UserStatus,
+    public status: UserStatusEnum,
     public about: string,
     public createdAt: Date,
     public updatedAt: Date,
@@ -63,7 +63,7 @@ export class User implements Model, Timestamps {
     username: string,
     reputation?: number,
     about?: string,
-    status?: UserStatus,
+    status?: UserStatusEnum,
     createdAt?: Date,
     updatedAt?: Date,
   }): User {
@@ -75,7 +75,7 @@ export class User implements Model, Timestamps {
       name, 
       username, 
       reputation ?? 0, 
-      status ?? UserStatus.USER,
+      status ?? UserStatusEnum.USER,
       about ?? '', 
       createdAt ?? date,
       updatedAt ?? date,

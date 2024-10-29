@@ -1,4 +1,4 @@
-import { PaginatedData } from "@common/utils/PaginatedData";
+import { PaginatedData } from "@cloneoverflow/common/src/data/PaginatedData";
 import { AnswerRepository } from "@core/domain/repositories/answer/AnswerRepository";
 import { AnswerRepositoryOutput } from "@core/domain/repositories/answer/output/AnswerRepositoryOutput";
 import { PrismaAnswerType } from "@infra/persistance/prisma/types/PrismaAnswerTypes";

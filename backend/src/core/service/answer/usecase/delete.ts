@@ -1,4 +1,4 @@
-import { ForbiddenException, NoEntityWithIdException, QuestionStatus } from "@cloneoverflow/common";
+import { ForbiddenException, NoEntityWithIdException, QuestionStatusEnum } from "@cloneoverflow/common";
 import { AnswerRepository } from "@core/domain/repositories/answer/AnswerRepository";
 import { UnitOfWork } from "@core/domain/repositories/UnitOfWork";
 import { AnswerServiceInput } from "../dto/AnswerServiceInput";
@@ -27,7 +27,7 @@ export class AnswerDeleteUseCase implements IAnswerDeleteUseCase {
         await unit.questionRepository.update({
           id: answer.entity.questionId,
           question: {
-            status: QuestionStatus.ACTIVE,
+            status: QuestionStatusEnum.ACTIVE,
           },
         });
       }

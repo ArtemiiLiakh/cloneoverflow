@@ -1,3 +1,3 @@
-import { OrderBy } from "@cloneoverflow/common";
+import { OrderByEnum } from "@cloneoverflow/common";
 
-export type OrderByOption<O> = Partial<Record<keyof O, OrderBy>>;
+export type OrderByOption<O> = Partial<Record<keyof O, OrderByEnum>>;

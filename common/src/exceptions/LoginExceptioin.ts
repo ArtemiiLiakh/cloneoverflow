@@ -1,6 +1,6 @@
-import { HttpException } from './HttpException'
+import { Exception } from './Exception'
 
-export class LoginException extends HttpException {
+export class LoginException extends Exception {
   constructor () {
     super('Wrong email or password', 400);
   }

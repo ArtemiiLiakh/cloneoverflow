@@ -1,5 +1,4 @@
-import { HttpException } from "@cloneoverflow/common";
-import { UserQuestionStatusEnum } from "@common/enums/UserQuestionStatus";
+import { Exception, UserQuestionStatusEnum } from "@cloneoverflow/common";
 import { Question } from "@core/domain/entities/Question";
 import { QuestionUserStats } from "@core/domain/entities/QuestionUserStats";
 import { UnitOfWork } from "@core/domain/repositories/UnitOfWork";
@@ -44,7 +43,7 @@ export class QuestionCreateUseCase implements IQuestionCreateUseCase {
     });
   
     if (!question) {
-      throw new HttpException('Question create failed');
+      throw new Exception('Question create failed');
     }
   
     return question;    

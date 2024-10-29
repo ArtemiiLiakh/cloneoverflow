@@ -12,11 +12,6 @@ import { PrismaQuestionUserRepository } from "./PrismaQuestionUserRepository";
 import { PrismaTagRepository } from "./PrismaTagRepository";
 import { PrismaUserRepository } from "./PrismaUserRepository";
 
-class RollbackError extends Error {
-  name = "RollbackError";
-  message = "Rollback transaction";
-}
-
 class TransactionUnit implements Unit {
   constructor (
     public userRepository: PrismaUserRepository,
@@ -47,13 +42,8 @@ export class PrismaTransactionUnit implements UnitOfWork  {
       try {
         return await fn(prismaSession);
       } catch (error) {
-        if (error instanceof RollbackError) {
-          await context.$queryRaw`ROLLBACK;`;
-          return null;
-        }
-        else {
-          throw error;
-        }
+        await context.$queryRaw`ROLLBACK;`;
+        return null;
       }
     });
   }

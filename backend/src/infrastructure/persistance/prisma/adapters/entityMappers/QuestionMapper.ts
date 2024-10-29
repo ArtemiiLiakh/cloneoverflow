@@ -1,4 +1,4 @@
-import { QuestionStatus } from "@cloneoverflow/common";
+import { QuestionStatusEnum } from "@cloneoverflow/common";
 import { Question } from "@core/domain/entities/Question";
 import Prisma from "@prisma/client";
 
@@ -11,7 +11,7 @@ export class QuestionMapper  {
       title: question.title,
       rate: question.rate,
       views: question.views,
-      status: question.status as QuestionStatus,
+      status: question.status as QuestionStatusEnum,
       createdAt: question.createdAt,
       updatedAt: question.updatedAt
     });

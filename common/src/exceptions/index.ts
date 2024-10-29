@@ -1,6 +1,6 @@
 export * from './AlreadyRegisteredException';
 export * from './BadBodyException';
-export * from './HttpException';
+export * from './Exception';
 export * from './ForbiddenExceptioin';
 export * from './LoginExceptioin';
 export * from './NoEntityWithIdException';

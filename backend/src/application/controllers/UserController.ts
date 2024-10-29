@@ -1,37 +1,51 @@
+import { UserGetAnswerMapperOutput } from "@app/adapters/mappers/user/UserGetAnswersMapper";
+import { UserGetMapperOutput } from "@app/adapters/mappers/user/UserGetMapper";
+import { UserGetProfileMapperOutput } from "@app/adapters/mappers/user/UserGetProfileMapper";
+import { UserGetQuestionMapperOutput } from "@app/adapters/mappers/user/UserGetQuestionsMapper";
+import { UserUpdateMapperOutput } from "@app/adapters/mappers/user/UserUpdateMapper";
 import { UserServiceFacade } from "@app/services/UserServiceFacade";
-import { UserGetAnswersDTO, UserGetQuestionsDTO, UserUpdateDTO, UserUpdateResponse } from "@cloneoverflow/common";
+import {
+  UserGetAnswersDTO,
+  UserGetAnswersResponse,
+  UserGetDTO,
+  UserGetProfileResponse,
+  UserGetQuestionResponse,
+  UserGetQuestionsDTO,
+  UserGetResponse,
+  UserUpdateDTO,
+  UserUpdateResponse
+} from "@cloneoverflow/common";
+import { IAnswerGetAllUseCase } from "@core/service/answer/types/usecases";
+import { IQuestionGetAllUseCase } from "@core/service/question/types/usecases";
 import { WithBody, WithParams, WithQuery } from "./types/Request";
 import { CoreResponse } from "./types/Response";
-import { QuestionGetAllUseCase } from "@core/service/question/usecase/getAll";
-import { AnswerGetAllUseCase } from "@core/service/answer/usecase/getAll";
 
 export class UserController {
   constructor (
     private userService: UserServiceFacade,
-    private answerGetAllUseCase: AnswerGetAllUseCase,
-    private questionGetAllUseCase: QuestionGetAllUseCase,
+    private answerGetAllUseCase: IAnswerGetAllUseCase,
+    private questionGetAllUseCase: IQuestionGetAllUseCase,
   ) {}
 
   async getUser(
-    { params }: WithParams<{ id: string }>, 
-    res: CoreResponse
+    { params, query }: WithParams<{ id: string }> & WithQuery<UserGetDTO>, 
+    res: CoreResponse<UserGetResponse>
   ) {
     const user = await this.userService.get({
       userId: params.id,
+      include: query.include,
     });
-
-    res.send(user);
+    res.send(UserGetMapperOutput(user));
   }
 
   async getProfile(
     { params }: WithParams<{ userId: string }>, 
-    res: CoreResponse
+    res: CoreResponse<UserGetProfileResponse>
   ) {
     const profile = await this.userService.getProfile({
       userId: params.userId,
     });
-
-    res.send(profile);
+    res.send(UserGetProfileMapperOutput(profile));
   }
 
   async update(
@@ -42,38 +56,35 @@ export class UserController {
       userId: params.userId,
       data: body,
     });
-
-    res.send(user);
+    res.send(UserUpdateMapperOutput(user));
   }
 
   async getAnswers(
     { params, query }: WithParams<{ userId: string }> & WithQuery<UserGetAnswersDTO>, 
-    res: CoreResponse
+    res: CoreResponse<UserGetAnswersResponse>
   ) {
     const answers = await this.answerGetAllUseCase.execute({
-      ownerId: params.userId,
+      ownerId: params.userId, 
       orderBy: query.orderBy,
+      pagination: query.pagination,
       searchText: query.searchText,
       sortBy: query.sortBy,
-      pagination: query.pagination,
     });
-
-    res.send(answers);
+    res.send(UserGetAnswerMapperOutput(answers));
   }
 
   async getQuestions (
     { params, query }: WithParams<{ userId: string }> & WithQuery<UserGetQuestionsDTO>, 
-    res: CoreResponse
+    res: CoreResponse<UserGetQuestionResponse>
   ) {
     const questions = await this.questionGetAllUseCase.execute({
       ownerId: params.userId,
+      orderBy: query.orderBy,
+      pagination: query.pagination,
       search: query.search,
       sortBy: query.sortBy,
-      orderBy: query.orderBy,
       tags: query.tags,
-      pagination: query.pagination,
     });
-
-    res.send(questions);
+    res.send(UserGetQuestionMapperOutput(questions));
   }
 }

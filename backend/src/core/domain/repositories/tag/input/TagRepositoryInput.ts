@@ -1,4 +1,4 @@
-import { PaginationDTO } from "@cloneoverflow/common";
+import { PaginationInput } from "@cloneoverflow/common";
 import { TagRelation } from "@common/relations/TagRelation";
 import { CountOption } from "@common/repository/counts";
 import { IncludeRelations } from "@common/repository/include";
@@ -33,7 +33,7 @@ export namespace TagRepositoryInput {
 
   export type Paginate = {
     where: TagWhere, 
-    pagination?: PaginationDTO, 
+    pagination?: PaginationInput, 
     options?: TagFindManyRepositoryOptions
   };
 

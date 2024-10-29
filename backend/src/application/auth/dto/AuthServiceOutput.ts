@@ -9,7 +9,7 @@ export namespace AuthServiceOutput {
     },
   };
 
-  export type CreateAccount = {
+  export type SignUp = {
     user: User,
     tokens: {
       access_token: string, 
@@ -23,7 +23,8 @@ export namespace AuthServiceOutput {
     access_token: string,
   };
 
-  export type ChangePassword = User;
+  export type ChangePassword = void;
+  export type ChangePasswordResolve = void;
   export type GetMe = User;
   export type ForgotPassword = void;
   export type ForgotPasswordResolve = void;

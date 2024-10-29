@@ -31,21 +31,23 @@ export class AnswerGetAllUseCase implements IAnswerGetAllUseCase {
         ],
       },
       pagination: {
-        page: pagination?.page ?? 0,
-        pageSize: pagination?.pageSize ?? 10,
+        page: pagination?.page,
+        pageSize: pagination?.pageSize,
       }, 
       options: {
         include: {
           owner: true,
+          question: true,
         },
         orderBy: orderByMap,
-      }
+      },
     });
   
     return {
       data: answers.data.map(answer => ({
         entity: answer.entity,
         owner: answer.owner!,
+        question: answer.question!,
         questionId: answer.question!.id,
       })),
       pagination: answers.pagination,

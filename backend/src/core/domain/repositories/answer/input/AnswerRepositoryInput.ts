@@ -1,4 +1,4 @@
-import { PaginationDTO } from "@cloneoverflow/common";
+import { PaginationInput } from "@cloneoverflow/common";
 import { AnswerRelation } from "@common/relations/AnswerRelation";
 import { CountOption } from "@common/repository/counts";
 import { IncludeRelations } from "@common/repository/include";
@@ -33,7 +33,7 @@ export namespace AnswerRepositoryInput {
 
   export type Paginate = {
     where: AnswerWhere, 
-    pagination?: PaginationDTO, 
+    pagination?: PaginationInput, 
     options?: AnswerFindManyRepositoryOptions,
   };
   

@@ -1,5 +1,4 @@
-import { QuestionStatus } from '../types/QuestionStatus';
-import { Tag } from '../types/Tag';
+import { QuestionStatusEnum } from "../enums/statuses/QuestionStatus";
 
 export class QuestionUpdateResponse{
   id: string;
@@ -7,8 +6,7 @@ export class QuestionUpdateResponse{
   text: string;
   rate: number;
   views: number;
-  status: QuestionStatus;
+  status: QuestionStatusEnum;
   createdAt: Date;
   updatedAt: Date;
-  tags: Tag[];
 }

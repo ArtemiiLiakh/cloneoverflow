@@ -13,11 +13,11 @@ export class AnswerUpdateUseCase implements IAnswerUpdateUseCase {
     const answer = await this.answerRepository.findById({
       id: answerId,
     });
-  
+
     if (!answer) {
       throw new NoEntityWithIdException('Answer');
     }
-  
+
     if (answer.entity.ownerId !== ownerId){
       throw new ForbiddenException();
     }

@@ -1,5 +1,5 @@
-import { PaginationDTO } from "@cloneoverflow/common";
-import { PaginatedData } from "@common/utils/PaginatedData";
+import config from "@/config";
+import { PaginationInput, PaginatedData } from "@cloneoverflow/common";
 
 interface PaginatedRepository<P, R> {
   findMany(args: P): Promise<R[]>;
@@ -18,10 +18,10 @@ export class PrismaPaginationRepository {
   static async paginate <Payload extends PayloadOptions, Result>(
     repository: PaginatedRepository<Payload, Result>, 
     payload: Payload, 
-    pagination: PaginationDTO | undefined,
+    pagination: PaginationInput | undefined,
   ): Promise<PaginatedData<Result>> {
-    const page = pagination?.page ?? 0;
-    const pageSize = pagination?.pageSize ?? 10;
+    const page = pagination?.page ?? config.pagination.defaultPage;
+    const pageSize = pagination?.pageSize ?? config.pagination.defaultPageSize;
 
     const data = await repository.findMany({
       ...payload,

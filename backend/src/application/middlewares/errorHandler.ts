@@ -1,4 +1,4 @@
-import { HttpException, ExceptionResponse } from '@cloneoverflow/common';
+import { Exception, ExceptionResponse } from '@cloneoverflow/common';
 import { NextFunction, Request, Response } from 'express';
 
 export const errorHandler = (
@@ -10,7 +10,7 @@ export const errorHandler = (
   let message: string | string[];
   let statusCode = 500;
 
-  if (err instanceof HttpException) {
+  if (err instanceof Exception) {
     const error = err.serializeError();
     message = error.message;
     statusCode = error.statusCode;

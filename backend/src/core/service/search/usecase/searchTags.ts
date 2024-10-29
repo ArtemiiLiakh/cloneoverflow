@@ -1,6 +1,6 @@
-import { SearchTagsDTO } from "@cloneoverflow/common";
 import { TagRepository } from "@core/domain/repositories/tag/TagRepository";
-import { getTagsSortBy } from "@core/service/utils/TagServiceUtils/GetTagSortBy";
+import { TagsSortBy } from "@core/service/utils/TagServiceUtils/TagSortBy";
+import { SearchServiceInput } from "../dto/SearchServiceInput";
 import { SearchServiceOutput } from "../dto/SearchServiceOutput";
 import { ISearchTagsUseCase } from "../types/usecases";
 
@@ -9,7 +9,7 @@ export class SearchTagsUseCase implements ISearchTagsUseCase {
     private tagRepository: TagRepository,
   ) {}
 
-  async execute({ name, orderBy, sortBy, pagination }: SearchTagsDTO): Promise<SearchServiceOutput.SerachTags> {
+  async execute({ name, orderBy, sortBy, pagination }: SearchServiceInput.SearchTags): Promise<SearchServiceOutput.SerachTags> {
     const tags = await this.tagRepository.paginate({
       where: {
         text: {
@@ -18,7 +18,7 @@ export class SearchTagsUseCase implements ISearchTagsUseCase {
       },
       pagination,
       options: {
-        orderBy: getTagsSortBy(sortBy, orderBy),
+        orderBy: TagsSortBy(sortBy, orderBy),
       }
     });
   

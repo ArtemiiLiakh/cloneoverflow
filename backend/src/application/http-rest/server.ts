@@ -9,6 +9,7 @@ import { questionRouter } from './routers/questionRouter';
 import { answerRouter } from './routers/answerRouter';
 import { prismaErrorHandler } from '@app/middlewares/prismaErrorHandler';
 import { errorHandler } from '@app/middlewares/errorHandler';
+import { tagRouter } from './routers/tagRouter';
 
 const app = express();
 
@@ -26,6 +27,7 @@ api.use('/auth', authRouter);
 api.use('/users', userRouter);
 api.use('/questions', questionRouter);
 api.use('/answers', answerRouter);
+api.use('/tags', tagRouter);
 
 app.use('/api', api);
 

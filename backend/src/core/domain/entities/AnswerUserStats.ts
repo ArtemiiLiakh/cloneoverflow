@@ -1,7 +1,6 @@
-import { UserAnswerStatusEnum } from "@common/enums/UserAnswerStatus";
-import { VoteType } from "@cloneoverflow/common";
 import { randomUUID } from "crypto";
 import { Model } from "@common/model/Model";
+import { UserAnswerStatusEnum, VoteTypeEnum } from "@cloneoverflow/common";
 
 export class AnswerUserStats implements Model {
   constructor(
@@ -9,7 +8,7 @@ export class AnswerUserStats implements Model {
     public userId: string,
     public answerId: string,
     public status: UserAnswerStatusEnum,
-    public voteType: VoteType | null,  
+    public voteType: VoteTypeEnum | null,  
   ) {}
 
   static new (
@@ -24,7 +23,7 @@ export class AnswerUserStats implements Model {
       userId: string,
       answerId: string,
       status: UserAnswerStatusEnum,
-      voteType?: VoteType | null,
+      voteType?: VoteTypeEnum | null,
     }
   ) {
     return new AnswerUserStats(

@@ -6,8 +6,9 @@ export * from './answer.update.response';
 export * from './answer.get.response';
 
 export * from './auth.getMe.response';
+export * from './auth.login.response';
+export * from './auth.signUp.response';
 
-export * from './ok.response';
 export * from './pagination.response';
 
 export * from './question.create.response';

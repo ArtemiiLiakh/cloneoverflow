@@ -1,4 +1,4 @@
-import { PaginatedData } from "@common/utils/PaginatedData";
+import { PaginatedData } from "@cloneoverflow/common/src/data/PaginatedData";
 import { TagsRepositoryOutput } from "@core/domain/repositories/tag/output/TagRepositoryOutput";
 import { TagRepository } from "@core/domain/repositories/tag/TagRepository";
 import { PrismaTagTypes } from "@infra/persistance/prisma/types/PrismaTagTypes";

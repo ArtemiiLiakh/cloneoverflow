@@ -1,16 +1,16 @@
-import { AnswersSortByEnum, OrderBy } from "@cloneoverflow/common";
+import { AnswersSortByEnum, OrderByEnum } from "@cloneoverflow/common";
 import { AnswerRepositoryInput } from "@core/domain/repositories/answer/input/AnswerRepositoryInput";
 
-export const UserAnswersSortBy = (sortBy?: AnswersSortByEnum, orderBy?: OrderBy): AnswerRepositoryInput.AnswerOrderBy => {
+export const UserAnswersSortBy = (sortBy?: AnswersSortByEnum, orderBy?: OrderByEnum): AnswerRepositoryInput.AnswerOrderBy => {
   const sortByMapper: Record<AnswersSortByEnum, AnswerRepositoryInput.AnswerOrderBy> = {
     rate: {
-      rate: orderBy ?? OrderBy.DESC,
+      rate: orderBy ?? OrderByEnum.DESC,
     },
     date: {
-      createdAt: orderBy ?? OrderBy.ASC,
+      createdAt: orderBy ?? OrderByEnum.ASC,
     },
     solution: {
-      isSolution: orderBy ?? OrderBy.DESC,
+      isSolution: orderBy ?? OrderByEnum.DESC,
     },
   } 
 

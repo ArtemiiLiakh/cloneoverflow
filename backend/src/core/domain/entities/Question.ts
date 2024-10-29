@@ -1,4 +1,4 @@
-import { QuestionStatus } from "@cloneoverflow/common";
+import { QuestionStatusEnum } from "@cloneoverflow/common";
 import { Model } from "@common/model/Model";
 import { Timestamps } from "@common/model/Timestamp";
 import { randomUUID } from "crypto";
@@ -11,7 +11,7 @@ export class Question implements Model, Timestamps {
     public text: string,
     public rate: number,
     public views: number,
-    public status: QuestionStatus,
+    public status: QuestionStatusEnum,
     public createdAt: Date,
     public updatedAt: Date,
   ) {}
@@ -31,7 +31,7 @@ export class Question implements Model, Timestamps {
     ownerId: string,
     title: string,
     text: string,
-    status?: QuestionStatus,
+    status?: QuestionStatusEnum,
     rate?: number,
     views?: number,
     createdAt?: Date,
@@ -46,7 +46,7 @@ export class Question implements Model, Timestamps {
       text,
       rate ?? 0,
       views ?? 0,
-      status ?? QuestionStatus.ACTIVE,
+      status ?? QuestionStatusEnum.ACTIVE,
       createdAt ?? date,
       updatedAt ?? date,
     );

@@ -19,6 +19,31 @@ export class AnswerServiceFacade {
     private answerVoteUseCase: IAnswerVoteUseCase,
   ) {}
 
+  static new ({
+    answerCreateUseCase,
+    answerUpdateUseCase,
+    answerDeleteUseCase,
+    answerGetUseCase,
+    answerGetAllUseCase,
+    answerVoteUseCase,    
+  }: {
+    answerCreateUseCase: IAnswerCreateUseCase,
+    answerUpdateUseCase: IAnswerUpdateUseCase,
+    answerDeleteUseCase: IAnswerDeleteUseCase,
+    answerGetUseCase: IAnswerGetUseCase,
+    answerGetAllUseCase: IAnswerGetAllUseCase,
+    answerVoteUseCase: IAnswerVoteUseCase,
+  }) {
+    return new AnswerServiceFacade(
+      answerCreateUseCase,
+      answerUpdateUseCase,
+      answerDeleteUseCase,
+      answerGetUseCase,
+      answerGetAllUseCase,
+      answerVoteUseCase,      
+    );
+  }
+
   create(payload: AnswerServiceInput.Create): Promise<AnswerServiceOutput.Create> {
     return this.answerCreateUseCase.execute(payload);
   }

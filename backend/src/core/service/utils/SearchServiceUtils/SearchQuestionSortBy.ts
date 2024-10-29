@@ -1,26 +1,30 @@
-import { OrderBy, SearchQuestionSortByEnum } from "@cloneoverflow/common";
+import { SearchQuestionSortByEnum, OrderByEnum } from "@cloneoverflow/common";
 import { QuestionRepositoryInput } from "@core/domain/repositories/question/input/QuestionRepositoryInput";
 
-export const SearchQuestionsSortBy = (sortBy?: SearchQuestionSortByEnum, orderBy?: OrderBy) => {
+export const SearchQuestionsSortBy = (sortBy?: SearchQuestionSortByEnum | SearchQuestionSortByEnum[], orderBy?: OrderByEnum) => {
   const searchMapper: Record<SearchQuestionSortByEnum, QuestionRepositoryInput.QuestionOrderBy> = {
     answers: {
-      answers: orderBy ?? OrderBy.DESC,
+      answers: orderBy ?? OrderByEnum.DESC,
     },
     date: {
-      createdAt: orderBy ?? OrderBy.ASC,
+      createdAt: orderBy ?? OrderByEnum.ASC,
     },
   
     rate: {
-      rate: orderBy ?? OrderBy.DESC,
+      rate: orderBy ?? OrderByEnum.DESC,
     },
   
     status: {
-      status: orderBy ?? OrderBy.DESC,
+      status: orderBy ?? OrderByEnum.DESC,
     },
   
     views: {
-      views: orderBy ?? OrderBy.DESC,
+      views: orderBy ?? OrderByEnum.DESC,
     },
+  }
+
+  if (Array.isArray(sortBy)) {
+    return sortBy.map(sort => searchMapper[sort]);
   }
 
   return sortBy ? searchMapper[sortBy] : {};

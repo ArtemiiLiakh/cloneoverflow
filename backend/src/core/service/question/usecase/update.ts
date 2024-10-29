@@ -1,4 +1,4 @@
-import { ForbiddenException, HttpException, NoEntityWithIdException } from "@cloneoverflow/common";
+import { ForbiddenException, Exception, NoEntityWithIdException } from "@cloneoverflow/common";
 import { QuestionRepositoryInput } from "@core/domain/repositories/question/input/QuestionRepositoryInput";
 import { QuestionRepository } from "@core/domain/repositories/question/QuestionRepository";
 import { UnitOfWork } from "@core/domain/repositories/UnitOfWork";
@@ -54,7 +54,7 @@ export class QuestionUpdateUseCase implements IQuestionUpdateUseCase {
     });
   
     if (!questionUpdate) {
-      throw new HttpException('Question update failed');
+      throw new Exception('Question update failed');
     }
   
     return questionUpdate;

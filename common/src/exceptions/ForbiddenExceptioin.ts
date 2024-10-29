@@ -1,6 +1,6 @@
-import { HttpException } from './HttpException'
+import { Exception } from './Exception'
 
-export class ForbiddenException extends HttpException {
+export class ForbiddenException extends Exception {
   constructor (message = 'Forbidden') {
     super(message, 403);
   }

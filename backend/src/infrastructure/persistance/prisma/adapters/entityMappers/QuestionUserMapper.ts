@@ -1,5 +1,4 @@
-import { VoteType } from "@cloneoverflow/common";
-import { UserQuestionStatusEnum } from "@common/enums/UserQuestionStatus";
+import { UserQuestionStatusEnum, VoteTypeEnum } from "@cloneoverflow/common";
 import { QuestionUserStats } from "@core/domain/entities/QuestionUserStats";
 import { UserQuestions } from "@prisma/client";
 
@@ -10,7 +9,7 @@ export class QuestionUserStatsMapper {
       userId: user.userId,
       questionId: user.questionId,
       status: user.status as UserQuestionStatusEnum,
-      voteType: user.voteType as VoteType,
+      voteType: user.voteType as VoteTypeEnum,
     });
   }
 

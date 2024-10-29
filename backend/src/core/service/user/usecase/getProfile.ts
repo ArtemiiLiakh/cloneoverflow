@@ -1,4 +1,4 @@
-import { NoEntityWithIdException, OrderBy } from "@cloneoverflow/common";
+import { NoEntityWithIdException, OrderByEnum } from "@cloneoverflow/common";
 import { AnswerRepository } from "@core/domain/repositories/answer/AnswerRepository";
 import { QuestionRepository } from "@core/domain/repositories/question/QuestionRepository";
 import { UserRepository } from "@core/domain/repositories/user/UserRepository";
@@ -30,7 +30,7 @@ export class UserGetProfileUseCase implements IUserGetProfileUseCase {
       },
       options: {
         orderBy: {
-          rate: OrderBy.DESC,
+          rate: OrderByEnum.DESC,
         },
       },
     });
@@ -38,10 +38,16 @@ export class UserGetProfileUseCase implements IUserGetProfileUseCase {
     const bestQuestion = await this.questionRepository.findOne({
       where: { ownerId: userId },
       options: {
+        include: {
+          tags: true,
+        },
+        count: {
+          answers: true,
+        },
         orderBy: [{
-          rate: OrderBy.DESC,
+          rate: OrderByEnum.DESC,
         }, {
-          answers: OrderBy.DESC,
+          answers: OrderByEnum.DESC,
         }],
       },
     });
@@ -52,8 +58,15 @@ export class UserGetProfileUseCase implements IUserGetProfileUseCase {
   
     return { 
       user: user.entity, 
-      bestQuestion: bestQuestion?.entity ?? null, 
-      bestAnswer: bestAnswer?.entity ?? null,
+      bestQuestion: bestQuestion ? {
+        entity: bestQuestion.entity,
+        tags: bestQuestion.tags!,
+        answersAmount: bestQuestion.counts?.answers ?? 0
+      } : null, 
+      bestAnswer: bestAnswer ? {
+        entity: bestAnswer.entity,
+        question: bestAnswer.question!,
+      } : null,
       answersAmount: user.counts?.answers ?? 0,
       questionsAmount: user.counts?.questions ?? 0,
     }; 

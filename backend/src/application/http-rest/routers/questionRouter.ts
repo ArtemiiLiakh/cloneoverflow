@@ -1,7 +1,8 @@
 import { AdaptController } from '@app/adapters/AdaptController';
 import { QuestionController } from '@app/controllers/QuestionController';
-import { questionServiceFacadeDI } from '@app/di/service/QuestionServiceDI';
-import { searchUseCasesDI } from '@app/di/service/SearchServiceDI';
+import { SearchController } from '@app/controllers/SearchController';
+import { questionServiceFacadeDI } from '@app/di/services/QuestionServiceDI';
+import { searchServiceFacadeDI } from '@app/di/services/SearchServiceDI';
 import { JwtAuthAccess, JwtGetAuth } from '@app/middlewares/JwtAuthAccess';
 import { validateRequest } from '@app/middlewares/validation';
 import {
@@ -16,17 +17,15 @@ import express from 'express';
 
 const questionRouter = express.Router();
 
-const controller = new QuestionController(
-  questionServiceFacadeDI, 
-  searchUseCasesDI.SearchQuestionsUseCase,
-);
+const controller = new QuestionController(questionServiceFacadeDI);
+const search = new SearchController(searchServiceFacadeDI);
 
 questionRouter.get(
   '/search',
   validateRequest({
     query: SearchQuestionsDTO,
   }),
-  AdaptController(controller.search.bind(controller))
+  AdaptController(search.searchQuestions.bind(search))
 );
 
 questionRouter.get(

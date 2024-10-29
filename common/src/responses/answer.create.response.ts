@@ -1,7 +1,7 @@
 export class AnswerCreateResponse {
   id: string;
   questionId: string;
-  userId: string;
+  ownerId: string;
   text: string;
   rate: number;
   isSolution: boolean;

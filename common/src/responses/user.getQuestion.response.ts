@@ -1,4 +1,4 @@
-import { QuestionStatus } from '../types/QuestionStatus';
+import { QuestionStatusEnum } from '../enums/statuses/QuestionStatus';
 import { PaginationResponse } from './pagination.response';
 
 export class MappedUserGetQuestionResponse {
@@ -10,7 +10,7 @@ export class MappedUserGetQuestionResponse {
   tags: string[];
   createdAt: Date;
   updatedAt: Date;
-  status: QuestionStatus;
+  status: QuestionStatusEnum;
   answersAmount: number;
 }
 

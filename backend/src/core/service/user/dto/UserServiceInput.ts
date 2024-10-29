@@ -1,13 +1,26 @@
-import { AuthLoginDTO, UserUpdateDTO } from "@cloneoverflow/common";
+import { UserIncludeEnum } from "@cloneoverflow/common";
 
 export namespace UserServiceInput {
+  export type Create = {
+    email: string,
+    password: string,
+    name: string,
+    username: string,
+    about: string,
+  };
+
   export type Get = {
-    userId: string
+    userId: string,
+    include?: UserIncludeEnum[],
   };
 
   export type Update = {
     userId: string, 
-    data: UserUpdateDTO
+    data: {
+      name?: string,
+      username?: string,
+      about?: string,
+    }
   };
 
   export type GetProfile = {

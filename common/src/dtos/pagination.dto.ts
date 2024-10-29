@@ -1,8 +1,9 @@
 import { Type } from 'class-transformer';
-import { IsOptional, IsNumber } from 'class-validator';
+import { IsNumber, IsOptional } from 'class-validator';
+import { PaginationInput } from '../data/PaginationInput';
 import { validationMessage } from '../utils/validationUtils';
 
-export class PaginationDTO {
+export class PaginationDTO implements PaginationInput {
   @IsOptional()
   @Type(() => Number)
   @IsNumber({}, validationMessage('Page must be a number'))

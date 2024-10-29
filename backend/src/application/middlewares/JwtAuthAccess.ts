@@ -1,5 +1,5 @@
 import config from '@/config';
-import { ForbiddenException, UnauthorizedException, UserStatus } from '@cloneoverflow/common';
+import { ForbiddenException, UnauthorizedException, UserStatusEnum } from '@cloneoverflow/common';
 import { AuthPayload } from '@app/auth/data/AuthPayload';
 import { TokenPayload, TokenType } from '@app/auth/data/TokenPayload';
 import { plainToInstance } from 'class-transformer';
@@ -7,7 +7,7 @@ import { validateSync } from 'class-validator';
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
-export const JwtAuthAccess = (status = UserStatus.USER) => {
+export const JwtAuthAccess = (status = UserStatusEnum.USER) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     const accessToken = req.cookies['accessToken'];
 
@@ -25,7 +25,7 @@ export const JwtAuthAccess = (status = UserStatus.USER) => {
           throw new UnauthorizedException();
         }
 
-        if (!((payload.status === status || payload.status === UserStatus.ADMIN) && payload.type === TokenType.ACCESS)) {
+        if (!((payload.status === status || payload.status === UserStatusEnum.ADMIN) && payload.type === TokenType.ACCESS)) {
           throw new ForbiddenException();
         }
   

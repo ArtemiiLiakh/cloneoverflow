@@ -115,6 +115,5 @@
   },
   "ts-node": {
     "require": ["tsconfig-paths/register"]
-  },
-  "include": ["./src/index.ts", "./src/v2/**/*", "src/config", "src/common", "src/core", "src/infrastructure", "tests", "src/application"]
+  }
 }

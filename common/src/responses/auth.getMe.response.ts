@@ -1,9 +1,9 @@
-import { UserStatus } from '../types/UserStatus';
+import { UserStatusEnum } from "../enums/statuses/UserStatus";
 
-export class GetMeResponse {
+export class AuthGetMeResponse {
   id: string;
   name: string;
   username: string;
   reputation: number;
-  status: UserStatus;
+  status: UserStatusEnum;
 }

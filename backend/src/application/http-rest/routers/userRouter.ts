@@ -1,8 +1,8 @@
 import { AdaptController } from '@app/adapters/AdaptController';
 import { UserController } from '@app/controllers/UserController';
-import { answerUseCaseDI } from '@app/di/service/AnswerServiceDI';
-import { questionUseCasesDI } from '@app/di/service/QuestionServiceDI';
-import { userServiceFacadeDI } from '@app/di/service/UserServiceDI';
+import { answerUseCaseDI } from '@app/di/services/AnswerServiceDI';
+import { questionUseCasesDI } from '@app/di/services/QuestionServiceDI';
+import { userServiceFacadeDI } from '@app/di/services/UserServiceDI';
 import { validateRequest } from '@app/middlewares/validation';
 import {
   UserGetAnswersDTO,
@@ -15,8 +15,8 @@ const userRouter = express.Router();
 
 const userController = new UserController(
   userServiceFacadeDI, 
-  answerUseCaseDI.GetAllUseCase, 
-  questionUseCasesDI.GetAllUseCase,
+  answerUseCaseDI.GetAllUseCaseDI, 
+  questionUseCasesDI.GetAllUseCaseDI,
 );
 
 userRouter.get(

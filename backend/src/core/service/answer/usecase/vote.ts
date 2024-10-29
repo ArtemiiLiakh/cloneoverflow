@@ -1,5 +1,4 @@
-import { ForbiddenException, NoEntityWithIdException, VoteType } from "@cloneoverflow/common";
-import { UserAnswerStatusEnum } from "@common/enums/UserAnswerStatus";
+import { ForbiddenException, NoEntityWithIdException, UserAnswerStatusEnum, VoteTypeEnum } from "@cloneoverflow/common";
 import { AnswerUserStats } from "@core/domain/entities/AnswerUserStats";
 import { AnswerRepository } from "@core/domain/repositories/answer/AnswerRepository";
 import { UnitOfWork } from "@core/domain/repositories/UnitOfWork";
@@ -42,8 +41,8 @@ export class AnswerVoteUseCase implements IAnswerVoteUseCase {
       throw new ForbiddenException();
     }
   
-    const newAnswerRate = answer.entity.rate + (vote === VoteType.UP ? 1 : -1);
-    const newAnswerOwnerRate = answer.owner!.reputation + (vote === VoteType.UP ? 1 : -1);
+    const newAnswerRate = answer.entity.rate + (vote === VoteTypeEnum.UP ? 1 : -1);
+    const newAnswerOwnerRate = answer.owner!.reputation + (vote === VoteTypeEnum.UP ? 1 : -1);
     
     await this.unitOfWork.execute(async (unit) => {
       if (!answerVoter) {

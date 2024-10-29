@@ -32,7 +32,7 @@ export class ForgotPasswordUseCase implements IForgotPasswordUseCase {
     const code = randomBytes(3).toString('hex');
   
     this.emailProvider.sendEmail(email, `Your password resolving code: ${code}`);
-    await this.cacheRepository.setObject<PasswordCodeData>(`user:${user.creds.id}:forgotPassword`, {
+    this.cacheRepository.setObject<PasswordCodeData>(`user:${user.creds.id}:forgotPassword`, {
       code: await this.dataHasher.hash(code),
       retries: 1,
     }, {

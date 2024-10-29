@@ -1,4 +1,4 @@
-import { UserStatus } from "@cloneoverflow/common";
+import { UserStatusEnum } from "@cloneoverflow/common";
 import { User } from "@core/domain/entities/User";
 import Prisma from "@prisma/client";
 
@@ -10,7 +10,7 @@ export class UserMapper {
       username: user.username,
       about: user.about ?? undefined,
       reputation: user.reputation,
-      status: user.status as UserStatus,
+      status: user.status as UserStatusEnum,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     });

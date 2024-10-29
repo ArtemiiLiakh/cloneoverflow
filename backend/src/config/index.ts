@@ -34,8 +34,13 @@ export default {
   
   google: gCreds,
   cache: {
-    CODE_EXPIRATION_TIME: 60*1000,
+    CODE_EXPIRATION_TIME: 60,
     CODE_RETRIES: 5,
+  },
+
+  pagination: {
+    defaultPageSize: 10,
+    defaultPage: 0,
   },
   
   jwt: {

@@ -1,4 +1,4 @@
-import { QuestionStatus, SearchQuestionFilterByEnum } from "@cloneoverflow/common";
+import { SearchQuestionFilterByEnum, QuestionStatusEnum } from "@cloneoverflow/common";
 import { QuestionRepositoryInput } from "@core/domain/repositories/question/input/QuestionRepositoryInput";
 
 export class QuestionSearchFilters {
@@ -10,7 +10,7 @@ export class QuestionSearchFilters {
 
 export const SearchQuestionsFilterBy = (
   { text, tags, authors, keywords }: QuestionSearchFilters, 
-  filterBy?: SearchQuestionFilterByEnum[]
+  filterBy?: SearchQuestionFilterByEnum | SearchQuestionFilterByEnum[]
 ): QuestionRepositoryInput.QuestionWhere => {
   let where: QuestionRepositoryInput.QuestionWhere = {
     owner: authors ? {
@@ -56,11 +56,11 @@ export const SearchQuestionsFilterBy = (
 
   const filterMapper: Record<SearchQuestionFilterByEnum, QuestionRepositoryInput.QuestionWhere> = {
     active: {
-      status: QuestionStatus.ACTIVE,
+      status: QuestionStatusEnum.ACTIVE,
 
     },
     closed: {
-      status: QuestionStatus.CLOSED,
+      status: QuestionStatusEnum.CLOSED,
 
     },
     monthly: {
