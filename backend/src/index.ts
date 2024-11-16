@@ -1,18 +1,14 @@
-import { prismaDatabase } from "@app/database/PrismaDatabase";
-import { redisDatabase } from "@app/database/RedisDatabase";
-import config from "./config";
-
-const startupConnection = async () => {
-  await prismaDatabase.connect();
-  await redisDatabase.connect();
-};
+import { prismaDatabase } from '@application/database/PrismaDatabase';
+import { redisDatabase } from '@application/database/RedisDatabase';
+import config from './config';
 
 (async () => {
-  await startupConnection();
+  await prismaDatabase.connect();
+  await redisDatabase.connect();
   
-  const { app } = await import("@/application/http-rest/server");
+  const { app } = await import('@/application/http-rest/server');
 
-  app.listen(config.SERVER_PORT, async () => {
+  app.listen(config.SERVER_PORT, () => {
     console.log('Started on http://127.0.0.1:8000');
   });
 })();

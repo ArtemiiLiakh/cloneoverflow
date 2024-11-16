@@ -1,18 +1,18 @@
-import { QuestionRepository } from "@core/domain/repositories/question/QuestionRepository";
-import { SearchQuestionsFilterBy } from "@core/service/utils/SearchServiceUtils/SearchQuestionFilterBy";
-import { SearchQuestionParse } from "@core/service/utils/SearchServiceUtils/SearchQuestionParse";
-import { SearchQuestionsSortBy } from "@core/service/utils/SearchServiceUtils/SearchQuestionSortBy";
-import { SearchServiceOutput } from "../dto/SearchServiceOutput";
-import { ISearchQuestionsUseCase } from "../types/usecases";
-import { SearchServiceInput } from "../dto/SearchServiceInput";
+import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
+import { SearchQuestionsFilterBy } from '@core/service/utils/search/SearchQuestionFilterBy';
+import { SearchQuestionParse } from '@core/service/utils/search/SearchQuestionParse';
+import { SearchQuestionsSortBy } from '@core/service/utils/search/SearchQuestionSortBy';
+import { SearchServiceOutput } from '../dto/SearchServiceOutput';
+import { ISearchQuestionsUseCase } from '../types/usecases';
+import { SearchServiceInput } from '../dto/SearchServiceInput';
 
 export class SearchQuestionsUseCase implements ISearchQuestionsUseCase {
   constructor (
     private questionRepository: QuestionRepository,
   ) {}
 
-  async execute(
-    { filterBy, search, sortBy, orderBy, pagination }: SearchServiceInput.SearchQuestions
+  async execute (
+    { filterBy, search, sortBy, orderBy, pagination }: SearchServiceInput.SearchQuestions,
   ): Promise<SearchServiceOutput.SearchQuestions> {
     const searchFilter = SearchQuestionParse(search);
     const where = SearchQuestionsFilterBy(searchFilter, filterBy);

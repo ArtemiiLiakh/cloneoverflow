@@ -1,44 +1,42 @@
-import { QuestionCreateMapperOutput } from "@app/adapters/mappers/question/QuestionCreateMapper";
-import { QuestionGetMapperOutput } from "@app/adapters/mappers/question/QuestionGetMapper";
-import { QuestionUpdateMapperOutput } from "@app/adapters/mappers/question/QuestionUpdateMapper";
-import { QuestionServiceFacade } from "@app/services/QuestionServiceFacade";
+import { QuestionCreateMapperOutput } from '@application/adapters/mappers/question/QuestionCreateMapper';
+import { QuestionGetMapperOutput } from '@application/adapters/mappers/question/QuestionGetMapper';
+import { QuestionUpdateMapperOutput } from '@application/adapters/mappers/question/QuestionUpdateMapper';
+import { QuestionServiceFacade } from '@application/services/QuestionServiceFacade';
 import {
   QuestionCloseDTO,
   QuestionCreateDTO,
   QuestionCreateResponse,
-  QuestionGetDTO,
   QuestionGetResponse,
   QuestionUpdateDTO,
   QuestionUpdateResponse,
-  VoteDTO
-} from "@cloneoverflow/common";
-import { WithAuth, WithBody, WithOptionalAuth, WithParams, WithQuery } from "./types/Request";
-import { CoreResponse } from "./types/Response";
+  VoteDTO,
+} from '@cloneoverflow/common';
+import { WithAuth, WithBody, WithOptionalAuth, WithParams } from './types/Request';
+import { CoreResponse } from './types/Response';
 
 export class QuestionController {
   constructor (
     private questionService: QuestionServiceFacade,
   ) {}
 
-  async get(
-    { user, params, query }: WithOptionalAuth & WithParams<{ questionId: string }> & WithQuery<QuestionGetDTO>, 
+  async get (
+    { executor, params }: WithOptionalAuth & WithParams<{ questionId: string }>, 
     res: CoreResponse<QuestionGetResponse>,
   ) {
     const question = await this.questionService.get({
-      userId: user?.userId,
+      executorId: executor?.userId,
       questionId: params.questionId,
-      include: query.include,
     });
     
     res.send(QuestionGetMapperOutput(question));
   }
 
-  async create(
-    { body, user }: WithAuth & WithBody<QuestionCreateDTO>, 
-    res: CoreResponse<QuestionCreateResponse>
+  async create (
+    { body, executor }: WithAuth & WithBody<QuestionCreateDTO>, 
+    res: CoreResponse<QuestionCreateResponse>,
   ) {
     const question = await this.questionService.create({
-      ownerId: user.userId,
+      executorId: executor.userId,
       data: body,
     });
 
@@ -46,57 +44,54 @@ export class QuestionController {
     res.send(QuestionCreateMapperOutput(question));
   }
   
-  async update(
-    { params, body, user }: WithAuth & WithParams<{ questionId: string }> & WithBody<QuestionUpdateDTO>, 
-    res: CoreResponse<QuestionUpdateResponse>
+  async update (
+    { params, body, executor }: WithAuth & WithParams<{ questionId: string }> & WithBody<QuestionUpdateDTO>, 
+    res: CoreResponse<QuestionUpdateResponse>,
   ) {
     const question = await this.questionService.update({
+      executorId: executor.userId,
       data: body,
-      ownerId: user.userId,
       questionId: params.questionId,
     });
 
     res.send(QuestionUpdateMapperOutput(question));
   }
 
-  async delete(
-    { user, params }: WithAuth & WithParams<{ questionId: string }>, 
-    res: CoreResponse
+  async delete (
+    { executor, params }: WithAuth & WithParams<{ questionId: string }>, 
+    res: CoreResponse,
   ) {
     await this.questionService.delete({
-      userId: user.userId,
+      executorId: executor.userId,
       questionId: params.questionId,
     });
     
-    res.status(204);
-    res.send({});
+    res.send({ message: 'ok' });
   }
 
-  async closeQuestion(
-    { user, body, params }: WithAuth & WithParams<{ questionId: string }> & WithBody<QuestionCloseDTO>, 
-    res: CoreResponse
+  async closeQuestion (
+    { executor, body, params }: WithAuth & WithParams<{ questionId: string }> & WithBody<QuestionCloseDTO>, 
+    res: CoreResponse,
   ) {
     await this.questionService.close({
-      userId: user.userId,
+      executorId: executor.userId,
       answerId: body.answerId,
       questionId: params.questionId,
     });
 
-    res.status(204);
-    res.send({});
+    res.send({ message: 'ok' });
   }
   
-  async voteQuestion(
-    { body, params, user }: WithAuth & WithParams<{ questionId: string }> & WithBody<VoteDTO>, 
-    res: CoreResponse
+  async voteQuestion (
+    { body, params, executor }: WithAuth & WithParams<{ questionId: string }> & WithBody<VoteDTO>, 
+    res: CoreResponse,
   ) {
     await this.questionService.vote({
-      userId: user.userId,
+      executorId: executor.userId,
       vote: body.vote,
       questionId: params.questionId,
     });
     
-    res.status(204);
-    res.send({});
+    res.send({ message: 'ok' });
   }
 }

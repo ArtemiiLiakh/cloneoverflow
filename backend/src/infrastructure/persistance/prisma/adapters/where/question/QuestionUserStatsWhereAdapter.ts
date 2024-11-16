@@ -1,7 +1,7 @@
-import { Where } from "@common/repository/where";
-import { Prisma } from "@prisma/client";
-import { StringWhereAdapter } from "../dataTypes/StringWhereAdapter";
-import { QuestionUserStats } from "@core/domain/entities/QuestionUserStats";
+import { Where } from '@common/repository/where';
+import { Prisma } from '@prisma/client';
+import { StringWhereAdapter } from '../dataTypes/StringWhereAdapter';
+import { QuestionUserStats } from '@core/domain/entities/QuestionUserStats';
 
 export const QuestionUserStatsWhereAdapter = (where: Where<QuestionUserStats>): Prisma.UserQuestionsWhereInput => {
   return {

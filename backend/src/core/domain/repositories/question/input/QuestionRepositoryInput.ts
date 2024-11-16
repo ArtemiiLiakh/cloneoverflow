@@ -1,41 +1,60 @@
-import { PaginationInput, VoteTypeEnum } from "@cloneoverflow/common";
-import { QuestionRelation } from "@common/relations/QuestionRelation";
-import { CountOption } from "@common/repository/counts";
-import { IncludeRelations } from "@common/repository/include";
-import { RepositoryFindManyOptions, RepositoryOptions } from "@common/repository/options";
-import { OrderByOption } from "@common/repository/orderBy";
-import { Where } from "@common/repository/where";
-import { Question } from "@core/domain/entities/Question";
-import { Tag } from "@core/domain/entities/Tag";
+import { PaginationDTO, VoteTypeEnum } from '@cloneoverflow/common';
+import { QuestionRelation } from '@common/relations/QuestionRelation';
+import { CountOption } from '@common/repository/counts';
+import { IncludeRelations } from '@common/repository/include';
+import { RepositoryFindManyOptions, RepositoryOptions } from '@common/repository/options';
+import { OrderByOption } from '@common/repository/orderBy';
+import { Select } from '@common/repository/select';
+import { Where } from '@common/repository/where';
+import { Question } from '@core/domain/entities/Question';
+import { Tag } from '@core/domain/entities/Tag';
 
 export namespace QuestionRepositoryInput {
+  export type QuestionSelect = Select<Question>;
   export type QuestionWhere = Where<Question & QuestionRelation>;
   export type QuestionInclude = IncludeRelations<QuestionRelation>;
   export type QuestionCount = CountOption<QuestionRelation>;
   export type QuestionOrderBy = OrderByOption<Question & QuestionRelation>; 
 
-  export type QuestionRepositoryOptions = RepositoryOptions<QuestionInclude, QuestionCount, QuestionOrderBy>;
-  export type QuestionFindManyRepositoryOptions = RepositoryFindManyOptions<QuestionInclude, QuestionCount, QuestionOrderBy>;
-
-  export type FindById = {
+  export type FindById<
+    Select=QuestionSelect, 
+    Include=QuestionInclude, 
+    Count=QuestionCount, 
+    OrderBy=QuestionOrderBy,
+  > = {
     id: string;
-    options?: QuestionRepositoryOptions;
+    options?: RepositoryOptions<Select, Include, Count, OrderBy>;
   };
 
-  export type FindOne = {
+  export type FindOne<
+    Select=QuestionSelect, 
+    Include=QuestionInclude, 
+    Count=QuestionCount, 
+    OrderBy=QuestionOrderBy,
+  > = {
     where: QuestionWhere;
-    options?: QuestionRepositoryOptions;
+    options?: RepositoryOptions<Select, Include, Count, OrderBy>;
   };
 
-  export type FindMany = {
+  export type FindMany<
+    Select=QuestionSelect, 
+    Include=QuestionInclude, 
+    Count=QuestionCount, 
+    OrderBy=QuestionOrderBy,
+  > = {
     where: QuestionWhere;
-    options?: QuestionFindManyRepositoryOptions;
+    options?: RepositoryFindManyOptions<Select, Include, Count, OrderBy>;
   };
 
-  export type Paginate = {
+  export type Paginate<
+    Select=QuestionSelect, 
+    Include=QuestionInclude, 
+    Count=QuestionCount, 
+    OrderBy=QuestionOrderBy,
+  > = {
     where: QuestionWhere;
-    pagination?: PaginationInput;
-    options?: QuestionFindManyRepositoryOptions;
+    pagination?: PaginationDTO;
+    options?: RepositoryFindManyOptions<Select, Include, Count, OrderBy>;
   };
 
   export type Count = {

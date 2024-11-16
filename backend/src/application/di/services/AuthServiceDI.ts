@@ -1,27 +1,25 @@
-import { AuthServiceFacade } from "@app/auth/AuthServiceFacade";
-import { ChangePasswordUseCase } from "@app/auth/usecases/changePassword";
-import { ChangePasswordResolveUseCase } from "@app/auth/usecases/changePasswordResolve";
-import { DeleteAccountUseCase } from "@app/auth/usecases/deleteAccount";
-import { ForgotPasswordUseCase } from "@app/auth/usecases/forgotPassword";
-import { ForgotPasswordResolveUseCase } from "@app/auth/usecases/forgotPasswordResolve";
-import { LoginUseCase } from "@app/auth/usecases/login";
-import { RefreshTokenUseCase } from "@app/auth/usecases/refreshToken";
-import { SignUpUseCase } from "@app/auth/usecases/signup";
-import GoogleEmailProviderDI from "../email/GoogleEmailProviderDI";
-import PrismaUserRepositoryDI from "../repositories/PrismaUserRepositoryDI";
-import RedisCacheRepositoryDI from "../repositories/RedisCacheRepositoryDI";
-import DataEncryptorDI from "../security/DataEncryptorDI";
-import DataHasherDI from "../security/DataHasherDI";
-import { userUseCasesDI } from "./UserServiceDI";
+import { AuthServiceFacade } from '@application/auth/AuthServiceFacade';
+import { ChangePasswordUseCase } from '@application/auth/usecases/changePassword';
+import { DeleteAccountUseCase } from '@application/auth/usecases/deleteAccount';
+import { ForgotPasswordUseCase } from '@application/auth/usecases/forgotPassword';
+import { LoginUseCase } from '@application/auth/usecases/login';
+import { RefreshTokenUseCase } from '@application/auth/usecases/refreshToken';
+import { SendVerificationCodeUseCase } from '@application/auth/usecases/sendVerificationCode';
+import { SignUpUseCase } from '@application/auth/usecases/signup';
+import GoogleEmailProviderDI from '../email/GoogleEmailProviderDI';
+import PrismaUserRepositoryDI from '../repositories/PrismaUserRepositoryDI';
+import RedisCacheRepositoryDI from '../repositories/RedisCacheRepositoryDI';
+import DataEncryptorDI from '../security/DataEncryptorDI';
+import DataHasherDI from '../security/DataHasherDI';
+import { userUseCasesDI } from './UserServiceDI';
 
 const LoginUseCaseDI = new LoginUseCase(PrismaUserRepositoryDI, DataEncryptorDI, DataHasherDI);
 const SignUpUseCaseDI = new SignUpUseCase(DataEncryptorDI, DataHasherDI, userUseCasesDI.CreateUseCaseDI);
-const DeleteAccountUseCaseDI = new DeleteAccountUseCase(PrismaUserRepositoryDI, DataHasherDI);
 const RefreshTokenUseCaseDI = new RefreshTokenUseCase(DataEncryptorDI, PrismaUserRepositoryDI);
-const ChangePasswordUseCaseDI = new ChangePasswordUseCase(GoogleEmailProviderDI, RedisCacheRepositoryDI, PrismaUserRepositoryDI, DataHasherDI);
-const ChangePasswordResolveUseCaseDI = new ChangePasswordResolveUseCase(PrismaUserRepositoryDI, RedisCacheRepositoryDI, DataHasherDI);
-const ForgotPasswordUseCaseDI = new ForgotPasswordUseCase(PrismaUserRepositoryDI, GoogleEmailProviderDI, RedisCacheRepositoryDI, DataHasherDI);
-const ForgotPasswordResolveUseCaseDI = new ForgotPasswordResolveUseCase(RedisCacheRepositoryDI, PrismaUserRepositoryDI, DataHasherDI);
+const ChangePasswordUseCaseDI = new ChangePasswordUseCase(PrismaUserRepositoryDI, RedisCacheRepositoryDI, DataHasherDI);
+const ForgotPasswordUseCaseDI = new ForgotPasswordUseCase(PrismaUserRepositoryDI, RedisCacheRepositoryDI, DataHasherDI);
+const DeleteAccountUseCaseDI = new DeleteAccountUseCase(PrismaUserRepositoryDI, RedisCacheRepositoryDI, DataHasherDI);
+const SendVerificationCodeDI = new SendVerificationCodeUseCase(PrismaUserRepositoryDI, GoogleEmailProviderDI, RedisCacheRepositoryDI, DataHasherDI);
 
 export const authServiceFacadeDI = AuthServiceFacade.new({
   loginUseCase: LoginUseCaseDI,
@@ -30,9 +28,8 @@ export const authServiceFacadeDI = AuthServiceFacade.new({
   deleteAccountUseCase: DeleteAccountUseCaseDI,
   refreshTokenUseCase: RefreshTokenUseCaseDI,
   changePasswordUseCase: ChangePasswordUseCaseDI,
-  changePasswordResolveUseCase: ChangePasswordResolveUseCaseDI,
   forgotPasswordUseCase: ForgotPasswordUseCaseDI,
-  forgotPasswordResolveUseCase: ForgotPasswordResolveUseCaseDI,
+  sendVerificationCodeUseCase: SendVerificationCodeDI,
 });
 
 export const authUseCasesDI = {
@@ -41,7 +38,6 @@ export const authUseCasesDI = {
   DeleteAccountUseCaseDI,
   RefreshTokenUseCaseDI,
   ChangePasswordUseCaseDI,
-  ChangePasswordResolveUseCaseDI,
   ForgotPasswordUseCaseDI,
-  ForgotPasswordResolveUseCaseDI,
+  SendVerificationCodeDI,
 };

@@ -1,47 +1,65 @@
-import { AnswerCreateMapperOutput } from "@app/adapters/mappers/answers/AnswerCreateMapper";
-import { AnswerGetMapperOutput } from "@app/adapters/mappers/answers/AnswersGetMapper";
-import { AnswerUpdateMapperOutput } from "@app/adapters/mappers/answers/AnswerUpdateMapper";
-import { AnswerServiceFacade } from "@app/services/AnswerServiceFacade";
+import { AnswerCreateMapperOutput } from '@application/adapters/mappers/answers/AnswerCreateMapper';
+import { AnswerGetMapperOutput } from '@application/adapters/mappers/answers/AnswerGetMapper';
+import { AnswerUpdateMapperOutput } from '@application/adapters/mappers/answers/AnswerUpdateMapper';
+import { AnswerServiceFacade } from '@application/services/AnswerServiceFacade';
 import {
   AnswerCreateDTO,
   AnswerCreateResponse,
-  AnswerGetDTO,
+  AnswerGetAllResponse,
   AnswerGetResponse,
+  AnswersGetAllDTO,
   AnswerUpdateDTO,
   AnswerUpdateResponse,
-  VoteDTO
-} from "@cloneoverflow/common";
-import { WithAuth, WithBody, WithOptionalAuth, WithParams, WithQuery } from "./types/Request";
-import { CoreResponse } from "./types/Response";
+  VoteDTO,
+} from '@cloneoverflow/common';
+import { WithAuth, WithBody, WithOptionalAuth, WithParams } from './types/Request';
+import { CoreResponse } from './types/Response';
+import { AnswerGetAllMapper } from '@application/adapters/mappers/answers/AnswerGetAllMapper';
 
 export class AnswerController {
   constructor (
     private answerService: AnswerServiceFacade,
   ) {}
 
-  async get(
-    { user, params, query }: WithOptionalAuth & WithParams<{ answerId: string }> & WithQuery<AnswerGetDTO>, 
+  async get (
+    { executor, params }: WithOptionalAuth & WithParams<{ answerId: string }>, 
     res: CoreResponse<AnswerGetResponse>,
   ) {
     const answer = await this.answerService.get({
+      executorId: executor?.userId,
       answerId: params.answerId,
-      userId: user?.userId,
-      include: query.include,
     });
 
     res.send(AnswerGetMapperOutput(answer));
   }
 
+  async getAll (
+    { executor, body }: WithOptionalAuth & WithBody<AnswersGetAllDTO>,
+    res: CoreResponse<AnswerGetAllResponse>,
+  ) {
+    const answers = await this.answerService.getAll({
+      executorId: executor?.userId,
+      questionId: body.questionId,
+      ownerId: body.ownerId,
+      rateFrom: body.rateFrom,
+      rateTo: body.rateTo,
+      searchText: body.searchText,
+      sortBy: body.sortBy,
+      orderBy: body.orderBy,
+      pagination: body.pagination,
+    });
+
+    res.send(AnswerGetAllMapper(answers));
+  }
+
   async create (
-    { body, user }: WithAuth & WithBody<AnswerCreateDTO>, 
+    { body, executor }: WithAuth & WithBody<AnswerCreateDTO>, 
     res: CoreResponse<AnswerCreateResponse>,
   ) {
     const answer = await this.answerService.create({
-      data: {
-        questionId: body.questionId,
-        text: body.text,
-      },
-      ownerId: user.userId,
+      executorId: executor.userId,
+      questionId: body.questionId,
+      text: body.text,
     });
 
     res.status(201);
@@ -49,44 +67,40 @@ export class AnswerController {
   }
 
   async update (
-    { params, body, user }: WithAuth & WithParams<{ answerId: string }> & WithBody<AnswerUpdateDTO>, 
+    { params, body, executor }: WithAuth & WithParams<{ answerId: string }> & WithBody<AnswerUpdateDTO>, 
     res: CoreResponse<AnswerUpdateResponse>,
   ) {
     const answer = await this.answerService.update({
+      executorId: executor.userId,
       answerId: params.answerId,
-      ownerId: user.userId,
-      data: {
-        text: body.text
-      },
+      text: body.text,
     });
 
     res.send(AnswerUpdateMapperOutput(answer));
   }
 
-  async delete(
-    { params, user }: WithAuth & WithParams<{ answerId: string }>, 
-    res: CoreResponse
+  async delete (
+    { params, executor }: WithAuth & WithParams<{ answerId: string }>, 
+    res: CoreResponse,
   ) {
     await this.answerService.delete({
+      executorId: executor.userId,
       answerId: params.answerId,
-      userId: user.userId,
     });
 
-    res.status(204);
-    res.send({});
+    res.send({ message: 'ok' });
   }
 
-  async voteAnswer(
-    { params, user, body }: WithAuth & WithParams<{ answerId: string }> & WithBody<VoteDTO>, 
-    res: CoreResponse
+  async voteAnswer (
+    { params, executor, body }: WithAuth & WithParams<{ answerId: string }> & WithBody<VoteDTO>, 
+    res: CoreResponse,
   ) {
     await this.answerService.vote({
+      executorId: executor.userId,
       answerId: params.answerId,
-      userId: user.userId,
       vote: body.vote,  
     });
 
-    res.status(204);
-    res.send({});
+    res.send({ message: 'ok' });
   }
 }

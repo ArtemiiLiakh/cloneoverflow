@@ -1,21 +1,28 @@
-import { CoreRequest, WithAuth } from "@app/controllers/types/Request";
-import { CoreResponse } from "@app/controllers/types/Response";
-import { NextFunction, Request, Response } from "express";
+import { CoreRequest, WithAuth, WithOptionalAuth } from '@application/controllers/types/Request';
+import { CoreResponse } from '@application/controllers/types/Response';
+import { Response } from 'express';
+import { ExpressRequest } from './types/ExpressRequest';
 
-export const AdaptController = (fn: (req: WithAuth & CoreRequest<any, any, any, any>, res: CoreResponse) => any) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    return fn({
+export const AdaptController = <Auth extends WithAuth | WithOptionalAuth>(
+  fn: (req: Auth & CoreRequest, res: CoreResponse) => Promise<void>,
+) => {
+  return (req: ExpressRequest, res: Response) => {
+    const reqAdapted = {
       body: req.body,
       query: req.query,
       params: req.params,
-      user: req.body._user,
+      executor: req.body._user,
       cookies: req.cookies,
-    }, {
+    } as CoreRequest & Auth;
+
+    const resAdapted: CoreResponse = {
       send: res.send.bind(res),
-      setCookie(name, value) {
+      setCookie (name, value) {
         res.cookie(name, value);
       },
       status: res.status.bind(res),
-    });
-  }
-}
+    };
+
+    return fn(reqAdapted, resAdapted);
+  };
+};

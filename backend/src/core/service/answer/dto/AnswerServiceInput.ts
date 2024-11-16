@@ -1,32 +1,29 @@
-import { AnswerIncludeEnum, AnswersSortByEnum, OrderByEnum, PaginationInput, VoteTypeEnum } from "@cloneoverflow/common";
+import { AnswersSortByEnum, OrderByEnum, PaginationDTO, VoteTypeEnum } from '@cloneoverflow/common';
 
 export namespace AnswerServiceInput {
   export type Create = {
-    ownerId: string, 
-    data: {
-      questionId: string;
-      text: string;
-    }
+    executorId: string, 
+    questionId: string;
+    text: string;
   };
   
   export type Update = {
+    executorId: string, 
     answerId: string, 
-    ownerId: string, 
-    data: {
-      text: string,
-    },
+    text: string,
   };
   
   export type Get = {
+    executorId?: string,
     answerId: string, 
-    userId?: string,
-    include?: AnswerIncludeEnum[],
   };
 
   export type GetAll = {
+    executorId?: string,
+    questionId?: string;
     sortBy?: AnswersSortByEnum;
     orderBy?: OrderByEnum;
-    pagination?: PaginationInput;
+    pagination?: PaginationDTO;
     searchText?: string;
     ownerId?: string;
     rateFrom?: number;
@@ -34,13 +31,13 @@ export namespace AnswerServiceInput {
   };
   
   export type Delete = {
+    executorId: string
     answerId: string, 
-    userId: string
   };
   
   export type VoteAnswer = {
+    executorId: string, 
     answerId: string, 
-    userId: string, 
     vote: VoteTypeEnum,
   };
 }

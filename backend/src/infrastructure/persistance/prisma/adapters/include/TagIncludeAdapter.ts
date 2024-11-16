@@ -1,7 +1,7 @@
-import { TagRepositoryInput } from "@core/domain/repositories/tag/input/TagRepositoryInput";
-import { Prisma } from "@prisma/client";
-import { QuestionWhereAdapter } from "../where/question/QuestionWhereAdapter";
-import { IncludeParams } from "./utils/IncludeParams";
+import { TagRepositoryInput } from '@core/domain/repositories/tag/input/TagRepositoryInput';
+import { Prisma } from '@prisma/client';
+import { QuestionWhereAdapter } from '../where/question/QuestionWhereAdapter';
+import { IncludeParams } from './utils/IncludeParams';
 
 export const TagIncludeAdatper = (
   include: TagRepositoryInput.TagInclude | undefined,
@@ -17,4 +17,4 @@ export const TagIncludeAdatper = (
       },
     } : false,
   };
-}
+};

@@ -1,5 +1,5 @@
-import { QuestionUserRepositoryOutput } from "./output/QuestionUserRepositoryOutput";
-import { QuestionUserRepositoryInput } from "./input/QuestionUserRepositoryInput";
+import { QuestionUserRepositoryOutput } from './output/QuestionUserRepositoryOutput';
+import { QuestionUserRepositoryInput } from './input/QuestionUserRepositoryInput';
 
 export interface QuestionUserRepository {
   findOne(payload: QuestionUserRepositoryInput.FindOne): Promise<QuestionUserRepositoryOutput.FindOne>

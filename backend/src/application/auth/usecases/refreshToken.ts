@@ -1,10 +1,10 @@
-import { DataEncryptor } from "@app/interfaces/security/DataEncryptor";
-import { UnauthorizedException } from "@cloneoverflow/common";
-import { UserRepository } from "@core/domain/repositories/user/UserRepository";
-import { AuthServiceInput } from "../dto/AuthServiceInput";
-import { AuthServiceOutput } from "../dto/AuthServiceOutput";
-import { IRefreshTokenUseCase } from "../types/usecases";
-import { makeAccessToken } from "./utils/makeAccessToken";
+import { DataEncryptor } from '@application/interfaces/security/DataEncryptor';
+import { UnauthorizedException } from '@cloneoverflow/common';
+import { UserRepository } from '@core/domain/repositories/user/UserRepository';
+import { AuthServiceInput } from '../dto/AuthServiceInput';
+import { AuthServiceOutput } from '../dto/AuthServiceOutput';
+import { IRefreshTokenUseCase } from '../types/usecases';
+import { makeAccessToken } from './utils/makeAccessToken';
 
 export class RefreshTokenUseCase implements IRefreshTokenUseCase {
   constructor (
@@ -12,7 +12,7 @@ export class RefreshTokenUseCase implements IRefreshTokenUseCase {
     private userRepository: UserRepository,
   ) {}
 
-  async execute({ userId }: AuthServiceInput.RefreshToken): Promise<AuthServiceOutput.RefreshToken> {
+  async execute ({ userId }: AuthServiceInput.RefreshToken): Promise<AuthServiceOutput.RefreshToken> {
     const user = await this.userRepository.findById({ id: userId });
 
     if (!user) {
@@ -20,7 +20,7 @@ export class RefreshTokenUseCase implements IRefreshTokenUseCase {
     }
   
     return {
-      access_token: makeAccessToken(this.dataEncryptor, {
+      access_token: await makeAccessToken(this.dataEncryptor, {
         userId: user.entity.id,
         status: user.entity.status,
       }),

@@ -1,3 +1,3 @@
-import { JwtEncryptorImpl } from "@infra/security/JwtEncryptorImpl";
+import { JwtEncryptorImpl } from '@infrastructure/security/JwtEncryptorImpl';
 
 export default new JwtEncryptorImpl();

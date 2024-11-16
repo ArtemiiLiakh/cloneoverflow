@@ -1,3 +1,3 @@
-import { DataHasherImpl } from "@infra/security/DataHasherImpl";
+import { DataHasherImpl } from '@infrastructure/security/DataHasherImpl';
 
 export default new DataHasherImpl();

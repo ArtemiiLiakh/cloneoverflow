@@ -1,19 +1,32 @@
-import { PaginatedData } from "@cloneoverflow/common";
-import { TagRelation } from "@common/relations/TagRelation";
-import { CountResult } from "@common/repository/counts";
-import { Tag } from "@core/domain/entities/Tag";
+import { PaginatedData } from '@cloneoverflow/common';
+import { TagRelation } from '@common/relations/TagRelation';
+import { CountResult } from '@common/repository/counts';
+import { SelectResult } from '@common/repository/select';
+import { Tag } from '@core/domain/entities/Tag';
+import { TagRepositoryInput } from '../input/TagRepositoryInput';
 
 type TagAdds = Partial<TagRelation & CountResult<TagRelation>>;
 
 export namespace TagsRepositoryOutput {
-  export type FullTag = {
-    entity: Tag,
+  export type FullTag<S extends TagRepositoryInput.TagSelect> = {
+    entity: SelectResult<S, Tag>,
   } & TagAdds;
 
-  export type FindById = FullTag | null;
-  export type FindOne = FullTag | null;
-  export type FindMany = FullTag[];
-  export type Paginate = PaginatedData<FullTag>;
+  export type FindById<
+    S extends TagRepositoryInput.TagSelect = TagRepositoryInput.TagSelect
+  > = FullTag<S> | null;
+  
+  export type FindOne<
+    S extends TagRepositoryInput.TagSelect = TagRepositoryInput.TagSelect
+  > = FullTag<S> | null;
+  
+  export type FindMany<
+    S extends TagRepositoryInput.TagSelect = TagRepositoryInput.TagSelect
+  > = FullTag<S>[];
+
+  export type Paginate<
+    S extends TagRepositoryInput.TagSelect = TagRepositoryInput.TagSelect
+  > = PaginatedData<FullTag<S>>;
   
   export type Count = number;
   export type Create = void;

@@ -2,10 +2,18 @@ import { QuestionRepositoryOutput } from './output/QuestionRepositoryOutput';
 import { QuestionRepositoryInput } from './input/QuestionRepositoryInput';
 
 export interface QuestionRepository {
-  findById(payload: QuestionRepositoryInput.FindById): Promise<QuestionRepositoryOutput.FindById>;
-  findOne(payload: QuestionRepositoryInput.FindOne): Promise<QuestionRepositoryOutput.FindOne>;
-  findMany(payload: QuestionRepositoryInput.FindMany): Promise<QuestionRepositoryOutput.FindMany>;
-  paginate(payload: QuestionRepositoryInput.Paginate): Promise<QuestionRepositoryOutput.Paginate>;
+  findById<Select extends QuestionRepositoryInput.QuestionSelect>
+    (payload: QuestionRepositoryInput.FindById<Select>): Promise<QuestionRepositoryOutput.FindById<Select>>;
+  
+  findOne<Select extends QuestionRepositoryInput.QuestionSelect>
+    (payload: QuestionRepositoryInput.FindOne<Select>): Promise<QuestionRepositoryOutput.FindOne<Select>>;
+  
+  findMany<Select extends QuestionRepositoryInput.QuestionSelect>
+    (payload: QuestionRepositoryInput.FindMany<Select>): Promise<QuestionRepositoryOutput.FindMany<Select>>;
+  
+  paginate<Select extends QuestionRepositoryInput.QuestionSelect>
+    (payload: QuestionRepositoryInput.Paginate<Select>): Promise<QuestionRepositoryOutput.Paginate<Select>>;
+
   count(payload: QuestionRepositoryInput.Count): Promise<QuestionRepositoryOutput.Count>;
   create(payload: QuestionRepositoryInput.Create): Promise<QuestionRepositoryOutput.Create>;
   update(payload: QuestionRepositoryInput.Update): Promise<QuestionRepositoryOutput.Update>;

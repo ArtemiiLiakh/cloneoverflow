@@ -1,5 +1,5 @@
+import { EmailProvider } from '@application/interfaces/email/EmailProvider';
 import config from '@/config';
-import { EmailProvider } from '@app/interfaces/email/EmailProvider';
 import { createTransport, Transporter } from 'nodemailer';
 
 export class GoogleEmailProvider implements EmailProvider {
@@ -15,11 +15,11 @@ export class GoogleEmailProvider implements EmailProvider {
         type: 'login',
         user: config.google.app_email,
         pass: config.google.app_password,
-      }
+      },
     });
   }
 
-  async sendEmail(to: string, body: string): Promise<void> {
+  async sendEmail (to: string, body: string): Promise<void> {
     await this.transporter.sendMail({
       to,
       from: {

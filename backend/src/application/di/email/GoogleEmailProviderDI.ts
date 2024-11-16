@@ -1,3 +1,3 @@
-import { GoogleEmailProvider } from "@infra/email/GoogleEmailProvider";
+import { GoogleEmailProvider } from '@infrastructure/email/GoogleEmailProvider';
 
 export default new GoogleEmailProvider();

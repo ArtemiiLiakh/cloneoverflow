@@ -1,12 +1,11 @@
-import { DataEncryptor } from "@app/interfaces/security/DataEncryptor";
-import { DataHasher } from "@app/interfaces/security/DataHasher";
-import { AuthSignupDTO } from "@cloneoverflow/common";
-import { IUserCreateUseCase } from "@core/service/user/types/usecases";
-import { AuthServiceOutput } from "../dto/AuthServiceOutput";
-import { ISignUpUseCase } from "../types/usecases";
-import { makeAccessToken } from "./utils/makeAccessToken";
-import { makeRefreshToken } from "./utils/makeRequestToken";
-import { AuthServiceInput } from "../dto/AuthServiceInput";
+import { DataEncryptor } from '@application/interfaces/security/DataEncryptor';
+import { DataHasher } from '@application/interfaces/security/DataHasher';
+import { IUserCreateUseCase } from '@core/service/user/types/usecases';
+import { AuthServiceInput } from '../dto/AuthServiceInput';
+import { AuthServiceOutput } from '../dto/AuthServiceOutput';
+import { ISignUpUseCase } from '../types/usecases';
+import { makeAccessToken } from './utils/makeAccessToken';
+import { makeRefreshToken } from './utils/makeRequestToken';
 
 export class SignUpUseCase implements ISignUpUseCase {
   constructor (
@@ -15,7 +14,7 @@ export class SignUpUseCase implements ISignUpUseCase {
     private userCreateUseCase: IUserCreateUseCase,
   ) {}
 
-  async execute({ email, name, password, username, about }: AuthServiceInput.SignUp): Promise<AuthServiceOutput.SignUp> {
+  async execute ({ email, name, password, username, about }: AuthServiceInput.SignUp): Promise<AuthServiceOutput.SignUp> {
     const hashedPassword = await this.dataHasher.hash(password);
   
     const user = await this.userCreateUseCase.execute({ 

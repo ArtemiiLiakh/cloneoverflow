@@ -1,8 +1,8 @@
-import { PaginatedData } from "@cloneoverflow/common/src/data/PaginatedData";
-import { Answer } from "@core/domain/entities/Answer";
-import { AnswerUserStats } from "@core/domain/entities/AnswerUserStats";
-import { Question } from "@core/domain/entities/Question";
-import { User } from "@core/domain/entities/User";
+import { PaginatedData } from '@cloneoverflow/common';
+import { Answer } from '@core/domain/entities/Answer';
+import { AnswerUserStats } from '@core/domain/entities/AnswerUserStats';
+import { Question } from '@core/domain/entities/Question';
+import { User } from '@core/domain/entities/User';
 
 export namespace AnswerServiceOutput {
   export type Create = Answer;
@@ -13,7 +13,7 @@ export namespace AnswerServiceOutput {
     entity: Answer,
     owner?: User,
     question?: Question,
-    user?: AnswerUserStats,
+    userStats?: AnswerUserStats,
   };
   
   export type VoteAnswer = void;
@@ -23,6 +23,6 @@ export namespace AnswerServiceOutput {
     owner: User,
     question: Question,
     questionId: string,
+    userStats?: AnswerUserStats,
   }>;
-
 }

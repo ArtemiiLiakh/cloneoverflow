@@ -1,13 +1,14 @@
-import { AdaptController } from '@app/adapters/AdaptController';
-import { UserController } from '@app/controllers/UserController';
-import { answerUseCaseDI } from '@app/di/services/AnswerServiceDI';
-import { questionUseCasesDI } from '@app/di/services/QuestionServiceDI';
-import { userServiceFacadeDI } from '@app/di/services/UserServiceDI';
-import { validateRequest } from '@app/middlewares/validation';
+import { AdaptController } from '@application/adapters/AdaptController';
+import { UserController } from '@application/controllers/UserController';
+import { answerUseCaseDI } from '@application/di/services/AnswerServiceDI';
+import { questionUseCasesDI } from '@application/di/services/QuestionServiceDI';
+import { userServiceFacadeDI } from '@application/di/services/UserServiceDI';
+import { JwtAuthAccess } from '@application/middlewares/JwtAuthAccess';
+import { validateRequest } from '@application/middlewares/validation';
 import {
   UserGetAnswersDTO,
   UserGetQuestionsDTO,
-  UserUpdateDTO
+  UserUpdateDTO,
 } from '@cloneoverflow/common';
 import express from 'express';
 
@@ -21,20 +22,21 @@ const userController = new UserController(
 
 userRouter.get(
   '/:userId', 
-  AdaptController(userController.getUser.bind(userController))
+  AdaptController(userController.getUser.bind(userController)),
 );
 
 userRouter.get(
   '/:userId/profile', 
-  AdaptController(userController.getProfile.bind(userController))
+  AdaptController(userController.getProfile.bind(userController)),
 );
 
 userRouter.patch(
   '/:userId', 
+  JwtAuthAccess(),
   validateRequest({
-    body: UserUpdateDTO
+    body: UserUpdateDTO,
   }),
-  AdaptController(userController.update.bind(userController))
+  AdaptController(userController.update.bind(userController)),
 );
 
 userRouter.get(
@@ -42,7 +44,7 @@ userRouter.get(
   validateRequest({
     query: UserGetQuestionsDTO,
   }),
-  AdaptController(userController.getQuestions.bind(userController))
+  AdaptController(userController.getQuestions.bind(userController)),
 );
 
 userRouter.get(
@@ -50,7 +52,7 @@ userRouter.get(
   validateRequest({
     query: UserGetAnswersDTO,
   }),
-  AdaptController(userController.getAnswers.bind(userController))
+  AdaptController(userController.getAnswers.bind(userController)),
 );
 
 export { userRouter };

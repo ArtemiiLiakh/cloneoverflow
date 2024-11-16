@@ -1,7 +1,7 @@
-import { Model } from "../model/Model";
-import { StringType } from "./Datatypes/StringType";
-import { NumberType } from "./Datatypes/NumberType";
-import { DateType } from "./Datatypes/DateType";
+import { Model } from '../model/Model';
+import { StringType } from './Datatypes/StringType';
+import { NumberType } from './Datatypes/NumberType';
+import { DateType } from './Datatypes/DateType';
 
 export type Where<I = unknown> = I extends (infer U)[] ? Where<U> : {
   [K in keyof I]?: I[K] extends string[] | string | null | undefined ? string | StringType :

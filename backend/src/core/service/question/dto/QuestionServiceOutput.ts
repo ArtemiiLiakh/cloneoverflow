@@ -1,10 +1,8 @@
-import { PaginatedData } from "@cloneoverflow/common/src/data/PaginatedData";
-import { Answer } from "@core/domain/entities/Answer";
-import { AnswerUserStats } from "@core/domain/entities/AnswerUserStats";
-import { Question } from "@core/domain/entities/Question";
-import { QuestionUserStats } from "@core/domain/entities/QuestionUserStats";
-import { Tag } from "@core/domain/entities/Tag";
-import { User } from "@core/domain/entities/User";
+import { PaginatedData } from '@cloneoverflow/common';
+import { Question } from '@core/domain/entities/Question';
+import { QuestionUserStats } from '@core/domain/entities/QuestionUserStats';
+import { Tag } from '@core/domain/entities/Tag';
+import { User } from '@core/domain/entities/User';
 
 export namespace QuestionServiceOutput {
   export type Create = Question;
@@ -13,14 +11,9 @@ export namespace QuestionServiceOutput {
   
   export type Get = {
     entity: Question,
-    answers?: {
-      entity: Answer,
-      owner: User,
-      user?: AnswerUserStats,
-    }[],
     tags?: Tag[],
     owner?: User,
-    user?: QuestionUserStats,
+    userStats?: QuestionUserStats,
   };
 
   export type GetAll = PaginatedData<{ 

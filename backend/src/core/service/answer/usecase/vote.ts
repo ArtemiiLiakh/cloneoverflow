@@ -1,10 +1,10 @@
-import { ForbiddenException, NoEntityWithIdException, UserAnswerStatusEnum, VoteTypeEnum } from "@cloneoverflow/common";
-import { AnswerUserStats } from "@core/domain/entities/AnswerUserStats";
-import { AnswerRepository } from "@core/domain/repositories/answer/AnswerRepository";
-import { UnitOfWork } from "@core/domain/repositories/UnitOfWork";
-import { AnswerServiceInput } from "../dto/AnswerServiceInput";
-import { AnswerServiceOutput } from "../dto/AnswerServiceOutput";
-import { IAnswerVoteUseCase } from "../types/usecases";
+import { ForbiddenException, NoEntityWithIdException, UserAnswerStatusEnum, VoteTypeEnum } from '@cloneoverflow/common';
+import { AnswerUserStats } from '@core/domain/entities/AnswerUserStats';
+import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
+import { UnitOfWork } from '@core/domain/repositories/UnitOfWork';
+import { AnswerServiceInput } from '../dto/AnswerServiceInput';
+import { AnswerServiceOutput } from '../dto/AnswerServiceOutput';
+import { IAnswerVoteUseCase } from '../types/usecases';
 
 export class AnswerVoteUseCase implements IAnswerVoteUseCase {
   constructor (
@@ -12,26 +12,28 @@ export class AnswerVoteUseCase implements IAnswerVoteUseCase {
     private unitOfWork: UnitOfWork,
   ) {}
 
-  async execute({ userId, answerId, vote }: AnswerServiceInput.VoteAnswer): Promise<AnswerServiceOutput.VoteAnswer> {
+  async execute (
+    { executorId, answerId, vote }: AnswerServiceInput.VoteAnswer,
+  ): Promise<AnswerServiceOutput.VoteAnswer> {
     const answer = await this.answerRepository.findById({
       id: answerId,
       options: {
         include: {
           users: {
-            userId,
+            userId: executorId,
             answerId,
             status: UserAnswerStatusEnum.VOTER,
           },
           owner: true,
         },
-      }
+      },
     });
   
     if (!answer) {
       throw new NoEntityWithIdException('Answer');
     }
   
-    if (answer.entity.ownerId === userId) {
+    if (answer.entity.ownerId === executorId) {
       throw new ForbiddenException('You cannot vote your own answer');
     }
   
@@ -48,13 +50,14 @@ export class AnswerVoteUseCase implements IAnswerVoteUseCase {
       if (!answerVoter) {
         await unit.answerUserRepository.create({
           user: AnswerUserStats.new({
-            userId,
+            userId: executorId,
             answerId,
             status: UserAnswerStatusEnum.VOTER,
             voteType: vote,
           }),
         });
-      } else {
+      }
+      else {
         await unit.answerUserRepository.update({
           where: {
             id: answerVoter.id,

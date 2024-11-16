@@ -1,7 +1,7 @@
-import { AnswerRepositoryInput } from "@core/domain/repositories/answer/input/AnswerRepositoryInput";
-import { Prisma } from "@prisma/client";
-import { IncludeParams } from "./utils/IncludeParams";
-import { AnswerUserStatsWhereAdapter } from "../where/answer/AnswerUserStatsWhereAdapter";
+import { AnswerRepositoryInput } from '@core/domain/repositories/answer/input/AnswerRepositoryInput';
+import { Prisma } from '@prisma/client';
+import { IncludeParams } from './utils/IncludeParams';
+import { AnswerUserStatsWhereAdapter } from '../where/answer/AnswerUserStatsWhereAdapter';
 
 export const AnswerIncludeAdapter = (
   include: AnswerRepositoryInput.AnswerInclude | undefined,
@@ -16,7 +16,7 @@ export const AnswerIncludeAdapter = (
     _count: count ? {
       select: {
         userAnswers: IncludeParams<Prisma.UserAnswersWhereInput>(count?.users, AnswerUserStatsWhereAdapter),
-      }
+      },
     }: false,
   };
-}
+};

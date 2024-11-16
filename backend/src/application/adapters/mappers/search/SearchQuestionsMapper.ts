@@ -1,8 +1,8 @@
-import { SearchQuestionsResponse } from "@cloneoverflow/common";
-import { SearchServiceOutput } from "@core/service/search/dto/SearchServiceOutput";
+import { SearchQuestionsResponse } from '@cloneoverflow/common';
+import { SearchServiceOutput } from '@core/service/search/dto/SearchServiceOutput';
 
 export function SearchQuestionsMapperOutput (
-  questions: SearchServiceOutput.SearchQuestions
+  questions: SearchServiceOutput.SearchQuestions,
 ): SearchQuestionsResponse {
   return {
     questions: questions.data.map(question => ({
@@ -11,7 +11,7 @@ export function SearchQuestionsMapperOutput (
       text: question.entity.text,
       rate: question.entity.rate,
       views: question.entity.views,
-      status: question.entity.status,
+      isClosed: question.entity.isClosed,
       createdAt: question.entity.createdAt,
       updatedAt: question.entity.updatedAt,
       answersAmount: question.answersAmount,
@@ -24,5 +24,5 @@ export function SearchQuestionsMapperOutput (
       tags: question.tags.map(tag => tag.text),
     })),
     pagination: questions.pagination,
-  }
+  };
 }

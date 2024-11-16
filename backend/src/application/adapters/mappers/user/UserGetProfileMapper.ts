@@ -1,8 +1,8 @@
-import { UserGetProfileResponse } from "@cloneoverflow/common";
-import { UserServiceOutput } from "@core/service/user/dto/UserServiceOutput";
+import { UserGetProfileResponse } from '@cloneoverflow/common';
+import { UserServiceOutput } from '@core/service/user/dto/UserServiceOutput';
 
 export function UserGetProfileMapperOutput (profile: UserServiceOutput.GetProfile): UserGetProfileResponse {
-  const bestAnswer: UserGetProfileResponse["bestAnswer"] = profile.bestAnswer ? {
+  const bestAnswer: UserGetProfileResponse['bestAnswer'] = profile.bestAnswer ? {
     id: profile.bestAnswer.entity.id,
     text: profile.bestAnswer.entity.text,
     rate: profile.bestAnswer.entity.rate,
@@ -15,11 +15,11 @@ export function UserGetProfileMapperOutput (profile: UserServiceOutput.GetProfil
     },
   } : null;
 
-  const bestQuestion: UserGetProfileResponse["bestQuestion"] = profile.bestQuestion ? {
+  const bestQuestion: UserGetProfileResponse['bestQuestion'] = profile.bestQuestion ? {
     id: profile.bestQuestion.entity.id,
     rate: profile.bestQuestion.entity.rate,
     title: profile.bestQuestion.entity.title,
-    status: profile.bestQuestion.entity.status,
+    isClosed: profile.bestQuestion.entity.isClosed,
     answersAmount: profile.bestQuestion.answersAmount,
     tags: profile.bestQuestion.tags.map(tag => tag.text),
     createdAt: profile.bestQuestion.entity.createdAt,

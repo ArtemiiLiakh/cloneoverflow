@@ -1,5 +1,5 @@
-import { AnswerUpdateResponse } from "@cloneoverflow/common";
-import { AnswerServiceOutput } from "@core/service/answer/dto/AnswerServiceOutput";
+import { AnswerUpdateResponse } from '@cloneoverflow/common';
+import { AnswerServiceOutput } from '@core/service/answer/dto/AnswerServiceOutput';
 
 export function AnswerUpdateMapperOutput (answer: AnswerServiceOutput.Update): AnswerUpdateResponse {
   return {
@@ -10,5 +10,5 @@ export function AnswerUpdateMapperOutput (answer: AnswerServiceOutput.Update): A
     rate: answer.rate,
     isSolution: answer.isSolution,
     createdAt: answer.createdAt,
-  }
+  };
 }

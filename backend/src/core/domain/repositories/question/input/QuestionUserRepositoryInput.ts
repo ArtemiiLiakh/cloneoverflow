@@ -1,5 +1,5 @@
-import { UserQuestionStatusEnum, VoteTypeEnum } from "@cloneoverflow/common";
-import { QuestionUserStats } from "@core/domain/entities/QuestionUserStats";
+import { UserQuestionStatusEnum, VoteTypeEnum } from '@cloneoverflow/common';
+import { QuestionUserStats } from '@core/domain/entities/QuestionUserStats';
 
 export namespace QuestionUserRepositoryInput {
   export type QuestionUserWhere = Partial<QuestionUserStats>;

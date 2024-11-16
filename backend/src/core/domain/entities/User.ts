@@ -1,7 +1,7 @@
-import { UserStatusEnum } from "@cloneoverflow/common";
-import { Model } from "@common/model/Model";
-import { Timestamps } from "@common/model/Timestamp";
-import { randomUUID } from "crypto";
+import { UserStatusEnum } from '@cloneoverflow/common';
+import { Model } from '@common/model/Model';
+import { Timestamps } from '@common/model/Timestamp';
+import { randomUUID } from 'crypto';
 
 export class UserCreds implements Model, Timestamps {
   constructor (
@@ -12,7 +12,7 @@ export class UserCreds implements Model, Timestamps {
     public updatedAt: Date,
   ) {}
 
-  static new({
+  static new ({
     id,
     email,
     password,
@@ -48,7 +48,7 @@ export class User implements Model, Timestamps {
     public updatedAt: Date,
   ) {}
 
-  static new({
+  static new ({
     id,
     name,
     username,

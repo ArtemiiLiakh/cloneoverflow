@@ -1,7 +1,6 @@
-import { QuestionStatusEnum } from "@cloneoverflow/common";
-import { Model } from "@common/model/Model";
-import { Timestamps } from "@common/model/Timestamp";
-import { randomUUID } from "crypto";
+import { Model } from '@common/model/Model';
+import { Timestamps } from '@common/model/Timestamp';
+import { randomUUID } from 'crypto';
 
 export class Question implements Model, Timestamps {
   constructor (
@@ -11,19 +10,19 @@ export class Question implements Model, Timestamps {
     public text: string,
     public rate: number,
     public views: number,
-    public status: QuestionStatusEnum,
+    public isClosed: boolean,
     public createdAt: Date,
     public updatedAt: Date,
   ) {}
 
-  static new({
+  static new ({
     id,
     ownerId,
     title,
     text,
     rate,
     views,
-    status,
+    isClosed,
     createdAt,
     updatedAt,
   }: {
@@ -31,7 +30,7 @@ export class Question implements Model, Timestamps {
     ownerId: string,
     title: string,
     text: string,
-    status?: QuestionStatusEnum,
+    isClosed?: boolean,
     rate?: number,
     views?: number,
     createdAt?: Date,
@@ -46,7 +45,7 @@ export class Question implements Model, Timestamps {
       text,
       rate ?? 0,
       views ?? 0,
-      status ?? QuestionStatusEnum.ACTIVE,
+      isClosed ?? false,
       createdAt ?? date,
       updatedAt ?? date,
     );

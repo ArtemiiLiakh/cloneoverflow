@@ -1,10 +1,10 @@
-import config from "@/config";
-import { RedisClientType, createClient } from "redis";
+import config from '@/config';
+import { RedisClientType, createClient } from 'redis';
 
 class RedisDatabase {
-  private client: RedisClientType<any, any, any>;
+  private client: RedisClientType;
 
-  async connect() {
+  async connect () {
     this.client = createClient({
       url: config.REDIS_URL,
       database: 0,
@@ -13,7 +13,7 @@ class RedisDatabase {
     await this.client.connect();
   }
 
-  getClient() {
+  getClient () {
     return this.client;
   }
 }

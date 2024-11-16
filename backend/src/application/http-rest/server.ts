@@ -7,9 +7,9 @@ import { userRouter } from './routers/userRouter';
 import { authRouter } from './routers/authRouter';
 import { questionRouter } from './routers/questionRouter';
 import { answerRouter } from './routers/answerRouter';
-import { prismaErrorHandler } from '@app/middlewares/prismaErrorHandler';
-import { errorHandler } from '@app/middlewares/errorHandler';
 import { tagRouter } from './routers/tagRouter';
+import { errorHandler } from '@application/middlewares/errorHandler';
+import { prismaErrorHandler } from '@application/middlewares/prismaErrorHandler';
 
 const app = express();
 
@@ -19,6 +19,7 @@ app.use(cors({
   credentials: true,
 }));
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 app.use(cookieParser());
 
 const api = express.Router();
@@ -33,7 +34,7 @@ app.use('/api', api);
 
 app.use(
   prismaErrorHandler, 
-  errorHandler
+  errorHandler,
 );
 
 export { app };

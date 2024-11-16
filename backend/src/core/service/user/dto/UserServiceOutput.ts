@@ -1,16 +1,14 @@
-import { Answer } from "@core/domain/entities/Answer";
-import { Question } from "@core/domain/entities/Question";
-import { Tag } from "@core/domain/entities/Tag";
-import { User } from "@core/domain/entities/User";
+import { Answer } from '@core/domain/entities/Answer';
+import { Question } from '@core/domain/entities/Question';
+import { Tag } from '@core/domain/entities/Tag';
+import { User } from '@core/domain/entities/User';
 
 export namespace UserServiceOutput {
   export type Create = User;
   export type Get = {
     entity: User,
-    questions?: Question[],
-    answers?: Answer[],
-    questionsAmount?: number,
-    answersAmount?: number,
+    answersAmount: number;
+    questionsAmount: number;
   };
   export type Update = User;
   

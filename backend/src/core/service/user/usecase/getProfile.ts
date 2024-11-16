@@ -1,10 +1,10 @@
-import { NoEntityWithIdException, OrderByEnum } from "@cloneoverflow/common";
-import { AnswerRepository } from "@core/domain/repositories/answer/AnswerRepository";
-import { QuestionRepository } from "@core/domain/repositories/question/QuestionRepository";
-import { UserRepository } from "@core/domain/repositories/user/UserRepository";
-import { UserServiceInput } from "../dto/UserServiceInput";
-import { UserServiceOutput } from "../dto/UserServiceOutput";
-import { IUserGetProfileUseCase } from "../types/usecases";
+import { NoEntityWithIdException, OrderByEnum } from '@cloneoverflow/common';
+import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
+import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
+import { UserRepository } from '@core/domain/repositories/user/UserRepository';
+import { UserServiceInput } from '../dto/UserServiceInput';
+import { UserServiceOutput } from '../dto/UserServiceOutput';
+import { IUserGetProfileUseCase } from '../types/usecases';
 
 export class UserGetProfileUseCase implements IUserGetProfileUseCase {
   constructor (
@@ -13,7 +13,7 @@ export class UserGetProfileUseCase implements IUserGetProfileUseCase {
     private questionRepository: QuestionRepository,
   ) {}
  
-  async execute({ userId }: UserServiceInput.GetProfile): Promise<UserServiceOutput.GetProfile> {
+  async execute ({ userId }: UserServiceInput.GetProfile): Promise<UserServiceOutput.GetProfile> {
     const user = await this.userRepository.findById({
       id: userId,
       options: {
@@ -61,7 +61,7 @@ export class UserGetProfileUseCase implements IUserGetProfileUseCase {
       bestQuestion: bestQuestion ? {
         entity: bestQuestion.entity,
         tags: bestQuestion.tags!,
-        answersAmount: bestQuestion.counts?.answers ?? 0
+        answersAmount: bestQuestion.counts?.answers ?? 0,
       } : null, 
       bestAnswer: bestAnswer ? {
         entity: bestAnswer.entity,

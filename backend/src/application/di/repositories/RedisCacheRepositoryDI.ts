@@ -1,4 +1,4 @@
-import { redisDatabase } from "@app/database/RedisDatabase";
-import { RedisCacheRepository } from "@infra/persistance/redis/RedisCacheRepository";
+import { redisDatabase } from '@application/database/RedisDatabase';
+import { RedisCacheRepository } from '@infrastructure/persistance/redis/RedisCacheRepository';
 
 export default new RedisCacheRepository(redisDatabase.getClient());

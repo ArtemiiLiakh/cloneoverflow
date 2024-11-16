@@ -1,7 +1,7 @@
-import { DateType } from "@common/repository/Datatypes/DateType";
-import { Prisma } from "@prisma/client";
+import { DateType } from '@common/repository/Datatypes/DateType';
+import { Prisma } from '@prisma/client';
 
-export const DateWhereAdapter = (dateType?: undefined | null | Date | DateType): undefined | Date | Prisma.DateTimeFilter => {
+export const DateWhereAdapter = (dateType?:   null | Date | DateType): undefined | Date | Prisma.DateTimeFilter => {
   if (!dateType) return;
   if (dateType instanceof Date ) return dateType;
   return {
@@ -12,4 +12,4 @@ export const DateWhereAdapter = (dateType?: undefined | null | Date | DateType):
     lte: dateType.leq,
     in: dateType.in,
   };
-}
+};

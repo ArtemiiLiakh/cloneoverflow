@@ -1,4 +1,4 @@
-import { User } from "@core/domain/entities/User";
+import { User } from '@core/domain/entities/User';
 
 export namespace AuthServiceOutput {
   export type Login = {
@@ -24,8 +24,7 @@ export namespace AuthServiceOutput {
   };
 
   export type ChangePassword = void;
-  export type ChangePasswordResolve = void;
   export type GetMe = User;
   export type ForgotPassword = void;
-  export type ForgotPasswordResolve = void;
+  export type SendVerificationCode = void;
 }

@@ -3,5 +3,5 @@ export enum SearchQuestionSortByEnum {
   DATE = "date",
   ANSWERS = "answers",
   VIEWS = "views",
-  STATUS = "status"
+  ISCLOSED = "isClosed"
 }

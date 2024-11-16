@@ -3,6 +3,6 @@ export interface EncryptOptions {
 }
 
 export interface DataEncryptor {
-  encrypt<P>(value: P, options?: EncryptOptions): string;
-  decrypt<P>(value: string): P | null;
+  encrypt<P extends object>(value: P, options?: EncryptOptions): Promise<string | null>;
+  decrypt<P>(value: string): Promise<P | null>;
 }

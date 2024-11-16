@@ -1,8 +1,8 @@
-import { UserRepositoryInput } from "@core/domain/repositories/user/input/UserRepositoryInput";
-import { Prisma } from "@prisma/client";
-import { AnswerWhereAdapter } from "../where/answer/AnswerWhereAdapter";
-import { QuestionWhereAdapter } from "../where/question/QuestionWhereAdapter";
-import { IncludeParams } from "./utils/IncludeParams";
+import { UserRepositoryInput } from '@core/domain/repositories/user/input/UserRepositoryInput';
+import { Prisma } from '@prisma/client';
+import { AnswerWhereAdapter } from '../where/answer/AnswerWhereAdapter';
+import { QuestionWhereAdapter } from '../where/question/QuestionWhereAdapter';
+import { IncludeParams } from './utils/IncludeParams';
 
 export const UserIncludeAdapter = (
   include: UserRepositoryInput.UserInclude | undefined,
@@ -20,4 +20,4 @@ export const UserIncludeAdapter = (
       },
     } : false,
   };
-}
+};

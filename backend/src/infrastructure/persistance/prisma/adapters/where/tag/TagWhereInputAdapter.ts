@@ -1,8 +1,8 @@
-import { TagRepositoryInput } from "@core/domain/repositories/tag/input/TagRepositoryInput";
-import { Prisma } from "@prisma/client";
-import { DateWhereAdapter } from "../dataTypes/DateWhereAdapter";
-import { StringWhereAdapter } from "../dataTypes/StringWhereAdapter";
-import { TagWhereAdapter } from "./TagWhereAdapter";
+import { TagRepositoryInput } from '@core/domain/repositories/tag/input/TagRepositoryInput';
+import { Prisma } from '@prisma/client';
+import { DateWhereAdapter } from '../dataTypes/DateWhereAdapter';
+import { StringWhereAdapter } from '../dataTypes/StringWhereAdapter';
+import { TagWhereAdapter } from './TagWhereAdapter';
 
 export const TagWhereInputAdapter = (where: TagRepositoryInput.TagWhere): Prisma.TagWhereInput => {
   return {
@@ -12,5 +12,5 @@ export const TagWhereInputAdapter = (where: TagRepositoryInput.TagWhere): Prisma
     updatedAt: DateWhereAdapter(where.updatedAt),
     OR: where.OR?.map((item) => TagWhereAdapter(item)),
     AND: where.AND?.map((item) => TagWhereAdapter(item)),
-  }
+  };
 };

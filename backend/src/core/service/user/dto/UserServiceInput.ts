@@ -1,5 +1,3 @@
-import { UserIncludeEnum } from "@cloneoverflow/common";
-
 export namespace UserServiceInput {
   export type Create = {
     email: string,
@@ -11,10 +9,10 @@ export namespace UserServiceInput {
 
   export type Get = {
     userId: string,
-    include?: UserIncludeEnum[],
   };
 
   export type Update = {
+    executorId: string,
     userId: string, 
     data: {
       name?: string,

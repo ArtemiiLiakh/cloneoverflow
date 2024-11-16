@@ -1,21 +1,31 @@
-import { AnswerRepository } from "@core/domain/repositories/answer/AnswerRepository";
-import { UserAnswersSortBy } from "@core/service/utils/AnswerServiceUtils/AnswersSortBy";
-import { AnswerServiceInput } from "../dto/AnswerServiceInput";
-import { AnswerServiceOutput } from "../dto/AnswerServiceOutput";
-import { IAnswerGetAllUseCase } from "../types/usecases";
+import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
+import { UserAnswersSortBy } from '@core/service/utils/answer/AnswersSortBy';
+import { AnswerServiceInput } from '../dto/AnswerServiceInput';
+import { AnswerServiceOutput } from '../dto/AnswerServiceOutput';
+import { IAnswerGetAllUseCase } from '../types/usecases';
+import { UserAnswerStatus } from '@prisma/client';
 
 export class AnswerGetAllUseCase implements IAnswerGetAllUseCase {
   constructor (
     private answerRepository: AnswerRepository,
   ) {}
 
-  async execute(
-    { ownerId, rateFrom, rateTo, searchText, orderBy, sortBy, pagination }: AnswerServiceInput.GetAll
-  ): Promise<AnswerServiceOutput.GetAll> {
+  async execute ({ 
+    executorId,
+    ownerId, 
+    rateFrom, 
+    rateTo, 
+    searchText, 
+    orderBy, 
+    sortBy, 
+    pagination, 
+    questionId, 
+  }: AnswerServiceInput.GetAll): Promise<AnswerServiceOutput.GetAll> {
     const orderByMap = UserAnswersSortBy(sortBy, orderBy);
 
     const answers = await this.answerRepository.paginate({
       where: {
+        questionId,
         ownerId,
         rate: {
           geq: rateFrom,
@@ -27,7 +37,7 @@ export class AnswerGetAllUseCase implements IAnswerGetAllUseCase {
             question: { 
               title: { contains: searchText },
             }, 
-          }
+          },
         ],
       },
       pagination: {
@@ -38,6 +48,10 @@ export class AnswerGetAllUseCase implements IAnswerGetAllUseCase {
         include: {
           owner: true,
           question: true,
+          users: {
+            userId: executorId,
+            status: UserAnswerStatus.VOTER,
+          },
         },
         orderBy: orderByMap,
       },
@@ -49,6 +63,7 @@ export class AnswerGetAllUseCase implements IAnswerGetAllUseCase {
         owner: answer.owner!,
         question: answer.question!,
         questionId: answer.question!.id,
+        userStats: answer.users?.at(0),
       })),
       pagination: answers.pagination,
     };
