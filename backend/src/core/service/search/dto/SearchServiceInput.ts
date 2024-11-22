@@ -1,17 +1,17 @@
 import { 
   SearchTagsSortByEnum, 
   OrderByEnum, 
-  PaginationInput, 
   SearchQuestionFilterByEnum, 
-  SearchQuestionSortByEnum 
-} from "@cloneoverflow/common";
+  SearchQuestionSortByEnum,
+  PaginationDTO, 
+} from '@cloneoverflow/common';
 
 export namespace SearchServiceInput {
   export type SearchTags = {
     name?: string;
     sortBy?: SearchTagsSortByEnum;
     orderBy?: OrderByEnum;
-    pagination?: PaginationInput;
+    pagination?: PaginationDTO;
   };
 
   export type SearchQuestions = {
@@ -19,6 +19,6 @@ export namespace SearchServiceInput {
     filterBy?: SearchQuestionFilterByEnum | SearchQuestionFilterByEnum[];
     sortBy?: SearchQuestionSortByEnum | SearchQuestionSortByEnum[];
     orderBy?: OrderByEnum;
-    pagination?: PaginationInput;
+    pagination?: PaginationDTO;
   };
 }

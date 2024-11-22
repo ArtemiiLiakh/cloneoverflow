@@ -1,10 +1,10 @@
-import { UserQuestionStatusEnum } from "@cloneoverflow/common";
-import { QuestionUserStats } from "@core/domain/entities/QuestionUserStats";
-import { UnitOfWork } from "@core/domain/repositories/UnitOfWork";
-import { QuestionRepository } from "@core/domain/repositories/question/QuestionRepository";
-import { QuestionServiceInput } from "../dto/QuestionServiceInput";
-import { QuestionServiceOutput } from "../dto/QuestionServiceOutput";
-import { IQuestionAddViewerUseCase } from "../types/usecases";
+import { UserQuestionStatusEnum } from '@cloneoverflow/common';
+import { QuestionUserStats } from '@core/domain/entities/QuestionUserStats';
+import { UnitOfWork } from '@core/domain/repositories/UnitOfWork';
+import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
+import { QuestionServiceInput } from '../dto/QuestionServiceInput';
+import { QuestionServiceOutput } from '../dto/QuestionServiceOutput';
+import { IQuestionAddViewerUseCase } from '../types/usecases';
 
 export class QuestionAddViewerUseCase implements IQuestionAddViewerUseCase {
   constructor (
@@ -12,24 +12,26 @@ export class QuestionAddViewerUseCase implements IQuestionAddViewerUseCase {
     private unitOfWork: UnitOfWork,
   ) {}
 
-  async execute({ questionId, userId }: QuestionServiceInput.AddViewer): Promise<QuestionServiceOutput.AddViewer> {
+  async execute (
+    { executorId, questionId }: QuestionServiceInput.AddViewer,
+  ): Promise<QuestionServiceOutput.AddViewer> {
     const question = await this.questionRepository.findById({ 
       id: questionId,
       options: {
         include: {
           users: {
             questionId,
-            userId,
+            userId: executorId,
             status: UserQuestionStatusEnum.VIEWER,
-          }
-        }
-      }
+          },
+        },
+      },
     });
 
     const questionUser = QuestionUserStats.new({
-      userId,
+      userId: executorId,
       questionId,
-      status: UserQuestionStatusEnum.VIEWER
+      status: UserQuestionStatusEnum.VIEWER,
     });
 
     if (question && !question.users?.at(0)) {
@@ -38,7 +40,7 @@ export class QuestionAddViewerUseCase implements IQuestionAddViewerUseCase {
           id: questionId,
           question: {
             views: question.entity.views + 1,
-          }
+          },
         });
 
         await unit.questionUserRepository.create({ user: questionUser });

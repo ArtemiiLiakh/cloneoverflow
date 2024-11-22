@@ -6,7 +6,7 @@ export const prismaErrorHandler = (
   err: Prisma.PrismaClientKnownRequestError, 
   req: Request, 
   res: Response<ExceptionResponse>, 
-  next: NextFunction
+  next: NextFunction,
 ) => {
   if (!(err instanceof Prisma.PrismaClientKnownRequestError)) {
     next(err);
@@ -14,17 +14,18 @@ export const prismaErrorHandler = (
   }
   
   switch (err.code) {
-    case 'P2002':
-      const target = err.meta?.target as string[];
-      const modelName = err.meta?.modelName as string;
-      res.status(400).send({
-        name: err.constructor.name,
-        error: `${modelName} must have unique fields [${target}]`,
-      });
-      break;
-    default:
-      console.log('Prisma error');
-      console.log(err);
-      next(err);
+  case 'P2002': {
+    const target = err.meta?.target as string[];
+    const modelName = err.meta?.modelName as string;
+    res.status(400).send({
+      name: err.constructor.name,
+      error: `${modelName} must have unique fields [${target.toString()}]`,
+    });
+    break;
   }
-}
+  default:
+    console.log('Prisma error');
+    console.log(err);
+    next(err);
+  }
+};

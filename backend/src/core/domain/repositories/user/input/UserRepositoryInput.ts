@@ -1,12 +1,14 @@
-import { UserRelation } from "@common/relations/UserRelation";
-import { CountOption } from "@common/repository/counts";
-import { IncludeRelations } from "@common/repository/include";
-import { RepositoryFindManyOptions, RepositoryOptions } from "@common/repository/options";
-import { OrderByOption } from "@common/repository/orderBy";
-import { Where } from "@common/repository/where";
-import { User, UserCreds } from "@core/domain/entities/User";
+import { UserRelation } from '@common/relations/UserRelation';
+import { CountOption } from '@common/repository/counts';
+import { IncludeRelations } from '@common/repository/include';
+import { RepositoryFindManyOptions, RepositoryOptions } from '@common/repository/options';
+import { OrderByOption } from '@common/repository/orderBy';
+import { Select } from '@common/repository/select';
+import { Where } from '@common/repository/where';
+import { User, UserCreds } from '@core/domain/entities/User';
 
 export namespace UserRepositoryInput {
+  export type UserSelect = Select<User>;
   export type UserWhere = Where<User & UserRelation>;
   export type UserCredsWhere = Where<User & UserCreds & UserRelation>;
 
@@ -14,32 +16,62 @@ export namespace UserRepositoryInput {
   export type UserCount = CountOption<UserRelation>;
   export type UserOrderBy = OrderByOption<User & UserRelation>
 
-  export type UserRepositoryOptions = RepositoryOptions<UserInclude, UserCount, UserOrderBy>;
-  export type UserFindManyRepositoryOptions = RepositoryFindManyOptions<UserInclude, UserCount, UserOrderBy>;
-
-  export type FindById = {
+  export type FindById<
+    Select=UserSelect, 
+    Include=UserInclude, 
+    Count=UserCount, 
+    OrderBy=UserOrderBy,
+  > = {
     id: string;
-    options?: UserRepositoryOptions,
+    options?: RepositoryOptions<Select, Include, Count, OrderBy>,
   };
   
-  export type FindByUsername = {
+  export type FindByEmail<
+    Select=UserSelect, 
+    Include=UserInclude, 
+    Count=UserCount, 
+    OrderBy=UserOrderBy,
+  > = {
+    email: string;
+    options?: RepositoryOptions<Select, Include, Count, OrderBy>,
+  };
+  
+  export type FindByUsername<
+    Select=UserSelect, 
+    Include=UserInclude, 
+    Count=UserCount, 
+    OrderBy=UserOrderBy,
+  > = {
     username: string;
-    options?: UserRepositoryOptions,
+    options?: RepositoryOptions<Select, Include, Count, OrderBy>,
   };
   
-  export type FindOne = {
+  export type FindOne<
+    Select=UserSelect, 
+    Include=UserInclude, 
+    Count=UserCount, 
+    OrderBy=UserOrderBy,
+  > = {
     where: UserWhere,
-    options?: UserRepositoryOptions,
+    options?: RepositoryOptions<Select, Include, Count, OrderBy>,
+  };
+  
+  export type FindCreds = {
+    where: UserCredsWhere,
   };
   
   export type FindWithCreds = {
     where: UserCredsWhere,
-    options?: UserRepositoryOptions,
   };
   
-  export type FindMany = {
+  export type FindMany<
+    Select=UserSelect, 
+    Include=UserInclude, 
+    Count=UserCount, 
+    OrderBy=UserOrderBy,
+  > = {
     where: UserWhere,
-    options?: UserFindManyRepositoryOptions,
+    options?: RepositoryFindManyOptions<Select, Include, Count, OrderBy>,
   };
   
   export type Count = {
@@ -47,6 +79,10 @@ export namespace UserRepositoryInput {
   };
 
   export type Create = {
+    user: User, 
+  };
+
+  export type CreateWithCreds = {
     user: User, 
     creds: UserCreds,
   };

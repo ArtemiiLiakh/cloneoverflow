@@ -1,9 +1,9 @@
-import { AnswerRepositoryInput } from "@core/domain/repositories/answer/input/AnswerRepositoryInput";
-import { Prisma } from "@prisma/client";
-import { ArrayOrValue } from "./utils/ArrayOrValue";
+import { AnswerRepositoryInput } from '@core/domain/repositories/answer/input/AnswerRepositoryInput';
+import { Prisma } from '@prisma/client';
+import { ArrayOrValue } from './utils/ArrayOrValue';
 
 export const AnswerOrderByAdapter = (
-  orderBy: AnswerRepositoryInput.AnswerFindManyRepositoryOptions["orderBy"] | undefined,
+  orderBy: AnswerRepositoryInput.AnswerOrderBy | AnswerRepositoryInput.AnswerOrderBy[] | undefined,
 ): Prisma.AnswerOrderByWithRelationInput | Prisma.AnswerOrderByWithRelationInput[] => {
   if (!orderBy) return {};
 
@@ -17,4 +17,4 @@ export const AnswerOrderByAdapter = (
     createdAt: order.createdAt,
     updatedAt: order.updatedAt,
   }));
-}
+};

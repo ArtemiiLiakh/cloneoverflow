@@ -1,4 +1,4 @@
-import { Answer, Question, User, UserAnswers } from "@prisma/client";
+import { Answer, Question, User, UserAnswers } from '@prisma/client';
 
 export type PrismaAnswerType = Answer & {
   userAnswers?: UserAnswers[],

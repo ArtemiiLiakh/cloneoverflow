@@ -1,9 +1,8 @@
-import { QuestionsSortByEnum, OrderByEnum, PaginationInput, VoteTypeEnum } from "@cloneoverflow/common";
-import { QuestionIncludeEnum } from "@cloneoverflow/common/src/enums/includes/QuestionInclude";
+import { QuestionsSortByEnum, OrderByEnum, VoteTypeEnum, PaginationDTO } from '@cloneoverflow/common';
 
 export namespace QuestionServiceInput {
   export type Create = {
-    ownerId: string, 
+    executorId: string, 
     data: {
       title: string;
       text: string;
@@ -12,7 +11,7 @@ export namespace QuestionServiceInput {
   };
 
   export type Update = {
-    ownerId: string, 
+    executorId: string, 
     questionId: string, 
     data: {
       title?: string;
@@ -22,9 +21,8 @@ export namespace QuestionServiceInput {
   };
 
   export type Get = {
+    executorId?: string,
     questionId: string, 
-    userId?: string,
-    include?: QuestionIncludeEnum[],
   };
 
   export type GetAll = {
@@ -32,30 +30,31 @@ export namespace QuestionServiceInput {
     tags?: string[];
     sortBy?: QuestionsSortByEnum;
     orderBy?: OrderByEnum;
-    pagination?: PaginationInput;
+    pagination?: PaginationDTO;
     ownerId?: string;
     rateFrom?: number;
     rateTo?: number;
   };
 
   export type Delete = {
+    executorId: string
     questionId: string, 
-    userId: string
   };
 
   export type CloseQuestion = {
+    executorId: string,
     questionId: string, 
     answerId: string, 
-    userId: string,
   };
 
   export type VoteQuestion = {
-    questionId: string, userId: string, 
+    executorId: string, 
+    questionId: string, 
     vote: VoteTypeEnum,
   };
 
   export type AddViewer = {
-    userId: string,
+    executorId: string,
     questionId: string,
   };
 }

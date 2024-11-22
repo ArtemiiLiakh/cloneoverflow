@@ -1,4 +1,4 @@
-import { Answer, Question, User, UserAnswers, UserCreds, UserQuestions } from "@prisma/client";
+import { Answer, Question, User, UserAnswers, UserCreds, UserQuestions } from '@prisma/client';
 
 export type PrismaUserType = User & {
   userCreds?: UserCreds,
@@ -14,6 +14,8 @@ export type PrismaUserType = User & {
   },
 };
 
-export type PrismaUserCredsType = UserCreds & {
+export type PrismaUserCredsType = UserCreds;
+
+export type PrismaUserWithCredsType = UserCreds & {
   user?: User | null,
 };

@@ -1,6 +1,6 @@
-import { Model } from "@common/model/Model";
-import { Timestamps } from "@common/model/Timestamp";
-import { randomUUID } from "crypto";
+import { Model } from '@common/model/Model';
+import { Timestamps } from '@common/model/Timestamp';
+import { randomUUID } from 'crypto';
 
 export class Answer implements Model, Timestamps {
   constructor (
@@ -14,7 +14,7 @@ export class Answer implements Model, Timestamps {
     public updatedAt: Date,
   ) {}
 
-  static new({
+  static new ({
     id,
     ownerId,
     questionId,

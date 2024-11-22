@@ -1,18 +1,18 @@
-import { SearchQuestionsDTO, SearchTagsDTO, SearchTagsReponse } from "@cloneoverflow/common";
-import { WithQuery } from "./types/Request";
-import { CoreResponse } from "./types/Response";
-import { SearchServiceFacade } from "@app/services/SearchServiceFacade";
-import { SearchTagsMapperOutput } from "@app/adapters/mappers/search/SearchTagsMapper";
-import { SearchQuestionsMapperOutput } from "@app/adapters/mappers/search/SearchQuestionsMapper";
+import { SearchQuestionsMapperOutput } from '@application/adapters/mappers/search/SearchQuestionsMapper';
+import { SearchTagsMapperOutput } from '@application/adapters/mappers/search/SearchTagsMapper';
+import { SearchServiceFacade } from '@application/services/SearchServiceFacade';
+import { SearchQuestionsDTO, SearchQuestionsResponse, SearchTagsDTO, SearchTagsReponse } from '@cloneoverflow/common';
+import { WithQuery } from './types/Request';
+import { CoreResponse } from './types/Response';
 
 export class SearchController {
   constructor (
     private searchService: SearchServiceFacade,
   ) {}
 
-  async searchQuestions(
+  async searchQuestions (
     { query }: WithQuery<SearchQuestionsDTO>, 
-    res: CoreResponse
+    res: CoreResponse<SearchQuestionsResponse>,
   ) {
     const questions = await this.searchService.searchQuestions({
       search: query.search,
@@ -24,9 +24,9 @@ export class SearchController {
     res.send(SearchQuestionsMapperOutput(questions));
   }
 
-  async searchTags(
+  async searchTags (
     { query }: WithQuery<SearchTagsDTO>, 
-    res: CoreResponse<SearchTagsReponse>
+    res: CoreResponse<SearchTagsReponse>,
   ) {
     const tags = await this.searchService.searchTags({
       name: query.name,

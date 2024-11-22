@@ -1,4 +1,4 @@
-import { PaginationResponse } from "../responses";
+import { PaginationResponse } from './PaginationResponse';
 
 export interface PaginatedData<D> {
   data: D[];

@@ -1,19 +1,33 @@
-import { PaginatedData } from "@cloneoverflow/common";
-import { QuestionRelation } from "@common/relations/QuestionRelation";
-import { CountResult } from "@common/repository/counts";
-import { Question } from "@core/domain/entities/Question";
+import { PaginatedData } from '@cloneoverflow/common';
+import { QuestionRelation } from '@common/relations/QuestionRelation';
+import { CountResult } from '@common/repository/counts';
+import { Question } from '@core/domain/entities/Question';
+import { QuestionRepositoryInput } from '../input/QuestionRepositoryInput';
+import { SelectResult } from '@common/repository/select';
 
-type QuestionAdds = Partial<QuestionRelation & CountResult<QuestionRelation>>;
 
 export namespace QuestionRepositoryOutput {
-  export type FullQuestion = {
-    entity: Question,
-  } & QuestionAdds
+  type QuestionAdds = Partial<QuestionRelation & CountResult<QuestionRelation>>;
+  
+  export type QuestionResponse<S extends QuestionRepositoryInput.QuestionSelect> = {
+    entity: SelectResult<S, Question>,
+  } & QuestionAdds;
 
-  export type FindById = FullQuestion | null;
-  export type FindOne = FullQuestion | null;
-  export type FindMany = FullQuestion[];
-  export type Paginate = PaginatedData<FullQuestion>;
+  export type FindById<
+    S extends QuestionRepositoryInput.QuestionSelect = QuestionRepositoryInput.QuestionSelect,
+  > = QuestionResponse<S> | null;
+
+  export type FindOne<
+    S extends QuestionRepositoryInput.QuestionSelect = QuestionRepositoryInput.QuestionSelect,
+  > = QuestionResponse<S> | null;
+
+  export type FindMany<
+    S extends QuestionRepositoryInput.QuestionSelect = QuestionRepositoryInput.QuestionSelect,
+  > = QuestionResponse<S>[];
+
+  export type Paginate<
+    S extends QuestionRepositoryInput.QuestionSelect = QuestionRepositoryInput.QuestionSelect,
+  > = PaginatedData<QuestionResponse<S>>;
   
   export type Count = number;
   export type VoteQuestion = void;

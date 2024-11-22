@@ -1,9 +1,10 @@
-import { AnswerRepository } from "./answer/AnswerRepository";
-import { AnswerUserRepository } from "./answer/AnswerUserRepository";
-import { QuestionRepository } from "./question/QuestionRepository";
-import { QuestionUserRepository } from "./question/QuestionUserRepository";
-import { TagRepository } from "./tag/TagRepository";
-import { UserRepository } from "./user/UserRepository";
+import { IsolationLevel } from '@cloneoverflow/common';
+import { AnswerRepository } from './answer/AnswerRepository';
+import { AnswerUserRepository } from './answer/AnswerUserRepository';
+import { QuestionRepository } from './question/QuestionRepository';
+import { QuestionUserRepository } from './question/QuestionUserRepository';
+import { TagRepository } from './tag/TagRepository';
+import { UserRepository } from './user/UserRepository';
 
 export interface Unit {
   userRepository: UserRepository;
@@ -15,5 +16,5 @@ export interface Unit {
 }
 
 export interface UnitOfWork {
-  execute<I>(fn: (unit: Unit) => Promise<I>): Promise<I | null>;
+  execute<I>(fn: (unit: Unit) => Promise<I>, isolationLevel?: IsolationLevel): Promise<I | null>;
 }

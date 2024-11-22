@@ -1,19 +1,19 @@
-import { AnswerRepository } from "@core/domain/repositories/answer/AnswerRepository";
-import { AnswerRepositoryInput } from "@core/domain/repositories/answer/input/AnswerRepositoryInput";
-import { AnswerRepositoryOutput } from "@core/domain/repositories/answer/output/AnswerRepositoryOutput";
-import { AnswerIncludeAdapter } from "@infra/persistance/prisma/adapters/include/AnswerIncludeAdapter";
-import { AnswerOrderByAdapter } from "@infra/persistance/prisma/adapters/orderBy/AnswerOrderByAdapter";
-import { AnswerRepositoryMapper } from "@infra/persistance/prisma/adapters/repositories/AnswerRepositoryMapper";
-import { AnswerWhereAdapter } from "@infra/persistance/prisma/adapters/where/answer/AnswerWhereAdapter";
-import { PrismaClient } from "@prisma/client";
-import { PrismaPaginationRepository } from "./PrismaPaginationRepository";
+import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
+import { AnswerRepositoryInput } from '@core/domain/repositories/answer/input/AnswerRepositoryInput';
+import { AnswerRepositoryOutput } from '@core/domain/repositories/answer/output/AnswerRepositoryOutput';
+import { PrismaClient } from '@prisma/client';
+import { PrismaPaginationRepository } from './PrismaPagination';
+import { AnswerOrderByAdapter } from '../adapters/orderBy/AnswerOrderByAdapter';
+import { AnswerRepositoryMapper } from '../adapters/repositoryMappers/AnswerRepositoryMapper';
+import { AnswerWhereAdapter } from '../adapters/where/answer/AnswerWhereAdapter';
+import { AnswerSelectAdapter } from '../adapters/select/AnswerSelectAdapter';
 
 export class PrismaAnswerRepository implements AnswerRepository {
   constructor (
     private prisma: PrismaClient,
   ) {}
 
-  async create({ answer }: AnswerRepositoryInput.Create): Promise<AnswerRepositoryOutput.Create> {
+  async create ({ answer }: AnswerRepositoryInput.Create): Promise<AnswerRepositoryOutput.Create> {
     await this.prisma.answer.create({
       data: {
         id: answer.id,
@@ -28,10 +28,10 @@ export class PrismaAnswerRepository implements AnswerRepository {
     });
   }
 
-  async findOne({ where, options }: AnswerRepositoryInput.FindOne): Promise<AnswerRepositoryOutput.FindOne> {
+  async findOne ({ where, options }: AnswerRepositoryInput.FindOne): Promise<AnswerRepositoryOutput.FindOne> {
     const answer = await this.prisma.answer.findFirst({
       where: AnswerWhereAdapter(where),
-      include: AnswerIncludeAdapter(options?.include, options?.count),
+      select: AnswerSelectAdapter(options?.select, options?.include, options?.count),
       orderBy: AnswerOrderByAdapter(options?.orderBy),
     }); 
 
@@ -40,23 +40,23 @@ export class PrismaAnswerRepository implements AnswerRepository {
     return AnswerRepositoryMapper.findOne(answer);
   }
 
-  findById({ id, options }: AnswerRepositoryInput.FindById): Promise<AnswerRepositoryOutput.FindById> {
+  findById ({ id, options }: AnswerRepositoryInput.FindById): Promise<AnswerRepositoryOutput.FindById> {
     return this.findOne({
       where: { id },
       options,
     });
   }
 
-  count({ where }: AnswerRepositoryInput.Count): Promise<AnswerRepositoryOutput.Count> {
+  count ({ where }: AnswerRepositoryInput.Count): Promise<AnswerRepositoryOutput.Count> {
     return this.prisma.answer.count({
       where: AnswerWhereAdapter(where),
     });
   }
 
-  async findMany({ where, options }: AnswerRepositoryInput.FindMany): Promise<AnswerRepositoryOutput.FindMany> {
+  async findMany ({ where, options }: AnswerRepositoryInput.FindMany): Promise<AnswerRepositoryOutput.FindMany> {
     const answers = await this.prisma.answer.findMany({
       where: AnswerWhereAdapter(where),
-      include: AnswerIncludeAdapter(options?.include, options?.count),
+      select: AnswerSelectAdapter(options?.select, options?.include, options?.count),
       orderBy: AnswerOrderByAdapter(options?.orderBy),
       skip: options?.offset,
       take: options?.take,
@@ -65,10 +65,10 @@ export class PrismaAnswerRepository implements AnswerRepository {
     return AnswerRepositoryMapper.findMany(answers);
   }
 
-  async paginate({ where, options, pagination }: AnswerRepositoryInput.Paginate): Promise<AnswerRepositoryOutput.Paginate> {
+  async paginate ({ where, options, pagination }: AnswerRepositoryInput.Paginate): Promise<AnswerRepositoryOutput.Paginate> {
     const answers = await PrismaPaginationRepository.paginate(this.prisma.answer, {
       where: AnswerWhereAdapter(where),
-      include: AnswerIncludeAdapter(options?.include, options?.count),
+      select: AnswerSelectAdapter(options?.select, options?.include, options?.count),
       orderBy: AnswerOrderByAdapter(options?.orderBy),
       skip: options?.offset,
       take: options?.take,
@@ -77,7 +77,7 @@ export class PrismaAnswerRepository implements AnswerRepository {
     return AnswerRepositoryMapper.paginate(answers);
   }
 
-  async update({ id, answer }: AnswerRepositoryInput.Update): Promise<AnswerRepositoryOutput.Update> {
+  async update ({ id, answer }: AnswerRepositoryInput.Update): Promise<AnswerRepositoryOutput.Update> {
     const updatedAnswer = await this.prisma.answer.update({
       where: {
         id,
@@ -96,7 +96,7 @@ export class PrismaAnswerRepository implements AnswerRepository {
     return AnswerRepositoryMapper.update(updatedAnswer);
   }
 
-  async updateMany({ where, answer }: AnswerRepositoryInput.UpdateMany): Promise<AnswerRepositoryOutput.UpdateMany> {
+  async updateMany ({ where, answer }: AnswerRepositoryInput.UpdateMany): Promise<AnswerRepositoryOutput.UpdateMany> {
     await this.prisma.answer.updateMany({
       where: AnswerWhereAdapter(where),
       data: {
@@ -111,7 +111,7 @@ export class PrismaAnswerRepository implements AnswerRepository {
     });
   }
 
-  async delete({ answer }: AnswerRepositoryInput.Delete): Promise<AnswerRepositoryOutput.Delete> {
+  async delete ({ answer }: AnswerRepositoryInput.Delete): Promise<AnswerRepositoryOutput.Delete> {
     await this.prisma.answer.delete({
       where: {
         id: answer.id,

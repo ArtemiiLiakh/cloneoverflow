@@ -1,11 +1,11 @@
-import { AnswerRepositoryInput } from "@core/domain/repositories/answer/input/AnswerRepositoryInput";
-import { Prisma } from "@prisma/client";
-import { StringWhereAdapter } from "../dataTypes/StringWhereAdapter";
-import { NumberWhereAdapter } from "../dataTypes/NumberWhereAdapter ";
-import { DateWhereAdapter } from "../dataTypes/DateWhereAdapter";
-import { UserWhereInputAdapter } from "../user/UserWhereInputAdapter";
-import { QuestionWhereInputAdapter } from "../question/QuestionWhereInputAdapter";
-import { AnswerUserStatsWhereAdapter } from "./AnswerUserStatsWhereAdapter";
+import { AnswerRepositoryInput } from '@core/domain/repositories/answer/input/AnswerRepositoryInput';
+import { Prisma } from '@prisma/client';
+import { StringWhereAdapter } from '../dataTypes/StringWhereAdapter';
+import { NumberWhereAdapter } from '../dataTypes/NumberWhereAdapter ';
+import { DateWhereAdapter } from '../dataTypes/DateWhereAdapter';
+import { UserWhereInputAdapter } from '../user/UserWhereInputAdapter';
+import { QuestionWhereInputAdapter } from '../question/QuestionWhereInputAdapter';
+import { AnswerUserStatsWhereAdapter } from './AnswerUserStatsWhereAdapter';
 
 export const AnswerWhereAdapter = (where: AnswerRepositoryInput.AnswerWhere): Prisma.AnswerWhereInput => {
   const { owner, question, users } = where;

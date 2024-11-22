@@ -1,11 +1,19 @@
-import { TagsRepositoryOutput } from "./output/TagRepositoryOutput";
-import { TagRepositoryInput } from "./input/TagRepositoryInput";
+import { TagsRepositoryOutput } from './output/TagRepositoryOutput';
+import { TagRepositoryInput } from './input/TagRepositoryInput';
 
 export interface TagRepository {
-  findById(payload: TagRepositoryInput.FindById): Promise<TagsRepositoryOutput.FindById>;
-  findOne(payload: TagRepositoryInput.FindOne): Promise<TagsRepositoryOutput.FindOne>;
-  findMany(payload: TagRepositoryInput.FindMany): Promise<TagsRepositoryOutput.FindMany>;
-  paginate(payload: TagRepositoryInput.Paginate): Promise<TagsRepositoryOutput.Paginate>
+  findById<Select extends TagRepositoryInput.TagSelect>
+    (payload: TagRepositoryInput.FindById<Select>): Promise<TagsRepositoryOutput.FindById>;
+
+  findOne<Select extends TagRepositoryInput.TagSelect>
+    (payload: TagRepositoryInput.FindOne<Select>): Promise<TagsRepositoryOutput.FindOne>;
+
+  findMany<Select extends TagRepositoryInput.TagSelect>
+    (payload: TagRepositoryInput.FindMany<Select>): Promise<TagsRepositoryOutput.FindMany>;
+
+  paginate<Select extends TagRepositoryInput.TagSelect>
+    (payload: TagRepositoryInput.Paginate<Select>): Promise<TagsRepositoryOutput.Paginate>;
+
   count(payload: TagRepositoryInput.Count): Promise<TagsRepositoryOutput.Count>;
   create(payload: TagRepositoryInput.Create): Promise<TagsRepositoryOutput.Create>;
   createMany(payload: TagRepositoryInput.CreateMany): Promise<TagsRepositoryOutput.CreateMany>;

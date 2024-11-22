@@ -1,9 +1,9 @@
-import { UserRepositoryInput } from "@core/domain/repositories/user/input/UserRepositoryInput";
-import { Prisma } from "@prisma/client";
-import { ArrayOrValue } from "./utils/ArrayOrValue";
+import { UserRepositoryInput } from '@core/domain/repositories/user/input/UserRepositoryInput';
+import { Prisma } from '@prisma/client';
+import { ArrayOrValue } from './utils/ArrayOrValue';
 
 export const UserOrderByAdapter = (
-  orderBy: UserRepositoryInput.UserFindManyRepositoryOptions["orderBy"] | undefined
+  orderBy: UserRepositoryInput.UserOrderBy | UserRepositoryInput.UserOrderBy[] | undefined,
 ): Prisma.UserOrderByWithRelationInput | Prisma.UserOrderByWithRelationInput[] => {
   if (!orderBy) return {};
 
@@ -23,4 +23,4 @@ export const UserOrderByAdapter = (
       _count: order.questions,
     } : undefined,
   }));
-}
+};

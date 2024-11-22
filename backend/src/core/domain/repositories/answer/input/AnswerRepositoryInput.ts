@@ -1,40 +1,59 @@
-import { PaginationInput } from "@cloneoverflow/common";
-import { AnswerRelation } from "@common/relations/AnswerRelation";
-import { CountOption } from "@common/repository/counts";
-import { IncludeRelations } from "@common/repository/include";
-import { RepositoryFindManyOptions, RepositoryOptions } from "@common/repository/options";
-import { OrderByOption } from "@common/repository/orderBy";
-import { Where } from "@common/repository/where";
-import { Answer } from "@core/domain/entities/Answer";
+import { PaginationDTO } from '@cloneoverflow/common';
+import { AnswerRelation } from '@common/relations/AnswerRelation';
+import { CountOption } from '@common/repository/counts';
+import { IncludeRelations } from '@common/repository/include';
+import { RepositoryFindManyOptions, RepositoryOptions } from '@common/repository/options';
+import { OrderByOption } from '@common/repository/orderBy';
+import { Select } from '@common/repository/select';
+import { Where } from '@common/repository/where';
+import { Answer } from '@core/domain/entities/Answer';
 
 export namespace AnswerRepositoryInput {
+  export type AnswerSelect = Select<Answer>;
   export type AnswerWhere = Where<Answer & AnswerRelation>
   export type AnswerInclude = IncludeRelations<AnswerRelation>;
   export type AnswerCount = CountOption<AnswerRelation>;
   export type AnswerOrderBy = OrderByOption<Answer & AnswerRelation>;
 
-  export type AnswerRepositoryOptions = RepositoryOptions<AnswerInclude, AnswerCount, AnswerOrderBy>;
-  export type AnswerFindManyRepositoryOptions = RepositoryFindManyOptions<AnswerInclude, AnswerCount, AnswerOrderBy>;
-
-  export type FindById = {
+  export type FindById<
+    Select=AnswerSelect, 
+    Include=AnswerInclude, 
+    Count=AnswerCount, 
+    OrderBy=AnswerOrderBy,
+  > = {
     id: string, 
-    options?: AnswerRepositoryOptions,
+    options?: RepositoryOptions<Select, Include, Count, OrderBy>,
   };
 
-  export type FindOne = {
+  export type FindOne<
+    Select=AnswerSelect, 
+    Include=AnswerInclude, 
+    Count=AnswerCount, 
+    OrderBy=AnswerOrderBy,
+  > = {
     where: AnswerWhere, 
-    options?: AnswerRepositoryOptions,
+    options?: RepositoryOptions<Select, Include, Count, OrderBy>,
   };
 
-  export type FindMany = {
+  export type FindMany<
+    Select=AnswerSelect, 
+    Include=AnswerInclude, 
+    Count=AnswerCount, 
+    OrderBy=AnswerOrderBy,
+  > = {
     where: AnswerWhere, 
-    options?: AnswerFindManyRepositoryOptions,
+    options?: RepositoryFindManyOptions<Select, Include, Count, OrderBy>,
   };
 
-  export type Paginate = {
+  export type Paginate<
+    Select=AnswerSelect, 
+    Include=AnswerInclude, 
+    Count=AnswerCount, 
+    OrderBy=AnswerOrderBy,
+  > = {
     where: AnswerWhere, 
-    pagination?: PaginationInput, 
-    options?: AnswerFindManyRepositoryOptions,
+    pagination?: PaginationDTO, 
+    options?: RepositoryFindManyOptions<Select, Include, Count, OrderBy>,
   };
   
   export type Count = {

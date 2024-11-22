@@ -5,7 +5,8 @@ export const errorHandler = (
   err: Error, 
   req: Request, 
   res: Response<ExceptionResponse>, 
-  next: NextFunction
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  next: NextFunction,
 ) => {
   let message: string | string[];
   let statusCode = 500;
@@ -17,7 +18,7 @@ export const errorHandler = (
   }
   else {
     message = 'Internal server error';
-    console.log('Error on server')
+    console.log('Error on server');
     console.log(err);
   }
 
@@ -25,4 +26,4 @@ export const errorHandler = (
     name: err.constructor.name,
     error: message,
   });
-}
+};

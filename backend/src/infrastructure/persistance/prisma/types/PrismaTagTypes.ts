@@ -1,4 +1,4 @@
-import { Question, Tag } from "@prisma/client";
+import { Question, Tag } from '@prisma/client';
 
 export type PrismaTagTypes = Tag & {
   questions?: Question[],

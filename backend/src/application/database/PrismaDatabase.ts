@@ -1,10 +1,10 @@
-import config from "@/config";
-import { PrismaClient } from "@prisma/client";
+import config from '@/config';
+import { PrismaClient } from '@prisma/client';
 
 class PrismaDatabase {
   private client: PrismaClient;
 
-  async connect() {
+  async connect () {
     this.client = new PrismaClient({
       datasourceUrl: config.POSTGRES_URL,
     });
@@ -12,7 +12,7 @@ class PrismaDatabase {
     await this.client.$connect();
   }
 
-  getClient() {
+  getClient () {
     return this.client;
   }
 }

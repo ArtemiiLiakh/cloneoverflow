@@ -1,12 +1,13 @@
-import { AdaptController } from '@app/adapters/AdaptController';
-import { AnswerController } from '@app/controllers/AnswerController';
-import { answerServiceFacadeDI } from '@app/di/services/AnswerServiceDI';
-import { JwtAuthAccess, JwtGetAuth } from '@app/middlewares/JwtAuthAccess';
-import { validateRequest } from '@app/middlewares/validation';
+import { AdaptController } from '@application/adapters/AdaptController';
+import { AnswerController } from '@application/controllers/AnswerController';
+import { answerServiceFacadeDI } from '@application/di/services/AnswerServiceDI';
+import { JwtAuthOptional, JwtAuthAccess } from '@application/middlewares/JwtAuthAccess';
+import { validateRequest } from '@application/middlewares/validation';
 import {
   AnswerCreateDTO,
+  AnswersGetAllDTO,
   AnswerUpdateDTO,
-  VoteDTO
+  VoteDTO,
 } from '@cloneoverflow/common';
 import express from 'express';
 
@@ -14,8 +15,16 @@ const answerRouter = express.Router();
 
 const controller = new AnswerController(answerServiceFacadeDI);
 
+answerRouter.get('/', 
+  JwtAuthOptional(),
+  validateRequest({
+    query: AnswersGetAllDTO,
+  }),
+  AdaptController(controller.getAll.bind(controller)),
+);
+
 answerRouter.get('/:answersId', 
-  JwtGetAuth(),
+  JwtAuthOptional(),
   AdaptController(controller.get.bind(controller)),
 );
 

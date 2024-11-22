@@ -1,4 +1,4 @@
-import { QuestionUserStats } from "@core/domain/entities/QuestionUserStats";
+import { QuestionUserStats } from '@core/domain/entities/QuestionUserStats';
 
 export namespace QuestionUserRepositoryOutput {
   export type FindOne = QuestionUserStats | null;

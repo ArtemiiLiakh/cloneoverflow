@@ -37,7 +37,7 @@ model User {
   name            String            @db.VarChar(100)
   username        String            @unique
   reputation      Int               @default(0)
-  about           String?           @db.Text
+  about           String            @db.Text
   status          UserStatus        @default(USER)
   questions       Question[]
   answers         Answer[]
@@ -50,18 +50,13 @@ model User {
   @@map("user")
 }
 
-enum QuestionStatus {
-  ACTIVE
-  CLOSED
-}
-
 model Question {
   id            String             @id @default(uuid())
   title         String             @db.VarChar(255)
   text          String             @db.Text @default("")
   rate          Int                @default(0)
   views         Int                @default(0)
-  status        QuestionStatus     @default(ACTIVE)
+  isClosed      Boolean            @default(false)
   ownerId       String
   owner         User               @relation(fields: [ownerId], references: [userId], onDelete: Cascade)
   userQuestions UserQuestions[]       

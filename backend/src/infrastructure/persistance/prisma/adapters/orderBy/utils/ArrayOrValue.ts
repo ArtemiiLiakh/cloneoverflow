@@ -3,4 +3,4 @@ export const ArrayOrValue = <T, M>(value: T | T[], map: (value: T) => M) => {
     return value.map(map);
   }
   return map(value);
-}
+};

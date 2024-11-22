@@ -1,17 +1,16 @@
-import { AdaptController } from '@app/adapters/AdaptController';
-import { AuthController } from '@app/controllers/AuthController';
-import { authServiceFacadeDI } from '@app/di/services/AuthServiceDI';
-import { JwtAuthAccess } from '@app/middlewares/JwtAuthAccess';
-import { JwtAuthRefresh } from '@app/middlewares/JwtAuthRefresh';
-import { validateRequest } from '@app/middlewares/validation';
+import { AdaptController } from '@application/adapters/AdaptController';
+import { AuthController } from '@application/controllers/AuthController';
+import { authServiceFacadeDI } from '@application/di/services/AuthServiceDI';
+import { JwtAuthAccess } from '@application/middlewares/JwtAuthAccess';
+import { JwtAuthRefresh } from '@application/middlewares/JwtAuthRefresh';
+import { validateRequest } from '@application/middlewares/validation';
 import {
   AuthChangePasswordDTO,
-  AuthChangePasswordResolveDTO,
-  AuthDeleteDTO,
+  AuthDeleteAccountDTO,
   AuthForgotPasswordDTO,
-  AuthForgotPasswordResolveDTO,
   AuthLoginDTO,
-  AuthSignupDTO
+  AuthSignupDTO,
+  AuthVerificationCodeDTO,
 } from '@cloneoverflow/common';
 import express from 'express';
 
@@ -32,19 +31,19 @@ authRouter.post(
   validateRequest({
     body: AuthSignupDTO,
   }), 
-  AdaptController(authController.signup.bind(authController))
+  AdaptController(authController.signup.bind(authController)),
 );
 
 authRouter.get(
   '/me',
   JwtAuthAccess(), 
-  AdaptController(authController.getMe.bind(authController))
+  AdaptController(authController.getMe.bind(authController)),
 );
 
 authRouter.post(
   '/refreshToken',
   JwtAuthRefresh(), 
-  AdaptController(authController.refreshToken.bind(authController))
+  AdaptController(authController.refreshToken.bind(authController)),
 );
 
 authRouter.post(
@@ -57,39 +56,30 @@ authRouter.post(
 );
 
 authRouter.post(
-  '/changePassword/resolve',
-  JwtAuthAccess(),
-  validateRequest({
-    body: AuthChangePasswordResolveDTO,
-  }),
-  AdaptController(authController.changePasswordResolve.bind(authController)),
-);
-
-authRouter.post(
   '/forgotPassword',
   validateRequest({
     body: AuthForgotPasswordDTO,
   }),
-  AdaptController(authController.forgotPassword.bind(authController))
+  AdaptController(authController.forgotPassword.bind(authController)),
 );
-
-authRouter.post(
-  '/forgotPassword/resolve',
-  validateRequest({
-    body: AuthForgotPasswordResolveDTO,
-  }),
-  AdaptController(authController.forgotPasswordResolve.bind(authController))
-);  
 
 authRouter.delete(
   '/deleteAccount',
   JwtAuthRefresh(), 
-  JwtAuthRefresh(),
+  JwtAuthAccess(),
   validateRequest({
-    body: AuthDeleteDTO,
+    body: AuthDeleteAccountDTO,
   }),
-  AdaptController(authController.deleteAccount.bind(authController))
+  AdaptController(authController.deleteAccount.bind(authController)),
 );  
+
+authRouter.post(
+  '/sendVerificationCode',
+  validateRequest({
+    body: AuthVerificationCodeDTO,
+  }),
+  AdaptController(authController.sendVerificationCode.bind(authController)),
+);
 
 export { authRouter };
 

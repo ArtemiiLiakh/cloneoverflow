@@ -1,59 +1,56 @@
-import config from '@/config';
+import { AuthPayload } from '@application/auth/data/AuthPayload';
+import { TokenPayload, TokenType } from '@application/auth/data/TokenPayload';
+import { ExpressRequest } from '@application/adapters/types/ExpressRequest';
 import { ForbiddenException, UnauthorizedException, UserStatusEnum } from '@cloneoverflow/common';
-import { AuthPayload } from '@app/auth/data/AuthPayload';
-import { TokenPayload, TokenType } from '@app/auth/data/TokenPayload';
+import { JwtEncryptorImpl } from '@infrastructure/security/JwtEncryptorImpl';
 import { plainToInstance } from 'class-transformer';
 import { validateSync } from 'class-validator';
-import { NextFunction, Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
+import { NextFunction, Response } from 'express';
 
 export const JwtAuthAccess = (status = UserStatusEnum.USER) => {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    const accessToken = req.cookies['accessToken'];
+  return async (req: ExpressRequest, res: Response, next: NextFunction) => {
+    const accessToken = req.cookies.accessToken;
 
-    jwt.verify(
-      accessToken,
-      config.jwt.TOKEN_SECRET, 
-      (err, decode) => {
-        if (err) {
-          throw new UnauthorizedException();
-        }
-  
-        const payload = plainToInstance(TokenPayload, decode);
-        
-        if (validateSync(payload).length) {
-          throw new UnauthorizedException();
-        }
+    if (!accessToken) {
+      throw new UnauthorizedException();
+    }
 
-        if (!((payload.status === status || payload.status === UserStatusEnum.ADMIN) && payload.type === TokenType.ACCESS)) {
-          throw new ForbiddenException();
-        }
-  
-        req.body._user = {
-          userId: payload.userId,
-          status: payload.status,
-        } as AuthPayload;
-        
-        next();
-      }
-    );
+    const decode = await new JwtEncryptorImpl().decrypt<TokenPayload>(accessToken).catch(() => { 
+      throw new UnauthorizedException; 
+    });
+
+    const payload = plainToInstance(TokenPayload, decode);
+    
+    if (validateSync(payload).length) {
+      throw new UnauthorizedException();
+    }
+
+    if (!((payload.status === status || payload.status === UserStatusEnum.ADMIN) && payload.type === TokenType.ACCESS)) {
+      throw new ForbiddenException();
+    }
+
+    req.body._user = {
+      userId: payload.userId,
+      status: payload.status,
+    } as AuthPayload;
+    
+    next();
   };
-}
+};
 
-export const JwtGetAuth = () => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    const access_token = req.cookies['access_token'];
-    jwt.verify(
-      access_token,
-      config.jwt.TOKEN_SECRET, 
-      (err, decode) => {
-        if (!err) {
-          const payload = plainToInstance(TokenPayload, decode);
-          req.body._user = payload;
-        }
-        
-        next();
-      }
-    );
+export const JwtAuthOptional = () => {
+  return async (req: ExpressRequest, res: Response, next: NextFunction) => {
+    const accessToken = req.cookies.accessToken;
+    
+    if (!accessToken) {
+      next();
+      return;
+    }
+
+    const decode = await new JwtEncryptorImpl().decrypt<TokenPayload>(accessToken).catch(() => null);
+    const payload = plainToInstance(TokenPayload, decode);
+    req.body._user = payload;
+    
+    next();
   };
-}
+};

@@ -15,7 +15,8 @@ let gCreds: GCredentials;
 
 try {
   gCreds = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'credentials.json')).toString('utf-8'));
-} catch {
+}
+catch {
   gCreds = {
     app_email: process.env.GAPP_EMAIL,
     app_password: process.env.GAPP_PASSWORD,
@@ -23,7 +24,7 @@ try {
     client_secret: process.env.GCLIENT_ID,
     redirect_uri: process.env.GCLIENT_SECRET,
     refresh_token: process.env.GREDIRECT_URI,
-    scopes: process.env.GSCOPES?.split(' ')
+    scopes: process.env.GSCOPES?.split(' '),
   } as GCredentials;
 }
 
@@ -51,5 +52,5 @@ export default {
     refreshToken: {
       maxAge: 7 * 24 * 60 * 60,
     },
-  }
-}
+  },
+};

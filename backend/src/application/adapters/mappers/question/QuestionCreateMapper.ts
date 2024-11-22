@@ -1,8 +1,8 @@
-import { QuestionCreateResponse } from "@cloneoverflow/common";
-import { QuestionServiceOutput } from "@core/service/question/dto/QuestionServiceOutput";
+import { QuestionCreateResponse } from '@cloneoverflow/common';
+import { QuestionServiceOutput } from '@core/service/question/dto/QuestionServiceOutput';
 
 export function QuestionCreateMapperOutput (
-  question: QuestionServiceOutput.Create
+  question: QuestionServiceOutput.Create,
 ): QuestionCreateResponse {
   return {
     id: question.id,
@@ -10,7 +10,7 @@ export function QuestionCreateMapperOutput (
     text: question.text,
     rate: question.rate,
     views: question.views,
-    status: question.status,
+    isClosed: question.isClosed,
     updatedAt: question.updatedAt,
     createdAt: question.createdAt,
   };

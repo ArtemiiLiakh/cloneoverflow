@@ -1,17 +1,16 @@
-import { AdaptController } from '@app/adapters/AdaptController';
-import { QuestionController } from '@app/controllers/QuestionController';
-import { SearchController } from '@app/controllers/SearchController';
-import { questionServiceFacadeDI } from '@app/di/services/QuestionServiceDI';
-import { searchServiceFacadeDI } from '@app/di/services/SearchServiceDI';
-import { JwtAuthAccess, JwtGetAuth } from '@app/middlewares/JwtAuthAccess';
-import { validateRequest } from '@app/middlewares/validation';
+import { AdaptController } from '@application/adapters/AdaptController';
+import { QuestionController } from '@application/controllers/QuestionController';
+import { SearchController } from '@application/controllers/SearchController';
+import { questionServiceFacadeDI } from '@application/di/services/QuestionServiceDI';
+import { searchServiceFacadeDI } from '@application/di/services/SearchServiceDI';
+import { JwtAuthOptional, JwtAuthAccess } from '@application/middlewares/JwtAuthAccess';
+import { validateRequest } from '@application/middlewares/validation';
 import {
   QuestionCloseDTO,
   QuestionCreateDTO,
-  QuestionGetDTO,
   QuestionUpdateDTO,
   SearchQuestionsDTO,
-  VoteDTO
+  VoteDTO,
 } from '@cloneoverflow/common';
 import express from 'express';
 
@@ -25,16 +24,13 @@ questionRouter.get(
   validateRequest({
     query: SearchQuestionsDTO,
   }),
-  AdaptController(search.searchQuestions.bind(search))
+  AdaptController(search.searchQuestions.bind(search)),
 );
 
 questionRouter.get(
   '/:questionId', 
-  JwtGetAuth(),
-  validateRequest({
-    query: QuestionGetDTO,
-  }), 
-  AdaptController(controller.get.bind(controller))
+  JwtAuthOptional(),
+  AdaptController(controller.get.bind(controller)),
 );
 
 questionRouter.post(
@@ -43,7 +39,7 @@ questionRouter.post(
   validateRequest({
     body: QuestionCreateDTO,
   }), 
-  AdaptController(controller.create.bind(controller))
+  AdaptController(controller.create.bind(controller)),
 );
 
 questionRouter.patch(
@@ -52,13 +48,13 @@ questionRouter.patch(
   validateRequest({
     body: QuestionUpdateDTO,
   }),
-  AdaptController(controller.update.bind(controller))
+  AdaptController(controller.update.bind(controller)),
 );
 
 questionRouter.delete(
   '/:questionId',
   JwtAuthAccess(),
-  AdaptController(controller.delete.bind(controller))
+  AdaptController(controller.delete.bind(controller)),
 );
 
 questionRouter.post(
@@ -67,7 +63,7 @@ questionRouter.post(
   validateRequest({
     body: QuestionCloseDTO,
   }),
-  AdaptController(controller.closeQuestion.bind(controller))
+  AdaptController(controller.closeQuestion.bind(controller)),
 );
 
 questionRouter.post(
@@ -76,7 +72,7 @@ questionRouter.post(
   validateRequest({
     body: VoteDTO,
   }),
-  AdaptController(controller.voteQuestion.bind(controller))
+  AdaptController(controller.voteQuestion.bind(controller)),
 );
 
 export { questionRouter };

@@ -1,10 +1,10 @@
-import { ForbiddenException, NoEntityWithIdException, QuestionStatusEnum } from "@cloneoverflow/common";
-import { AnswerRepository } from "@core/domain/repositories/answer/AnswerRepository";
-import { QuestionRepository } from "@core/domain/repositories/question/QuestionRepository";
-import { UnitOfWork } from "@core/domain/repositories/UnitOfWork";
-import { QuestionServiceInput } from "../dto/QuestionServiceInput";
-import { QuestionServiceOutput } from "../dto/QuestionServiceOutput";
-import { IQuestionCloseUseCase } from "../types/usecases";
+import { ForbiddenException, NoEntityWithIdException } from '@cloneoverflow/common';
+import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
+import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
+import { UnitOfWork } from '@core/domain/repositories/UnitOfWork';
+import { QuestionServiceInput } from '../dto/QuestionServiceInput';
+import { QuestionServiceOutput } from '../dto/QuestionServiceOutput';
+import { IQuestionCloseUseCase } from '../types/usecases';
 
 export class QuestionCloseUseCase implements IQuestionCloseUseCase {
   constructor (
@@ -13,7 +13,9 @@ export class QuestionCloseUseCase implements IQuestionCloseUseCase {
     private unitOfWork: UnitOfWork,
   ) {}
   
-  async execute({ userId, questionId, answerId }: QuestionServiceInput.CloseQuestion): Promise<QuestionServiceOutput.CloseQuestion> {
+  async execute (
+    { executorId, questionId, answerId }: QuestionServiceInput.CloseQuestion,
+  ): Promise<QuestionServiceOutput.CloseQuestion> {
     const question = await this.questionRepository.findById({ id: questionId });
 
     if (!question) {
@@ -26,17 +28,15 @@ export class QuestionCloseUseCase implements IQuestionCloseUseCase {
       throw new NoEntityWithIdException('Answer');
     }
 
-    if (question.entity.ownerId !== userId) {
+    if (question.entity.ownerId !== executorId) {
       throw new ForbiddenException();
     }
-
-    const questionStatus = answer.entity.isSolution ? QuestionStatusEnum.ACTIVE : QuestionStatusEnum.CLOSED;
 
     await this.unitOfWork.execute(async (unit) => {
       await unit.questionRepository.update({
         id: questionId,
         question: {
-          status: questionStatus,
+          isClosed: !question.entity.isClosed,
         },
       });
 

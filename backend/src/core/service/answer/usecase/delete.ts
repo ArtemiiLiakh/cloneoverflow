@@ -1,9 +1,9 @@
-import { ForbiddenException, NoEntityWithIdException, QuestionStatusEnum } from "@cloneoverflow/common";
-import { AnswerRepository } from "@core/domain/repositories/answer/AnswerRepository";
-import { UnitOfWork } from "@core/domain/repositories/UnitOfWork";
-import { AnswerServiceInput } from "../dto/AnswerServiceInput";
-import { AnswerServiceOutput } from "../dto/AnswerServiceOutput";
-import { IAnswerDeleteUseCase } from "../types/usecases";
+import { ForbiddenException, NoEntityWithIdException } from '@cloneoverflow/common';
+import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
+import { UnitOfWork } from '@core/domain/repositories/UnitOfWork';
+import { AnswerServiceInput } from '../dto/AnswerServiceInput';
+import { AnswerServiceOutput } from '../dto/AnswerServiceOutput';
+import { IAnswerDeleteUseCase } from '../types/usecases';
 
 export class AnswerDeleteUseCase implements IAnswerDeleteUseCase {
   constructor (
@@ -11,14 +11,16 @@ export class AnswerDeleteUseCase implements IAnswerDeleteUseCase {
     private unitOfWork: UnitOfWork,
   ) {}
   
-  async execute({ answerId, userId }: AnswerServiceInput.Delete): Promise<AnswerServiceOutput.Delete> {
+  async execute (
+    { executorId, answerId }: AnswerServiceInput.Delete,
+  ): Promise<AnswerServiceOutput.Delete> {
     const answer = await this.answerRepository.findById({ id: answerId });
 
     if (!answer) {
-      throw new NoEntityWithIdException('Answers')
+      throw new NoEntityWithIdException('Answers');
     }
   
-    if (answer.entity.ownerId !== userId) {
+    if (answer.entity.ownerId !== executorId) {
       throw new ForbiddenException('You cannot delete someone else\'s question');
     }
   
@@ -27,7 +29,7 @@ export class AnswerDeleteUseCase implements IAnswerDeleteUseCase {
         await unit.questionRepository.update({
           id: answer.entity.questionId,
           question: {
-            status: QuestionStatusEnum.ACTIVE,
+            isClosed: false,
           },
         });
       }

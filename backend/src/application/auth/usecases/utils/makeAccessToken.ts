@@ -1,7 +1,7 @@
-import config from "@/config";
-import { AuthPayload } from "@app/auth/data/AuthPayload";
-import { TokenPayload, TokenType } from "@app/auth/data/TokenPayload";
-import { DataEncryptor } from "@app/interfaces/security/DataEncryptor";
+import { AuthPayload } from '@application/auth/data/AuthPayload';
+import { TokenPayload, TokenType } from '@application/auth/data/TokenPayload';
+import { DataEncryptor } from '@application/interfaces/security/DataEncryptor';
+import config from '@/config';
 
 export const makeAccessToken = (
   dataEncryptor: DataEncryptor,
@@ -12,6 +12,6 @@ export const makeAccessToken = (
     status,
     type: TokenType.ACCESS,
   }, {
-    expiresIn: config.jwt.accessToken.maxAge
-  });
-}
+    expiresIn: config.jwt.accessToken.maxAge,
+  }).then((res) => res ?? '');
+};

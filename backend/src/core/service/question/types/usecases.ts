@@ -1,6 +1,6 @@
-import { UseCase } from "@common/usecase/UseCase";
-import { QuestionServiceInput } from "../dto/QuestionServiceInput";
-import { QuestionServiceOutput } from "../dto/QuestionServiceOutput";
+import { UseCase } from '@common/usecase/UseCase';
+import { QuestionServiceInput } from '../dto/QuestionServiceInput';
+import { QuestionServiceOutput } from '../dto/QuestionServiceOutput';
 
 export interface IQuestionCreateUseCase extends UseCase<QuestionServiceInput.Create, QuestionServiceOutput.Create> {}
 export interface IQuestionUpdateUseCase extends UseCase<QuestionServiceInput.Update, QuestionServiceOutput.Update> {}

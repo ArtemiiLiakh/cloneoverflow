@@ -1,15 +1,17 @@
-import { TagRepository } from "@core/domain/repositories/tag/TagRepository";
-import { TagsSortBy } from "@core/service/utils/TagServiceUtils/TagSortBy";
-import { SearchServiceInput } from "../dto/SearchServiceInput";
-import { SearchServiceOutput } from "../dto/SearchServiceOutput";
-import { ISearchTagsUseCase } from "../types/usecases";
+import { TagRepository } from '@core/domain/repositories/tag/TagRepository';
+import { TagsSortBy } from '@core/service/utils/tag/TagSortBy';
+import { SearchServiceInput } from '../dto/SearchServiceInput';
+import { SearchServiceOutput } from '../dto/SearchServiceOutput';
+import { ISearchTagsUseCase } from '../types/usecases';
 
 export class SearchTagsUseCase implements ISearchTagsUseCase {
   constructor (
     private tagRepository: TagRepository,
   ) {}
 
-  async execute({ name, orderBy, sortBy, pagination }: SearchServiceInput.SearchTags): Promise<SearchServiceOutput.SerachTags> {
+  async execute (
+    { name, orderBy, sortBy, pagination }: SearchServiceInput.SearchTags,
+  ): Promise<SearchServiceOutput.SerachTags> {
     const tags = await this.tagRepository.paginate({
       where: {
         text: {
@@ -19,7 +21,7 @@ export class SearchTagsUseCase implements ISearchTagsUseCase {
       pagination,
       options: {
         orderBy: TagsSortBy(sortBy, orderBy),
-      }
+      },
     });
   
     return {

@@ -1,3 +1,5 @@
+import { VerificationCodeType } from '@cloneoverflow/common';
+
 export namespace AuthServiceInput {
   export type Login = {
     email: string,
@@ -13,15 +15,14 @@ export namespace AuthServiceInput {
   };
 
   export type GetMe = {
-    id: string,
+    executorId: string,
   };
 
   export type DeleteAccount = {
-    userId: string, 
-    creds: {
-      email: string,
-      password: string,
-    }
+    executorId: string, 
+    code: string,
+    email: string,
+    password: string,
   }
 
   export type RefreshToken = {
@@ -29,28 +30,21 @@ export namespace AuthServiceInput {
   };
 
   export type ChangePassword = {
-    userId: string, 
-    data: {
-      email: string,
-      oldPassword: string,
-    },
+    executorId: string, 
+    code: string,
+    email: string,
+    newPassword: string,
+    oldPassword: string,
   };
   
-  export type ChangePasswordResolve = {
-    userId: string, 
-    data: {
-      code: string,
-      newPassword: string,
-    },
-  };
-
   export type ForgotPassword = {
-    email: string
-  };
-
-  export type ForgotPasswordResolve = {
     email: string;
     code: string;
     newPassword: string;
+  };
+
+  export type SendVerificationCode = {
+    email: string;
+    codeType: VerificationCodeType,
   };
 }

@@ -1,42 +1,58 @@
-import config from "@/config";
-import { EmailProvider } from "@app/interfaces/email/EmailProvider";
-import { DataHasher } from "@app/interfaces/security/DataHasher";
-import { BadBodyException } from "@cloneoverflow/common";
-import { CacheRepository } from "@core/domain/repositories/cache/CacheRepository";
-import { UserRepository } from "@core/domain/repositories/user/UserRepository";
-import { randomBytes } from "crypto";
-import { PasswordCodeData } from "../data/PasswordCodeData";
-import { AuthServiceInput } from "../dto/AuthServiceInput";
-import { AuthServiceOutput } from "../dto/AuthServiceOutput";
-import { IForgotPasswordUseCase } from "../types/usecases";
+import { DataHasher } from '@application/interfaces/security/DataHasher';
+import { BadBodyException, RetriesExpiredException, VerificationCodeType } from '@cloneoverflow/common';
+import { CacheRepository } from '@core/domain/repositories/cache/CacheRepository';
+import { UserRepository } from '@core/domain/repositories/user/UserRepository';
+import { AuthServiceInput } from '../dto/AuthServiceInput';
+import { AuthServiceOutput } from '../dto/AuthServiceOutput';
+import { IForgotPasswordUseCase } from '../types/usecases';
+import { VerificationCodePayload } from '../data/VerificationCodePayload';
 
 export class ForgotPasswordUseCase implements IForgotPasswordUseCase {
   constructor (
     private userRepository: UserRepository,
-    private emailProvider: EmailProvider,
     private cacheRepository: CacheRepository,
     private dataHasher: DataHasher,
   ) {}
-  
-  async execute({ email }: AuthServiceInput.ForgotPassword): Promise<AuthServiceOutput.ForgotPassword> {
-    const user = await this.userRepository.findWithCreds({
-      where: {
-        email,
-      },
+
+  async execute (
+    { code, email, newPassword }: AuthServiceInput.ForgotPassword,
+  ): Promise<AuthServiceOutput.ForgotPassword> {
+    const user = await this.userRepository.findByEmail({
+      email,
     });
     
     if (!user) {
       throw new BadBodyException('No user with this email');
     }
   
-    const code = randomBytes(3).toString('hex');
+    const resolveCode = await this.cacheRepository.getObject<VerificationCodePayload>(`user:${VerificationCodeType.ForgotPassword}:${user.entity.id}`);  
   
-    this.emailProvider.sendEmail(email, `Your password resolving code: ${code}`);
-    this.cacheRepository.setObject<PasswordCodeData>(`user:${user.creds.id}:forgotPassword`, {
-      code: await this.dataHasher.hash(code),
-      retries: 1,
-    }, {
-      ttl: config.cache.CODE_EXPIRATION_TIME,
+    if (!resolveCode) {
+      throw new BadBodyException('User does not have verification code');
+    }
+  
+    if (resolveCode.retries <= 0) {
+      await this.cacheRepository.delete(`user:${VerificationCodeType.ForgotPassword}:${user.entity.id}`);
+  
+      throw new RetriesExpiredException();
+    }
+  
+    if (!await this.dataHasher.compareHash(code, resolveCode.code)) {
+      await this.cacheRepository.setObject<VerificationCodePayload>(`user:${VerificationCodeType.ForgotPassword}:${user.entity.id}`, {
+        code: resolveCode.code,
+        retries: resolveCode.retries-1, 
+      });
+  
+      throw new BadBodyException('Code does not match');
+    }
+  
+    await this.cacheRepository.delete(`user:${VerificationCodeType.ForgotPassword}:${user.entity.id}`);
+  
+    await this.userRepository.updateCreds({
+      id: user.entity.id,
+      creds: {
+        password: await this.dataHasher.hash(newPassword),
+      },
     });
   }
 }

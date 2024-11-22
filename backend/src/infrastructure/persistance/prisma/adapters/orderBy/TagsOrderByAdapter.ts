@@ -1,9 +1,9 @@
-import { TagRepositoryInput } from "@core/domain/repositories/tag/input/TagRepositoryInput";
-import { Prisma } from "@prisma/client";
-import { ArrayOrValue } from "./utils/ArrayOrValue";
+import { TagRepositoryInput } from '@core/domain/repositories/tag/input/TagRepositoryInput';
+import { Prisma } from '@prisma/client';
+import { ArrayOrValue } from './utils/ArrayOrValue';
 
 export const TagOrderByAdapter = (
-  orderBy: TagRepositoryInput.TagFindManyRepositoryOptions["orderBy"] | undefined,
+  orderBy: TagRepositoryInput.TagOrderBy | TagRepositoryInput.TagOrderBy[] | undefined,
 ): Prisma.TagOrderByWithRelationInput | Prisma.TagOrderByWithRelationInput[] => {
   if (!orderBy) return {};
 
@@ -16,4 +16,4 @@ export const TagOrderByAdapter = (
       _count: order.questions,
     } : undefined,
   }));
-}
+};

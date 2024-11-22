@@ -1,9 +1,9 @@
-import { QuestionRepositoryInput } from "@core/domain/repositories/question/input/QuestionRepositoryInput";
-import { Prisma } from "@prisma/client";
-import { AnswerWhereAdapter } from "../where/answer/AnswerWhereAdapter";
-import { QuestionUserStatsWhereAdapter } from "../where/question/QuestionUserStatsWhereAdapter";
-import { TagWhereAdapter } from "../where/tag/TagWhereAdapter";
-import { IncludeParams } from "./utils/IncludeParams";
+import { QuestionRepositoryInput } from '@core/domain/repositories/question/input/QuestionRepositoryInput';
+import { Prisma } from '@prisma/client';
+import { AnswerWhereAdapter } from '../where/answer/AnswerWhereAdapter';
+import { QuestionUserStatsWhereAdapter } from '../where/question/QuestionUserStatsWhereAdapter';
+import { TagWhereAdapter } from '../where/tag/TagWhereAdapter';
+import { IncludeParams } from './utils/IncludeParams';
 
 export const QuestionIncludeAdapter = (
   include: QuestionRepositoryInput.QuestionInclude | undefined, 
@@ -24,4 +24,4 @@ export const QuestionIncludeAdapter = (
       },
     } : false,
   };
-}
+};

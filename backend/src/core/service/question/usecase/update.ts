@@ -1,10 +1,10 @@
-import { ForbiddenException, Exception, NoEntityWithIdException } from "@cloneoverflow/common";
-import { QuestionRepositoryInput } from "@core/domain/repositories/question/input/QuestionRepositoryInput";
-import { QuestionRepository } from "@core/domain/repositories/question/QuestionRepository";
-import { UnitOfWork } from "@core/domain/repositories/UnitOfWork";
-import { QuestionServiceInput } from "../dto/QuestionServiceInput";
-import { QuestionServiceOutput } from "../dto/QuestionServiceOutput";
-import { IQuestionUpdateUseCase } from "../types/usecases";
+import { ForbiddenException, Exception, NoEntityWithIdException } from '@cloneoverflow/common';
+import { QuestionRepositoryInput } from '@core/domain/repositories/question/input/QuestionRepositoryInput';
+import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
+import { UnitOfWork } from '@core/domain/repositories/UnitOfWork';
+import { QuestionServiceInput } from '../dto/QuestionServiceInput';
+import { QuestionServiceOutput } from '../dto/QuestionServiceOutput';
+import { IQuestionUpdateUseCase } from '../types/usecases';
 
 export class QuestionUpdateUseCase implements IQuestionUpdateUseCase {
   constructor (
@@ -12,11 +12,8 @@ export class QuestionUpdateUseCase implements IQuestionUpdateUseCase {
     private unitOfWork: UnitOfWork,
   ) {}
 
-  async execute(
-    { 
-      ownerId, 
-      questionId, data: { text, title, tags } 
-    }: QuestionServiceInput.Update
+  async execute (
+    { executorId, questionId, data: { text, title, tags } }: QuestionServiceInput.Update,
   ): Promise<QuestionServiceOutput.Update> {
     const question = await this.questionRepository.findById({ id: questionId });
 
@@ -24,7 +21,7 @@ export class QuestionUpdateUseCase implements IQuestionUpdateUseCase {
       throw new NoEntityWithIdException('Question');
     }
   
-    if (question.entity.ownerId !== ownerId) {
+    if (question.entity.ownerId !== executorId) {
       throw new ForbiddenException('You are not owner of this question');
     }
   
@@ -39,7 +36,7 @@ export class QuestionUpdateUseCase implements IQuestionUpdateUseCase {
           id: questionId,
         });
   
-        const tagEntities = await unit.tagRepository.createOrFindMany({ tags })
+        const tagEntities = await unit.tagRepository.createOrFindMany({ tags });
         
         await unit.questionRepository.refTags({
           id: questionId,

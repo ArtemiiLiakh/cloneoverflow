@@ -1,44 +1,50 @@
-import config from "@/config";
-import { EmailProvider } from "@app/interfaces/email/EmailProvider";
-import { DataHasher } from "@app/interfaces/security/DataHasher";
-import { LoginException, NoEntityWithIdException } from "@cloneoverflow/common";
-import { CacheRepository } from "@core/domain/repositories/cache/CacheRepository";
-import { UserRepository } from "@core/domain/repositories/user/UserRepository";
-import { randomBytes } from "crypto";
-import { AuthServiceInput } from "../dto/AuthServiceInput";
-import { AuthServiceOutput } from "../dto/AuthServiceOutput";
-import { IChangePasswordUseCase } from "../types/usecases";
+import { DataHasher } from '@application/interfaces/security/DataHasher';
+import { BadBodyException, LoginException, NoEntityWithIdException, VerificationCodeType } from '@cloneoverflow/common';
+import { CacheRepository } from '@core/domain/repositories/cache/CacheRepository';
+import { UserRepository } from '@core/domain/repositories/user/UserRepository';
+import { AuthServiceInput } from '../dto/AuthServiceInput';
+import { IChangePasswordUseCase } from '../types/usecases';
+import { VerificationCodePayload } from '../data/VerificationCodePayload';
 
 export class ChangePasswordUseCase implements IChangePasswordUseCase {
   constructor (
-    private emailProvider: EmailProvider,
-    private cacheRepository: CacheRepository,
     private userRepository: UserRepository,
+    private cacheRepository: CacheRepository,
     private dataHasher: DataHasher,
   ) {}
-
-  async execute(
-    { userId, data: { email, oldPassword } }: AuthServiceInput.ChangePassword
-  ): Promise<AuthServiceOutput.ChangePassword> {
-    const userWithCreds = await this.userRepository.findWithCreds({ where: { id: userId, email } });
   
-    if (!userWithCreds) {
+  async execute ({ code, executorId, email, oldPassword, newPassword }: AuthServiceInput.ChangePassword): Promise<void> {
+    const user = await this.userRepository.findCreds({
+      where: { id: executorId },
+    });
+
+    if (!user) {
       throw new NoEntityWithIdException('User');
     }
-  
-    const { creds } = userWithCreds;
+
+    const resolveCode = await this.cacheRepository.getObject<VerificationCodePayload>(
+      `user:${VerificationCodeType.ChangePassword}:${executorId}`,
+    );
+
+    if (!resolveCode) {
+      throw new BadBodyException('User does not have verification code');
+    }
     
-    if (!await this.dataHasher.compareHash(oldPassword, creds.password)) {
-      throw new LoginException();
+    if (!await this.dataHasher.compareHash(code, resolveCode.code)) {
+      throw new BadBodyException('Code does not match');
     }
 
-    const changePasswordCode = randomBytes(3).toString('hex');
+    if (user.email !== email || !await this.dataHasher.compareHash(oldPassword, user.password)) {
+      throw new LoginException();
+    }
+    
+    await this.cacheRepository.delete(`user:${VerificationCodeType.ChangePassword}:${executorId}`);
 
-    this.cacheRepository.setString(
-      `user:${userId}:changePassword`, 
-      await this.dataHasher.hash(changePasswordCode), 
-      { ttl: config.cache.CODE_EXPIRATION_TIME }
-    );
-    this.emailProvider.sendEmail(email, `Attention!. You are going to change a password. Enter the verification code to change it: ${changePasswordCode}`);
+    await this.userRepository.updateCreds({
+      id: executorId,
+      creds: {
+        password: await this.dataHasher.hash(newPassword),
+      },
+    });
   }
 }

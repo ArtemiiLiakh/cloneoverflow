@@ -1,15 +1,15 @@
-import { QuestionUserRepositoryInput } from "@core/domain/repositories/question/input/QuestionUserRepositoryInput";
-import { QuestionUserRepositoryOutput } from "@core/domain/repositories/question/output/QuestionUserRepositoryOutput";
-import { QuestionUserRepository } from "@core/domain/repositories/question/QuestionUserRepository";
-import { PrismaClient, UserQuestionStatus } from "@prisma/client";
-import { QuestionUserStatsMapper } from "../adapters/entityMappers/QuestionUserMapper";
+import { QuestionUserRepositoryInput } from '@core/domain/repositories/question/input/QuestionUserRepositoryInput';
+import { QuestionUserRepositoryOutput } from '@core/domain/repositories/question/output/QuestionUserRepositoryOutput';
+import { QuestionUserRepository } from '@core/domain/repositories/question/QuestionUserRepository';
+import { PrismaClient, UserQuestionStatus } from '@prisma/client';
+import { QuestionUserStatsMapper } from '../adapters/entityMappers/QuestionUserMapper';
 
 export class PrismaQuestionUserRepository implements QuestionUserRepository {
   constructor (
     private prisma: PrismaClient,
   ) {}
   
-  async create({ user }: QuestionUserRepositoryInput.Create): Promise<QuestionUserRepositoryOutput.Create> {
+  async create ({ user }: QuestionUserRepositoryInput.Create): Promise<QuestionUserRepositoryOutput.Create> {
     await this.prisma.userQuestions.create({
       data: {
         id: user.id,
@@ -21,7 +21,7 @@ export class PrismaQuestionUserRepository implements QuestionUserRepository {
     });
   }
 
-  async findOne({ where }: QuestionUserRepositoryInput.FindOne): Promise<QuestionUserRepositoryOutput.FindOne> {
+  async findOne ({ where }: QuestionUserRepositoryInput.FindOne): Promise<QuestionUserRepositoryOutput.FindOne> {
     const questionUser = await this.prisma.userQuestions.findFirst({
       where: {
         id: where.id,
@@ -37,7 +37,7 @@ export class PrismaQuestionUserRepository implements QuestionUserRepository {
     return QuestionUserStatsMapper.toEntity(questionUser);
   }
 
-  async update({ where, data }: QuestionUserRepositoryInput.Update): Promise<QuestionUserRepositoryOutput.Update> {
+  async update ({ where, data }: QuestionUserRepositoryInput.Update): Promise<QuestionUserRepositoryOutput.Update> {
     const questionUser = await this.prisma.userQuestions.update({
       where: {
         id: where.id,
@@ -55,11 +55,11 @@ export class PrismaQuestionUserRepository implements QuestionUserRepository {
     return QuestionUserStatsMapper.toEntity(questionUser);
   }
 
-  async delete({ questionUser }: QuestionUserRepositoryInput.Delete): Promise<QuestionUserRepositoryOutput.Delete> {
+  async delete ({ questionUser }: QuestionUserRepositoryInput.Delete): Promise<QuestionUserRepositoryOutput.Delete> {
     await this.prisma.userQuestions.delete({
       where: {
         id: questionUser.id,
-      }
+      },
     });
   }
 }

@@ -1,5 +1,5 @@
-import { StringType } from "@common/repository/Datatypes/StringType";
-import { Prisma } from "@prisma/client";
+import { StringType } from '@common/repository/Datatypes/StringType';
+import { Prisma } from '@prisma/client';
 
 export const StringWhereAdapter = (strType: undefined | null | string | StringType): undefined | string | Prisma.StringFilter => {
   if (!strType) return;
@@ -9,4 +9,4 @@ export const StringWhereAdapter = (strType: undefined | null | string | StringTy
     contains: strType.contains,
     in: strType.in,
   };
-}
+};

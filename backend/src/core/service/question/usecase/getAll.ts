@@ -1,25 +1,24 @@
-import { QuestionRepository } from "@core/domain/repositories/question/QuestionRepository";
-import { QuestionsSortBy } from "@core/service/utils/QuestionServiceUtils/QuestionsSortBy";
-import { QuestionServiceInput } from "../dto/QuestionServiceInput";
-import { QuestionServiceOutput } from "../dto/QuestionServiceOutput";
-import { IQuestionGetAllUseCase } from "../types/usecases";
+import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
+import { QuestionsSortBy } from '@core/service/utils/question/QuestionsSortBy';
+import { QuestionServiceInput } from '../dto/QuestionServiceInput';
+import { QuestionServiceOutput } from '../dto/QuestionServiceOutput';
+import { IQuestionGetAllUseCase } from '../types/usecases';
 
 export class QuestionGetAllUseCase implements IQuestionGetAllUseCase {
   constructor (
     private questionRepository: QuestionRepository,
   ) {}
 
-  async execute({ 
-      ownerId, 
-      rateFrom, 
-      rateTo, 
-      search, 
-      tags, 
-      sortBy, 
-      orderBy, 
-      pagination 
-    }: QuestionServiceInput.GetAll
-  ): Promise<QuestionServiceOutput.GetAll> {
+  async execute ({ 
+    ownerId, 
+    rateFrom, 
+    rateTo, 
+    search, 
+    tags, 
+    sortBy, 
+    orderBy, 
+    pagination, 
+  }: QuestionServiceInput.GetAll): Promise<QuestionServiceOutput.GetAll> {
     const orderByMap = QuestionsSortBy(sortBy, orderBy);
 
     const questions = await this.questionRepository.paginate({
@@ -30,7 +29,7 @@ export class QuestionGetAllUseCase implements IQuestionGetAllUseCase {
         tags: {
           text: {
             in: tags,
-          }
+          },
         },
         rate: {
           geq: rateFrom,
@@ -51,7 +50,7 @@ export class QuestionGetAllUseCase implements IQuestionGetAllUseCase {
       },
     });
   
-    const data: QuestionServiceOutput.GetAll["data"] = questions.data.map((question) => ({
+    const data: QuestionServiceOutput.GetAll['data'] = questions.data.map((question) => ({
       entity: question.entity,
       owner: question.owner!,
       tags: question.tags!,

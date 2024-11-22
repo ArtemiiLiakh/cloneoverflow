@@ -1,3 +1,3 @@
 export * from './PaginatedData';
-export * from './PaginationInput';
-export * from './PaginationOutput';
+export * from './PaginationDTO';
+export * from './PaginationResponse';

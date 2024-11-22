@@ -1,12 +1,12 @@
-import { AnswerServiceFacade } from "@app/services/AnswerServiceFacade";
-import { AnswerCreateUseCase } from "@core/service/answer/usecase/create";
-import { AnswerDeleteUseCase } from "@core/service/answer/usecase/delete";
-import { AnswerGetUseCase } from "@core/service/answer/usecase/get";
-import { AnswerGetAllUseCase } from "@core/service/answer/usecase/getAll";
-import { AnswerUpdateUseCase } from "@core/service/answer/usecase/update";
-import { AnswerVoteUseCase } from "@core/service/answer/usecase/vote";
-import PrismaAnswerRepositoryDI from "../repositories/PrismaAnswerRepositoryDI";
-import PrismaTransactionUnitDI from "../repositories/PrismaTransactionUnitDI";
+import { AnswerServiceFacade } from '@application/services/AnswerServiceFacade';
+import { AnswerCreateUseCase } from '@core/service/answer/usecase/create';
+import { AnswerDeleteUseCase } from '@core/service/answer/usecase/delete';
+import { AnswerGetUseCase } from '@core/service/answer/usecase/get';
+import { AnswerGetAllUseCase } from '@core/service/answer/usecase/getAll';
+import { AnswerUpdateUseCase } from '@core/service/answer/usecase/update';
+import { AnswerVoteUseCase } from '@core/service/answer/usecase/vote';
+import PrismaAnswerRepositoryDI from '../repositories/PrismaAnswerRepositoryDI';
+import PrismaTransactionUnitDI from '../repositories/PrismaTransactionUnitDI';
 
 const CreateUseCaseDI = new AnswerCreateUseCase(PrismaTransactionUnitDI);
 const DeleteUseCaseDI = new AnswerDeleteUseCase(PrismaAnswerRepositoryDI, PrismaTransactionUnitDI);
