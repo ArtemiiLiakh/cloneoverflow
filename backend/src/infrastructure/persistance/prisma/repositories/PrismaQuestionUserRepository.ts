@@ -37,7 +37,7 @@ export class PrismaQuestionUserRepository implements QuestionUserRepository {
     return QuestionUserStatsMapper.toEntity(questionUser);
   }
 
-  async update ({ where, data }: QuestionUserRepositoryInput.Update): Promise<QuestionUserRepositoryOutput.Update> {
+  async update ({ where, data, returnEntity }: QuestionUserRepositoryInput.Update): Promise<QuestionUserRepositoryOutput.Update> {
     const questionUser = await this.prisma.userQuestions.update({
       where: {
         id: where.id,
@@ -52,7 +52,9 @@ export class PrismaQuestionUserRepository implements QuestionUserRepository {
       },
     });
 
-    return QuestionUserStatsMapper.toEntity(questionUser);
+    if (returnEntity) {
+      return QuestionUserStatsMapper.toEntity(questionUser);
+    }
   }
 
   async delete ({ questionUser }: QuestionUserRepositoryInput.Delete): Promise<QuestionUserRepositoryOutput.Delete> {

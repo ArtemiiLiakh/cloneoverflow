@@ -1,4 +1,4 @@
-import { NoEntityWithIdException, UserAnswerStatusEnum } from '@cloneoverflow/common';
+import { NoEntityWithIdException, AnswerUserStatusEnum } from '@cloneoverflow/common';
 import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
 import { AnswerServiceInput } from '../dto/AnswerServiceInput';
 import { AnswerServiceOutput } from '../dto/AnswerServiceOutput';
@@ -20,7 +20,7 @@ export class AnswerGetUseCase implements IAnswerGetUseCase {
           question: true,
           users: {
             userId: executorId,
-            status: UserAnswerStatusEnum.VOTER,
+            status: AnswerUserStatusEnum.VOTER,
           },
         },
       },

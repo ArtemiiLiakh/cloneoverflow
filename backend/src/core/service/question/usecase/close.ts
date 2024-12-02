@@ -1,4 +1,4 @@
-import { ForbiddenException, NoEntityWithIdException } from '@cloneoverflow/common';
+import { BadBodyException, ForbiddenException, NoEntityWithIdException } from '@cloneoverflow/common';
 import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
 import { UnitOfWork } from '@core/domain/repositories/UnitOfWork';
@@ -21,6 +21,10 @@ export class QuestionCloseUseCase implements IQuestionCloseUseCase {
     if (!question) {
       throw new NoEntityWithIdException('Question');
     }
+    
+    if (question.entity.ownerId !== executorId) {
+      throw new ForbiddenException();
+    }
 
     const answer = await this.answerRepository.findById({ id: answerId });
 
@@ -28,8 +32,8 @@ export class QuestionCloseUseCase implements IQuestionCloseUseCase {
       throw new NoEntityWithIdException('Answer');
     }
 
-    if (question.entity.ownerId !== executorId) {
-      throw new ForbiddenException();
+    if (answer.entity.questionId !== question.entity.id) {
+      throw new BadBodyException('Wrong answer id');
     }
 
     await this.unitOfWork.execute(async (unit) => {

@@ -15,10 +15,9 @@ export class SearchQuestionsUseCase implements ISearchQuestionsUseCase {
     { filterBy, search, sortBy, orderBy, pagination }: SearchServiceInput.SearchQuestions,
   ): Promise<SearchServiceOutput.SearchQuestions> {
     const searchFilter = SearchQuestionParse(search);
-    const where = SearchQuestionsFilterBy(searchFilter, filterBy);
 
     const questions = await this.questionRepository.paginate({
-      where,
+      where: SearchQuestionsFilterBy(searchFilter, filterBy),
       pagination,
       options: {
         include: {

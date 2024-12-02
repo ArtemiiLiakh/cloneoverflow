@@ -7,18 +7,20 @@ import { QuestionGetUseCase } from '@core/service/question/usecase/get';
 import { QuestionGetAllUseCase } from '@core/service/question/usecase/getAll';
 import { QuestionUpdateUseCase } from '@core/service/question/usecase/update';
 import { QuestionVoteUseCase } from '@core/service/question/usecase/vote';
-import PrismaAnswerRepositoryDI from '../repositories/PrismaAnswerRepositoryDI';
-import PrismaQuestionRepositoryDI from '../repositories/PrismaQuestionRepositoryDI';
-import PrismaTransactionUnitDI from '../repositories/PrismaTransactionUnitDI';
+import { 
+  PrismaQuestionRepositoryDI, 
+  PrismaAnswerRepositoryDI, 
+  PrismaTransactionDI,
+} from '../repositories/PrismaRepositoriesDI';
 
-const CreateUseCaseDI = new QuestionCreateUseCase(PrismaTransactionUnitDI);
-const UpdateUseCaseDI = new QuestionUpdateUseCase(PrismaQuestionRepositoryDI, PrismaTransactionUnitDI);
+const CreateUseCaseDI = new QuestionCreateUseCase(PrismaTransactionDI);
+const UpdateUseCaseDI = new QuestionUpdateUseCase(PrismaQuestionRepositoryDI, PrismaTransactionDI);
 const DeleteUseCaseDI = new QuestionDeleteUseCase(PrismaQuestionRepositoryDI);
 const GetAllUseCaseDI = new QuestionGetAllUseCase(PrismaQuestionRepositoryDI);
-const AddViewerUseCaseDI = new QuestionAddViewerUseCase(PrismaQuestionRepositoryDI, PrismaTransactionUnitDI);
+const AddViewerUseCaseDI = new QuestionAddViewerUseCase(PrismaQuestionRepositoryDI, PrismaTransactionDI);
 const GetUseCaseDI = new QuestionGetUseCase(PrismaQuestionRepositoryDI, AddViewerUseCaseDI);
-const VoteQuestionUseCaseDI = new QuestionVoteUseCase(PrismaQuestionRepositoryDI, PrismaTransactionUnitDI);
-const CloseQuestionUseCaseUseCaseDI = new QuestionCloseUseCase(PrismaQuestionRepositoryDI, PrismaAnswerRepositoryDI, PrismaTransactionUnitDI);
+const VoteQuestionUseCaseDI = new QuestionVoteUseCase(PrismaQuestionRepositoryDI, PrismaTransactionDI);
+const CloseQuestionUseCaseUseCaseDI = new QuestionCloseUseCase(PrismaQuestionRepositoryDI, PrismaAnswerRepositoryDI, PrismaTransactionDI);
 
 export const questionServiceFacadeDI = QuestionServiceFacade.new({
   questionCreateUseCase: CreateUseCaseDI,

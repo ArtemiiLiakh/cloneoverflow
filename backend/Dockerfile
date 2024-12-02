@@ -17,7 +17,7 @@ RUN npm run build
 
 WORKDIR /app/backend
 COPY ./backend /app/backend
-RUN npm run test:db:generate && \
+RUN npm run db:generate:prod && \
     npm run build
 
 # ====================== PACKAGE ======================
@@ -25,7 +25,7 @@ FROM node:17-slim as package
 
 WORKDIR /app
 COPY ./package.json /app/package.json 
-COPY ./package-lock.json /app/package-lock.json
+COPY ./package-lock.json /app/package-lock.json 
 
 COPY ./common/package.json /app/common/package.json
 RUN npm ci --workspace=common --only=production
@@ -47,4 +47,4 @@ COPY --from=build /app/backend/dist /app/backend/dist
 COPY ./backend/prisma/schema.prisma /app/backend/prisma/schema.prisma
 
 WORKDIR /app/backend
-CMD ["sh", "-c", "npm run prod:db:sync ; npm run start:prod"]
+CMD ["sh", "-c", "npm run db:sync:prod ; npm run start:prod"]

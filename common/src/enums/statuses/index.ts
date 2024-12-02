@@ -1,3 +1,3 @@
-export * from './UserAnswerStatus';
-export * from './UserQuestionStatus';
+export * from './AnswerUserStatus';
+export * from './QuestionUserStatus';
 export * from './UserStatus';

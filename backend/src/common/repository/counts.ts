@@ -6,6 +6,6 @@ export type CountOption<I> = {
 
 export type CountResult<I> = {
   counts: {
-    [K in keyof I as I[K] extends unknown[] | undefined ? K : never]: number | undefined;
+    [K in keyof I as I[K] extends unknown[] | undefined ? K : never]?: number;
   }
 }

@@ -77,7 +77,7 @@ export class PrismaAnswerRepository implements AnswerRepository {
     return AnswerRepositoryMapper.paginate(answers);
   }
 
-  async update ({ id, answer }: AnswerRepositoryInput.Update): Promise<AnswerRepositoryOutput.Update> {
+  async update ({ id, answer, returnEntity }: AnswerRepositoryInput.Update): Promise<AnswerRepositoryOutput.Update> {
     const updatedAnswer = await this.prisma.answer.update({
       where: {
         id,
@@ -93,7 +93,9 @@ export class PrismaAnswerRepository implements AnswerRepository {
       },
     });
 
-    return AnswerRepositoryMapper.update(updatedAnswer);
+    if (returnEntity) {
+      return AnswerRepositoryMapper.update(updatedAnswer);
+    }
   }
 
   async updateMany ({ where, answer }: AnswerRepositoryInput.UpdateMany): Promise<AnswerRepositoryOutput.UpdateMany> {

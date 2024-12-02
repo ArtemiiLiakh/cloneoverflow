@@ -1,4 +1,4 @@
-import { ForbiddenException, NoEntityWithIdException, UserAnswerStatusEnum, VoteTypeEnum } from '@cloneoverflow/common';
+import { ForbiddenException, NoEntityWithIdException, AnswerUserStatusEnum, VoteTypeEnum } from '@cloneoverflow/common';
 import { AnswerUserStats } from '@core/domain/entities/AnswerUserStats';
 import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
 import { UnitOfWork } from '@core/domain/repositories/UnitOfWork';
@@ -22,7 +22,7 @@ export class AnswerVoteUseCase implements IAnswerVoteUseCase {
           users: {
             userId: executorId,
             answerId,
-            status: UserAnswerStatusEnum.VOTER,
+            status: AnswerUserStatusEnum.VOTER,
           },
           owner: true,
         },
@@ -52,7 +52,7 @@ export class AnswerVoteUseCase implements IAnswerVoteUseCase {
           user: AnswerUserStats.new({
             userId: executorId,
             answerId,
-            status: UserAnswerStatusEnum.VOTER,
+            status: AnswerUserStatusEnum.VOTER,
             voteType: vote,
           }),
         });

@@ -1,8 +1,8 @@
+import { AlreadyRegisteredException } from '@cloneoverflow/common';
 import { User, UserCreds } from '@core/domain/entities/User';
+import { UserRepository } from '@core/domain/repositories/user/UserRepository';
 import { UserServiceInput } from '../dto/UserServiceInput';
 import { IUserCreateUseCase } from '../types/usecases';
-import { AlreadyRegisteredException } from '@cloneoverflow/common';
-import { UserRepository } from '@core/domain/repositories/user/UserRepository';
 
 export class UserCreateUseCase implements IUserCreateUseCase {
   constructor (

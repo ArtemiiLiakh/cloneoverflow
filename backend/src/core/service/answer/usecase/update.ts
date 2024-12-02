@@ -29,6 +29,7 @@ export class AnswerUpdateUseCase implements IAnswerUpdateUseCase {
       answer: {
         text,
       },
-    });
+      returnEntity: true,
+    }).then(answer => answer!);
   }
 }

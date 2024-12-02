@@ -1,10 +1,11 @@
-import { NoEntityWithIdException, UserQuestionStatusEnum } from '@cloneoverflow/common';
+import { NoEntityWithIdException, QuestionUserStatusEnum } from '@cloneoverflow/common';
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
 import { QuestionServiceInput } from '../dto/QuestionServiceInput';
 import { QuestionServiceOutput } from '../dto/QuestionServiceOutput';
 import { IQuestionAddViewerUseCase, IQuestionGetUseCase } from '../types/usecases';
 
 export class QuestionGetUseCase implements IQuestionGetUseCase {
+  
   constructor (
     private questionRepository: QuestionRepository,
     private addViewerUseCase: IQuestionAddViewerUseCase,
@@ -21,7 +22,7 @@ export class QuestionGetUseCase implements IQuestionGetUseCase {
           tags: true,
           users: {
             userId: executorId,
-            status: UserQuestionStatusEnum.VOTER,
+            status: QuestionUserStatusEnum.VOTER,
           },
         },
       },

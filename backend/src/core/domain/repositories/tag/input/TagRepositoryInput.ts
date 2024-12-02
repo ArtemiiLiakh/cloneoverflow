@@ -75,6 +75,7 @@ export namespace TagRepositoryInput {
   export type Update = {
     id: string, 
     tag: Partial<Tag>
+    returnEntity?: boolean;
   };
 
   export type Delete = {

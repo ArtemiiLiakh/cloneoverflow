@@ -83,7 +83,7 @@ export class PrismaQuestionRepository implements QuestionRepository {
     });
   }
 
-  async update ({ id, question }: QuestionRepositoryInput.Update): Promise<QuestionRepositoryOutput.Update> {
+  async update ({ id, question, returnEntity }: QuestionRepositoryInput.Update): Promise<QuestionRepositoryOutput.Update> {
     const updatedQuestion = await this.prisma.question.update({
       where: { 
         id,
@@ -100,7 +100,9 @@ export class PrismaQuestionRepository implements QuestionRepository {
       },
     });
 
-    return QuestionRepositoryMapper.update(updatedQuestion);
+    if (returnEntity) {
+      return QuestionRepositoryMapper.update(updatedQuestion);
+    }
   }
 
   async delete ({ question }: QuestionRepositoryInput.Delete): Promise<QuestionRepositoryOutput.Delete> {
@@ -114,7 +116,7 @@ export class PrismaQuestionRepository implements QuestionRepository {
   async refTags (payload: QuestionRepositoryInput.RefTags): Promise<QuestionRepositoryOutput.RefTags> {
     await this.prisma.question.update({
       where: {
-        id: payload.id,
+        id: payload.questionId,
       },
       data: {
         tags: {
@@ -127,7 +129,7 @@ export class PrismaQuestionRepository implements QuestionRepository {
   async unrefAllTags (payload: QuestionRepositoryInput.UnrefTags): Promise<QuestionRepositoryOutput.UnrefTags> {
     await this.prisma.question.update({
       where: {
-        id: payload.id,
+        id: payload.questionId,
       },
       data: {
         tags: {

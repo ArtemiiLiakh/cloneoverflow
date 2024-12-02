@@ -1,5 +1,4 @@
 import { ForbiddenException, Exception, NoEntityWithIdException } from '@cloneoverflow/common';
-import { QuestionRepositoryInput } from '@core/domain/repositories/question/input/QuestionRepositoryInput';
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
 import { UnitOfWork } from '@core/domain/repositories/UnitOfWork';
 import { QuestionServiceInput } from '../dto/QuestionServiceInput';
@@ -26,27 +25,25 @@ export class QuestionUpdateUseCase implements IQuestionUpdateUseCase {
     }
   
     const questionUpdate = await this.unitOfWork.execute(async (unit) => {
-      const updateData: QuestionRepositoryInput.Update['question'] = {
-        title,
-        text,
-      };
-  
       if (tags?.length) {
         await unit.questionRepository.unrefAllTags({
-          id: questionId,
+          questionId: questionId,
         });
   
         const tagEntities = await unit.tagRepository.createOrFindMany({ tags });
         
         await unit.questionRepository.refTags({
-          id: questionId,
+          questionId: questionId,
           tags: tagEntities,
         });
       }
   
       return await unit.questionRepository.update({
         id: questionId,
-        question: updateData,
+        question: {
+          title,
+          text,
+        },
       });
     });
   

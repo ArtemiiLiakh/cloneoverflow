@@ -12,7 +12,7 @@ export namespace SearchServiceOutput {
   }>;
 
   export type SerachTags = PaginatedData<{
-    tag: Tag,
+    entity: Tag,
     questionsAmount: number;
   }>;
 }

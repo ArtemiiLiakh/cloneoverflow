@@ -4,7 +4,7 @@ import { UnitOfWork } from '@core/domain/repositories/UnitOfWork';
 import { QuestionServiceInput } from '../dto/QuestionServiceInput';
 import { QuestionServiceOutput } from '../dto/QuestionServiceOutput';
 import { IQuestionVoteUseCase } from '../types/usecases';
-import { UserQuestionStatusEnum, NoEntityWithIdException, ForbiddenException, VoteTypeEnum } from '@cloneoverflow/common';
+import { QuestionUserStatusEnum, NoEntityWithIdException, ForbiddenException, VoteTypeEnum } from '@cloneoverflow/common';
 
 export class QuestionVoteUseCase implements IQuestionVoteUseCase {
   constructor (
@@ -23,7 +23,7 @@ export class QuestionVoteUseCase implements IQuestionVoteUseCase {
           users: {
             userId: executorId,
             questionId,
-            status: UserQuestionStatusEnum.VOTER,
+            status: QuestionUserStatusEnum.VOTER,
           },
         },
       },
@@ -43,8 +43,9 @@ export class QuestionVoteUseCase implements IQuestionVoteUseCase {
       throw new ForbiddenException('You cannot vote question more than one time');
     }
   
-    const newQuestionRate = question.entity.rate + (vote === VoteTypeEnum.UP ? 1 : -1);
-    const newQuestionOwnerRate = question.owner!.reputation + (vote === VoteTypeEnum.UP ? 1 : -1);
+    const rateIncrement = vote === VoteTypeEnum.UP ? 1 : -1;
+    const newQuestionRate = question.entity.rate + rateIncrement;
+    const newQuestionOwnerRate = question.owner!.reputation + rateIncrement;
   
     await this.unitOfWork.execute(async (unit) => {
       if (!questionVoter) {
@@ -52,7 +53,7 @@ export class QuestionVoteUseCase implements IQuestionVoteUseCase {
           user: QuestionUserStats.new({
             userId: executorId,
             questionId,
-            status: UserQuestionStatusEnum.VOTER,
+            status: QuestionUserStatusEnum.VOTER,
             voteType: vote,
           }),
         });

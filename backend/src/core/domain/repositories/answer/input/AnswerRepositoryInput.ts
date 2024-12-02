@@ -67,6 +67,7 @@ export namespace AnswerRepositoryInput {
   export type Update = {
     id: string, 
     answer: Partial<Answer>,
+    returnEntity?: boolean;
   };
 
   export type UpdateMany = {

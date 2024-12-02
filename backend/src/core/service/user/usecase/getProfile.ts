@@ -23,11 +23,13 @@ export class UserGetProfileUseCase implements IUserGetProfileUseCase {
         },
       },
     });
+
+    if (!user) {
+      throw new NoEntityWithIdException('User');
+    }
     
     const bestAnswer = await this.answerRepository.findOne({
-      where: {
-        ownerId: userId,
-      },
+      where: { ownerId: userId },
       options: {
         orderBy: {
           rate: OrderByEnum.DESC,
@@ -52,15 +54,11 @@ export class UserGetProfileUseCase implements IUserGetProfileUseCase {
       },
     });
   
-    if (!user) {
-      throw new NoEntityWithIdException('User');
-    }
-  
     return { 
       user: user.entity, 
       bestQuestion: bestQuestion ? {
         entity: bestQuestion.entity,
-        tags: bestQuestion.tags!,
+        tags: bestQuestion.tags ?? [],
         answersAmount: bestQuestion.counts?.answers ?? 0,
       } : null, 
       bestAnswer: bestAnswer ? {

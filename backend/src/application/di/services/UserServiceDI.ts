@@ -3,9 +3,11 @@ import { UserCreateUseCase } from '@core/service/user/usecase/create';
 import { UserGetUseCase } from '@core/service/user/usecase/get';
 import { UserGetProfileUseCase } from '@core/service/user/usecase/getProfile';
 import { UserUpdateUseCase } from '@core/service/user/usecase/update';
-import PrismaAnswerRepositoryDI from '../repositories/PrismaAnswerRepositoryDI';
-import PrismaQuestionRepositoryDI from '../repositories/PrismaQuestionRepositoryDI';
-import PrismaUserRepositoryDI from '../repositories/PrismaUserRepositoryDI';
+import { 
+  PrismaUserRepositoryDI, 
+  PrismaAnswerRepositoryDI, 
+  PrismaQuestionRepositoryDI,
+} from '../repositories/PrismaRepositoriesDI';
 
 const CreateUseCaseDI = new UserCreateUseCase(PrismaUserRepositoryDI);
 const GetUseCaseDI = new UserGetUseCase(PrismaUserRepositoryDI);

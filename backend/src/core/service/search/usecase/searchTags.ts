@@ -26,7 +26,7 @@ export class SearchTagsUseCase implements ISearchTagsUseCase {
   
     return {
       data: tags.data.map((tag) => ({
-        tag: tag.entity,
+        entity: tag.entity,
         questionsAmount: tag.counts?.questions ?? 0,
       })),
       pagination: tags.pagination,

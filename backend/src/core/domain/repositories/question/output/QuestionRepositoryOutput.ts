@@ -33,7 +33,7 @@ export namespace QuestionRepositoryOutput {
   export type VoteQuestion = void;
   
   export type Create = void;
-  export type Update = Question;
+  export type Update = Question | undefined;
   export type Delete = void;
 
   export type RefTags = void;

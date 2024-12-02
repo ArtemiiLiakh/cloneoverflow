@@ -104,7 +104,7 @@ export class PrismaTagRepository implements TagRepository {
     return TagRepositoryMapper.createOrFindMany(existingTags);
   }
 
-  async update ({ id, tag }: TagRepositoryInput.Update): Promise<TagsRepositoryOutput.Update> {
+  async update ({ id, tag, returnEntity }: TagRepositoryInput.Update): Promise<TagsRepositoryOutput.Update> {
     const updatedTag = await this.prisma.tag.update({
       where: {
         id,
@@ -116,7 +116,9 @@ export class PrismaTagRepository implements TagRepository {
       },
     });
 
-    return TagRepositoryMapper.update(updatedTag);
+    if (returnEntity) {
+      return TagRepositoryMapper.update(updatedTag);
+    }
   }
 
   async delete ({ tag }: TagRepositoryInput.Delete): Promise<TagsRepositoryOutput.Delete> {

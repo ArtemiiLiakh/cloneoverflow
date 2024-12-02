@@ -1,5 +1,5 @@
 import { validationMessage } from '@utils/validationUtils';
-import { IsArray, IsNotEmpty } from "class-validator";
+import { IsArray, IsNotEmpty, IsOptional } from "class-validator";
 
 export class QuestionCreateDTO {
   @IsNotEmpty(validationMessage('Title is required'))
@@ -8,7 +8,7 @@ export class QuestionCreateDTO {
   @IsNotEmpty(validationMessage('Text is required'))
     text: string;
 
-  @IsNotEmpty(validationMessage('Tags are required'))
+  @IsOptional()
   @IsArray(validationMessage('Tags must be an array'))
-    tags: string[];
+    tags?: string[];
 }

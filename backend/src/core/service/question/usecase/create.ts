@@ -1,4 +1,4 @@
-import { Exception, UserQuestionStatusEnum } from '@cloneoverflow/common';
+import { Exception, QuestionUserStatusEnum } from '@cloneoverflow/common';
 import { Question } from '@core/domain/entities/Question';
 import { QuestionUserStats } from '@core/domain/entities/QuestionUserStats';
 import { UnitOfWork } from '@core/domain/repositories/UnitOfWork';
@@ -17,8 +17,8 @@ export class QuestionCreateUseCase implements IQuestionCreateUseCase {
     const question = await this.unitOfWork.execute(async (unit) => {
       const question = Question.new({
         ownerId: executorId,
-        text,
         title,
+        text,
       });
       
       await unit.questionRepository.create({
@@ -29,14 +29,14 @@ export class QuestionCreateUseCase implements IQuestionCreateUseCase {
         user: QuestionUserStats.new({
           userId: executorId,
           questionId: question.id,
-          status: UserQuestionStatusEnum.OWNER,
+          status: QuestionUserStatusEnum.OWNER,
         }),
       });
   
-      if (tags.length) {
+      if (tags?.length) {
         const tagEntities = await unit.tagRepository.createOrFindMany({ tags });
         await unit.questionRepository.refTags({
-          id: question.id,
+          questionId: question.id,
           tags: tagEntities,
         });
       }

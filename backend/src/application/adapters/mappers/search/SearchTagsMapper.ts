@@ -6,10 +6,10 @@ export function SearchTagsMapperOutput ({
   pagination,
 }: SearchServiceOutput.SerachTags): SearchTagsReponse {
   return {
-    tags: data.map(({ tag, questionsAmount }) => ({
-      id: tag.id,
-      name: tag.text,
-      createdAt: tag.createdAt,
+    tags: data.map(({ entity, questionsAmount }) => ({
+      id: entity.id,
+      name: entity.text,
+      createdAt: entity.createdAt,
       questionsAmount,
     })),
     pagination,

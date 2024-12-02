@@ -1,4 +1,4 @@
-export enum UserAnswerStatusEnum {
+export enum AnswerUserStatusEnum {
   OWNER = 'OWNER',
   VOTER = 'VOTER'
 }

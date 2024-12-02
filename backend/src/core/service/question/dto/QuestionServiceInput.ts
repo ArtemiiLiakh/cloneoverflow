@@ -1,4 +1,4 @@
-import { QuestionsSortByEnum, OrderByEnum, VoteTypeEnum, PaginationDTO } from '@cloneoverflow/common';
+import { OrderByEnum, PaginationDTO, QuestionsSortByEnum, VoteTypeEnum } from '@cloneoverflow/common';
 
 export namespace QuestionServiceInput {
   export type Create = {
@@ -6,7 +6,7 @@ export namespace QuestionServiceInput {
     data: {
       title: string;
       text: string;
-      tags: string[];
+      tags?: string[];
     },
   };
 

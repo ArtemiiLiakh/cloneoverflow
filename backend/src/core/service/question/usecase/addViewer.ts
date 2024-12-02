@@ -1,4 +1,4 @@
-import { UserQuestionStatusEnum } from '@cloneoverflow/common';
+import { NoEntityWithIdException, QuestionUserStatusEnum } from '@cloneoverflow/common';
 import { QuestionUserStats } from '@core/domain/entities/QuestionUserStats';
 import { UnitOfWork } from '@core/domain/repositories/UnitOfWork';
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
@@ -22,19 +22,23 @@ export class QuestionAddViewerUseCase implements IQuestionAddViewerUseCase {
           users: {
             questionId,
             userId: executorId,
-            status: UserQuestionStatusEnum.VIEWER,
+            status: QuestionUserStatusEnum.VIEWER,
           },
         },
       },
     });
 
-    const questionUser = QuestionUserStats.new({
-      userId: executorId,
-      questionId,
-      status: UserQuestionStatusEnum.VIEWER,
-    });
+    if (!question) {
+      throw new NoEntityWithIdException('Question');
+    }
 
-    if (question && !question.users?.at(0)) {
+    if (!question.users?.at(0)) {
+      const questionUser = QuestionUserStats.new({
+        userId: executorId,
+        questionId,
+        status: QuestionUserStatusEnum.VIEWER,
+      });
+
       await this.unitOfWork.execute(async (unit) => {
         await unit.questionRepository.update({
           id: questionId,
@@ -45,8 +49,10 @@ export class QuestionAddViewerUseCase implements IQuestionAddViewerUseCase {
 
         await unit.questionUserRepository.create({ user: questionUser });
       });
+
+      return questionUser;
     }
 
-    return questionUser;
+    return question.users.at(0)!;
   }
 }
