@@ -1,6 +1,6 @@
 import { UseCase } from '@common/usecase/UseCase';
-import { AuthServiceInput } from '../dto/AuthServiceInput';
-import { AuthServiceOutput } from '../dto/AuthServiceOutput';
+import { AuthServiceInput } from '../dtos/AuthServiceInput';
+import { AuthServiceOutput } from '../dtos/AuthServiceOutput';
 
 export interface ILoginUseCase extends UseCase<AuthServiceInput.Login, AuthServiceOutput.Login> {}
 export interface ISignUpUseCase extends UseCase<AuthServiceInput.SignUp, AuthServiceOutput.SignUp> {}

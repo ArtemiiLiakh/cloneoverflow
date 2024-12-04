@@ -1,5 +1,5 @@
 import { UserGetProfileResponse } from '@cloneoverflow/common';
-import { UserServiceOutput } from '@core/service/user/dto/UserServiceOutput';
+import { UserServiceOutput } from '@core/services/user/dtos/UserServiceOutput';
 
 export function UserGetProfileMapperOutput (profile: UserServiceOutput.GetProfile): UserGetProfileResponse {
   const bestAnswer: UserGetProfileResponse['bestAnswer'] = profile.bestAnswer ? {

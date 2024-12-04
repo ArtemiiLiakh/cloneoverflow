@@ -1,8 +1,8 @@
 import config from '@/config';
 import { CacheRepository } from '@core/domain/repositories/cache/CacheRepository';
 import { randomInt } from 'crypto';
-import { AuthServiceInput } from '../dto/AuthServiceInput';
-import { AuthServiceOutput } from '../dto/AuthServiceOutput';
+import { AuthServiceInput } from '../dtos/AuthServiceInput';
+import { AuthServiceOutput } from '../dtos/AuthServiceOutput';
 import { ISendVerificationCodeUseCase } from '../types/usecases';
 import { EmailProvider } from '@application/interfaces/email/EmailProvider';
 import { UserRepository } from '@core/domain/repositories/user/UserRepository';

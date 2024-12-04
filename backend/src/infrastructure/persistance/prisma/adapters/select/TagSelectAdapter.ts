@@ -1,3 +1,4 @@
+import { isObjectEmpty } from '@common/utils/objectUtils';
 import { TagRepositoryInput } from '@core/domain/repositories/tag/input/TagRepositoryInput';
 import { Prisma } from '@prisma/client';
 import { TagIncludeAdatper } from '../include/TagIncludeAdapter';
@@ -7,7 +8,7 @@ export const TagSelectAdapter = (
   include?: TagRepositoryInput.TagInclude,
   count?: TagRepositoryInput.TagCount,
 ): Prisma.TagSelect => {
-  if (!select) {
+  if (!select || isObjectEmpty(select)) {
     return {
       id: true,
       name: true,

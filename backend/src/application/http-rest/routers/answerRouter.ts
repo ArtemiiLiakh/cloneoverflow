@@ -2,7 +2,7 @@ import { AdaptController } from '@application/adapters/AdaptController';
 import { AnswerController } from '@application/controllers/AnswerController';
 import { answerServiceFacadeDI } from '@application/di/services/AnswerServiceDI';
 import { JwtAuthOptional, JwtAuthAccess } from '@application/middlewares/JwtAuthAccess';
-import { validateRequest } from '@application/middlewares/validation';
+import { validateRequest } from '@application/middlewares/validateRequest';
 import {
   AnswerCreateDTO,
   AnswersGetAllDTO,

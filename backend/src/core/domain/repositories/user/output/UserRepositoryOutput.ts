@@ -40,7 +40,7 @@ export namespace UserRepositoryOutput {
   export type Count = number;
   export type Create = void;
   export type CreateWithCreds = void;
-  export type Update = User;
-  export type UpdateCreds = User;
+  export type Update = User | undefined;
+  export type UpdateCreds = User | undefined;
   export type Delete = void;
 }

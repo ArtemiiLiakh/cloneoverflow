@@ -3,7 +3,6 @@ import { QuestionRepositoryInput } from '@core/domain/repositories/question/inpu
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
 import { PrismaClient } from '@prisma/client';
 import { PrismaPaginationRepository } from './PrismaPagination';
-import { QuestionIncludeAdapter } from '../adapters/include/QuestionIncludeAdapter';
 import { QuestionOrderByAdapter } from '../adapters/orderBy/QuestionOrderByAdapter';
 import { QuestionRepositoryMapper } from '../adapters/repositoryMappers/QuestionRepositoryMapper';
 import { QuestionWhereAdapter } from '../adapters/where/question/QuestionWhereAdapter';
@@ -56,7 +55,7 @@ export class PrismaQuestionRepository implements QuestionRepository {
       this.prisma.question, 
       {
         where: QuestionWhereAdapter(where),
-        select: QuestionIncludeAdapter(options?.include, options?.count),
+        select: QuestionSelectAdapter(options?.select, options?.include, options?.count),
         orderBy: QuestionOrderByAdapter(options?.orderBy),
         skip: options?.offset,
         take: options?.take,
@@ -83,7 +82,7 @@ export class PrismaQuestionRepository implements QuestionRepository {
     });
   }
 
-  async update ({ id, question }: QuestionRepositoryInput.Update): Promise<QuestionRepositoryOutput.Update> {
+  async update ({ id, question, returnEntity }: QuestionRepositoryInput.Update): Promise<QuestionRepositoryOutput.Update> {
     const updatedQuestion = await this.prisma.question.update({
       where: { 
         id,
@@ -100,7 +99,9 @@ export class PrismaQuestionRepository implements QuestionRepository {
       },
     });
 
-    return QuestionRepositoryMapper.update(updatedQuestion);
+    if (returnEntity) {
+      return QuestionRepositoryMapper.update(updatedQuestion);
+    }
   }
 
   async delete ({ question }: QuestionRepositoryInput.Delete): Promise<QuestionRepositoryOutput.Delete> {
@@ -114,7 +115,7 @@ export class PrismaQuestionRepository implements QuestionRepository {
   async refTags (payload: QuestionRepositoryInput.RefTags): Promise<QuestionRepositoryOutput.RefTags> {
     await this.prisma.question.update({
       where: {
-        id: payload.id,
+        id: payload.questionId,
       },
       data: {
         tags: {
@@ -127,7 +128,7 @@ export class PrismaQuestionRepository implements QuestionRepository {
   async unrefAllTags (payload: QuestionRepositoryInput.UnrefTags): Promise<QuestionRepositoryOutput.UnrefTags> {
     await this.prisma.question.update({
       where: {
-        id: payload.id,
+        id: payload.questionId,
       },
       data: {
         tags: {

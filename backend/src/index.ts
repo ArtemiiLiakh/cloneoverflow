@@ -1,5 +1,5 @@
-import { prismaDatabase } from '@application/database/PrismaDatabase';
-import { redisDatabase } from '@application/database/RedisDatabase';
+import { prismaDatabase } from '@application/databases/PrismaDatabase';
+import { redisDatabase } from '@application/databases/RedisDatabase';
 import config from './config';
 
 (async () => {

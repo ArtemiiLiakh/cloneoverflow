@@ -1,10 +1,10 @@
+import { ExpressRequest } from '@application/adapters/types/ExpressRequest';
 import { AuthPayload } from '@application/auth/data/AuthPayload';
 import { TokenPayload, TokenType } from '@application/auth/data/TokenPayload';
-import { ExpressRequest } from '@application/adapters/types/ExpressRequest';
 import { ForbiddenException, UnauthorizedException, UserStatusEnum } from '@cloneoverflow/common';
 import { JwtEncryptorImpl } from '@infrastructure/security/JwtEncryptorImpl';
 import { plainToInstance } from 'class-transformer';
-import { validateSync } from 'class-validator';
+import { validate } from 'class-validator';
 import { NextFunction, Response } from 'express';
 
 export const JwtAuthAccess = (status = UserStatusEnum.USER) => {
@@ -18,10 +18,10 @@ export const JwtAuthAccess = (status = UserStatusEnum.USER) => {
     const decode = await new JwtEncryptorImpl().decrypt<TokenPayload>(accessToken).catch(() => { 
       throw new UnauthorizedException; 
     });
-
+    
     const payload = plainToInstance(TokenPayload, decode);
     
-    if (validateSync(payload).length) {
+    if ((await validate(payload)).length) {
       throw new UnauthorizedException();
     }
 

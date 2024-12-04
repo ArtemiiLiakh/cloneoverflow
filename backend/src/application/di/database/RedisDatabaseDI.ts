@@ -1,3 +1,3 @@
-import { redisDatabase } from '@application/database/RedisDatabase';
+import { redisDatabase } from '@application/databases/RedisDatabase';
 
 export default redisDatabase.getClient();

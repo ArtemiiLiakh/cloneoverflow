@@ -2,7 +2,7 @@ import { DataHasher } from '@application/interfaces/security/DataHasher';
 import { BadBodyException, LoginException, NoEntityWithIdException, VerificationCodeType } from '@cloneoverflow/common';
 import { CacheRepository } from '@core/domain/repositories/cache/CacheRepository';
 import { UserRepository } from '@core/domain/repositories/user/UserRepository';
-import { AuthServiceInput } from '../dto/AuthServiceInput';
+import { AuthServiceInput } from '../dtos/AuthServiceInput';
 import { IChangePasswordUseCase } from '../types/usecases';
 import { VerificationCodePayload } from '../data/VerificationCodePayload';
 

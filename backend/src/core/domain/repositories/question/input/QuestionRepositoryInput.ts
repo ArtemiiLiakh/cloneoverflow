@@ -68,6 +68,7 @@ export namespace QuestionRepositoryInput {
   export type Update = {
     id: string;
     question: Partial<Question>;
+    returnEntity?: boolean;
   };
   
   export type Delete = {
@@ -80,11 +81,11 @@ export namespace QuestionRepositoryInput {
   };
 
   export type RefTags = {
-    id: string;
+    questionId: string;
     tags: Tag[];
   };
 
   export type UnrefTags = {
-    id: string;
+    questionId: string;
   };
 }

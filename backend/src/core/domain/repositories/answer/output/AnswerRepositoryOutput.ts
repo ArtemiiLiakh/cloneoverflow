@@ -30,7 +30,7 @@ export namespace AnswerRepositoryOutput {
   
   export type Count = number;
   export type Create = void;
-  export type Update = Answer;
+  export type Update = Answer | undefined;
   export type UpdateMany = void;
   export type Delete = void;
 }

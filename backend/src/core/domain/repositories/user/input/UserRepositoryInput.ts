@@ -90,11 +90,13 @@ export namespace UserRepositoryInput {
   export type Update = {
     id: string, 
     user: Partial<User>
+    returnEntity?: boolean;
   };
 
   export type UpdateCreds = {
     id: string, 
     creds: Partial<UserCreds>
+    returnEntity?: boolean;
   };
   
   export type Delete = {

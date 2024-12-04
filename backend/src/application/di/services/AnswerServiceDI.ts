@@ -1,19 +1,50 @@
 import { AnswerServiceFacade } from '@application/services/AnswerServiceFacade';
-import { AnswerCreateUseCase } from '@core/service/answer/usecase/create';
-import { AnswerDeleteUseCase } from '@core/service/answer/usecase/delete';
-import { AnswerGetUseCase } from '@core/service/answer/usecase/get';
-import { AnswerGetAllUseCase } from '@core/service/answer/usecase/getAll';
-import { AnswerUpdateUseCase } from '@core/service/answer/usecase/update';
-import { AnswerVoteUseCase } from '@core/service/answer/usecase/vote';
-import PrismaAnswerRepositoryDI from '../repositories/PrismaAnswerRepositoryDI';
-import PrismaTransactionUnitDI from '../repositories/PrismaTransactionUnitDI';
+import { AnswerCreateUseCase } from '@core/services/answer/usecases/create';
+import { AnswerDeleteUseCase } from '@core/services/answer/usecases/delete';
+import { AnswerGetUseCase } from '@core/services/answer/usecases/get';
+import { AnswerGetAllUseCase } from '@core/services/answer/usecases/getAll';
+import { AnswerUpdateUseCase } from '@core/services/answer/usecases/update';
+import { AnswerVoteUseCase } from '@core/services/answer/usecases/vote';
+import {
+  PrismaAnswerRepositoryDI,
+  PrismaTransactionDI,
+} from '../repositories/PrismaRepositoriesDI';
+import {
+  ValidateQuestionUseCaseDI,
+  ValidateUserUseCaseDI,
+} from './ValidationServiceDI';
 
-const CreateUseCaseDI = new AnswerCreateUseCase(PrismaTransactionUnitDI);
-const DeleteUseCaseDI = new AnswerDeleteUseCase(PrismaAnswerRepositoryDI, PrismaTransactionUnitDI);
-const UpdateUseCaseDI = new AnswerUpdateUseCase(PrismaAnswerRepositoryDI);
-const GetUseCaseDI = new AnswerGetUseCase(PrismaAnswerRepositoryDI);
-const GetAllUseCaseDI = new AnswerGetAllUseCase(PrismaAnswerRepositoryDI);
-const VoteAnswerUseCaseDI = new AnswerVoteUseCase(PrismaAnswerRepositoryDI, PrismaTransactionUnitDI);
+const CreateUseCaseDI = new AnswerCreateUseCase(
+  ValidateUserUseCaseDI,
+  ValidateQuestionUseCaseDI, 
+  PrismaTransactionDI,
+);
+const DeleteUseCaseDI = new AnswerDeleteUseCase(
+  ValidateUserUseCaseDI, 
+  PrismaAnswerRepositoryDI, 
+  PrismaTransactionDI,
+);
+
+
+const UpdateUseCaseDI = new AnswerUpdateUseCase(
+  ValidateUserUseCaseDI,
+  PrismaAnswerRepositoryDI,
+);
+
+const GetUseCaseDI = new AnswerGetUseCase(
+  ValidateUserUseCaseDI,
+  PrismaAnswerRepositoryDI,
+);
+
+const GetAllUseCaseDI = new AnswerGetAllUseCase(
+  PrismaAnswerRepositoryDI,
+);
+
+const VoteAnswerUseCaseDI = new AnswerVoteUseCase(
+  ValidateUserUseCaseDI,
+  PrismaAnswerRepositoryDI, 
+  PrismaTransactionDI,
+);
 
 export const answerServiceFacadeDI = AnswerServiceFacade.new({
   answerCreateUseCase: CreateUseCaseDI,

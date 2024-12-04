@@ -1,4 +1,4 @@
-import { UserQuestionStatusEnum, VoteTypeEnum } from '@cloneoverflow/common';
+import { QuestionUserStatusEnum, VoteTypeEnum } from '@cloneoverflow/common';
 import { QuestionUserStats } from '@core/domain/entities/QuestionUserStats';
 import { UserQuestions } from '@prisma/client';
 
@@ -8,7 +8,7 @@ export class QuestionUserStatsMapper {
       id: user.id,
       userId: user.userId,
       questionId: user.questionId,
-      status: user.status as UserQuestionStatusEnum,
+      status: user.status as QuestionUserStatusEnum,
       voteType: user.voteType as VoteTypeEnum,
     };
   }

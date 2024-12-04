@@ -3,8 +3,8 @@ import { BadBodyException, LoginException, RetriesExpiredException, Verification
 import { CacheRepository } from '@core/domain/repositories/cache/CacheRepository';
 import { UserRepository } from '@core/domain/repositories/user/UserRepository';
 import { VerificationCodePayload } from '../data/VerificationCodePayload';
-import { AuthServiceInput } from '../dto/AuthServiceInput';
-import { AuthServiceOutput } from '../dto/AuthServiceOutput';
+import { AuthServiceInput } from '../dtos/AuthServiceInput';
+import { AuthServiceOutput } from '../dtos/AuthServiceOutput';
 import { IDeleteAccountUseCase } from '../types/usecases';
 
 export class DeleteAccountUseCase implements IDeleteAccountUseCase {

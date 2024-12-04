@@ -1,4 +1,4 @@
-import { UserQuestionStatusEnum, VoteTypeEnum } from '@cloneoverflow/common';
+import { QuestionUserStatusEnum, VoteTypeEnum } from '@cloneoverflow/common';
 import { QuestionUserStats } from '@core/domain/entities/QuestionUserStats';
 
 export namespace QuestionUserRepositoryInput {
@@ -15,12 +15,13 @@ export namespace QuestionUserRepositoryInput {
   export type Update = {
     where: QuestionUserWhere, 
     data: {
-      status?: UserQuestionStatusEnum,
+      status?: QuestionUserStatusEnum,
       voteType?: VoteTypeEnum | null
-    }
+    },
+    returnEntity?: boolean;
   };
 
   export type Delete = {
-    questionUser: QuestionUserStats, 
+    questionUser: QuestionUserStats,
   };
 }

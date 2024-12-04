@@ -1,5 +1,7 @@
-export type Select<Entity> = Partial<Record<keyof Entity, true>>;
+export type Select<Entity> = {
+  [K in keyof Entity]?: true
+};
 
-type MissingKeys<T, U> = Exclude<keyof T, keyof U>;
-
-export type SelectResult<S extends Select<Entity>, Entity> = Omit<Entity, MissingKeys<Entity, S>>
+export type SelectResult<S extends Select<Entity>, Entity> = keyof S extends never ? Entity : {
+  [K in keyof Entity as S[K] extends true | undefined ? K : never]: Entity[K];
+}

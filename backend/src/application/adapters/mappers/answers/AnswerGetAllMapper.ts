@@ -1,5 +1,5 @@
 import { AnswerGetAllResponse } from '@cloneoverflow/common';
-import { AnswerServiceOutput } from '@core/service/answer/dto/AnswerServiceOutput';
+import { AnswerServiceOutput } from '@core/services/answer/dtos/AnswerServiceOutput';
 
 export const AnswerGetAllMapper = (
   { data, pagination }: AnswerServiceOutput.GetAll,

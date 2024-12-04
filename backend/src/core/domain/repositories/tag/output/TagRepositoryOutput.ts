@@ -32,7 +32,7 @@ export namespace TagsRepositoryOutput {
   export type Create = void;
   export type CreateMany = void;
   export type CreateOrFindMany = Tag[];
-  export type Update = Tag;
+  export type Update = Tag | undefined;
   export type Delete = void;
   export type DeleteMany = void;
 }

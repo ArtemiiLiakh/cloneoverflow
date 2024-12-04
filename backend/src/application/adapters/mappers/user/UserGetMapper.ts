@@ -1,5 +1,5 @@
 import { UserGetResponse } from '@cloneoverflow/common';
-import { UserServiceOutput } from '@core/service/user/dto/UserServiceOutput';
+import { UserServiceOutput } from '@core/services/user/dtos/UserServiceOutput';
 
 export function UserGetMapperOutput (user: UserServiceOutput.Get): UserGetResponse {
   return {

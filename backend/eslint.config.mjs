@@ -16,7 +16,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ["src/**/*.ts"],
+    files: ["src/**/*.ts", "tests/**/*.ts"],
     rules: {
       indent: ["error", 2],
       "block-spacing": "error",

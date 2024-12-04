@@ -128,7 +128,7 @@ export class PrismaUserRepository implements UserRepository {
     });
   }
 
-  async update ({ id, user }: UserRepositoryInput.Update): Promise<UserRepositoryOutput.Update> {    
+  async update ({ id, user, returnEntity }: UserRepositoryInput.Update): Promise<UserRepositoryOutput.Update> {    
     const updatedUser = await this.prisma.user.update({
       where: {
         userId: id,
@@ -143,10 +143,12 @@ export class PrismaUserRepository implements UserRepository {
       },
     });
   
-    return UserRepositoryMapper.update(updatedUser);
+    if (returnEntity) {
+      return UserRepositoryMapper.update(updatedUser);
+    }
   }
 
-  async updateCreds ({ id, creds }: UserRepositoryInput.UpdateCreds): Promise<UserRepositoryOutput.UpdateCreds> {
+  async updateCreds ({ id, creds, returnEntity }: UserRepositoryInput.UpdateCreds): Promise<UserRepositoryOutput.UpdateCreds> {
     const updatedCreds = await this.prisma.userCreds.update({ 
       where: { id }, 
       data: { 
@@ -158,7 +160,9 @@ export class PrismaUserRepository implements UserRepository {
       },
     }) as unknown as PrismaUserCredsType;
 
-    return UserRepositoryMapper.updateCreds(updatedCreds);
+    if (returnEntity) {
+      return UserRepositoryMapper.updateCreds(updatedCreds);
+    }
   }
 
   async delete ({ user }: UserRepositoryInput.Delete): Promise<UserRepositoryOutput.Delete> {
