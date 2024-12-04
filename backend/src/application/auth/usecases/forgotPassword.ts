@@ -2,8 +2,8 @@ import { DataHasher } from '@application/interfaces/security/DataHasher';
 import { BadBodyException, RetriesExpiredException, VerificationCodeType } from '@cloneoverflow/common';
 import { CacheRepository } from '@core/domain/repositories/cache/CacheRepository';
 import { UserRepository } from '@core/domain/repositories/user/UserRepository';
-import { AuthServiceInput } from '../dto/AuthServiceInput';
-import { AuthServiceOutput } from '../dto/AuthServiceOutput';
+import { AuthServiceInput } from '../dtos/AuthServiceInput';
+import { AuthServiceOutput } from '../dtos/AuthServiceOutput';
 import { IForgotPasswordUseCase } from '../types/usecases';
 import { VerificationCodePayload } from '../data/VerificationCodePayload';
 

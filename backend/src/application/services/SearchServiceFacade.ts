@@ -1,7 +1,7 @@
-import { SearchServiceInput } from '@core/service/search/dto/SearchServiceInput';
-import { SearchServiceOutput } from '@core/service/search/dto/SearchServiceOutput';
-import { SearchQuestionsUseCase } from '@core/service/search/usecase/searchQuestions';
-import { SearchTagsUseCase } from '@core/service/search/usecase/searchTags';
+import { SearchServiceInput } from '@core/services/search/dtos/SearchServiceInput';
+import { SearchServiceOutput } from '@core/services/search/dtos/SearchServiceOutput';
+import { SearchQuestionsUseCase } from '@core/services/search/usecases/searchQuestions';
+import { SearchTagsUseCase } from '@core/services/search/usecases/searchTags';
 
 export class SearchServiceFacade {
   constructor (

@@ -1,9 +1,4 @@
 import { IsolationLevel } from '@cloneoverflow/common';
-import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
-import { AnswerUserRepository } from '@core/domain/repositories/answer/AnswerUserRepository';
-import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
-import { QuestionUserRepository } from '@core/domain/repositories/question/QuestionUserRepository';
-import { TagRepository } from '@core/domain/repositories/tag/TagRepository';
 import { Unit, UnitOfWork } from '@core/domain/repositories/UnitOfWork';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { PrismaAnswerRepository } from './PrismaAnswerRepository';
@@ -20,17 +15,6 @@ const isolationMapper: Record<IsolationLevel, Prisma.TransactionIsolationLevel> 
   Serializable: 'Serializable',
 };
 
-class TransactionUnit implements Unit {
-  constructor (
-    public userRepository: PrismaUserRepository,
-    public questionRepository: QuestionRepository,
-    public questionUserRepository: QuestionUserRepository,
-    public answerRepository: AnswerRepository,
-    public answerUserRepository: AnswerUserRepository,
-    public tagRepository: TagRepository,
-  ) {}
-}
-
 export class PrismaTransactionUnit implements UnitOfWork  {
   constructor (
     private prisma: PrismaClient,
@@ -38,14 +22,14 @@ export class PrismaTransactionUnit implements UnitOfWork  {
 
   async execute<I> (fn: (unit: Unit) => Promise<I>, isolationLevel = IsolationLevel.ReadCommitted): Promise<I | null> {
     return await this.prisma.$transaction(async (context) => {
-      const prismaSession = new TransactionUnit(
-        new PrismaUserRepository(context as PrismaClient),
-        new PrismaQuestionRepository(context as PrismaClient),
-        new PrismaQuestionUserRepository(context as PrismaClient),
-        new PrismaAnswerRepository(context as PrismaClient),
-        new PrismaAnswerUserRepository(context as PrismaClient),
-        new PrismaTagRepository(context as PrismaClient),
-      );
+      const prismaSession: Unit = {
+        userRepository: new PrismaUserRepository(context as PrismaClient),
+        questionRepository: new PrismaQuestionRepository(context as PrismaClient),
+        questionUserRepository: new PrismaQuestionUserRepository(context as PrismaClient),
+        answerRepository: new PrismaAnswerRepository(context as PrismaClient),
+        answerUserRepository: new PrismaAnswerUserRepository(context as PrismaClient),
+        tagRepository: new PrismaTagRepository(context as PrismaClient),
+      };
         
       try {
         return await fn(prismaSession);

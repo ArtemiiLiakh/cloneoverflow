@@ -2,8 +2,8 @@ import { DataEncryptor } from '@application/interfaces/security/DataEncryptor';
 import { DataHasher } from '@application/interfaces/security/DataHasher';
 import { LoginException } from '@cloneoverflow/common';
 import { UserRepository } from '@core/domain/repositories/user/UserRepository';
-import { AuthServiceInput } from '../dto/AuthServiceInput';
-import { AuthServiceOutput } from '../dto/AuthServiceOutput';
+import { AuthServiceInput } from '../dtos/AuthServiceInput';
+import { AuthServiceOutput } from '../dtos/AuthServiceOutput';
 import { ILoginUseCase } from '../types/usecases';
 import { makeAccessToken } from './utils/makeAccessToken';
 import { makeRefreshToken } from './utils/makeRequestToken';
@@ -32,7 +32,7 @@ export class LoginUseCase implements ILoginUseCase {
       userId: user.user.id,
       status: user.user.status,
     });
-  
+    
     const refresh_token = await makeRefreshToken(this.dataEncryptor, {
       userId: user.user.id,
       status: user.user.status,

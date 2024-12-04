@@ -1,3 +1,4 @@
+import { isObjectEmpty } from '@common/utils/objectUtils';
 import { AnswerRepositoryInput } from '@core/domain/repositories/answer/input/AnswerRepositoryInput';
 import { Prisma } from '@prisma/client';
 import { AnswerIncludeAdapter } from '../include/AnswerIncludeAdapter';
@@ -7,7 +8,7 @@ export const AnswerSelectAdapter = (
   include?: AnswerRepositoryInput.AnswerInclude,
   count?: AnswerRepositoryInput.AnswerCount,
 ): Prisma.AnswerSelect => {
-  if (!select) {
+  if (!select || isObjectEmpty(select)) {
     return {
       id: true,
       ownerId: true,

@@ -1,6 +1,6 @@
-import { IUserGetUseCase } from '@core/service/user/types/usecases';
-import { AuthServiceInput } from './dto/AuthServiceInput';
-import { AuthServiceOutput } from './dto/AuthServiceOutput';
+import { IUserGetUseCase } from '@core/services/user/types/usecases';
+import { AuthServiceInput } from './dtos/AuthServiceInput';
+import { AuthServiceOutput } from './dtos/AuthServiceOutput';
 import {
   IChangePasswordUseCase,
   ISendVerificationCodeUseCase,
@@ -10,6 +10,7 @@ import {
   IRefreshTokenUseCase,
   ISignUpUseCase,
 } from './types/usecases';
+import { ForbiddenException } from '@cloneoverflow/common';
 
 export class AuthServiceFacade {
   constructor (
@@ -65,6 +66,8 @@ export class AuthServiceFacade {
   async getMe ({ executorId: id }: AuthServiceInput.GetMe): Promise<AuthServiceOutput.GetMe> {
     const user = await this.getUserUseCase.execute({
       userId: id,
+    }).catch(() => {
+      throw new ForbiddenException();
     });
 
     return user.entity;

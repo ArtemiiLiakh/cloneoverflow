@@ -1,8 +1,8 @@
 import { DataEncryptor } from '@application/interfaces/security/DataEncryptor';
 import { DataHasher } from '@application/interfaces/security/DataHasher';
-import { IUserCreateUseCase } from '@core/service/user/types/usecases';
-import { AuthServiceInput } from '../dto/AuthServiceInput';
-import { AuthServiceOutput } from '../dto/AuthServiceOutput';
+import { IUserCreateUseCase } from '@core/services/user/types/usecases';
+import { AuthServiceInput } from '../dtos/AuthServiceInput';
+import { AuthServiceOutput } from '../dtos/AuthServiceOutput';
 import { ISignUpUseCase } from '../types/usecases';
 import { makeAccessToken } from './utils/makeAccessToken';
 import { makeRefreshToken } from './utils/makeRequestToken';

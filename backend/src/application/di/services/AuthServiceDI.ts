@@ -13,12 +13,41 @@ import DataEncryptorDI from '../security/DataEncryptorDI';
 import DataHasherDI from '../security/DataHasherDI';
 import { userUseCasesDI } from './UserServiceDI';
 
-const LoginUseCaseDI = new LoginUseCase(PrismaUserRepositoryDI, DataEncryptorDI, DataHasherDI);
-const SignUpUseCaseDI = new SignUpUseCase(DataEncryptorDI, DataHasherDI, userUseCasesDI.CreateUseCaseDI);
-const RefreshTokenUseCaseDI = new RefreshTokenUseCase(DataEncryptorDI, PrismaUserRepositoryDI);
-const ChangePasswordUseCaseDI = new ChangePasswordUseCase(PrismaUserRepositoryDI, RedisCacheRepositoryDI, DataHasherDI);
-const ForgotPasswordUseCaseDI = new ForgotPasswordUseCase(PrismaUserRepositoryDI, RedisCacheRepositoryDI, DataHasherDI);
-const DeleteAccountUseCaseDI = new DeleteAccountUseCase(PrismaUserRepositoryDI, RedisCacheRepositoryDI, DataHasherDI);
+const LoginUseCaseDI = new LoginUseCase(
+  PrismaUserRepositoryDI, 
+  DataEncryptorDI, 
+  DataHasherDI,
+);
+
+const SignUpUseCaseDI = new SignUpUseCase(
+  DataEncryptorDI, 
+  DataHasherDI, 
+  userUseCasesDI.CreateUseCaseDI,
+);
+
+
+const RefreshTokenUseCaseDI = new RefreshTokenUseCase(
+  DataEncryptorDI, 
+  PrismaUserRepositoryDI,
+);
+
+const ChangePasswordUseCaseDI = new ChangePasswordUseCase(
+  PrismaUserRepositoryDI, 
+  RedisCacheRepositoryDI, 
+  DataHasherDI,
+);
+
+const ForgotPasswordUseCaseDI = new ForgotPasswordUseCase(
+  PrismaUserRepositoryDI, 
+  RedisCacheRepositoryDI, 
+  DataHasherDI,
+);
+
+const DeleteAccountUseCaseDI = new DeleteAccountUseCase(
+  PrismaUserRepositoryDI, 
+  RedisCacheRepositoryDI, 
+  DataHasherDI,
+);
 
 const SendVerificationCodeDI = new SendVerificationCodeUseCase(
   PrismaUserRepositoryDI, 

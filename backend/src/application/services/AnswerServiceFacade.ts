@@ -1,5 +1,5 @@
-import { AnswerServiceInput } from '@core/service/answer/dto/AnswerServiceInput';
-import { AnswerServiceOutput } from '@core/service/answer/dto/AnswerServiceOutput';
+import { AnswerServiceInput } from '@core/services/answer/dtos/AnswerServiceInput';
+import { AnswerServiceOutput } from '@core/services/answer/dtos/AnswerServiceOutput';
 import {
   IAnswerCreateUseCase,
   IAnswerDeleteUseCase,
@@ -7,7 +7,7 @@ import {
   IAnswerGetUseCase,
   IAnswerUpdateUseCase,
   IAnswerVoteUseCase,
-} from '@core/service/answer/types/usecases';
+} from '@core/services/answer/types/usecases';
 
 export class AnswerServiceFacade {
   constructor (

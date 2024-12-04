@@ -1,4 +1,4 @@
-import { AuthServiceOutput } from '@application/auth/dto/AuthServiceOutput';
+import { AuthServiceOutput } from '@application/auth/dtos/AuthServiceOutput';
 import { AuthGetMeResponse } from '@cloneoverflow/common';
 
 export function AuthGetMeMapperOutput (user: AuthServiceOutput.GetMe): AuthGetMeResponse {

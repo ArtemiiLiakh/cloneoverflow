@@ -1,11 +1,11 @@
-import { UserServiceInput } from '@core/service/user/dto/UserServiceInput';
-import { UserServiceOutput } from '@core/service/user/dto/UserServiceOutput';
+import { UserServiceInput } from '@core/services/user/dtos/UserServiceInput';
+import { UserServiceOutput } from '@core/services/user/dtos/UserServiceOutput';
 import {
   IUserCreateUseCase,
   IUserGetProfileUseCase,
   IUserGetUseCase,
   IUserUpdateUseCase,
-} from '@core/service/user/types/usecases';
+} from '@core/services/user/types/usecases';
 
 export class UserServiceFacade {
   constructor (

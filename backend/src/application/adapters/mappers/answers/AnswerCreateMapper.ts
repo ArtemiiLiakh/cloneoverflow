@@ -1,5 +1,5 @@
 import { AnswerCreateResponse } from '@cloneoverflow/common';
-import { AnswerServiceOutput } from '@core/service/answer/dto/AnswerServiceOutput';
+import { AnswerServiceOutput } from '@core/services/answer/dtos/AnswerServiceOutput';
 
 export function AnswerCreateMapperOutput (answer: AnswerServiceOutput.Create): AnswerCreateResponse {
   return {

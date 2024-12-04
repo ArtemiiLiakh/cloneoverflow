@@ -1,3 +1,3 @@
-import { prismaDatabase } from '@application/database/PrismaDatabase';
+import { prismaDatabase } from '@application/databases/PrismaDatabase';
 
 export default prismaDatabase.getClient();

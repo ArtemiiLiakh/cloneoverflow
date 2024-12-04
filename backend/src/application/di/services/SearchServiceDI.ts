@@ -1,6 +1,6 @@
 import { SearchServiceFacade } from '@application/services/SearchServiceFacade';
-import { SearchQuestionsUseCase } from '@core/service/search/usecase/searchQuestions';
-import { SearchTagsUseCase } from '@core/service/search/usecase/searchTags';
+import { SearchQuestionsUseCase } from '@core/services/search/usecases/searchQuestions';
+import { SearchTagsUseCase } from '@core/services/search/usecases/searchTags';
 import { 
   PrismaQuestionRepositoryDI, 
   PrismaTagRepositoryDI,

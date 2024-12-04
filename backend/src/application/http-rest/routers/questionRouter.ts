@@ -4,7 +4,7 @@ import { SearchController } from '@application/controllers/SearchController';
 import { questionServiceFacadeDI } from '@application/di/services/QuestionServiceDI';
 import { searchServiceFacadeDI } from '@application/di/services/SearchServiceDI';
 import { JwtAuthOptional, JwtAuthAccess } from '@application/middlewares/JwtAuthAccess';
-import { validateRequest } from '@application/middlewares/validation';
+import { validateRequest } from '@application/middlewares/validateRequest';
 import {
   QuestionCloseDTO,
   QuestionCreateDTO,

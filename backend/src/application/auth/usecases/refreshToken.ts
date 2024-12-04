@@ -1,8 +1,8 @@
 import { DataEncryptor } from '@application/interfaces/security/DataEncryptor';
 import { UnauthorizedException } from '@cloneoverflow/common';
 import { UserRepository } from '@core/domain/repositories/user/UserRepository';
-import { AuthServiceInput } from '../dto/AuthServiceInput';
-import { AuthServiceOutput } from '../dto/AuthServiceOutput';
+import { AuthServiceInput } from '../dtos/AuthServiceInput';
+import { AuthServiceOutput } from '../dtos/AuthServiceOutput';
 import { IRefreshTokenUseCase } from '../types/usecases';
 import { makeAccessToken } from './utils/makeAccessToken';
 

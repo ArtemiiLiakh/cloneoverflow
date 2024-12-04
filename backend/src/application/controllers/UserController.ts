@@ -14,8 +14,8 @@ import {
   UserUpdateDTO,
   UserUpdateResponse,
 } from '@cloneoverflow/common';
-import { IAnswerGetAllUseCase } from '@core/service/answer/types/usecases';
-import { IQuestionGetAllUseCase } from '@core/service/question/types/usecases';
+import { IAnswerGetAllUseCase } from '@core/services/answer/types/usecases';
+import { IQuestionGetAllUseCase } from '@core/services/question/types/usecases';
 import { WithAuth, WithBody, WithParams, WithQuery } from './types/Request';
 import { CoreResponse } from './types/Response';
 

@@ -4,7 +4,7 @@ import { answerUseCaseDI } from '@application/di/services/AnswerServiceDI';
 import { questionUseCasesDI } from '@application/di/services/QuestionServiceDI';
 import { userServiceFacadeDI } from '@application/di/services/UserServiceDI';
 import { JwtAuthAccess } from '@application/middlewares/JwtAuthAccess';
-import { validateRequest } from '@application/middlewares/validation';
+import { validateRequest } from '@application/middlewares/validateRequest';
 import {
   UserGetAnswersDTO,
   UserGetQuestionsDTO,

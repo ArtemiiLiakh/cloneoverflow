@@ -1,5 +1,5 @@
 import { QuestionUpdateResponse } from '@cloneoverflow/common';
-import { QuestionServiceOutput } from '@core/service/question/dto/QuestionServiceOutput';
+import { QuestionServiceOutput } from '@core/services/question/dtos/QuestionServiceOutput';
 
 export function QuestionUpdateMapperOutput (
   question: QuestionServiceOutput.Update,

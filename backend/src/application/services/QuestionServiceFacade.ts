@@ -1,5 +1,5 @@
-import { QuestionServiceInput } from '@core/service/question/dto/QuestionServiceInput';
-import { QuestionServiceOutput } from '@core/service/question/dto/QuestionServiceOutput';
+import { QuestionServiceInput } from '@core/services/question/dtos/QuestionServiceInput';
+import { QuestionServiceOutput } from '@core/services/question/dtos/QuestionServiceOutput';
 import { 
   IQuestionCloseUseCase, 
   IQuestionCreateUseCase, 
@@ -8,7 +8,7 @@ import {
   IQuestionGetUseCase, 
   IQuestionUpdateUseCase, 
   IQuestionVoteUseCase, 
-} from '@core/service/question/types/usecases';
+} from '@core/services/question/types/usecases';
 
 export class QuestionServiceFacade {
   constructor (

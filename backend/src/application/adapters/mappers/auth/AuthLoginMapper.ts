@@ -1,4 +1,4 @@
-import { AuthServiceOutput } from '@application/auth/dto/AuthServiceOutput';
+import { AuthServiceOutput } from '@application/auth/dtos/AuthServiceOutput';
 import { AuthLoginResponse } from '@cloneoverflow/common';
 
 export function AuthLoginMapperOutput (user: AuthServiceOutput.Login['user']): AuthLoginResponse {

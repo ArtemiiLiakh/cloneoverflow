@@ -3,7 +3,7 @@ import { AuthController } from '@application/controllers/AuthController';
 import { authServiceFacadeDI } from '@application/di/services/AuthServiceDI';
 import { JwtAuthAccess } from '@application/middlewares/JwtAuthAccess';
 import { JwtAuthRefresh } from '@application/middlewares/JwtAuthRefresh';
-import { validateRequest } from '@application/middlewares/validation';
+import { validateRequest } from '@application/middlewares/validateRequest';
 import {
   AuthChangePasswordDTO,
   AuthDeleteAccountDTO,

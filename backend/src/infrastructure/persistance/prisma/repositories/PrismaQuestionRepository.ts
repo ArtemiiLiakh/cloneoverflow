@@ -3,7 +3,6 @@ import { QuestionRepositoryInput } from '@core/domain/repositories/question/inpu
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
 import { PrismaClient } from '@prisma/client';
 import { PrismaPaginationRepository } from './PrismaPagination';
-import { QuestionIncludeAdapter } from '../adapters/include/QuestionIncludeAdapter';
 import { QuestionOrderByAdapter } from '../adapters/orderBy/QuestionOrderByAdapter';
 import { QuestionRepositoryMapper } from '../adapters/repositoryMappers/QuestionRepositoryMapper';
 import { QuestionWhereAdapter } from '../adapters/where/question/QuestionWhereAdapter';
@@ -56,7 +55,7 @@ export class PrismaQuestionRepository implements QuestionRepository {
       this.prisma.question, 
       {
         where: QuestionWhereAdapter(where),
-        select: QuestionIncludeAdapter(options?.include, options?.count),
+        select: QuestionSelectAdapter(options?.select, options?.include, options?.count),
         orderBy: QuestionOrderByAdapter(options?.orderBy),
         skip: options?.offset,
         take: options?.take,
