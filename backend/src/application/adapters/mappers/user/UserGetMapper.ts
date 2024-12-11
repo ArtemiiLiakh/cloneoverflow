@@ -6,7 +6,7 @@ export function UserGetMapperOutput (user: UserServiceOutput.Get): UserGetRespon
     id: user.entity.id,
     name: user.entity.name,
     username: user.entity.username,
-    reputation: user.entity.reputation,
+    reputation: user.entity.rating,
     status: user.entity.status,
     about: user.entity.about,
     createdAt: user.entity.createdAt,

@@ -1,38 +1,26 @@
 import { NoEntityWithIdException, QuestionUserStatusEnum } from '@cloneoverflow/common';
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
+import { QuestionUserRepository } from '@core/domain/repositories/question/QuestionUserRepository';
 import { QuestionServiceInput } from '../dtos/QuestionServiceInput';
 import { QuestionServiceOutput } from '../dtos/QuestionServiceOutput';
 import { IQuestionAddViewerUseCase, IQuestionGetUseCase } from '../types/usecases';
-import { IValidateUserUseCase } from '@core/services/validation/types/usecases';
 
 export class QuestionGetUseCase implements IQuestionGetUseCase {
   
   constructor (
-    private validateUserUseCase: IValidateUserUseCase,
     private questionRepository: QuestionRepository,
+    private questionUserRepository: QuestionUserRepository,
     private addViewerUseCase: IQuestionAddViewerUseCase,
   ) {}
 
   async execute (
     { executorId, questionId }: QuestionServiceInput.Get,
   ): Promise<QuestionServiceOutput.Get> {
-    if (executorId) {
-      await this.validateUserUseCase.validate({
-        userId: executorId,
-      });
-    }
-
-    const question = await this.questionRepository.findById({
-      id: questionId,
-      options: {
-        include: {
-          owner: true,
-          tags: true,
-          users: {
-            userId: executorId,
-            status: QuestionUserStatusEnum.VOTER,
-          },
-        },
+    const question = await this.questionRepository.getQuestion({
+      where: { id: questionId },
+      include: {
+        owner: true,
+        tags: true,
       },
     });
 
@@ -40,17 +28,33 @@ export class QuestionGetUseCase implements IQuestionGetUseCase {
       throw new NoEntityWithIdException('Question');
     }
   
+    let voter;
+
     if (executorId) {
       await this.addViewerUseCase.execute({
         executorId,
         questionId,
       });
+
+      voter = await this.questionUserRepository.getOne({
+        where: {
+          questionId,
+          userId: executorId,
+          status: QuestionUserStatusEnum.VOTER,
+        },
+      });
     }
   
     return {
       entity: question.entity, 
-      owner: question.owner,
+      owner: {
+        id: question.owner!.id,
+        name: question.owner!.name,
+        rating: question.owner!.rating,
+        username: question.owner!.username,
+      },
       tags: question.tags,
+      userStats: voter ?? null,
     };
   }
 }

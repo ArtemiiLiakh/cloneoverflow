@@ -1,10 +1,11 @@
 import { AdaptController } from '@application/adapters/AdaptController';
 import { QuestionController } from '@application/controllers/QuestionController';
 import { SearchController } from '@application/controllers/SearchController';
+import { AuthUserStatusValidatorDI } from '@application/di/security/AuthUserStatusValidatorDI';
+import { JwtTokenValidatorDI } from '@application/di/security/JwtTokenValidatorDI';
 import { questionServiceFacadeDI } from '@application/di/services/QuestionServiceDI';
 import { searchServiceFacadeDI } from '@application/di/services/SearchServiceDI';
-import { JwtAuthOptional, JwtAuthAccess } from '@application/middlewares/JwtAuthAccess';
-import { validateRequest } from '@application/middlewares/validateRequest';
+import { validateRequest } from '@application/middlewares/security/ValidateRequest';
 import {
   QuestionCloseDTO,
   QuestionCreateDTO,
@@ -29,13 +30,15 @@ questionRouter.get(
 
 questionRouter.get(
   '/:questionId', 
-  JwtAuthOptional(),
+  JwtTokenValidatorDI.validateAccess({ optional: true }),
+  AuthUserStatusValidatorDI.validate(),
   AdaptController(controller.get.bind(controller)),
 );
 
 questionRouter.post(
   '/', 
-  JwtAuthAccess(),
+  JwtTokenValidatorDI.validateAccess(),
+  AuthUserStatusValidatorDI.validate(),
   validateRequest({
     body: QuestionCreateDTO,
   }), 
@@ -44,7 +47,8 @@ questionRouter.post(
 
 questionRouter.patch(
   '/:questionId',
-  JwtAuthAccess(),
+  JwtTokenValidatorDI.validateAccess(),
+  AuthUserStatusValidatorDI.validate(),
   validateRequest({
     body: QuestionUpdateDTO,
   }),
@@ -53,13 +57,15 @@ questionRouter.patch(
 
 questionRouter.delete(
   '/:questionId',
-  JwtAuthAccess(),
+  JwtTokenValidatorDI.validateAccess(),
+  AuthUserStatusValidatorDI.validate(),
   AdaptController(controller.delete.bind(controller)),
 );
 
 questionRouter.post(
   '/:questionId/close',
-  JwtAuthAccess(),
+  JwtTokenValidatorDI.validateAccess(),
+  AuthUserStatusValidatorDI.validate(),
   validateRequest({
     body: QuestionCloseDTO,
   }),
@@ -68,7 +74,8 @@ questionRouter.post(
 
 questionRouter.post(
   '/:questionId/vote',
-  JwtAuthAccess(),
+  JwtTokenValidatorDI.validateAccess(),
+  AuthUserStatusValidatorDI.validate(),
   validateRequest({
     body: VoteDTO,
   }),

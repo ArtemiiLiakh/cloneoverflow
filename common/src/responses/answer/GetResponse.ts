@@ -16,9 +16,6 @@ export interface AnswerGetResponse {
     title: string;
     rate: number;
     isClosed: boolean;
-    views: number;
-    createdAt: Date;
-    updatedAt: Date;
   };
   voteType?: VoteTypeEnum | null;
   createdAt: Date;

@@ -17,8 +17,9 @@ export class DeleteAccountUseCase implements IDeleteAccountUseCase {
   async execute (
     { executorId, code, email, password }: AuthServiceInput.DeleteAccount,
   ): Promise<AuthServiceOutput.DeleteAccount> {
-    const confirmUser = await this.userRepository.findWithCreds({
-      where: { id: executorId },
+    const confirmUser = await this.userRepository.getCreds({
+      where: { email },
+      withUser: true,
     });
   
     if (!confirmUser) {
@@ -34,12 +35,12 @@ export class DeleteAccountUseCase implements IDeleteAccountUseCase {
     }
 
     if (resolveCode.retries <= 0) {
-      await this.cacheRepository.delete(`user:${VerificationCodeType.ForgotPassword}:${executorId}`);
+      await this.cacheRepository.delete(`user:${VerificationCodeType.DeletePassword}:${executorId}`);
   
       throw new RetriesExpiredException();
     }
 
-    if (await this.dataHasher.compareHash(code, resolveCode.code)) {
+    if (!await this.dataHasher.compareHash(code, resolveCode.code)) {
       throw new BadBodyException('Code does not match');
     }
 
@@ -51,9 +52,9 @@ export class DeleteAccountUseCase implements IDeleteAccountUseCase {
     }
 
     await this.userRepository.delete({ 
-      user: confirmUser.user,
+      userId: executorId,
     });
   
-    return confirmUser.user;
+    return confirmUser.user!;
   }
 }

@@ -15,26 +15,37 @@ export class SearchQuestionsUseCase implements ISearchQuestionsUseCase {
     { filterBy, search, sortBy, orderBy, pagination }: SearchServiceInput.SearchQuestions,
   ): Promise<SearchServiceOutput.SearchQuestions> {
     const searchFilter = SearchQuestionParse(search);
-
-    const questions = await this.questionRepository.paginate({
+    
+    const questions = await this.questionRepository.getMany({
       where: SearchQuestionsFilterBy(searchFilter, filterBy),
       pagination,
-      options: {
-        include: {
-          tags: true,
-          owner: true,
-        },
-        count: {
-          answers: true,
-        },
-        orderBy: SearchQuestionsSortBy(sortBy, orderBy),
+      include: {
+        tags: true,
+        owner: true,
       },
+      counts: {
+        answers: true,
+      },
+      orderBy: SearchQuestionsSortBy(sortBy, orderBy),
     });
-
+    
     return {
       data: questions.data.map(question => ({
-        entity: question.entity,
-        owner: question.owner!,
+        entity: {
+          questionId: question.entity.id!,
+          ownerId: question.entity.ownerId!,
+          title: question.entity.title!,
+          rating: question.entity.rating!,
+          views: question.entity.views!,
+          isClosed: question.entity.isClosed!,
+          createdAt: question.entity.createdAt!,
+        },
+        owner: {
+          userId: question.owner!.id,
+          name: question.owner!.name,
+          username: question.owner!.username,
+          rating: question.owner!.rating,
+        },
         tags: question.tags!,
         answersAmount: question.counts?.answers ?? 0,
       })),

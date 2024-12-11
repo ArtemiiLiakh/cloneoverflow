@@ -16,30 +16,31 @@ export class LoginUseCase implements ILoginUseCase {
   ) {}
 
   async execute ({ email, password }: AuthServiceInput.Login): Promise<AuthServiceOutput.Login> {
-    const user = await this.userRepository.findWithCreds({
+    const creds = await this.userRepository.getCreds({ 
       where: { email },
+      withUser: true,
     });
-
-    if (!user) {
-      throw new LoginException();
-    }
-  
-    if (!await this.dataHasher.compareHash(password, user.creds.password)) {
+    
+    if (!creds) {
       throw new LoginException();
     }
     
+    if (!await this.dataHasher.compareHash(password, creds.creds.password)) {
+      throw new LoginException();
+    }
+
     const access_token = await makeAccessToken(this.dataEncryptor, {
-      userId: user.user.id,
-      status: user.user.status,
+      userId: creds.user!.id,
+      status: creds.user!.status,
     });
     
     const refresh_token = await makeRefreshToken(this.dataEncryptor, {
-      userId: user.user.id,
-      status: user.user.status,
+      userId: creds.user!.id,
+      status: creds.user!.status,
     });
   
     return {
-      user: user.user,
+      user: creds.user!,
       tokens: {
         access_token,
         refresh_token,

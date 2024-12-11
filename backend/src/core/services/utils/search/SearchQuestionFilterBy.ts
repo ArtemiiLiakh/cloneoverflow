@@ -1,5 +1,5 @@
 import { SearchQuestionFilterByEnum } from '@cloneoverflow/common';
-import { QuestionRepositoryInput } from '@core/domain/repositories/question/input/QuestionRepositoryInput';
+import { QuestionWhere } from '@core/domain/repositories/question/dtos/Params';
 
 export class QuestionSearchFilters {
   text?: string; 
@@ -11,31 +11,29 @@ export class QuestionSearchFilters {
 export const SearchQuestionsFilterBy = (
   { text, tags, authors, keywords }: QuestionSearchFilters, 
   filterBy?: SearchQuestionFilterByEnum | SearchQuestionFilterByEnum[],
-): QuestionRepositoryInput.QuestionWhere => {
-  const where: QuestionRepositoryInput.QuestionWhere = {
-    owner: authors ? {
-      OR: [
-        {
-          name: {
-            in: authors,
-          },
+): QuestionWhere => {
+  const where: QuestionWhere = {
+    OR: authors ? [
+      {
+        owner: {
+          name: { in: authors },
         },
-        {
-          username: {
-            in: authors,
-          },
+      },
+      {
+        owner: {
+          username: { in: authors },
         },
-      ],
-    } : undefined,
+      },
+    ] : undefined,
     
     tags: tags ? {
-      text: {
+      name: {
         in: tags,
       },
     } : undefined,
   };
 
-  const filterAND: QuestionRepositoryInput.QuestionWhere['AND'] = [{
+  const filterAND: QuestionWhere['AND'] = [{
     OR: [
       { title: { contains: text ?? '' } },
       { text: { contains: text ?? '' } },
@@ -54,7 +52,7 @@ export const SearchQuestionsFilterBy = (
     filterBy = [filterBy];
   } 
 
-  const filterMapper: Record<SearchQuestionFilterByEnum, QuestionRepositoryInput.QuestionWhere> = {
+  const filterMapper: Record<SearchQuestionFilterByEnum, QuestionWhere> = {
     active: {
       isClosed: false,
     },

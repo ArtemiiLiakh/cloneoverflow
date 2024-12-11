@@ -6,7 +6,7 @@ export function AuthSingUpMapperOutput (user: AuthServiceOutput.SignUp['user']):
     id: user.id,
     name: user.name,
     username: user.username,
-    reputation: user.reputation,
+    reputation: user.rating,
     status: user.status,
   };
 }

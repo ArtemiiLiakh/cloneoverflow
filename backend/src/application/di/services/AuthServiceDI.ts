@@ -1,4 +1,4 @@
-import { AuthServiceFacade } from '@application/auth/AuthServiceFacade';
+import { AuthServiceFacade } from '@application/services/AuthServiceFacade';
 import { ChangePasswordUseCase } from '@application/auth/usecases/changePassword';
 import { DeleteAccountUseCase } from '@application/auth/usecases/deleteAccount';
 import { ForgotPasswordUseCase } from '@application/auth/usecases/forgotPassword';
@@ -9,25 +9,25 @@ import { SignUpUseCase } from '@application/auth/usecases/signup';
 import GoogleEmailProviderDI from '../email/GoogleEmailProviderDI';
 import { PrismaUserRepositoryDI } from '../repositories/PrismaRepositoriesDI';
 import RedisCacheRepositoryDI from '../repositories/RedisCacheRepositoryDI';
-import DataEncryptorDI from '../security/DataEncryptorDI';
 import DataHasherDI from '../security/DataHasherDI';
 import { userUseCasesDI } from './UserServiceDI';
+import { JwtEncryptorDI } from '../security/JwtEncryptorDI';
 
 const LoginUseCaseDI = new LoginUseCase(
   PrismaUserRepositoryDI, 
-  DataEncryptorDI, 
+  JwtEncryptorDI, 
   DataHasherDI,
 );
 
 const SignUpUseCaseDI = new SignUpUseCase(
-  DataEncryptorDI, 
+  JwtEncryptorDI, 
   DataHasherDI, 
   userUseCasesDI.CreateUseCaseDI,
 );
 
 
 const RefreshTokenUseCaseDI = new RefreshTokenUseCase(
-  DataEncryptorDI, 
+  JwtEncryptorDI, 
   PrismaUserRepositoryDI,
 );
 

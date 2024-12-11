@@ -1,5 +1,5 @@
 import { TagRepository } from '@core/domain/repositories/tag/TagRepository';
-import { TagsSortBy } from '@core/services/utils/tag/TagSortBy';
+import { TagsSortBy } from '@core/services/utils/search/SearchTagSortBy';
 import { SearchServiceInput } from '../dtos/SearchServiceInput';
 import { SearchServiceOutput } from '../dtos/SearchServiceOutput';
 import { ISearchTagsUseCase } from '../types/usecases';
@@ -12,24 +12,25 @@ export class SearchTagsUseCase implements ISearchTagsUseCase {
   async execute (
     { name, orderBy, sortBy, pagination }: SearchServiceInput.SearchTags,
   ): Promise<SearchServiceOutput.SerachTags> {
-    const tags = await this.tagRepository.paginate({
+    const tags = await this.tagRepository.getMany({
       where: {
         text: {
           contains: name,
         },
       },
-      pagination,
-      options: {
-        count: {
-          questions: true,
-        },
-        orderBy: TagsSortBy(sortBy, orderBy),
+      counts: {
+        questions: true,
       },
+      orderBy: TagsSortBy(sortBy, orderBy),
+      pagination,
     });
   
     return {
       data: tags.data.map((tag) => ({
-        entity: tag.entity,
+        entity: {
+          id: tag.entity.id!,
+          name: tag.entity.name!,
+        },
         questionsAmount: tag.counts?.questions ?? 0,
       })),
       pagination: tags.pagination,

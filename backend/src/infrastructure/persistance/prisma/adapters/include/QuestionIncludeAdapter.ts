@@ -1,27 +1,37 @@
-import { QuestionRepositoryInput } from '@core/domain/repositories/question/input/QuestionRepositoryInput';
+import { QuestionIncludeInput } from '@core/domain/repositories/question/dtos/Params';
 import { Prisma } from '@prisma/client';
-import { AnswerWhereAdapter } from '../where/answer/AnswerWhereAdapter';
-import { QuestionUserStatsWhereAdapter } from '../where/question/QuestionUserStatsWhereAdapter';
-import { TagWhereAdapter } from '../where/tag/TagWhereAdapter';
-import { IncludeParams } from './utils/IncludeParams';
 
 export const QuestionIncludeAdapter = (
-  include: QuestionRepositoryInput.QuestionInclude | undefined, 
-  count: QuestionRepositoryInput.QuestionCount | undefined,
+  include?: QuestionIncludeInput,
 ): Prisma.QuestionInclude => {
-  if (!include && !count) return {};
-
+  if (!include) return {};
   return {
-    owner: include?.owner ?? false,
-    answers: IncludeParams<Prisma.AnswerWhereInput>(include?.answers, AnswerWhereAdapter),
-    tags: IncludeParams<Prisma.TagWhereInput>(include?.tags, TagWhereAdapter),
-    userQuestions: IncludeParams<Prisma.UserQuestionsWhereInput>(include?.users, QuestionUserStatsWhereAdapter),
-    _count: count ? {
+    owner: !include.owner ? undefined : {
       select: {
-        answers: IncludeParams<Prisma.AnswerWhereInput>(count?.answers, AnswerWhereAdapter),
-        tags: IncludeParams<Prisma.TagWhereInput>(count?.tags, TagWhereAdapter),
-        userQuestions: IncludeParams<Prisma.UserQuestionsWhereInput>(count?.users, QuestionUserStatsWhereAdapter),
+        userId: true,
+        name: true,
+        username: true,
+        reputation: true,
+        status: true,
       },
-    } : false,
+    },
+
+    answers: !include.answers ? undefined : {
+      select: {
+        id: true,
+        ownerId: true,
+        questionId: true,
+        rate: true,
+        isSolution: true,
+        createdAt: true,
+      },
+    },
+
+    tags: !include.tags ? undefined : {
+      select: {
+        id: true,
+        name: true,
+      },
+    },
   };
 };

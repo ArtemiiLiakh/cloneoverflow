@@ -1,14 +1,10 @@
-import { isObjectEmpty } from '@common/utils/objectUtils';
-import { UserRepositoryInput } from '@core/domain/repositories/user/input/UserRepositoryInput';
+import { UserSelectInput } from '@core/domain/repositories/user/dtos/Params';
 import { Prisma } from '@prisma/client';
-import { UserIncludeAdapter } from '../include/UserIncludeAdapter';
 
 export const UserSelectAdapter = (
-  select?: UserRepositoryInput.UserSelect,
-  include?: UserRepositoryInput.UserInclude,
-  count?: UserRepositoryInput.UserCount,
+  select?: UserSelectInput,
 ): Prisma.UserSelect => {
-  if (!select || isObjectEmpty(select)) return {
+  if (!select) return {
     userId: true,
     name: true,
     username: true,
@@ -17,18 +13,16 @@ export const UserSelectAdapter = (
     status: true,
     createdAt: true,
     updatedAt: true,
-    ...UserIncludeAdapter(include, count),
   };
 
   return {
     userId: select.id,
     name: select.name,
     username: select.username,
-    reputation: select.reputation,
+    reputation: select.rating,
     about: select.about,
     status: select.status,
     createdAt: select.createdAt,
     updatedAt: select.updatedAt,
-    ...UserIncludeAdapter(include, count),
   };
 }; 

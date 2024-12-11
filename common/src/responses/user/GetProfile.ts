@@ -7,15 +7,15 @@ export interface UserGetProfileResponse {
   about: string | null;
   reputation: number;
   status: UserStatusEnum;
+  createdAt: Date;
+  updatedAt: Date;
   answersAmount: number;
   questionsAmount: number;
   bestAnswer: {
     id: string;
-    text: string;
     rate: number;
     isSolution: boolean;
     createdAt: Date;
-    updatedAt: Date;
     question: {
       id: string;
       title: string;
@@ -29,8 +29,5 @@ export interface UserGetProfileResponse {
     tags: string[];
     answersAmount: number;
     createdAt: Date;
-    updatedAt: Date;
   } | null;
-  createdAt: Date;
-  updatedAt: Date;
 }

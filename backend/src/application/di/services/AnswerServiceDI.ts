@@ -7,42 +7,38 @@ import { AnswerUpdateUseCase } from '@core/services/answer/usecases/update';
 import { AnswerVoteUseCase } from '@core/services/answer/usecases/vote';
 import {
   PrismaAnswerRepositoryDI,
+  PrismaAnswerUserRepositoryDI,
   PrismaTransactionDI,
 } from '../repositories/PrismaRepositoriesDI';
-import {
-  ValidateQuestionUseCaseDI,
-  ValidateUserUseCaseDI,
-} from './ValidationServiceDI';
+import { ValidateQuestionUseCaseDI } from './ValidationServiceDI';
 
 const CreateUseCaseDI = new AnswerCreateUseCase(
-  ValidateUserUseCaseDI,
   ValidateQuestionUseCaseDI, 
   PrismaTransactionDI,
 );
 const DeleteUseCaseDI = new AnswerDeleteUseCase(
-  ValidateUserUseCaseDI, 
   PrismaAnswerRepositoryDI, 
   PrismaTransactionDI,
 );
 
 
 const UpdateUseCaseDI = new AnswerUpdateUseCase(
-  ValidateUserUseCaseDI,
   PrismaAnswerRepositoryDI,
 );
 
 const GetUseCaseDI = new AnswerGetUseCase(
-  ValidateUserUseCaseDI,
   PrismaAnswerRepositoryDI,
+  PrismaAnswerUserRepositoryDI,
 );
 
 const GetAllUseCaseDI = new AnswerGetAllUseCase(
   PrismaAnswerRepositoryDI,
+  PrismaAnswerUserRepositoryDI,
 );
 
 const VoteAnswerUseCaseDI = new AnswerVoteUseCase(
-  ValidateUserUseCaseDI,
   PrismaAnswerRepositoryDI, 
+  PrismaAnswerUserRepositoryDI,
   PrismaTransactionDI,
 );
 

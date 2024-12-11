@@ -11,6 +11,6 @@
 
 /backend/prisma/migrations
 /backend/prisma/.client
-/backend/credentials.json
+/backend/config
 
 /Kubernetes

@@ -1,64 +1,36 @@
-import { NoEntityWithIdException, QuestionUserStatusEnum } from '@cloneoverflow/common';
-import { QuestionUserStats } from '@core/domain/entities/QuestionUserStats';
-import { UnitOfWork } from '@core/domain/repositories/UnitOfWork';
+import { QuestionUserStatusEnum } from '@cloneoverflow/common';
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
-import { IValidateUserUseCase } from '@core/services/validation/types/usecases';
+import { QuestionUserRepository } from '@core/domain/repositories/question/QuestionUserRepository';
+import { IValidateQuestionUseCase } from '@core/services/validation/types/usecases';
 import { QuestionServiceInput } from '../dtos/QuestionServiceInput';
 import { QuestionServiceOutput } from '../dtos/QuestionServiceOutput';
 import { IQuestionAddViewerUseCase } from '../types/usecases';
 
 export class QuestionAddViewerUseCase implements IQuestionAddViewerUseCase {
   constructor (
-    private validateUserUseCase: IValidateUserUseCase,
     private questionRepository: QuestionRepository,
-    private unitOfWork: UnitOfWork,
+    private questionUserRepository: QuestionUserRepository,
+    private validateQuestionUseCase: IValidateQuestionUseCase,
   ) {}
 
   async execute (
     { executorId, questionId }: QuestionServiceInput.AddViewer,
   ): Promise<QuestionServiceOutput.AddViewer> {
-    await this.validateUserUseCase.validate({
-      userId: executorId,
-    });
+    await this.validateQuestionUseCase.execute({ questionId });
 
-    const question = await this.questionRepository.findById({ 
-      id: questionId,
-      options: {
-        include: {
-          users: {
-            questionId,
-            userId: executorId,
-            status: QuestionUserStatusEnum.VIEWER,
-          },
-        },
+    const viewer = await this.questionUserRepository.getOne({
+      where: {
+        questionId,
+        userId: executorId,
+        status: QuestionUserStatusEnum.VIEWER,
       },
     });
 
-    if (!question) {
-      throw new NoEntityWithIdException('Question');
-    }
-
-    if (!question.users?.at(0)) {
-      const questionUser = QuestionUserStats.new({
-        userId: executorId,
+    if (!viewer) {
+      await this.questionRepository.addViewer({
         questionId,
-        status: QuestionUserStatusEnum.VIEWER,
+        userId: executorId,
       });
-
-      await this.unitOfWork.execute(async (unit) => {
-        await unit.questionRepository.update({
-          id: questionId,
-          question: {
-            views: question.entity.views + 1,
-          },
-        });
-
-        await unit.questionUserRepository.create({ user: questionUser });
-      });
-
-      return questionUser;
     }
-
-    return question.users.at(0)!;
   }
 }

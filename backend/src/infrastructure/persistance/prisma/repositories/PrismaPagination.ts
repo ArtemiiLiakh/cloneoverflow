@@ -1,37 +1,26 @@
 import config from '@/config';
 import { PaginationDTO, PaginatedData } from '@cloneoverflow/common';
 
-interface PaginatedRepository<P, R> {
-  findMany(args: P): Promise<R[]>;
-  count(args: P): Promise<number>;
-}
-
-interface PayloadOptions {
-  where: any,
-  select?: any,
-  include?: any,
-  orderBy?: any,
-  skip?: number,
-  take?: number,
-}
+type WhereParam = { where: object };
 
 export class PrismaPaginationRepository {
-  static async paginate <Payload extends PayloadOptions, Result> (
-    repository: PaginatedRepository<PayloadOptions, Result>, 
-    payload: Payload, 
+  static async paginate <P, R> (
+    findMany: (args: P) => Promise<R[]>,
+    count: (args: WhereParam) => Promise<number>,
+    payload: P,
     pagination: PaginationDTO | undefined,
-  ): Promise<PaginatedData<Result>> {
+  ): Promise<PaginatedData<R>> {
     const page = pagination?.page ?? config.pagination.defaultPage;
     const pageSize = pagination?.pageSize ?? config.pagination.defaultPageSize;
 
-    const data = await repository.findMany({
+    const data = await findMany({
       ...payload,
       take: pageSize,
       skip: page * pageSize,
     });
 
-    const totalAmount = await repository.count({
-      where: payload.where,
+    const totalAmount = await count({
+      where: (payload as WhereParam).where,
     });
     const totalPages = totalAmount === pageSize ? 0 : Math.floor(totalAmount / pageSize);
 

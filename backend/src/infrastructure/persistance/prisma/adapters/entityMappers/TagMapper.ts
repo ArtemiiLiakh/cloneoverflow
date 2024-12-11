@@ -5,13 +5,7 @@ export class TagMapper {
   static toEntity (tag: Prisma.Tag): Tag {
     return {
       id: tag.id,
-      text: tag.name,
-      createdAt: tag.createdAt,
-      updatedAt: tag.updatedAt,
+      name: tag.name,
     };
-  }
-
-  static toEntities (tags: Prisma.Tag[]): Tag[] {
-    return tags.map(this.toEntity);
   }
 }

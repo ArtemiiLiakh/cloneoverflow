@@ -4,7 +4,6 @@ export interface MappedSearchTagsResponse {
   id: string;
   name: string;
   questionsAmount: number;
-  createdAt: Date;
 }
 
 export interface SearchTagsReponse {

@@ -1,23 +1,25 @@
 version: '3.7'
 
 services:
-  # backend:
-  #   image: cloneoverflow:backend
-  #   pull_policy: never
-  #   container_name: backend
-  #   build:
-  #     context: .
-  #     dockerfile: ./backend/Dockerfile
-  #   ports:
-  #     - 8000:8000
-  #   volumes:
-  #     - ./.env.prod:/app/backend/.env.prod
-  #     - ./credentials.json:/app/backend/credentials.json
-  #   networks:
-  #     - database
-  #   depends_on:
-  #     - postgres
-  #     - redis
+  backend:
+    image: cloneoverflow:backend
+    pull_policy: never
+    container_name: backend
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    ports:
+      - 8000:8000
+    volumes:
+      - ./config/.env.prod:/app/backend/config/.env.prod
+      - ./config/credentials.json:/app/backend/config/credentials.json
+    command: > 
+      sh -c "npm run db:sync:prod && npm run start:prod"
+    networks:
+      - database
+    depends_on:
+      - postgres
+      - redis
 
   postgres:
     image: postgres:15.0
@@ -46,8 +48,8 @@ services:
       - 6379:6379
     volumes:
       - testRedisData:/data
-      - ./config/redis.conf:/usr/local/etc/redis/redis.conf
-      - ./config/users.acl:/usr/local/etc/redis/users.acl
+      - ./config/redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./config/redis/users.acl:/usr/local/etc/redis/users.acl
     deploy:
       resources:
         limits:

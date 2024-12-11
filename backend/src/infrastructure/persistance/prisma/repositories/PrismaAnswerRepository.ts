@@ -1,122 +1,169 @@
 import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
-import { AnswerRepositoryInput } from '@core/domain/repositories/answer/input/AnswerRepositoryInput';
-import { AnswerRepositoryOutput } from '@core/domain/repositories/answer/output/AnswerRepositoryOutput';
+import { AnswerRepositoryInput } from '@core/domain/repositories/answer/dtos/AnswerRepositoryInput';
+import { AnswerRepositoryOutput } from '@core/domain/repositories/answer/dtos/AnswerRepositoryOutput';
 import { PrismaClient } from '@prisma/client';
-import { PrismaPaginationRepository } from './PrismaPagination';
+import { AnswerMapper } from '../adapters/entityMappers/AnswerMapper';
+import { QuestionMapper } from '../adapters/entityMappers/QuestionMapper';
+import { UserMapper } from '../adapters/entityMappers/UserMapper';
+import { AnswerIncludeAdapter } from '../adapters/include/AnswerIncludeAdapter';
 import { AnswerOrderByAdapter } from '../adapters/orderBy/AnswerOrderByAdapter';
-import { AnswerRepositoryMapper } from '../adapters/repositoryMappers/AnswerRepositoryMapper';
-import { AnswerWhereAdapter } from '../adapters/where/answer/AnswerWhereAdapter';
 import { AnswerSelectAdapter } from '../adapters/select/AnswerSelectAdapter';
+import { AnswerWhereAdapter } from '../adapters/where/answer/AnswerWhereAdapter';
+import { PrismaPaginationRepository } from './PrismaPagination';
+import { VoteTypeEnum } from '@cloneoverflow/common';
 
 export class PrismaAnswerRepository implements AnswerRepository {
   constructor (
     private prisma: PrismaClient,
   ) {}
 
-  async create ({ answer }: AnswerRepositoryInput.Create): Promise<AnswerRepositoryOutput.Create> {
-    await this.prisma.answer.create({
-      data: {
-        id: answer.id,
-        questionId: answer.questionId,
-        ownerId: answer.ownerId,
-        text: answer.text,
-        isSolution: answer.isSolution,
-        rate: answer.rate,
-        createdAt: answer.createdAt,
-        updatedAt: answer.updatedAt,
-      },
+  async isExist (
+    { answerId }: AnswerRepositoryInput.IsExist,
+  ): Promise<AnswerRepositoryOutput.IsExist> {
+    const answer = await this.prisma.answer.findFirst({
+      where: { id: answerId },
+      select: { id: true },
     });
+
+    return !!answer;
   }
 
-  async findOne ({ where, options }: AnswerRepositoryInput.FindOne): Promise<AnswerRepositoryOutput.FindOne> {
+  async getById (
+    { answerId }: AnswerRepositoryInput.GetById,
+  ): Promise<AnswerRepositoryOutput.GetById> {
+    const answer = await this.prisma.answer.findFirst({ where: { id: answerId } });
+    
+    if (!answer) return null;
+    return AnswerMapper.toEntity(answer);
+  }
+
+  async getAnswer (
+    { where, orderBy, include }: AnswerRepositoryInput.GetAnswer,
+  ): Promise<AnswerRepositoryOutput.GetAnswer> {
     const answer = await this.prisma.answer.findFirst({
       where: AnswerWhereAdapter(where),
-      select: AnswerSelectAdapter(options?.select, options?.include, options?.count),
-      orderBy: AnswerOrderByAdapter(options?.orderBy),
-    }); 
+      orderBy: AnswerOrderByAdapter(orderBy),
+      include: AnswerIncludeAdapter(include),
+    });
 
     if (!answer) return null;
-
-    return AnswerRepositoryMapper.findOne(answer);
+    return {
+      entity: AnswerMapper.toEntity(answer),
+      owner: answer.owner ? UserMapper.toEntity(answer.owner) : undefined,
+      question: answer.question ? QuestionMapper.toEntity(answer.question) : undefined,
+    };
   }
 
-  findById ({ id, options }: AnswerRepositoryInput.FindById): Promise<AnswerRepositoryOutput.FindById> {
-    return this.findOne({
-      where: { id },
-      options,
+  async getPartialAnswer (
+    { where, select, orderBy, include }: AnswerRepositoryInput.GetPartialAnswer,
+  ): Promise<AnswerRepositoryOutput.GetPartialAnswer> {
+    const answer = await this.prisma.answer.findFirst({
+      where: AnswerWhereAdapter(where),
+      select: {
+        ...AnswerSelectAdapter(select),
+        ...AnswerIncludeAdapter(include),
+      },
+      orderBy: AnswerOrderByAdapter(orderBy),
     });
+
+    if (!answer) return null;
+    return {
+      entity: AnswerMapper.toEntity(answer),
+      owner: answer.owner ? UserMapper.toEntity(answer.owner) : undefined,
+      question: answer.question ? QuestionMapper.toEntity(answer.question) : undefined,
+    };
   }
 
-  count ({ where }: AnswerRepositoryInput.Count): Promise<AnswerRepositoryOutput.Count> {
+  async getMany (
+    { where, select, orderBy, include, pagination }: AnswerRepositoryInput.GetMany,
+  ): Promise<AnswerRepositoryOutput.GetMany> {
+    const answers = await PrismaPaginationRepository.paginate(
+      this.prisma.answer.findMany.bind(this.prisma),
+      this.prisma.answer.count.bind(this.prisma),
+      {
+        where: AnswerWhereAdapter(where),
+        orderBy: AnswerOrderByAdapter(orderBy),
+        select: {
+          ...AnswerSelectAdapter(select),
+          ...AnswerIncludeAdapter(include),
+        },
+      },
+      pagination,
+    );
+
+    return {
+      data: answers.data.map((answer) => ({
+        entity: AnswerMapper.toEntity(answer),
+        owner: answer.owner ? UserMapper.toEntity(answer.owner) : undefined,
+        question: answer.question ? QuestionMapper.toEntity(answer.question) : undefined,
+      })),
+      pagination: answers.pagination,
+    };
+  }
+
+  count (
+    { where }: AnswerRepositoryInput.Count,
+  ): Promise<AnswerRepositoryOutput.Count> {
     return this.prisma.answer.count({
       where: AnswerWhereAdapter(where),
     });
   }
 
-  async findMany ({ where, options }: AnswerRepositoryInput.FindMany): Promise<AnswerRepositoryOutput.FindMany> {
-    const answers = await this.prisma.answer.findMany({
-      where: AnswerWhereAdapter(where),
-      select: AnswerSelectAdapter(options?.select, options?.include, options?.count),
-      orderBy: AnswerOrderByAdapter(options?.orderBy),
-      skip: options?.offset,
-      take: options?.take,
-    });
-
-    return AnswerRepositoryMapper.findMany(answers);
-  }
-
-  async paginate ({ where, options, pagination }: AnswerRepositoryInput.Paginate): Promise<AnswerRepositoryOutput.Paginate> {
-    const answers = await PrismaPaginationRepository.paginate(this.prisma.answer, {
-      where: AnswerWhereAdapter(where),
-      select: AnswerSelectAdapter(options?.select, options?.include, options?.count),
-      orderBy: AnswerOrderByAdapter(options?.orderBy),
-      skip: options?.offset,
-      take: options?.take,
-    }, pagination);
-
-    return AnswerRepositoryMapper.paginate(answers);
-  }
-
-  async update ({ id, answer, returnEntity }: AnswerRepositoryInput.Update): Promise<AnswerRepositoryOutput.Update> {
-    const updatedAnswer = await this.prisma.answer.update({
-      where: {
-        id,
-      },
+  async create (
+    { answer }: AnswerRepositoryInput.Create,
+  ): Promise<AnswerRepositoryOutput.Create> {
+    await this.prisma.answer.create({
       data: {
-        ownerId: answer.ownerId,
-        questionId: answer.questionId,
-        isSolution: answer.isSolution,
-        text: answer.text,
-        rate: answer.rate,
-        createdAt: answer.createdAt,
-        updatedAt: answer.updatedAt,
-      },
-    });
-
-    if (returnEntity) {
-      return AnswerRepositoryMapper.update(updatedAnswer);
-    }
-  }
-
-  async updateMany ({ where, answer }: AnswerRepositoryInput.UpdateMany): Promise<AnswerRepositoryOutput.UpdateMany> {
-    await this.prisma.answer.updateMany({
-      where: AnswerWhereAdapter(where),
-      data: {
-        ownerId: answer.ownerId,
-        questionId: answer.questionId,
-        isSolution: answer.isSolution,
-        text: answer.text,
-        rate: answer.rate,
-        createdAt: answer.createdAt,
-        updatedAt: answer.updatedAt,
-      },
-    });
-  }
-
-  async delete ({ answer }: AnswerRepositoryInput.Delete): Promise<AnswerRepositoryOutput.Delete> {
-    await this.prisma.answer.delete({
-      where: {
         id: answer.id,
+        ownerId: answer.ownerId,
+        questionId: answer.questionId,
+        text: answer.text,
+        rate: answer.rating,
+        isSolution: answer.isSolution,
+        createdAt: answer.createdAt,
+        updatedAt: answer.updatedAt,
+      },
+    });
+  }
+
+  async update (
+    { answerId, answer, returnEntity }: AnswerRepositoryInput.Update,
+  ): Promise<AnswerRepositoryOutput.Update> {
+    const updatedAnswer = await this.prisma.answer.update({
+      where: { id: answerId },
+      data: {
+        text: answer.text,
+      },
+    });
+
+    if (returnEntity) return AnswerMapper.toEntity(updatedAnswer);
+  }
+
+  async delete (
+    { answerId }: AnswerRepositoryInput.Delete,
+  ): Promise<AnswerRepositoryOutput.Delete> {
+    await this.prisma.answer.delete({
+      where: { id: answerId },
+    });
+  }
+
+  async addRating ({ 
+    answerId,
+    voteType,
+  }: AnswerRepositoryInput.AddRating): Promise<AnswerRepositoryOutput.AddRating> {
+    await this.prisma.answer.update({
+      where: { id: answerId },
+      data: {
+        rate: {
+          increment: voteType === VoteTypeEnum.UP ? 1 : -1,
+        },
+        owner: {
+          update: {
+            reputation: {
+              increment: voteType === VoteTypeEnum.UP ? 1 : -1,
+            },
+          },
+        },
       },
     });
   }

@@ -1,12 +1,9 @@
 import { isObjectEmpty } from '@common/utils/objectUtils';
-import { QuestionRepositoryInput } from '@core/domain/repositories/question/input/QuestionRepositoryInput';
+import { QuestionSelectInput } from '@core/domain/repositories/question/dtos/Params';
 import { Prisma } from '@prisma/client';
-import { QuestionIncludeAdapter } from '../include/QuestionIncludeAdapter';
 
 export const QuestionSelectAdapter = (
-  select?: QuestionRepositoryInput.QuestionSelect,
-  include?: QuestionRepositoryInput.QuestionInclude,
-  count?: QuestionRepositoryInput.QuestionCount,
+  select?: QuestionSelectInput,
 ): Prisma.QuestionSelect => {
   if (!select || isObjectEmpty(select)) return {
     id: true,
@@ -18,19 +15,17 @@ export const QuestionSelectAdapter = (
     ownerId: true,
     createdAt: true,
     updatedAt: true,
-    ...QuestionIncludeAdapter(include, count),
   };
 
   return {
     id: select.id ?? false,
     title: select.title ?? false,
     text: select.text ?? false,
-    rate: select.rate ?? false,
+    rate: select.rating ?? false,
     views: select.views ?? false,
     isClosed: select.isClosed ?? false,
     ownerId: select.ownerId ?? false,
     createdAt: select.createdAt ?? false,
     updatedAt: select.updatedAt ?? false,
-    ...QuestionIncludeAdapter(include, count),
   };
 };

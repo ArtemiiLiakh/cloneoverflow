@@ -21,7 +21,7 @@ export class SendVerificationCodeUseCase implements ISendVerificationCodeUseCase
   ) {}
   
   async execute ({ email, codeType }: AuthServiceInput.SendVerificationCode): Promise<AuthServiceOutput.SendVerificationCode> {
-    const user = await this.userRepository.findByEmail({
+    const user = await this.userRepository.getByEmail({
       email,
     });
 
@@ -29,7 +29,7 @@ export class SendVerificationCodeUseCase implements ISendVerificationCodeUseCase
       throw new Exception('User with such email is not found');
     }
 
-    const code = await this.generateCode(`user:${codeType}:${user.entity.id}`);
+    const code = await this.generateCode(`user:${codeType}:${user.id}`);
     this.emailProvider.sendEmail(email, `Your password verification code: ${code}`);
   }
 

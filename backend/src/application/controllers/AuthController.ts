@@ -12,7 +12,7 @@ import {
   AuthSignUpResponse,
   AuthVerificationCodeDTO,
 } from '@cloneoverflow/common';
-import { AuthServiceFacade } from '../auth/AuthServiceFacade';
+import { AuthServiceFacade } from '../services/AuthServiceFacade';
 import { WithAuth, WithBody } from './types/Request';
 import { CoreResponse } from './types/Response';
 

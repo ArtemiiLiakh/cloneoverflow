@@ -1,8 +1,9 @@
 import { AdaptController } from '@application/adapters/AdaptController';
 import { AnswerController } from '@application/controllers/AnswerController';
+import { AuthUserStatusValidatorDI } from '@application/di/security/AuthUserStatusValidatorDI';
+import { JwtTokenValidatorDI } from '@application/di/security/JwtTokenValidatorDI';
 import { answerServiceFacadeDI } from '@application/di/services/AnswerServiceDI';
-import { JwtAuthOptional, JwtAuthAccess } from '@application/middlewares/JwtAuthAccess';
-import { validateRequest } from '@application/middlewares/validateRequest';
+import { validateRequest } from '@application/middlewares/security/ValidateRequest';
 import {
   AnswerCreateDTO,
   AnswersGetAllDTO,
@@ -12,11 +13,10 @@ import {
 import express from 'express';
 
 const answerRouter = express.Router();
-
 const controller = new AnswerController(answerServiceFacadeDI);
 
 answerRouter.get('/', 
-  JwtAuthOptional(),
+  JwtTokenValidatorDI.validateAccess({ optional: true }),
   validateRequest({
     query: AnswersGetAllDTO,
   }),
@@ -24,12 +24,14 @@ answerRouter.get('/',
 );
 
 answerRouter.get('/:answersId', 
-  JwtAuthOptional(),
+  JwtTokenValidatorDI.validateAccess({ optional: true }),
+  AuthUserStatusValidatorDI.validate(),
   AdaptController(controller.get.bind(controller)),
 );
 
 answerRouter.post('/', 
-  JwtAuthAccess(), 
+  JwtTokenValidatorDI.validateAccess(), 
+  AuthUserStatusValidatorDI.validate(),
   validateRequest({
     body: AnswerCreateDTO,
   }), 
@@ -37,7 +39,8 @@ answerRouter.post('/',
 );
 
 answerRouter.patch('/:answerId', 
-  JwtAuthAccess(), 
+  JwtTokenValidatorDI.validateAccess(), 
+  AuthUserStatusValidatorDI.validate(),
   validateRequest({
     body: AnswerUpdateDTO,
   }), 
@@ -45,12 +48,14 @@ answerRouter.patch('/:answerId',
 );
 
 answerRouter.delete('/:answerId',
-  JwtAuthAccess(), 
+  JwtTokenValidatorDI.validateAccess(),
+  AuthUserStatusValidatorDI.validate(),
   AdaptController(controller.delete.bind(controller)),
 );
 
 answerRouter.post('/:answerId/vote', 
-  JwtAuthAccess(), 
+  JwtTokenValidatorDI.validateAccess(), 
+  AuthUserStatusValidatorDI.validate(),
   validateRequest({ 
     body: VoteDTO,
   }),

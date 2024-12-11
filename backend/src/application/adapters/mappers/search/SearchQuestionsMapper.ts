@@ -6,22 +6,20 @@ export function SearchQuestionsMapperOutput (
 ): SearchQuestionsResponse {
   return {
     questions: questions.data.map(question => ({
-      id: question.entity.id,
+      id: question.entity.questionId,
       title: question.entity.title,
-      text: question.entity.text,
-      rate: question.entity.rate,
+      rate: question.entity.rating,
       views: question.entity.views,
       isClosed: question.entity.isClosed,
       createdAt: question.entity.createdAt,
-      updatedAt: question.entity.updatedAt,
       answersAmount: question.answersAmount,
       owner: {
-        id: question.owner.id,
+        id: question.owner.userId,
         name: question.owner.name,
-        reputation: question.owner.reputation,
+        reputation: question.owner.rating,
         username: question.owner.username,
       },
-      tags: question.tags.map(tag => tag.text),
+      tags: question.tags.map(tag => tag.name),
     })),
     pagination: questions.pagination,
   };

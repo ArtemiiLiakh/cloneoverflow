@@ -8,8 +8,7 @@ export function SearchTagsMapperOutput ({
   return {
     tags: data.map(({ entity, questionsAmount }) => ({
       id: entity.id,
-      name: entity.text,
-      createdAt: entity.createdAt,
+      name: entity.name,
       questionsAmount,
     })),
     pagination,

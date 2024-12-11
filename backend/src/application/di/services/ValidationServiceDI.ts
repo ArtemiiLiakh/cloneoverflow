@@ -1,6 +1,6 @@
-import { ValidateAnswerUseCase } from '@core/services/validation/usecases/validateAnswer';
-import { ValidateQuestionUseCase } from '@core/services/validation/usecases/validateQuestion';
-import { ValidateUserUseCase } from '@core/services/validation/usecases/validateUser';
+import { ValidateAnswerUseCase } from '@core/services/validation/usecases/ValidateAnswerUseCase';
+import { ValidateQuestionUseCase } from '@core/services/validation/usecases/ValidateQuestionUserCase';
+import { ValidateUserUseCase } from '@core/services/validation/usecases/ValidateUserUseCase';
 import {
   PrismaAnswerRepositoryDI,
   PrismaQuestionRepositoryDI,

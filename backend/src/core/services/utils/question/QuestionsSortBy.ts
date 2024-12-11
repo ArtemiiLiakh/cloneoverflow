@@ -1,23 +1,29 @@
-import { QuestionsSortByEnum, OrderByEnum } from '@cloneoverflow/common';
-import { QuestionRepositoryInput } from '@core/domain/repositories/question/input/QuestionRepositoryInput';
+import { OrderByEnum, QuestionsSortByEnum } from '@cloneoverflow/common';
+import { QuestionOrderBy, QuestionOrderByType } from '@core/domain/repositories/question/dtos/Params';
 
 export const QuestionsSortBy = (
-  sortBy?: QuestionsSortByEnum, 
+  sortBy?: QuestionsSortByEnum | QuestionsSortByEnum[], 
   orderBy?: OrderByEnum,
-): QuestionRepositoryInput.QuestionOrderBy => {
-  const sortByMapper: Record<QuestionsSortByEnum, QuestionRepositoryInput.QuestionOrderBy> = {
+): QuestionOrderBy => {
+  const sortByMapper: Record<QuestionsSortByEnum, QuestionOrderByType> = {
     answers: {
-      answers: orderBy ?? OrderByEnum.DESC,
+      answersAmount: orderBy ?? OrderByEnum.DESC,
     },
 
     date: {
-      createdAt: orderBy ?? OrderByEnum.ASC,
+      createdAt: orderBy ?? OrderByEnum.DESC,
     },
 
     rate: {
-      rate: orderBy ?? OrderByEnum.DESC,
+      rating: orderBy ?? OrderByEnum.DESC,
     },
   };
 
-  return sortBy ? sortByMapper[sortBy] : {};
+  if (Array.isArray(sortBy)) {
+    return sortBy.map((sort) => sortByMapper[sort]);
+  };
+
+  return sortBy ? sortByMapper[sortBy] : {
+    rating: orderBy ?? OrderByEnum.DESC,
+  };
 };

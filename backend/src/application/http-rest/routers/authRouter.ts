@@ -1,9 +1,9 @@
 import { AdaptController } from '@application/adapters/AdaptController';
 import { AuthController } from '@application/controllers/AuthController';
+import { AuthUserStatusValidatorDI } from '@application/di/security/AuthUserStatusValidatorDI';
+import { JwtTokenValidatorDI } from '@application/di/security/JwtTokenValidatorDI';
 import { authServiceFacadeDI } from '@application/di/services/AuthServiceDI';
-import { JwtAuthAccess } from '@application/middlewares/JwtAuthAccess';
-import { JwtAuthRefresh } from '@application/middlewares/JwtAuthRefresh';
-import { validateRequest } from '@application/middlewares/validateRequest';
+import { validateRequest } from '@application/middlewares/security/ValidateRequest';
 import {
   AuthChangePasswordDTO,
   AuthDeleteAccountDTO,
@@ -15,7 +15,6 @@ import {
 import express from 'express';
 
 const authRouter = express.Router();
-
 const authController = new AuthController(authServiceFacadeDI);
 
 authRouter.post(
@@ -36,19 +35,22 @@ authRouter.post(
 
 authRouter.get(
   '/me',
-  JwtAuthAccess(), 
+  JwtTokenValidatorDI.validateAccess(), 
+  AuthUserStatusValidatorDI.validate(),
   AdaptController(authController.getMe.bind(authController)),
 );
 
 authRouter.post(
   '/refreshToken',
-  JwtAuthRefresh(), 
+  JwtTokenValidatorDI.validateRefresh(), 
+  AuthUserStatusValidatorDI.validate(),
   AdaptController(authController.refreshToken.bind(authController)),
 );
 
 authRouter.post(
   '/changePassword',
-  JwtAuthAccess(),
+  JwtTokenValidatorDI.validateAccess(),
+  AuthUserStatusValidatorDI.validate(),
   validateRequest({
     body: AuthChangePasswordDTO,
   }),
@@ -65,8 +67,9 @@ authRouter.post(
 
 authRouter.delete(
   '/deleteAccount',
-  JwtAuthRefresh(), 
-  JwtAuthAccess(),
+  JwtTokenValidatorDI.validateRefresh(), 
+  JwtTokenValidatorDI.validateAccess(),
+  AuthUserStatusValidatorDI.validate(),
   validateRequest({
     body: AuthDeleteAccountDTO,
   }),

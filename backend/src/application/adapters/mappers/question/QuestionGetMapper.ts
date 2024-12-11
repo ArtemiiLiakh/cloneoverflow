@@ -7,7 +7,7 @@ export function QuestionGetMapperOutput (
   const owner = question.owner ? {
     id: question.owner.id,
     name: question.owner.name,
-    reputation: question.owner.reputation,
+    reputation: question.owner.rating,
     username: question.owner.username,
   } : undefined;
 
@@ -15,12 +15,12 @@ export function QuestionGetMapperOutput (
     id: question.entity.id,
     title: question.entity.title,
     text: question.entity.text,
-    rate: question.entity.rate,
+    rate: question.entity.rating,
     isClosed: question.entity.isClosed,
     views: question.entity.views,
     createdAt: question.entity.createdAt,
     updatedAt: question.entity.updatedAt,
-    tags: question.tags?.map(tag => tag.text),
+    tags: question.tags?.map(tag => tag.name),
     voteType: question.userStats?.voteType,
     owner,
   };

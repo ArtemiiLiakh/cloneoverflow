@@ -7,7 +7,7 @@ export function AnswerUpdateMapperOutput (answer: AnswerServiceOutput.Update): A
     ownerId: answer.ownerId,
     questionId: answer.questionId,
     text: answer.text,
-    rate: answer.rate,
+    rate: answer.rating,
     isSolution: answer.isSolution,
     createdAt: answer.createdAt,
   };
