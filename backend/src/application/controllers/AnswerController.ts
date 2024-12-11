@@ -12,7 +12,7 @@ import {
   AnswerUpdateResponse,
   VoteDTO,
 } from '@cloneoverflow/common';
-import { WithAuth, WithBody, WithOptionalAuth, WithParams } from './types/Request';
+import { WithAuth, WithBody, WithOptionalAuth, WithParams, WithQuery } from './types/Request';
 import { CoreResponse } from './types/Response';
 import { AnswerGetAllMapper } from '@application/adapters/mappers/answers/AnswerGetAllMapper';
 
@@ -34,19 +34,19 @@ export class AnswerController {
   }
 
   async getAll (
-    { executor, body }: WithOptionalAuth & WithBody<AnswersGetAllDTO>,
+    { executor, query }: WithOptionalAuth & WithQuery<AnswersGetAllDTO>,
     res: CoreResponse<AnswerGetAllResponse>,
   ) {
     const answers = await this.answerService.getAll({
       executorId: executor?.userId,
-      questionId: body.questionId,
-      ownerId: body.ownerId,
-      rateFrom: body.rateFrom,
-      rateTo: body.rateTo,
-      searchText: body.searchText,
-      sortBy: body.sortBy,
-      orderBy: body.orderBy,
-      pagination: body.pagination,
+      questionId: query.questionId,
+      ownerId: query.ownerId,
+      rateFrom: query.rateFrom,
+      rateTo: query.rateTo,
+      searchText: query.searchText,
+      sortBy: query.sortBy,
+      orderBy: query.orderBy,
+      pagination: query.pagination,
     });
 
     res.send(AnswerGetAllMapper(answers));

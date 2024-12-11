@@ -8,7 +8,6 @@ import {
   PrismaQuestionRepositoryDI,
   PrismaUserRepositoryDI,
 } from '../repositories/PrismaRepositoriesDI';
-import { ValidateUserUseCaseDI } from './ValidationServiceDI';
 
 const CreateUseCaseDI = new UserCreateUseCase(PrismaUserRepositoryDI);
 const GetUseCaseDI = new UserGetUseCase(PrismaUserRepositoryDI);
@@ -19,7 +18,6 @@ const GetProfileUseCaseDI = new UserGetProfileUseCase(
   PrismaQuestionRepositoryDI,
 );
 const UpdateUseCaseDI = new UserUpdateUseCase(
-  ValidateUserUseCaseDI, 
   PrismaUserRepositoryDI,
 );
 

@@ -6,14 +6,12 @@ export function UserGetQuestionMapperOutput (questions: QuestionServiceOutput.Ge
     questions: questions.data.map(question => ({
       id: question.entity.id,
       title: question.entity.title,
-      text: question.entity.text,
-      rate: question.entity.rate,
+      rate: question.entity.rating,
       views: question.entity.views,
       isClosed: question.entity.isClosed,
       createdAt: question.entity.createdAt,
-      updatedAt: question.entity.updatedAt,
       answersAmount: question.answerAmount ?? 0,
-      tags: question.tags?.map(tag => tag.text) ?? [],
+      tags: question.tags?.map(tag => tag.name) ?? [],
     })),
     pagination: questions.pagination,
   };

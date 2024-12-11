@@ -10,51 +10,47 @@ import { QuestionVoteUseCase } from '@core/services/question/usecases/vote';
 import {
   PrismaAnswerRepositoryDI,
   PrismaQuestionRepositoryDI,
+  PrismaQuestionUserRepositoryDI,
   PrismaTransactionDI,
 } from '../repositories/PrismaRepositoriesDI';
-import { ValidateUserUseCaseDI } from './ValidationServiceDI';
+import { ValidateQuestionUseCaseDI } from './ValidationServiceDI';
 
 const CreateUseCaseDI = new QuestionCreateUseCase(
-  ValidateUserUseCaseDI, 
   PrismaTransactionDI,
 );
 
 const UpdateUseCaseDI = new QuestionUpdateUseCase(
-  ValidateUserUseCaseDI, 
   PrismaQuestionRepositoryDI,
   PrismaTransactionDI,
 );
 
 const DeleteUseCaseDI = new QuestionDeleteUseCase(
-  ValidateUserUseCaseDI, 
   PrismaQuestionRepositoryDI,
 );
 
 const GetAllUseCaseDI = new QuestionGetAllUseCase(PrismaQuestionRepositoryDI);
 
 const AddViewerUseCaseDI = new QuestionAddViewerUseCase(
-  ValidateUserUseCaseDI, 
   PrismaQuestionRepositoryDI,
-  PrismaTransactionDI,
+  PrismaQuestionUserRepositoryDI, 
+  ValidateQuestionUseCaseDI,
 );
 
 const GetUseCaseDI = new QuestionGetUseCase(
-  ValidateUserUseCaseDI, 
   PrismaQuestionRepositoryDI, 
+  PrismaQuestionUserRepositoryDI,
   AddViewerUseCaseDI,
 );
 
 const VoteQuestionUseCaseDI = new QuestionVoteUseCase(
-  ValidateUserUseCaseDI, 
   PrismaQuestionRepositoryDI, 
+  PrismaQuestionUserRepositoryDI,
   PrismaTransactionDI,
 );
 
 const CloseQuestionUseCaseUseCaseDI = new QuestionCloseUseCase(
-  ValidateUserUseCaseDI, 
   PrismaQuestionRepositoryDI, 
   PrismaAnswerRepositoryDI, 
-  PrismaTransactionDI,
 );
 
 export const questionServiceFacadeDI = QuestionServiceFacade.new({

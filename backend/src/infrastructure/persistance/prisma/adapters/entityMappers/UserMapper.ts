@@ -9,7 +9,7 @@ export class UserMapper {
       name: user.name,
       username: user.username,
       about: user.about,
-      reputation: user.reputation,
+      rating: user.reputation,
       status: user.status as UserStatusEnum,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,

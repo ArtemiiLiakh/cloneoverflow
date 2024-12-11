@@ -13,7 +13,7 @@ export class RefreshTokenUseCase implements IRefreshTokenUseCase {
   ) {}
 
   async execute ({ userId }: AuthServiceInput.RefreshToken): Promise<AuthServiceOutput.RefreshToken> {
-    const user = await this.userRepository.findById({ id: userId });
+    const user = await this.userRepository.getById({ userId });
 
     if (!user) {
       throw new UnauthorizedException();
@@ -21,8 +21,8 @@ export class RefreshTokenUseCase implements IRefreshTokenUseCase {
   
     return {
       access_token: await makeAccessToken(this.dataEncryptor, {
-        userId: user.entity.id,
-        status: user.entity.status,
+        userId: user.id,
+        status: user.status,
       }),
     };
   }

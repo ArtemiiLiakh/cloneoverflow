@@ -8,7 +8,7 @@ export function QuestionUpdateMapperOutput (
     id: question.id,
     title: question.title,
     text: question.text,
-    rate: question.rate,
+    rate: question.rating,
     isClosed: question.isClosed,
     views: question.views,
     createdAt: question.createdAt,

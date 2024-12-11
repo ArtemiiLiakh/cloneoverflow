@@ -12,7 +12,7 @@ export class UserCreateUseCase implements IUserCreateUseCase {
   async execute (
     { email, password, name, username, about }: UserServiceInput.Create,
   ): Promise<User> {
-    const existingUser = await this.userRepository.findWithCreds({
+    const existingUser = await this.userRepository.getUser({
       where: {
         OR: [
           { email },

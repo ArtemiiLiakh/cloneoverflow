@@ -6,7 +6,7 @@ export function AuthGetMeMapperOutput (user: AuthServiceOutput.GetMe): AuthGetMe
     id: user.id,
     name: user.name,
     username: user.username,
-    reputation: user.reputation,
+    reputation: user.rating,
     status: user.status,
   };
 }

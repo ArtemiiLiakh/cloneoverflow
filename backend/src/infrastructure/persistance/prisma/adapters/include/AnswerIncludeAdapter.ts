@@ -1,22 +1,30 @@
-import { AnswerRepositoryInput } from '@core/domain/repositories/answer/input/AnswerRepositoryInput';
+import { AnswerIncludeInput } from '@core/domain/repositories/answer/dtos/Params';
 import { Prisma } from '@prisma/client';
-import { IncludeParams } from './utils/IncludeParams';
-import { AnswerUserStatsWhereAdapter } from '../where/answer/AnswerUserStatsWhereAdapter';
 
 export const AnswerIncludeAdapter = (
-  include: AnswerRepositoryInput.AnswerInclude | undefined,
-  count: AnswerRepositoryInput.AnswerCount | undefined,
+  include?: AnswerIncludeInput,
 ): Prisma.AnswerInclude => {
-  if (!include && !count) return {};
+  if (!include) return {};
 
   return {
-    owner: include?.owner ?? false,
-    question: include?.question ?? false,
-    userAnswers: IncludeParams<Prisma.UserAnswersWhereInput>(include?.users, AnswerUserStatsWhereAdapter),
-    _count: count ? {
+    owner: !include.owner ? undefined : {
       select: {
-        userAnswers: IncludeParams<Prisma.UserAnswersWhereInput>(count?.users, AnswerUserStatsWhereAdapter),
+        userId: true,
+        name: true,
+        username: true,
+        reputation: true,
+        status: true,
       },
-    }: false,
+    },
+
+    question: !include.question ? undefined : {
+      select: {
+        id: true,
+        ownerId: true,
+        title: true,
+        rate: true,
+        isClosed: true,
+      },
+    },
   };
 };

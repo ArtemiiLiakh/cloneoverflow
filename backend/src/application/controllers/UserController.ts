@@ -48,12 +48,11 @@ export class UserController {
   }
 
   async update (
-    { executor, params, body }: WithAuth & WithParams<{ userId: string }> & WithBody<UserUpdateDTO>, 
+    { executor, body }: WithAuth & WithBody<UserUpdateDTO>, 
     res: CoreResponse<UserUpdateResponse>,
   ) {
     const user = await this.userService.update({
       executorId: executor.userId,
-      userId: params.userId,
       data: body,
     });
     res.send(UserUpdateMapperOutput(user));

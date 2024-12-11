@@ -1,14 +1,18 @@
-import { TagRepositoryInput } from '@core/domain/repositories/tag/input/TagRepositoryInput';
+import { TagWhere } from '@core/domain/repositories/tag/dtos/Params';
 import { Prisma } from '@prisma/client';
-import { QuestionWhereInputAdapter } from '../question/QuestionWhereInputAdapter';
-import { TagWhereInputAdapter } from './TagWhereInputAdapter';
+import { BasicStringWhereAdapter } from '../dataTypes/BasicWhereAdapter';
+import { StringWhereAdapter } from '../dataTypes/StringWhereAdapter';
 
-export const TagWhereAdapter = (where: TagRepositoryInput.TagWhere): Prisma.TagWhereInput => {
+export const TagWhereAdapter = (where: TagWhere): Prisma.TagWhereInput => {
   return {
-    ...TagWhereInputAdapter(where),
-
-    questions: where.questions ? {
-      some: QuestionWhereInputAdapter(where.questions),
-    } : undefined,
+    id: BasicStringWhereAdapter(where.tagId),
+    name: StringWhereAdapter(where.text),
+    questions: {
+      some: {
+        id: BasicStringWhereAdapter(where.questions?.questionId),
+      },
+    },
+    OR: where.OR?.map((item) => TagWhereAdapter(item)),
+    AND: where.AND?.map((item) => TagWhereAdapter(item)),
   };
 };

@@ -1,175 +1,229 @@
 import { UserRepository } from '@core/domain/repositories/user/UserRepository';
-import { UserRepositoryInput } from '@core/domain/repositories/user/input/UserRepositoryInput';
-import { UserRepositoryOutput } from '@core/domain/repositories/user/output/UserRepositoryOutput';
-import { PrismaClient } from '@prisma/client';
+import { UserRepositoryInput } from '@core/domain/repositories/user/dtos/UserRepositoryInput';
+import { UserRepositoryOutput } from '@core/domain/repositories/user/dtos/UserRepositoryOutput';
+import { Prisma, PrismaClient } from '@prisma/client';
+import { UserCountsAdapter } from '../adapters/counts/UserCountsAdapter';
+import { UserMapper } from '../adapters/entityMappers/UserMapper';
 import { UserOrderByAdapter } from '../adapters/orderBy/UserOrderByAdapter';
-import { UserRepositoryMapper } from '../adapters/repositoryMappers/UserRepositoryMapper';
-import { UserSelectAdapter } from '../adapters/select/UserSelectAdapter';
-import { UserCredsWhereAdapter } from '../adapters/where/user/UserCredsWhereAdapter';
 import { UserWhereAdapter } from '../adapters/where/user/UserWhereAdapter';
-import { PrismaUserCredsType, PrismaUserType } from '../types/PrismaUserTypes';
+import { PrismaPaginationRepository } from './PrismaPagination';
+import { UserIncludeAdapter } from '../adapters/include/UserIncludeAdapter';
+import { QuestionMapper } from '../adapters/entityMappers/QuestionMapper';
+import { AnswerMapper } from '../adapters/entityMappers/AnswerMapper';
+import { UserSelectAdapter } from '../adapters/select/UserSelectAdapter';
+import { UserCredsMapper } from '../adapters/entityMappers/UserCredsMapper';
 
 export class PrismaUserRepository implements UserRepository {
   constructor (
     private prisma: PrismaClient,
   ) {}
 
-  findById ({ id, options }: UserRepositoryInput.FindById): Promise<UserRepositoryOutput.FindById> {
-    return this.findOne({ where: { id }, options });
+  async isExist ({ userId }: UserRepositoryInput.IsExist): Promise<UserRepositoryOutput.IsExist> {
+    const user = await this.prisma.user.findFirst({ 
+      where: { userId },
+      select: { userId: true }, 
+    });
+
+    return !!user;
   }
 
-  findByUsername ({ username, options }: UserRepositoryInput.FindByUsername): Promise<UserRepositoryOutput.FindByUsername> {
-    return this.findOne({ where: { username: { eq: username } }, options });
+  async getById (
+    { userId }: UserRepositoryInput.GetById,
+  ): Promise<UserRepositoryOutput.GetById> {
+    const user = await this.prisma.user.findFirst({ where: { userId } });
+
+    if (!user) return null;
+
+    return UserMapper.toEntity(user);
   }
 
-  async findByEmail ({ email, options }: UserRepositoryInput.FindByEmail): Promise<UserRepositoryOutput.FindByEmail> {
-    const user = await this.prisma.user.findFirst({
+  async getByUsername (
+    { username }: UserRepositoryInput.GetByUsername,
+  ): Promise<UserRepositoryOutput.GetByUsername> {
+    const user = await this.prisma.user.findFirst({ where: { username } });
+
+    if (!user) return null;
+
+    return UserMapper.toEntity(user);
+  }
+
+  async getByEmail (
+    { email }: UserRepositoryInput.GetByEmail,
+  ): Promise<UserRepositoryOutput.GetByEmail> {
+    const user = await this.prisma.user.findFirst({ 
       where: {
-        userCreds: {
-          email,
-        },
+        userCreds: { email },
       },
-      select: UserSelectAdapter(options?.select, options?.include, options?.count),
     });
 
     if (!user) return null;
 
-    return UserRepositoryMapper.findOne(user);
+    return UserMapper.toEntity(user);
   }
 
-  async findOne ({ where, options }: UserRepositoryInput.FindOne): Promise<UserRepositoryOutput.FindOne> {
+  async getUser ({
+    where,
+    counts,
+    include,
+  }: UserRepositoryInput.GetUser): Promise<UserRepositoryOutput.GetUser> {
     const user = await this.prisma.user.findFirst({
       where: UserWhereAdapter(where),
-      select: UserSelectAdapter(options?.select, options?.include, options?.count),
-      orderBy: UserOrderByAdapter(options?.orderBy),
-    });
-
-    if (!user) return null;
-
-    return UserRepositoryMapper.findOne(user);
-  }
-
-  async findMany ({ where, options }: UserRepositoryInput.FindMany): Promise<UserRepositoryOutput.FindMany> {
-    const users = await this.prisma.user.findMany({
-      where: UserWhereAdapter(where),
-      select: UserSelectAdapter(options?.select, options?.include, options?.count),
-      orderBy: UserOrderByAdapter(options?.orderBy),
-      skip: options?.offset,
-      take: options?.take,
-    }) as unknown as PrismaUserType[];
-
-    return UserRepositoryMapper.findMany(users);
-  }
-
-  async findCreds ({ where }: UserRepositoryInput.FindCreds): Promise<UserRepositoryOutput.FindCreds> {
-    const user = await this.prisma.userCreds.findFirst({ 
-      where: UserCredsWhereAdapter(where),
-    });
-    
-    if (!user) return null;
-    
-    return UserRepositoryMapper.findCreds(user);
-  }
-
-  async findWithCreds ({ where }: UserRepositoryInput.FindWithCreds): Promise<UserRepositoryOutput.FindWithCreds> {
-    const user = await this.prisma.userCreds.findFirst({ 
-      where: UserCredsWhereAdapter(where),
       include: {
-        user: true,
+        ...UserIncludeAdapter(include),
+        ...UserCountsAdapter(counts),
       },
     });
-    
+
     if (!user) return null;
-    
-    return UserRepositoryMapper.findWithCreds(user);
+
+    return {
+      entity: UserMapper.toEntity(user),
+      questions: user.questions?.map(QuestionMapper.toEntity),
+      answers: user.answers?.map(AnswerMapper.toEntity),
+      counts: user._count ? {
+        questions: user._count.questions,
+        answers: user._count.answers,
+      } : undefined,
+    };
   }
 
-  async count ({ where }: UserRepositoryInput.Count): Promise<UserRepositoryOutput.Count> {
-    return this.prisma.user.count({
+  async getPartialUser ({
+    where,
+    select,
+    counts,
+    include,
+  }: UserRepositoryInput.GetPartialUser): Promise<UserRepositoryOutput.GetPartialUser> {
+    const user = await this.prisma.user.findFirst({
       where: UserWhereAdapter(where),
-    });
-  }
-
-  async create ({ user }: UserRepositoryInput.Create): Promise<UserRepositoryOutput.Create> {
-    await this.prisma.user.create({
-      data: {
-        userId: user.id,
-        name: user.name,
-        username: user.username,
-        about: user.about,
-        reputation: user.reputation,
-        status: user.status,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
+      select: {
+        ...UserSelectAdapter(select),
+        ...UserCountsAdapter(counts),
+        ...UserIncludeAdapter(include),
       },
     });
+
+    if (!user) return null;
+
+    return {
+      entity: UserMapper.toEntity(user),
+      questions: user.questions?.map(QuestionMapper.toEntity),
+      answers: user.answers?.map(AnswerMapper.toEntity),
+      counts: user?._count ? {
+        questions: user._count.questions,
+        answers: user._count.answers,
+      } : undefined,
+    };
   }
-  
-  async createWithCreds ({ user, creds }: UserRepositoryInput.CreateWithCreds): Promise<UserRepositoryOutput.CreateWithCreds> {
+
+  async getMany ({ 
+    where, 
+    select, 
+    orderBy, 
+    counts, 
+    include,
+    pagination,
+  }: UserRepositoryInput.GetMany): Promise<UserRepositoryOutput.GetMany> {
+    const users = await PrismaPaginationRepository.paginate(
+      this.prisma.user.findMany.bind(this.prisma),
+      this.prisma.user.count.bind(this.prisma),
+      {
+        where: UserWhereAdapter(where),
+        select: {
+          ...UserSelectAdapter(select),
+          ...UserIncludeAdapter(include),
+          ...UserCountsAdapter(counts),
+        } as Prisma.UserSelect,
+        orderBy: UserOrderByAdapter(orderBy),
+      },
+      pagination,
+    );
+
+    return {
+      data: users.data.map((user) => ({
+        user: UserMapper.toEntity(user),
+        questions: user.questions?.map(QuestionMapper.toEntity),
+        answers: user.answers?.map(AnswerMapper.toEntity),
+        counts: user?._count ? {
+          questions: user._count?.questions ?? 0,
+          answers: user._count?.answers ?? 0,
+        } : undefined,
+      })),
+      pagination: users.pagination,
+    };
+  }
+
+  async getCreds (
+    { where, withUser }: UserRepositoryInput.GetCreds,
+  ): Promise<UserRepositoryOutput.GetCreds> {
+    const creds = await this.prisma.userCreds.findFirst({
+      where: {
+        id: where.userId,
+        email: where.email,
+      },
+      include: {
+        user: withUser,
+      },
+    });
+
+    if (!creds) return null;
+
+    return {
+      creds: UserCredsMapper.toEntity(creds),
+      user: creds?.user ? UserMapper.toEntity(creds.user) : undefined,
+    };
+  }
+
+  async createWithCreds (
+    { user, creds }: UserRepositoryInput.CreateWithCreds,
+  ): Promise<UserRepositoryOutput.CreateWithCreds> {
     await this.prisma.userCreds.create({
       data: {
         id: creds.id,
         email: creds.email,
         password: creds.password,
-        createdAt: creds.createdAt,
-        updatedAt: creds.updatedAt,
         user: {
           create: {
             name: user.name,
             username: user.username,
             about: user.about,
-            reputation: user.reputation,
+            reputation: user.rating,
             status: user.status,
-            createdAt: user.createdAt,
-            updatedAt: user.updatedAt,
           },
         },
       },
     });
   }
 
-  async update ({ id, user, returnEntity }: UserRepositoryInput.Update): Promise<UserRepositoryOutput.Update> {    
+  async update (
+    { userId, user, returnEntity }: UserRepositoryInput.Update,
+  ): Promise<UserRepositoryOutput.Update> {
     const updatedUser = await this.prisma.user.update({
-      where: {
-        userId: id,
-      },
+      where: { userId },
       data: {
         name: user.name,
         username: user.username,
-        reputation: user.reputation,
         about: user.about,
-        status: user.status,
-        updatedAt: new Date(),
       },
     });
-  
-    if (returnEntity) {
-      return UserRepositoryMapper.update(updatedUser);
-    }
+
+    if (returnEntity) return UserMapper.toEntity(updatedUser);
   }
 
-  async updateCreds ({ id, creds, returnEntity }: UserRepositoryInput.UpdateCreds): Promise<UserRepositoryOutput.UpdateCreds> {
-    const updatedCreds = await this.prisma.userCreds.update({ 
-      where: { id }, 
-      data: { 
-        email: creds.email, 
-        password: creds.password, 
-      },
-      include: {
-        user: true,
-      },
-    }) as unknown as PrismaUserCredsType;
-
-    if (returnEntity) {
-      return UserRepositoryMapper.updateCreds(updatedCreds);
-    }
-  }
-
-  async delete ({ user }: UserRepositoryInput.Delete): Promise<UserRepositoryOutput.Delete> {
-    await this.prisma.userCreds.delete({ 
-      where: { 
-        id: user.id, 
+  async updateCreds (
+    { userId, creds }: UserRepositoryInput.UpdateCreds,
+  ): Promise<UserRepositoryOutput.UpdateCreds> {
+    await this.prisma.userCreds.update({
+      where: { id: userId },
+      data: {
+        email: creds.email,
+        password: creds.password,
       },
     });
+  }
+
+  async delete (
+    { userId }: UserRepositoryInput.Delete,
+  ): Promise<UserRepositoryOutput.Delete> {
+    await this.prisma.userCreds.delete({ where: { id: userId } });
   }
 }

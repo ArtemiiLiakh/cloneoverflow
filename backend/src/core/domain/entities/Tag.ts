@@ -1,33 +1,22 @@
 import { Model } from '@common/model/Model';
-import { Timestamps } from '@common/model/Timestamp';
 import { randomUUID } from 'crypto';
 
-export class Tag implements Model, Timestamps {
+export class Tag implements Model {
   constructor (
     public id: string,
-    public text: string,
-    public createdAt: Date,
-    public updatedAt: Date,
+    public name: string,
   ) {}
 
   static new ({
     id,
-    text,
-    createdAt,
-    updatedAt,
+    name,
   }: {
     id?: string,
-    text: string,
-    createdAt?: Date,
-    updatedAt?: Date,
+    name: string,
   }) {
-    const date = new Date();
-
     return new Tag(
       id ?? randomUUID(),
-      text,
-      createdAt ?? date,
-      updatedAt ?? date,
+      name,
     );
   }
 }

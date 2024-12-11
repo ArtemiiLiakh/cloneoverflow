@@ -1,0 +1,1 @@
+export type OrderByInput<T> = T | T[]; 

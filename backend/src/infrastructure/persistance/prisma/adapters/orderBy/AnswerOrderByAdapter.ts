@@ -1,20 +1,19 @@
-import { AnswerRepositoryInput } from '@core/domain/repositories/answer/input/AnswerRepositoryInput';
+import { AnswerOrderBy, AnswerOrderByType } from '@core/domain/repositories/answer/dtos/Params';
 import { Prisma } from '@prisma/client';
-import { ArrayOrValue } from './utils/ArrayOrValue';
+import { MapArrayOrValue } from './utils/MapArrayOrValue';
 
 export const AnswerOrderByAdapter = (
-  orderBy: AnswerRepositoryInput.AnswerOrderBy | AnswerRepositoryInput.AnswerOrderBy[] | undefined,
+  orderBy: AnswerOrderBy | undefined,
 ): Prisma.AnswerOrderByWithRelationInput | Prisma.AnswerOrderByWithRelationInput[] => {
   if (!orderBy) return {};
 
-  return ArrayOrValue(orderBy, (order) => ({
-    id: order.id,
-    ownerId: order.ownerId,
-    questionId: order.questionId,
-    isSolution: order.isSolution,
-    rate: order.rate,
+  return MapArrayOrValue<
+    AnswerOrderByType,
+    Prisma.AnswerOrderByWithRelationInput
+  >(orderBy, (order) => ({
     text: order.text,
+    rate: order.rating,
+    isSolution: order.isSolution,
     createdAt: order.createdAt,
-    updatedAt: order.updatedAt,
   }));
 };

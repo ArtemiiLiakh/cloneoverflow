@@ -14,59 +14,90 @@ export class UserGetProfileUseCase implements IUserGetProfileUseCase {
   ) {}
  
   async execute ({ userId }: UserServiceInput.GetProfile): Promise<UserServiceOutput.GetProfile> {
-    const user = await this.userRepository.findById({
-      id: userId,
-      options: {
-        count: {
-          answers: true,
-          questions: true,
-        },
+    const user = await this.userRepository.getUser({
+      where: { userId },
+      counts: {
+        answers: true,
+        questions: true,
       },
     });
 
     if (!user) {
       throw new NoEntityWithIdException('User');
     }
-    
-    const bestAnswer = await this.answerRepository.findOne({
+
+    const bestAnswer = await this.answerRepository.getPartialAnswer({
       where: { ownerId: userId },
-      options: {
-        orderBy: {
-          rate: OrderByEnum.DESC,
-        },
-        include: {
-          question: true,
-        },
+      select: {
+        id: true,
+        ownerId: true,
+        questionId: true,
+        rating: true,
+        isSolution: true,
+        createdAt: true,
       },
+      include: {
+        question: true,
+      },
+      orderBy: [ 
+        { rating: OrderByEnum.DESC },
+        { isSolution: OrderByEnum.DESC },
+      ],
     });
     
-    const bestQuestion = await this.questionRepository.findOne({
+    const bestQuestion = await this.questionRepository.getPartialQuestion({
       where: { ownerId: userId },
-      options: {
-        include: {
-          tags: true,
-        },
-        count: {
-          answers: true,
-        },
-        orderBy: [{
-          rate: OrderByEnum.DESC,
-        }, {
-          answers: OrderByEnum.DESC,
-        }],
+      select: {
+        id: true,
+        ownerId: true,
+        title: true,
+        rating: true,
+        views: true,
+        isClosed: true,
+        createdAt: true,
       },
+      include: {
+        tags: true,
+      },
+      counts: {
+        answers: true,
+      },
+      orderBy: [
+        { rating: OrderByEnum.DESC }, 
+        { answersAmount: OrderByEnum.DESC },
+      ],
     });
   
     return {
       user: user.entity, 
       bestQuestion: bestQuestion ? {
-        entity: bestQuestion.entity,
+        entity: {
+          questionId: bestQuestion.entity.id!,
+          ownerId: bestQuestion.entity.ownerId!,
+          title: bestQuestion.entity.title!,
+          rating: bestQuestion.entity.rating!,
+          views: bestQuestion.entity.views!,
+          isClosed: bestQuestion.entity.isClosed!,
+          createdAt: bestQuestion.entity.createdAt!,
+        },
         tags: bestQuestion.tags ?? [],
         answersAmount: bestQuestion.counts?.answers ?? 0,
       } : null, 
       bestAnswer: bestAnswer ? {
-        entity: bestAnswer.entity,
-        question: bestAnswer.question!,
+        entity: {
+          answerId: bestAnswer.entity.id!,
+          ownerId: bestAnswer.entity.ownerId!,
+          questionId: bestAnswer.entity.questionId!,
+          rating: bestAnswer.entity.rating!,
+          isSolution: bestAnswer.entity.isSolution!,
+          createdAt: bestAnswer.entity.createdAt!,
+        },
+        question: {
+          questionId: bestAnswer.question!.id,
+          ownerId: bestAnswer.question!.ownerId,
+          title: bestAnswer.question!.title,
+          rating: bestAnswer.question!.rating,
+        },
       } : null,
       answersAmount: user.counts?.answers ?? 0,
       questionsAmount: user.counts?.questions ?? 0,

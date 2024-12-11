@@ -8,7 +8,7 @@ export function QuestionCreateMapperOutput (
     id: question.id,
     title: question.title,
     text: question.text,
-    rate: question.rate,
+    rate: question.rating,
     views: question.views,
     isClosed: question.isClosed,
     updatedAt: question.updatedAt,

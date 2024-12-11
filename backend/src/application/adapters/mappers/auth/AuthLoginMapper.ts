@@ -6,7 +6,7 @@ export function AuthLoginMapperOutput (user: AuthServiceOutput.Login['user']): A
     id: user.id,
     name: user.name,
     username: user.username,
-    reputation: user.reputation,
+    reputation: user.rating,
     status: user.status,
   };
 }

@@ -10,13 +10,11 @@ export class UserGetUseCase implements IUserGetUseCase {
   ) {}
 
   async execute ({ userId }: UserServiceInput.Get): Promise<UserServiceOutput.Get> {
-    const user = await this.userRepository.findById({ 
-      id: userId,
-      options: {
-        count: {
-          answers: true,
-          questions: true,
-        },
+    const user = await this.userRepository.getUser({ 
+      where: { userId },
+      counts: {
+        questions: true,
+        answers: true,
       },
     });
 
@@ -26,8 +24,8 @@ export class UserGetUseCase implements IUserGetUseCase {
 
     return {
       entity: user.entity,
-      answersAmount: user.counts?.answers ?? 0,
-      questionsAmount: user.counts?.questions ?? 0,
+      answersAmount: user.counts!.questions ?? 0,
+      questionsAmount: user.counts!.answers ?? 0,
     };
   }
 }

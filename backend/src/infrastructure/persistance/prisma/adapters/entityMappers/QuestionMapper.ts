@@ -8,15 +8,11 @@ export class QuestionMapper  {
       ownerId: question.ownerId,
       text: question.text,
       title: question.title,
-      rate: question.rate,
+      rating: question.rate,
       views: question.views,
       isClosed: question.isClosed,
       createdAt: question.createdAt,
       updatedAt: question.updatedAt,
     };
   }
-
-  static toEntities (questions: Prisma.Question[]): Question[] {
-    return questions.map(this.toEntity);
-  } 
 }

@@ -8,14 +8,10 @@ export class AnswerMapper {
       ownerId: answer.ownerId,
       questionId: answer.questionId,
       text: answer.text,
-      rate: answer.rate,
+      rating: answer.rate,
       isSolution: answer.isSolution,
       createdAt: answer.createdAt,
       updatedAt: answer.updatedAt,
     };
   };
-
-  static toEntities (answers: Prisma.Answer[]): Answer[] {
-    return answers.map(this.toEntity);
-  }
 }

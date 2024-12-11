@@ -1,13 +1,13 @@
 import { AnswersSortByEnum, OrderByEnum } from '@cloneoverflow/common';
-import { AnswerRepositoryInput } from '@core/domain/repositories/answer/input/AnswerRepositoryInput';
+import { AnswerOrderBy, AnswerOrderByType } from '@core/domain/repositories/answer/dtos/Params';
 
 export const UserAnswersSortBy = (
-  sortBy?: AnswersSortByEnum, 
+  sortBy?: AnswersSortByEnum | AnswersSortByEnum[], 
   orderBy?: OrderByEnum,
-): AnswerRepositoryInput.AnswerOrderBy => {
-  const sortByMapper: Record<AnswersSortByEnum, AnswerRepositoryInput.AnswerOrderBy> = {
+): AnswerOrderBy => {
+  const sortByMapper: Record<AnswersSortByEnum, AnswerOrderByType> = {
     rate: {
-      rate: orderBy ?? OrderByEnum.DESC,
+      rating: orderBy ?? OrderByEnum.DESC,
     },
     date: {
       createdAt: orderBy ?? OrderByEnum.ASC,
@@ -16,6 +16,10 @@ export const UserAnswersSortBy = (
       isSolution: orderBy ?? OrderByEnum.DESC,
     },
   }; 
+
+  if (Array.isArray(sortBy)) {
+    return sortBy.map((sort) => sortByMapper[sort]);
+  }
 
   return sortBy ? sortByMapper[sortBy] : {};
 };

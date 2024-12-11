@@ -1,9 +1,9 @@
 import { AnswerUserStatusEnum, VoteTypeEnum } from '@cloneoverflow/common';
-import { AnswerUserStats } from '@core/domain/entities/AnswerUserStats';
+import { AnswerUser } from '@core/domain/entities/AnswerUser';
 import { UserAnswers } from '@prisma/client';
 
-export class AnswerUserStatsMapper {
-  static toEntity (user: UserAnswers): AnswerUserStats {
+export class AnswerUserMapper {
+  static toEntity (user: UserAnswers): AnswerUser {
     return {
       id: user.id,
       userId: user.userId,
@@ -11,9 +11,5 @@ export class AnswerUserStatsMapper {
       status: user.status as AnswerUserStatusEnum,
       voteType: user.voteType as VoteTypeEnum,
     };
-  }
-
-  static toEntities (users: UserAnswers[]): AnswerUserStats[] {
-    return users.map(this.toEntity);
   }
 }

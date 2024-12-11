@@ -8,7 +8,7 @@ export const AnswerGetAllMapper = (
     answers: data.map((answer) => ({
       id: answer.entity.id,
       questionId: answer.entity.questionId,
-      rate: answer.entity.rate,
+      rate: answer.entity.rating,
       text: answer.entity.text,
       isSolution: answer.entity.isSolution,
       createdAt: answer.entity.createdAt,
@@ -16,7 +16,7 @@ export const AnswerGetAllMapper = (
       owner: {
         id: answer.owner.id,
         name: answer.owner.name,
-        reputation: answer.owner.reputation,
+        reputation: answer.owner.rating,
         username: answer.owner.username,
       },
       voteType: answer.userStats?.voteType,

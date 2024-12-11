@@ -1,10 +1,11 @@
 import { AdaptController } from '@application/adapters/AdaptController';
 import { UserController } from '@application/controllers/UserController';
+import { AuthUserStatusValidatorDI } from '@application/di/security/AuthUserStatusValidatorDI';
+import { JwtTokenValidatorDI } from '@application/di/security/JwtTokenValidatorDI';
 import { answerUseCaseDI } from '@application/di/services/AnswerServiceDI';
 import { questionUseCasesDI } from '@application/di/services/QuestionServiceDI';
 import { userServiceFacadeDI } from '@application/di/services/UserServiceDI';
-import { JwtAuthAccess } from '@application/middlewares/JwtAuthAccess';
-import { validateRequest } from '@application/middlewares/validateRequest';
+import { validateRequest } from '@application/middlewares/security/ValidateRequest';
 import {
   UserGetAnswersDTO,
   UserGetQuestionsDTO,
@@ -13,7 +14,6 @@ import {
 import express from 'express';
 
 const userRouter = express.Router();
-
 const userController = new UserController(
   userServiceFacadeDI, 
   answerUseCaseDI.GetAllUseCaseDI, 
@@ -31,8 +31,9 @@ userRouter.get(
 );
 
 userRouter.patch(
-  '/:userId', 
-  JwtAuthAccess(),
+  '/', 
+  JwtTokenValidatorDI.validateAccess(),
+  AuthUserStatusValidatorDI.validate(),
   validateRequest({
     body: UserUpdateDTO,
   }),

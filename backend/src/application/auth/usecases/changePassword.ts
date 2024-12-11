@@ -2,9 +2,9 @@ import { DataHasher } from '@application/interfaces/security/DataHasher';
 import { BadBodyException, LoginException, NoEntityWithIdException, VerificationCodeType } from '@cloneoverflow/common';
 import { CacheRepository } from '@core/domain/repositories/cache/CacheRepository';
 import { UserRepository } from '@core/domain/repositories/user/UserRepository';
+import { VerificationCodePayload } from '../data/VerificationCodePayload';
 import { AuthServiceInput } from '../dtos/AuthServiceInput';
 import { IChangePasswordUseCase } from '../types/usecases';
-import { VerificationCodePayload } from '../data/VerificationCodePayload';
 
 export class ChangePasswordUseCase implements IChangePasswordUseCase {
   constructor (
@@ -14,11 +14,11 @@ export class ChangePasswordUseCase implements IChangePasswordUseCase {
   ) {}
   
   async execute ({ code, executorId, email, oldPassword, newPassword }: AuthServiceInput.ChangePassword): Promise<void> {
-    const user = await this.userRepository.findCreds({
-      where: { id: executorId },
+    const creds = await this.userRepository.getCreds({
+      where: { userId: executorId },
     });
 
-    if (!user) {
+    if (!creds) {
       throw new NoEntityWithIdException('User');
     }
 
@@ -34,14 +34,14 @@ export class ChangePasswordUseCase implements IChangePasswordUseCase {
       throw new BadBodyException('Code does not match');
     }
 
-    if (user.email !== email || !await this.dataHasher.compareHash(oldPassword, user.password)) {
+    if (creds.creds.email !== email || !await this.dataHasher.compareHash(oldPassword, creds.creds.password)) {
       throw new LoginException();
     }
     
     await this.cacheRepository.delete(`user:${VerificationCodeType.ChangePassword}:${executorId}`);
 
     await this.userRepository.updateCreds({
-      id: executorId,
+      userId: executorId,
       creds: {
         password: await this.dataHasher.hash(newPassword),
       },

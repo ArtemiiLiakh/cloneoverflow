@@ -30,11 +30,12 @@ export class PrismaTransactionUnit implements UnitOfWork  {
         answerUserRepository: new PrismaAnswerUserRepository(context as PrismaClient),
         tagRepository: new PrismaTagRepository(context as PrismaClient),
       };
-        
+      
       try {
         return await fn(prismaSession);
       }
-      catch {
+      catch (err) {
+        console.log(err);
         await context.$queryRaw`ROLLBACK;`;
         return null;
       }

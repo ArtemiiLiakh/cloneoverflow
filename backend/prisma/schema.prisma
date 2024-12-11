@@ -21,6 +21,7 @@ model UserCreds {
   updatedAt     DateTime      @default(now()) @updatedAt @map("updated_at")
   user          User?
 
+  @@index([id])
   @@index([email])
   @@map("users_creds")
 }
@@ -33,12 +34,12 @@ enum UserStatus {
 
 model User {
   userId          String            @id @map("user_id")
-  userCreds       UserCreds         @relation(fields: [userId], references: [id], onDelete: Cascade)
   name            String            @db.VarChar(100)
   username        String            @unique
   reputation      Int               @default(0)
   about           String            @db.Text
   status          UserStatus        @default(USER)
+  userCreds       UserCreds         @relation(fields: [userId], references: [id], onDelete: Cascade)
   questions       Question[]
   answers         Answer[]
   userAnswers     UserAnswers[]
@@ -46,18 +47,19 @@ model User {
   createdAt       DateTime          @default(now()) @map("created_at")
   updatedAt       DateTime          @default(now()) @updatedAt @map("updated_at")
 
+  @@index([userId])
   @@index([username])
   @@map("user")
 }
 
 model Question {
   id            String             @id @default(uuid())
+  ownerId       String
   title         String             @db.VarChar(255)
   text          String             @db.Text @default("")
   rate          Int                @default(0)
   views         Int                @default(0)
   isClosed      Boolean            @default(false)
-  ownerId       String
   owner         User               @relation(fields: [ownerId], references: [userId], onDelete: Cascade)
   userQuestions UserQuestions[]       
   answers       Answer[]
@@ -65,7 +67,25 @@ model Question {
   createdAt     DateTime           @default(now()) @map("created_at")
   updatedAt     DateTime           @default(now()) @updatedAt @map("updated_at")
 
+  @@index([id])
   @@map("questions")
+}
+
+model Answer {
+  id            String        @id @default(uuid())
+  userAnswers   UserAnswers[]   
+  questionId    String        @map("question_id")
+  question      Question      @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  ownerId       String
+  owner         User   @relation(fields: [ownerId], references: [userId], onDelete: Cascade)
+  text          String        @db.Text
+  rate          Int           @default(0)
+  isSolution    Boolean       @default(false)
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @default(now()) @updatedAt @map("updated_at")
+
+  @@index([id])
+  @@map("answers")
 }
 
 enum UserQuestionStatus {
@@ -84,28 +104,14 @@ model UserQuestions {
   id            String                @id @default(uuid())
   userId        String                @map("user_id")
   questionId    String                @map("question_id")
-  user          User           @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  user          User                  @relation(fields: [userId], references: [userId], onDelete: Cascade)
   question      Question              @relation(fields: [questionId], references: [id], onDelete: Cascade)
   status        UserQuestionStatus    @default(OWNER)
   voteType      VoteType?             @map("vote_type")
 
+  @@index([userId])
+  @@index([questionId])
   @@map("user_questions")
-}
-
-model Answer {
-  id            String        @id @default(uuid())
-  userAnswers   UserAnswers[]   
-  questionId    String        @map("question_id")
-  question      Question      @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  ownerId       String
-  owner         User   @relation(fields: [ownerId], references: [userId], onDelete: Cascade)
-  text          String        @db.Text
-  rate          Int           @default(0)
-  isSolution    Boolean       @default(false)
-  createdAt     DateTime      @default(now()) @map("created_at")
-  updatedAt     DateTime      @default(now()) @updatedAt @map("updated_at")
-
-  @@map("answers")
 }
 
 enum UserAnswerStatus {
@@ -117,20 +123,22 @@ model UserAnswers {
   id            String                @id @default(uuid())
   userId        String                @map("user_id")
   answerId      String                @map("answer_id")
-  user          User           @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  user          User                  @relation(fields: [userId], references: [userId], onDelete: Cascade)
   answer        Answer                @relation(fields: [answerId], references: [id], onDelete: Cascade)
   status        UserAnswerStatus      @default(OWNER)
   voteType      VoteType?             @map("vote_type")
 
+  @@index([userId])
+  @@index([answerId])
   @@map("user_answers")
 }
 
 model Tag {
   id          String            @id @default(uuid())
   name        String            @unique @db.VarChar(100)
-  createdAt   DateTime          @default(now()) @map("created_at")
-  updatedAt   DateTime          @default(now()) @updatedAt @map("updated_at")
   questions   Question[]
 
+  @@index([id])
+  @@index([name])
   @@map("tags")
 }

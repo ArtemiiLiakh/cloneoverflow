@@ -11,16 +11,16 @@ export const SearchQuestionParse = (search?: string) => {
 
   const filters = search
     .replace(searchText ?? '', '')
-    .match(/([#:]\w+)|(".*")/g);
+    .match(/([#@]\w+)|(".*")/g);
 
   if (!filters) return { text };
 
   let tags = ArrayOrUndefinded(filters.filter((filter) => filter.includes('#')));
-  let authors = ArrayOrUndefinded(filters.filter((filter) => filter.includes(':')));
+  let authors = ArrayOrUndefinded(filters.filter((filter) => filter.includes('@')));
   let keywords = ArrayOrUndefinded(filters.filter((filter) => filter.includes('"'))); 
   
   tags = tags?.map((tag) => tag.replace('#', ''));
-  authors = authors?.map((author) => author.replace(':', ''));
+  authors = authors?.map((author) => author.replace('@', ''));
   keywords = keywords?.map((keyword) => keyword.replace(/"/g, ''));
 
   return {

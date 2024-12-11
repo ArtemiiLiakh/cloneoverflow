@@ -6,14 +6,14 @@ export function UserGetAnswerMapperOutput ({ data, pagination }: AnswerServiceOu
     answers: data.map(answer => ({
       id: answer.entity.id,
       text: answer.entity.text,
-      rate: answer.entity.rate,
+      rate: answer.entity.rating,
       isSolution: answer.entity.isSolution,
       createdAt: answer.entity.createdAt,
       updatedAt: answer.entity.updatedAt,
       question: {
         id: answer.question.id,
         title: answer.question.title,
-        rate: answer.question.rate,
+        rate: answer.question.rating,
       },
     })),
     pagination,

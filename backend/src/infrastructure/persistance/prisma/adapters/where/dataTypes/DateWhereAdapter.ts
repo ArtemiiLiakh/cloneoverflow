@@ -1,9 +1,15 @@
 import { DateType } from '@common/repository/Datatypes/DateType';
 import { Prisma } from '@prisma/client';
 
-export const DateWhereAdapter = (dateType?:   null | Date | DateType): undefined | Date | Prisma.DateTimeFilter => {
+export const DateWhereAdapter = (dateType?: DateType): undefined | Date | Prisma.DateTimeFilter => {
   if (!dateType) return;
+  
+  if (Array.isArray(dateType)) return {
+    in: dateType,
+  };
+
   if (dateType instanceof Date ) return dateType;
+  
   return {
     equals: dateType.eq,
     gt: dateType.gt,
