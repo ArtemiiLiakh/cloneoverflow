@@ -21,8 +21,8 @@ export class PrismaAnswerRepository implements AnswerRepository {
     { answerId }: AnswerRepositoryInput.IsExist,
   ): Promise<AnswerRepositoryOutput.IsExist> {
     const answer = await this.prisma.answer.findFirst({
-      where: { id: answerId },
-      select: { id: true },
+      where: { answerId },
+      select: { answerId: true },
     });
 
     return !!answer;
@@ -31,7 +31,9 @@ export class PrismaAnswerRepository implements AnswerRepository {
   async getById (
     { answerId }: AnswerRepositoryInput.GetById,
   ): Promise<AnswerRepositoryOutput.GetById> {
-    const answer = await this.prisma.answer.findFirst({ where: { id: answerId } });
+    const answer = await this.prisma.answer.findFirst({ 
+      where: { answerId },
+    });
     
     if (!answer) return null;
     return AnswerMapper.toEntity(answer);
@@ -74,6 +76,18 @@ export class PrismaAnswerRepository implements AnswerRepository {
     };
   }
 
+  async getPartialById (
+    { answerId, select }: AnswerRepositoryInput.GetPartialById,
+  ): Promise<AnswerRepositoryOutput.GetPartialById> {
+    const answer = await this.prisma.answer.findFirst({
+      where: { answerId },
+      select: AnswerSelectAdapter(select),
+    });
+
+    if (!answer) return null;
+    return AnswerMapper.toEntity(answer);
+  }
+
   async getMany (
     { where, select, orderBy, include, pagination }: AnswerRepositoryInput.GetMany,
   ): Promise<AnswerRepositoryOutput.GetMany> {
@@ -114,7 +128,7 @@ export class PrismaAnswerRepository implements AnswerRepository {
   ): Promise<AnswerRepositoryOutput.Create> {
     await this.prisma.answer.create({
       data: {
-        id: answer.id,
+        answerId: answer.id,
         ownerId: answer.ownerId,
         questionId: answer.questionId,
         text: answer.text,
@@ -122,6 +136,12 @@ export class PrismaAnswerRepository implements AnswerRepository {
         isSolution: answer.isSolution,
         createdAt: answer.createdAt,
         updatedAt: answer.updatedAt,
+        owner: {
+          connect: { userId: answer.ownerId },
+        },
+        question: {
+          connect: { questionId: answer.questionId },
+        },
       },
     });
   }
@@ -130,7 +150,7 @@ export class PrismaAnswerRepository implements AnswerRepository {
     { answerId, answer, returnEntity }: AnswerRepositoryInput.Update,
   ): Promise<AnswerRepositoryOutput.Update> {
     const updatedAnswer = await this.prisma.answer.update({
-      where: { id: answerId },
+      where: { answerId },
       data: {
         text: answer.text,
       },
@@ -143,7 +163,7 @@ export class PrismaAnswerRepository implements AnswerRepository {
     { answerId }: AnswerRepositoryInput.Delete,
   ): Promise<AnswerRepositoryOutput.Delete> {
     await this.prisma.answer.delete({
-      where: { id: answerId },
+      where: { answerId },
     });
   }
 
@@ -152,7 +172,7 @@ export class PrismaAnswerRepository implements AnswerRepository {
     voteType,
   }: AnswerRepositoryInput.AddRating): Promise<AnswerRepositoryOutput.AddRating> {
     await this.prisma.answer.update({
-      where: { id: answerId },
+      where: { answerId },
       data: {
         rate: {
           increment: voteType === VoteTypeEnum.UP ? 1 : -1,

@@ -25,9 +25,7 @@ export class AnswerCreateUseCase implements IAnswerCreateUseCase {
         text,
       });
   
-      await unit.answerRepository.create({
-        answer,
-      });
+      await unit.answerRepository.create({ answer });
   
       await unit.answerUserRepository.create({
         user: AnswerUser.new({

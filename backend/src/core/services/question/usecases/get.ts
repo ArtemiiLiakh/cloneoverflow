@@ -17,7 +17,7 @@ export class QuestionGetUseCase implements IQuestionGetUseCase {
     { executorId, questionId }: QuestionServiceInput.Get,
   ): Promise<QuestionServiceOutput.Get> {
     const question = await this.questionRepository.getQuestion({
-      where: { id: questionId },
+      where: { questionId },
       include: {
         owner: true,
         tags: true,
@@ -54,7 +54,7 @@ export class QuestionGetUseCase implements IQuestionGetUseCase {
         username: question.owner!.username,
       },
       tags: question.tags,
-      userStats: voter ?? null,
+      voter: voter ?? null,
     };
   }
 }

@@ -18,10 +18,10 @@ export class PrismaTagRepository implements TagRepository {
   ): Promise<TagsRepositoryOutput.IsExist> {
     const tag = await this.prisma.tag.findFirst({
       where: {
-        id: tagId,
+        tagId,
         name,
       },
-      select: { id: true },
+      select: { tagId: true },
     });
 
     return !!tag;
@@ -32,7 +32,7 @@ export class PrismaTagRepository implements TagRepository {
   ): Promise<TagsRepositoryOutput.GetTag> {
     const tag = await this.prisma.tag.findFirst({
       where: TagWhereAdapter(where),
-      include: TagCountsAdapter(counts),
+      include: TagCountsAdapter(counts, where),
       orderBy: TagOrderByAdapter(orderBy),
     });
 
@@ -49,7 +49,7 @@ export class PrismaTagRepository implements TagRepository {
       this.prisma.tag.count.bind(this.prisma),
       {
         where: TagWhereAdapter(where),
-        include: TagCountsAdapter(counts),
+        include: TagCountsAdapter(counts, where),
         orderBy: TagOrderByAdapter(orderBy),
       },
       pagination,
@@ -71,7 +71,7 @@ export class PrismaTagRepository implements TagRepository {
   ): Promise<TagsRepositoryOutput.Create> {
     await this.prisma.tag.create({
       data: {
-        id: tag.id,
+        tagId: tag.id,
         name: tag.name,
       },
     });
@@ -97,27 +97,29 @@ export class PrismaTagRepository implements TagRepository {
       skipDuplicates: true,
     });
 
-    return this.prisma.tag.findMany({
+    const taglist = await this.prisma.tag.findMany({
       where: {
         name: { in: tags },
       },
     });
+
+    return taglist.map(TagMapper.toEntity);
   }
   
   async update (
     { tagId, name, returnEntity }: TagRepositoryInput.Update,
   ): Promise<TagsRepositoryOutput.Update> {
     const tag = await this.prisma.tag.update({
-      where: { id: tagId },
+      where: { tagId },
       data: { name },
     });
 
-    if (returnEntity) return tag;
+    if (returnEntity) return TagMapper.toEntity(tag);
   }
   
   async delete (
     { tagId }: TagRepositoryInput.Delete,
   ): Promise<TagsRepositoryOutput.Delete> {
-    await this.prisma.tag.delete({ where: { id: tagId } });
+    await this.prisma.tag.delete({ where: { tagId } });
   }
 }

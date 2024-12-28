@@ -1,13 +1,16 @@
-import { Prisma } from '@prisma/client';
-import { StringWhereAdapter } from '../dataTypes/StringWhereAdapter';
 import { AnswerUserWhere } from '@core/domain/repositories/answer/dtos/Params';
+import { Prisma } from '@prisma/client';
+import { BasicStringWhereAdapter } from '../dataTypes/BasicWhereAdapter';
+import { StringWhereAdapter } from '../dataTypes/StringWhereAdapter';
 
-export const AnswerUserWhereAdapter = (where: AnswerUserWhere): Prisma.UserAnswersWhereInput => {
+export const AnswerUserWhereAdapter = (where?: AnswerUserWhere): Prisma.AnswerUserWhereInput => {
+  if (!where) return {};
+  
   return {
-    id: StringWhereAdapter(where.id),
+    answerUserId: StringWhereAdapter(where.id),
     answerId: StringWhereAdapter(where.answerId),
     userId: StringWhereAdapter(where.userId),
-    status: StringWhereAdapter(where.status) as Prisma.EnumUserAnswerStatusFilter,
-    voteType: StringWhereAdapter(where.voteType) as Prisma.EnumVoteTypeNullableFilter,
+    status: BasicStringWhereAdapter(where.status) as Prisma.EnumUserAnswerStatusFilter,
+    voteType: where.voteType,
   };
 };

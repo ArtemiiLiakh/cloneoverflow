@@ -21,7 +21,7 @@ export function QuestionGetMapperOutput (
     createdAt: question.entity.createdAt,
     updatedAt: question.entity.updatedAt,
     tags: question.tags?.map(tag => tag.name),
-    voteType: question.userStats?.voteType,
+    voteType: question.voter?.voteType,
     owner,
   };
 }

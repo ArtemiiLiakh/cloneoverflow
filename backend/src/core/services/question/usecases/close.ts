@@ -14,8 +14,8 @@ export class QuestionCloseUseCase implements IQuestionCloseUseCase {
   async execute (
     { executorId, questionId, answerId }: QuestionServiceInput.CloseQuestion,
   ): Promise<QuestionServiceOutput.CloseQuestion> {
-    const question = await this.questionRepository.getPartialQuestion({ 
-      where: { id: questionId },
+    const question = await this.questionRepository.getPartialById({ 
+      questionId,
       select: {
         ownerId: true,
         isClosed: true,
@@ -26,21 +26,24 @@ export class QuestionCloseUseCase implements IQuestionCloseUseCase {
       throw new NoEntityWithIdException('Question');
     }
     
-    if (question.entity.ownerId !== executorId) {
+    if (question.ownerId !== executorId) {
       throw new ForbiddenException();
     }
     
-    const answer = await this.answerRepository.getById({ answerId });
+    const answer = await this.answerRepository.getPartialAnswer({ 
+      where: { answerId: answerId },
+      select: { questionId: true },
+    });
     
     if (!answer) {
       throw new NoEntityWithIdException('Answer');
     }
     
-    if (answer.questionId !== questionId) {
+    if (answer.entity.questionId !== questionId) {
       throw new BadBodyException('Wrong answer id');
     }
 
-    if (question.entity.isClosed) {
+    if (question.isClosed) {
       throw new BadBodyException('The question is already closed');
     }
 

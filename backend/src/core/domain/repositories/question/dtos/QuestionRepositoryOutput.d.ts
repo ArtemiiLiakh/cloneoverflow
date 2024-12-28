@@ -15,6 +15,8 @@ export namespace QuestionRepositoryOutput {
     counts?: QuestionCountOutput,
   } & QuestionIncludeOutput | null;
   
+  export type GetPartialById = QuestionSelectOutput | null;
+  
   export type GetMany = PaginatedData<{
     entity: QuestionSelectOutput,
     counts?: QuestionCountOutput,

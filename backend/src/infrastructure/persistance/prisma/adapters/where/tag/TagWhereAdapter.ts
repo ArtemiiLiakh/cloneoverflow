@@ -3,13 +3,15 @@ import { Prisma } from '@prisma/client';
 import { BasicStringWhereAdapter } from '../dataTypes/BasicWhereAdapter';
 import { StringWhereAdapter } from '../dataTypes/StringWhereAdapter';
 
-export const TagWhereAdapter = (where: TagWhere): Prisma.TagWhereInput => {
+export const TagWhereAdapter = (where?: TagWhere): Prisma.TagWhereInput => {
+  if (!where) return {};
+  
   return {
-    id: BasicStringWhereAdapter(where.tagId),
+    tagId: BasicStringWhereAdapter(where.tagId),
     name: StringWhereAdapter(where.text),
     questions: {
       some: {
-        id: BasicStringWhereAdapter(where.questions?.questionId),
+        questionId: BasicStringWhereAdapter(where.questions?.questionId),
       },
     },
     OR: where.OR?.map((item) => TagWhereAdapter(item)),

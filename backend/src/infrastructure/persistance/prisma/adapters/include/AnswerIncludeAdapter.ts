@@ -19,7 +19,7 @@ export const AnswerIncludeAdapter = (
 
     question: !include.question ? undefined : {
       select: {
-        id: true,
+        questionId: true,
         ownerId: true,
         title: true,
         rate: true,

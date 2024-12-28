@@ -1,5 +1,5 @@
 import { DataEncryptor } from '@application/interfaces/security/DataEncryptor';
-import { DataHasher } from '@application/interfaces/security/DataHasher';
+import { DataHasher } from '@core/data/DataHasher';
 import { LoginException } from '@cloneoverflow/common';
 import { UserRepository } from '@core/domain/repositories/user/UserRepository';
 import { AuthServiceInput } from '../dtos/AuthServiceInput';
@@ -29,16 +29,17 @@ export class LoginUseCase implements ILoginUseCase {
       throw new LoginException();
     }
 
-    const access_token = await makeAccessToken(this.dataEncryptor, {
-      userId: creds.user!.id,
-      status: creds.user!.status,
-    });
+    const [access_token, refresh_token] = await Promise.all([
+      makeAccessToken(this.dataEncryptor, {
+        userId: creds.user!.id,
+        status: creds.user!.status,
+      }), 
+      makeRefreshToken(this.dataEncryptor, {
+        userId: creds.user!.id,
+        status: creds.user!.status,
+      }),
+    ]);
     
-    const refresh_token = await makeRefreshToken(this.dataEncryptor, {
-      userId: creds.user!.id,
-      status: creds.user!.status,
-    });
-  
     return {
       user: creds.user!,
       tokens: {

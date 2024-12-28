@@ -15,7 +15,7 @@ export class AnswerGetUseCase implements IAnswerGetUseCase {
     { executorId, answerId }: AnswerServiceInput.Get,
   ): Promise<AnswerServiceOutput.Get> {
     const answer =  await this.answerRepository.getAnswer({
-      where: { id: answerId },
+      where: { answerId },
       include: {
         owner: true,
         question: true,

@@ -65,7 +65,7 @@ export type QuestionIncludeOutput = {
 export type QuestionOrderBy = OrderByInput<QuestionOrderByType>;
 
 export type QuestionWhere = WhereInput<{
-  id?: BasicType<string>,
+  questionId?: BasicType<string>,
   ownerId?: BasicType<string>,
   title?: StringType,
   text?: StringType,

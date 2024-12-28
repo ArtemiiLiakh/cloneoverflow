@@ -18,6 +18,11 @@ export namespace AnswerRepositoryInput {
     include?: AnswerIncludeInput,
   };
   
+  export type GetPartialById = {
+    answerId: string,
+    select: AnswerSelectInput,
+  };
+  
   export type GetMany = {
     where: AnswerWhereInput,
     select?: AnswerSelectInput,

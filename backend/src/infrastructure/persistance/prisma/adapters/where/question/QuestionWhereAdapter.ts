@@ -5,9 +5,11 @@ import { DateWhereAdapter } from '../dataTypes/DateWhereAdapter';
 import { NumberWhereAdapter } from '../dataTypes/NumberWhereAdapter ';
 import { StringWhereAdapter } from '../dataTypes/StringWhereAdapter';
 
-export const QuestionWhereAdapter = (where: QuestionWhere): Prisma.QuestionWhereInput => {
+export const QuestionWhereAdapter = (where?: QuestionWhere): Prisma.QuestionWhereInput => {
+  if (!where) return {};
+
   return {
-    id: BasicStringWhereAdapter(where.id),
+    questionId: BasicStringWhereAdapter(where.questionId),
     ownerId: StringWhereAdapter(where.ownerId),
     title: StringWhereAdapter(where.title),
     text: StringWhereAdapter(where.text),
@@ -22,7 +24,7 @@ export const QuestionWhereAdapter = (where: QuestionWhere): Prisma.QuestionWhere
     },
     tags: !where.tags ? undefined : {
       some: {
-        id: BasicStringWhereAdapter(where.tags.id),
+        tagId: BasicStringWhereAdapter(where.tags.id),
         name: StringWhereAdapter(where.tags.name),
       },
     },

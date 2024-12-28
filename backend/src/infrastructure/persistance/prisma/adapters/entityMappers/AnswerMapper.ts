@@ -4,7 +4,7 @@ import Prisma from '@prisma/client';
 export class AnswerMapper {
   static toEntity (answer: Prisma.Answer): Answer {
     return {
-      id: answer.id,
+      id: answer.answerId,
       ownerId: answer.ownerId,
       questionId: answer.questionId,
       text: answer.text,

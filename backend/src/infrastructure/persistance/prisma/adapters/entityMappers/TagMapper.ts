@@ -4,7 +4,7 @@ import Prisma from '@prisma/client';
 export class TagMapper {
   static toEntity (tag: Prisma.Tag): Tag {
     return {
-      id: tag.id,
+      id: tag.tagId,
       name: tag.name,
     };
   }

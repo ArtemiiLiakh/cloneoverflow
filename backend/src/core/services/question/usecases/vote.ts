@@ -18,10 +18,10 @@ export class QuestionVoteUseCase implements IQuestionVoteUseCase {
     { executorId, questionId, vote }: QuestionServiceInput.VoteQuestion,
   ): Promise<QuestionServiceOutput.VoteQuestion> {
     
-    const question = await this.questionRepository.getQuestion({
-      where: { id: questionId },
-      include: {
-        owner: true,
+    const question = await this.questionRepository.getPartialById({
+      questionId,
+      select: {
+        ownerId: true,
       },
     });
   
@@ -29,7 +29,7 @@ export class QuestionVoteUseCase implements IQuestionVoteUseCase {
       throw new NoEntityWithIdException('Question');
     }
   
-    if (question.entity.ownerId === executorId) {
+    if (question.ownerId === executorId) {
       throw new ForbiddenException('You cannot vote your own question');
     }
   

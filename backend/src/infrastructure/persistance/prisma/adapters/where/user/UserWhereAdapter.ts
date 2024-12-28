@@ -19,7 +19,7 @@ export const UserWhereAdapter = (where?: UserWhere): Prisma.UserWhereInput => {
     userCreds: {
       email: StringWhereAdapter(where.email),
     },
-    userQuestions: where.userQuestions ? {
+    questionUsers: where.userQuestions ? {
       some: {
         userId: BasicStringWhereAdapter(where.userQuestions.userId),
         questionId: BasicStringWhereAdapter(where.userQuestions.questionId),
@@ -27,7 +27,7 @@ export const UserWhereAdapter = (where?: UserWhere): Prisma.UserWhereInput => {
         voteType: BasicStringWhereAdapter(where.userQuestions.voteType) as Prisma.EnumVoteTypeNullableFilter,
       },
     } : undefined,
-    userAnswers: where.userAnswers ? {
+    answerUsers: where.userAnswers ? {
       some: {
         userId: BasicStringWhereAdapter(where.userAnswers.userId),
         answerId: BasicStringWhereAdapter(where.userAnswers.answerId),

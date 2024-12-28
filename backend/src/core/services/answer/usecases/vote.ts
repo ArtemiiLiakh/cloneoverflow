@@ -18,7 +18,7 @@ export class AnswerVoteUseCase implements IAnswerVoteUseCase {
     { executorId, answerId, vote }: AnswerServiceInput.VoteAnswer,
   ): Promise<AnswerServiceOutput.VoteAnswer> {
     const answer = await this.answerRepository.getAnswer({
-      where: { id: answerId },
+      where: { answerId },
       include: {
         owner: true,
       },
@@ -57,7 +57,7 @@ export class AnswerVoteUseCase implements IAnswerVoteUseCase {
       }
       else {
         await unit.answerUserRepository.update({
-          where: { id: answerVoter.id },
+          answerUserId: answerVoter.id,
           data: {
             voteType: answerVoter.voteType === null ? vote : null,
           },

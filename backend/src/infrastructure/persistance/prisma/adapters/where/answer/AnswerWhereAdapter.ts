@@ -5,9 +5,11 @@ import { DateWhereAdapter } from '../dataTypes/DateWhereAdapter';
 import { NumberWhereAdapter } from '../dataTypes/NumberWhereAdapter ';
 import { StringWhereAdapter } from '../dataTypes/StringWhereAdapter';
 
-export const AnswerWhereAdapter = (where: AnswerWhereInput): Prisma.AnswerWhereInput => {
+export const AnswerWhereAdapter = (where?: AnswerWhereInput): Prisma.AnswerWhereInput => {
+  if (!where) return {};
+  
   return {
-    id: BasicStringWhereAdapter(where.id),
+    answerId: BasicStringWhereAdapter(where.answerId),
     ownerId: BasicStringWhereAdapter(where.ownerId),
     questionId: BasicStringWhereAdapter(where.questionId),
     text: StringWhereAdapter(where.text),
@@ -16,7 +18,7 @@ export const AnswerWhereAdapter = (where: AnswerWhereInput): Prisma.AnswerWhereI
     createdAt: DateWhereAdapter(where.createdAt),
     OR: where.OR?.map((item) => AnswerWhereAdapter(item)),
     AND: where.AND?.map((item) => AnswerWhereAdapter(item)),
-    userAnswers: where.userAnswer ? {
+    answerUsers: where.userAnswer ? {
       some: {
         answerId: BasicStringWhereAdapter(where.userAnswer.userId),
         status: BasicStringWhereAdapter(where.userAnswer.status) as Prisma.EnumUserAnswerStatusFilter,
