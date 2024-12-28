@@ -3,11 +3,7 @@ import { User } from '@core/domain/entities/User';
 
 export namespace UserServiceOutput {
   export type Create = User;
-  export type Get = {
-    entity: User,
-    answersAmount: number;
-    questionsAmount: number;
-  };
+  export type Get = User;
   export type Update = User;
   
   export type GetProfile = {

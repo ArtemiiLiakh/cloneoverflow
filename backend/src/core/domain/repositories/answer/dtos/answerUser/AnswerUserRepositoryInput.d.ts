@@ -12,7 +12,7 @@ export namespace AnswerUserRepositoryInput {
   };
 
   export type Update = {
-    where: AnswerUserWhere, 
+    answerUserId: string, 
     data: {
       status?: AnswerUserStatusEnum,
       voteType?: VoteTypeEnum | null,
@@ -21,6 +21,6 @@ export namespace AnswerUserRepositoryInput {
   };
 
   export type Delete = {
-    answerUser: AnswerUser, 
+    answerUserId: string, 
   };
 }

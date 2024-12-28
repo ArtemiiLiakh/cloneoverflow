@@ -13,18 +13,12 @@ import { prismaErrorHandler } from '@application/middlewares/prismaErrorHandler'
 
 const app = express();
 
-app.use((req, res, next) => {
-  console.log(`[${req.ip} ${req.method}] ${req.path}`);
-  next();
-});
-
 app.use(parser.json());
 app.use(cors({ 
   origin: 'http://localhost:3000',
   credentials: true,
 }));
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 app.use(cookieParser());
 
 const api = express.Router();

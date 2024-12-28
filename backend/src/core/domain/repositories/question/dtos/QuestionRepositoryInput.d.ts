@@ -20,6 +20,11 @@ export namespace QuestionRepositoryInput {
     orderBy?: QuestionOrderBy,
     include?: QuestionIncludeInput,
   };
+
+  export type GetPartialById = {
+    questionId: string,
+    select: QuestionSelectInput;
+  };
   
   export type GetMany = {
     where: QuestionWhere;

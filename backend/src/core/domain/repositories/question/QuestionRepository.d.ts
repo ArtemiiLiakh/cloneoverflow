@@ -5,6 +5,7 @@ export interface QuestionRepository {
   getById(payload: QuestionRepositoryInput.GetById): Promise<QuestionRepositoryOutput.GetById>;
   getQuestion(payload: QuestionRepositoryInput.GetQuestion): Promise<QuestionRepositoryOutput.GetQuestion>;
   getPartialQuestion(payload: QuestionRepositoryInput.GetPartialQuestion): Promise<QuestionRepositoryOutput.GetPartialQuestion>;
+  getPartialById(payload: QuestionRepositoryInput.GetPartialById): Promise<QuestionRepositoryOutput.GetPartialById>;
   getMany(payload: QuestionRepositoryInput.GetMany): Promise<QuestionRepositoryOutput.GetMany>;
   isExist(payload: QuestionRepositoryInput.IsExist): Promise<QuestionRepositoryOutput.IsExist>;
 

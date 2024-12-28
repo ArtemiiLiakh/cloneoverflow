@@ -3,9 +3,11 @@ import { Prisma } from '@prisma/client';
 import { BasicStringWhereAdapter } from '../dataTypes/BasicWhereAdapter';
 import { StringWhereAdapter } from '../dataTypes/StringWhereAdapter';
 
-export const QuestionUserWhereAdapter = (where: QuestionUserWhere): Prisma.UserQuestionsWhereInput => {
+export const QuestionUserWhereAdapter = (where?: QuestionUserWhere): Prisma.QuestionUserWhereInput => {
+  if (!where) return {};
+  
   return {
-    id: BasicStringWhereAdapter(where.id),
+    questionUserId: BasicStringWhereAdapter(where.id),
     questionId: BasicStringWhereAdapter(where.questionId),
     userId: BasicStringWhereAdapter(where.userId),
     status: StringWhereAdapter(where.status) as Prisma.EnumUserQuestionStatusFilter,

@@ -7,7 +7,7 @@ import { ISendVerificationCodeUseCase } from '../types/usecases';
 import { EmailProvider } from '@application/interfaces/email/EmailProvider';
 import { UserRepository } from '@core/domain/repositories/user/UserRepository';
 import { Exception } from '@cloneoverflow/common';
-import { DataHasher } from '@application/interfaces/security/DataHasher';
+import { DataHasher } from '@core/data/DataHasher';
 import { VerificationCodePayload } from '@application/auth/data/VerificationCodePayload';
 
 const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghigklmnopqrstuvwxyz0123456789';

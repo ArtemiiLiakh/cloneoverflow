@@ -1,4 +1,4 @@
-import { DataHasher } from '@application/interfaces/security/DataHasher';
+import { DataHasher } from '@core/data/DataHasher';
 import { BadBodyException, LoginException, NoEntityWithIdException, VerificationCodeType } from '@cloneoverflow/common';
 import { CacheRepository } from '@core/domain/repositories/cache/CacheRepository';
 import { UserRepository } from '@core/domain/repositories/user/UserRepository';

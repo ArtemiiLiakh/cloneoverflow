@@ -70,7 +70,7 @@ export class PrismaUserRepository implements UserRepository {
       where: UserWhereAdapter(where),
       include: {
         ...UserIncludeAdapter(include),
-        ...UserCountsAdapter(counts),
+        ...UserCountsAdapter(counts, where),
       },
     });
 
@@ -97,7 +97,7 @@ export class PrismaUserRepository implements UserRepository {
       where: UserWhereAdapter(where),
       select: {
         ...UserSelectAdapter(select),
-        ...UserCountsAdapter(counts),
+        ...UserCountsAdapter(counts, where),
         ...UserIncludeAdapter(include),
       },
     });
@@ -131,7 +131,7 @@ export class PrismaUserRepository implements UserRepository {
         select: {
           ...UserSelectAdapter(select),
           ...UserIncludeAdapter(include),
-          ...UserCountsAdapter(counts),
+          ...UserCountsAdapter(counts, where),
         } as Prisma.UserSelect,
         orderBy: UserOrderByAdapter(orderBy),
       },
@@ -157,11 +157,20 @@ export class PrismaUserRepository implements UserRepository {
   ): Promise<UserRepositoryOutput.GetCreds> {
     const creds = await this.prisma.userCreds.findFirst({
       where: {
-        id: where.userId,
+        userId: where.userId,
         email: where.email,
       },
       include: {
-        user: withUser,
+        user: withUser ? {
+          select: {
+            userId: true,
+            name: true,
+            username: true,
+            reputation: true,
+            status: true,
+            createdAt: true,
+          },
+        } : false,
       },
     });
 
@@ -178,11 +187,12 @@ export class PrismaUserRepository implements UserRepository {
   ): Promise<UserRepositoryOutput.CreateWithCreds> {
     await this.prisma.userCreds.create({
       data: {
-        id: creds.id,
+        userId: creds.id,
         email: creds.email,
         password: creds.password,
         user: {
           create: {
+            userId: user.id,
             name: user.name,
             username: user.username,
             about: user.about,
@@ -213,7 +223,7 @@ export class PrismaUserRepository implements UserRepository {
     { userId, creds }: UserRepositoryInput.UpdateCreds,
   ): Promise<UserRepositoryOutput.UpdateCreds> {
     await this.prisma.userCreds.update({
-      where: { id: userId },
+      where: { userId },
       data: {
         email: creds.email,
         password: creds.password,
@@ -224,6 +234,6 @@ export class PrismaUserRepository implements UserRepository {
   async delete (
     { userId }: UserRepositoryInput.Delete,
   ): Promise<UserRepositoryOutput.Delete> {
-    await this.prisma.userCreds.delete({ where: { id: userId } });
+    await this.prisma.userCreds.delete({ where: { userId } });
   }
 }

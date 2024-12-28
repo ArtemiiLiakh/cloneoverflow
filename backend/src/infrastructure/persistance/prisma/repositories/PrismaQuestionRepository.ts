@@ -1,3 +1,4 @@
+import { VoteTypeEnum } from '@cloneoverflow/common';
 import { QuestionRepositoryInput } from '@core/domain/repositories/question/dtos/QuestionRepositoryInput';
 import { QuestionRepositoryOutput } from '@core/domain/repositories/question/dtos/QuestionRepositoryOutput';
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
@@ -12,7 +13,6 @@ import { QuestionOrderByAdapter } from '../adapters/orderBy/QuestionOrderByAdapt
 import { QuestionSelectAdapter } from '../adapters/select/QuestionSelectAdapter';
 import { QuestionWhereAdapter } from '../adapters/where/question/QuestionWhereAdapter';
 import { PrismaPaginationRepository } from './PrismaPagination';
-import { VoteTypeEnum } from '@cloneoverflow/common';
 
 export class PrismaQuestionRepository implements QuestionRepository {
   constructor (
@@ -23,8 +23,8 @@ export class PrismaQuestionRepository implements QuestionRepository {
     { questionId }: QuestionRepositoryInput.IsExist,
   ): Promise<QuestionRepositoryOutput.IsExist> {
     const question = await this.prisma.question.findFirst({
-      where: { id: questionId },
-      select: { id: true },
+      where: { questionId },
+      select: { questionId: true },
     });
 
     return !!question;
@@ -34,7 +34,7 @@ export class PrismaQuestionRepository implements QuestionRepository {
     { questionId }: QuestionRepositoryInput.GetById,
   ): Promise<QuestionRepositoryOutput.GetById> {
     const question = await this.prisma.question.findFirst({
-      where: { id: questionId },
+      where: { questionId },
     });
 
     if (!question) return null;
@@ -95,6 +95,19 @@ export class PrismaQuestionRepository implements QuestionRepository {
     };
   }
 
+  async getPartialById (
+    { questionId, select }: QuestionRepositoryInput.GetPartialById,
+  ): Promise<QuestionRepositoryOutput.GetPartialById> {
+    const question = await this.prisma.question.findFirst({
+      where: { questionId },
+      select: QuestionSelectAdapter(select),
+    });
+
+    if (!question) return null;
+
+    return QuestionMapper.toEntity(question);
+  }
+
   async getMany (
     { where, select, counts, orderBy, include, pagination }: QuestionRepositoryInput.GetMany,
   ): Promise<QuestionRepositoryOutput.GetMany> {
@@ -105,7 +118,7 @@ export class PrismaQuestionRepository implements QuestionRepository {
         where: QuestionWhereAdapter(where),
         select: {
           ...QuestionSelectAdapter(select),
-          ...QuestionCountsAdapter(counts),
+          ...QuestionCountsAdapter(counts, where),
           ...QuestionIncludeAdapter(include),
         },
         orderBy: QuestionOrderByAdapter(orderBy),
@@ -122,7 +135,7 @@ export class PrismaQuestionRepository implements QuestionRepository {
         counts: {
           answers: question._count.answers,
           tags: question._count.tags,
-          users: question._count.userQuestions,
+          users: question._count.questionUsers,
         },
       })),
       pagination: questions.pagination,
@@ -133,14 +146,18 @@ export class PrismaQuestionRepository implements QuestionRepository {
     { question }: QuestionRepositoryInput.Create,
   ): Promise<QuestionRepositoryOutput.Create> {
     await this.prisma.question.create({
+      select: { questionId: true },
       data: {
-        id: question.id,
+        questionId: question.id,
         ownerId: question.ownerId,
         title: question.title,
         text: question.text,
         rate: question.rating,
         views: question.views,
         isClosed: question.isClosed,
+        owner: {
+          connect: { userId: question.ownerId },
+        },
       },
     });
   }
@@ -149,11 +166,12 @@ export class PrismaQuestionRepository implements QuestionRepository {
     { questionId, question, returnEntity }: QuestionRepositoryInput.Update,
   ): Promise<QuestionRepositoryOutput.Update> {
     const updatedQuestion = await this.prisma.question.update({
-      where: { id: questionId },
+      where: { questionId },
       data: {
         title: question.title,
         text: question.text,
       },
+      select: returnEntity ? undefined : {},
     });
 
     if (returnEntity) return QuestionMapper.toEntity(updatedQuestion);
@@ -171,7 +189,7 @@ export class PrismaQuestionRepository implements QuestionRepository {
     { questionId }: QuestionRepositoryInput.Delete,
   ): Promise<QuestionRepositoryOutput.Delete> {
     await this.prisma.question.delete({
-      where: { id: questionId },
+      where: { questionId },
     });
   }
 
@@ -179,10 +197,10 @@ export class PrismaQuestionRepository implements QuestionRepository {
     { questionId, tags }: QuestionRepositoryInput.RefTags,
   ): Promise<QuestionRepositoryOutput.RefTags> {
     await this.prisma.question.update({
-      where: { id: questionId },
+      where: { questionId },
       data: {
         tags: {
-          connect: tags.map((tag) => ({ id: tag.id })),
+          connect: tags.map((tag) => ({ tagId: tag.id })),
         },
       },
     });
@@ -192,7 +210,7 @@ export class PrismaQuestionRepository implements QuestionRepository {
     { questionId }: QuestionRepositoryInput.UnrefTags,
   ): Promise<QuestionRepositoryOutput.UnrefTags> {
     await this.prisma.question.update({
-      where: { id: questionId },
+      where: { questionId },
       data: {
         tags: {
           set: [],
@@ -207,7 +225,7 @@ export class PrismaQuestionRepository implements QuestionRepository {
   }: QuestionRepositoryInput.AddRating,
   ): Promise<QuestionRepositoryOutput.AddRating> {
     await this.prisma.question.update({
-      where: { id: questionId },
+      where: { questionId },
       data: {
         rate: {
           increment: voteType === VoteTypeEnum.UP ? 1 : -1,
@@ -227,14 +245,18 @@ export class PrismaQuestionRepository implements QuestionRepository {
     { questionId, userId }: QuestionRepositoryInput.AddViewer,
   ): Promise<QuestionRepositoryOutput.AddViewer> {
     await this.prisma.question.update({
-      where: { id: questionId },
+      where: { questionId },
       data: {
         views: {
           increment: 1,
         },
-        userQuestions: {
+        questionUsers: {
           create: {
+            questionId,
             userId,
+            user: { 
+              connect: { userId }, 
+            },
             status: UserQuestionStatus.VIEWER,
           },
         },
@@ -246,7 +268,7 @@ export class PrismaQuestionRepository implements QuestionRepository {
     { questionId }: QuestionRepositoryInput.OpenQuestion,
   ): Promise<QuestionRepositoryOutput.OpenQuestion> {
     await this.prisma.question.update({
-      where: { id: questionId },
+      where: { questionId },
       data: {
         isClosed: false,
         answers: {
@@ -263,12 +285,12 @@ export class PrismaQuestionRepository implements QuestionRepository {
     { questionId, answerId }: QuestionRepositoryInput.CloseQuestion,
   ): Promise<QuestionRepositoryOutput.CloseQuestion> {
     await this.prisma.question.update({
-      where: { id: questionId },
+      where: { questionId },
       data: {
         isClosed: true,
         answers: {
           update: {
-            where: { id: answerId },
+            where: { answerId },
             data: { isSolution: true },
           },
         },

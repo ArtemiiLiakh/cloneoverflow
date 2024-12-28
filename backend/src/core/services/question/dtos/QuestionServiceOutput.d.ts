@@ -17,7 +17,7 @@ export namespace QuestionServiceOutput {
       name: string,
       rating: number,
     },
-    userStats: QuestionUser | null,
+    voter: QuestionUser | null,
   };
 
   export type GetAll = PaginatedData<{ 

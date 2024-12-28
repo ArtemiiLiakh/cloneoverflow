@@ -1,11 +1,11 @@
 import { QuestionUserStatusEnum, VoteTypeEnum } from '@cloneoverflow/common';
 import { QuestionUser } from '@core/domain/entities/QuestionUser';
-import { UserQuestions } from '@prisma/client';
+import Prisma from '@prisma/client';
 
 export class QuestionUserMapper {
-  static toEntity (user: UserQuestions): QuestionUser {
+  static toEntity (user: Prisma.QuestionUser): QuestionUser {
     return {
-      id: user.id,
+      id: user.questionUserId,
       userId: user.userId,
       questionId: user.questionId,
       status: user.status as QuestionUserStatusEnum,

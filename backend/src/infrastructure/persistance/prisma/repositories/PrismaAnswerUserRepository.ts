@@ -1,7 +1,7 @@
 import { AnswerUserRepository } from '@core/domain/repositories/answer/AnswerUserRepository';
 import { AnswerUserRepositoryInput } from '@core/domain/repositories/answer/dtos/answerUser/AnswerUserRepositoryInput';
 import { AnswerUserRepositoryOutput } from '@core/domain/repositories/answer/dtos/answerUser/AnswerUserRepositoryOutput';
-import { PrismaClient, UserAnswerStatus } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { AnswerUserMapper } from '../adapters/entityMappers/AnswerUserMapper';
 import { AnswerUserWhereAdapter } from '../adapters/where/answer/AnswerUserWhereAdapter';
 
@@ -13,7 +13,7 @@ export class PrismaAnswerUserRepository implements AnswerUserRepository {
   async getOne (
     { where }: AnswerUserRepositoryInput.GetOne,
   ): Promise<AnswerUserRepositoryOutput.GetOne> {
-    const answerUser = await this.prisma.userAnswers.findFirst({
+    const answerUser = await this.prisma.answerUser.findFirst({
       where: AnswerUserWhereAdapter(where),
     });
 
@@ -23,26 +23,26 @@ export class PrismaAnswerUserRepository implements AnswerUserRepository {
   }
 
   async create ({ user }: AnswerUserRepositoryInput.Create): Promise<AnswerUserRepositoryOutput.Create> {
-    await this.prisma.userAnswers.create({
+    await this.prisma.answerUser.create({
       data: {
-        id: user.id,
+        answerUserId: user.id,
         userId: user.userId,
         answerId: user.answerId,
         status: user.status,
         voteType: user.voteType,
+        answer: {
+          connect: { answerId: user.answerId },
+        },
+        user: {
+          connect: { userId: user.userId },
+        },
       },
     });
   }
 
-  async update ({ where, data, returnEntity }: AnswerUserRepositoryInput.Update): Promise<AnswerUserRepositoryOutput.Update> {
-    const answerUser = await this.prisma.userAnswers.update({
-      where: {
-        id: where.id,
-        answerId: where.answerId,
-        userId: where.userId,
-        status: where.status as UserAnswerStatus,
-        voteType: where.voteType,
-      },
+  async update ({ answerUserId, data, returnEntity }: AnswerUserRepositoryInput.Update): Promise<AnswerUserRepositoryOutput.Update> {
+    const answerUser = await this.prisma.answerUser.update({
+      where: { answerUserId },
       data: {
         status: data.status,
         voteType: data.voteType,
@@ -54,15 +54,9 @@ export class PrismaAnswerUserRepository implements AnswerUserRepository {
     }
   }
 
-  async delete ({ answerUser }: AnswerUserRepositoryInput.Delete): Promise<AnswerUserRepositoryOutput.Delete> {
-    await this.prisma.userAnswers.delete({
-      where: {
-        id: answerUser.id,
-        answerId: answerUser.answerId,
-        userId: answerUser.userId,
-        status: answerUser.status as UserAnswerStatus,
-        voteType: answerUser.voteType,
-      },
+  async delete ({ answerUserId }: AnswerUserRepositoryInput.Delete): Promise<AnswerUserRepositoryOutput.Delete> {
+    await this.prisma.answerUser.delete({
+      where: { answerUserId },
     });
   }
 }

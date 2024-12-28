@@ -14,5 +14,6 @@ export const StringWhereAdapter = (strType?: StringType): undefined | string | P
     equals: strType.eq,
     contains: strType.contains,
     in: strType.in,
+    mode: strType.ignoreCase ? 'insensitive' : 'default',
   };
 };

@@ -11,6 +11,8 @@ export namespace AnswerRepositoryOutput {
   export type GetPartialAnswer = {
     entity: AnswerSelectOutput,
   } & AnswerIncludeOutput | null;
+  
+  export type GetPartialById = AnswerSelectOutput | null;
 
   export type GetMany = PaginatedData<{
     entity: AnswerSelectOutput,

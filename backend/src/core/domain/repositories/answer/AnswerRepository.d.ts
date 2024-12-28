@@ -4,6 +4,7 @@ import { AnswerRepositoryOutput } from './dtos/AnswerRepositoryOutput';
 export interface AnswerRepository {
   getById(payload: AnswerRepositoryInput.GetById): Promise<AnswerRepositoryOutput.GetById>;
   getAnswer(payload: AnswerRepositoryInput.GetAnswer): Promise<AnswerRepositoryOutput.GetAnswer>;
+  getPartialById(payload: AnswerRepositoryInput.GetPartialById): Promise<AnswerRepositoryOutput.GetPartialById>;
   getPartialAnswer(payload: AnswerRepositoryInput.GetPartialAnswer): Promise<AnswerRepositoryOutput.GetPartialAnswer>;
   getMany(payload: AnswerRepositoryInput.GetMany): Promise<AnswerRepositoryOutput.GetMany>;
   isExist(payload: AnswerRepositoryInput.IsExist): Promise<AnswerRepositoryOutput.IsExist>;

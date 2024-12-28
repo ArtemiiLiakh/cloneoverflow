@@ -3,22 +3,25 @@ import { User, UserCreds } from '@core/domain/entities/User';
 import { UserRepository } from '@core/domain/repositories/user/UserRepository';
 import { UserServiceInput } from '../dtos/UserServiceInput';
 import { IUserCreateUseCase } from '../types/usecases';
+import { DataHasher } from '@core/data/DataHasher';
 
 export class UserCreateUseCase implements IUserCreateUseCase {
   constructor (
     private userRepository: UserRepository,
+    private dataHasher: DataHasher,
   ) {}
 
   async execute (
     { email, password, name, username, about }: UserServiceInput.Create,
   ): Promise<User> {
-    const existingUser = await this.userRepository.getUser({
+    const existingUser = await this.userRepository.getPartialUser({
       where: {
         OR: [
           { email },
           { username },
         ],
       },
+      select: { id: true },
     });
 
     if (existingUser) {
@@ -27,7 +30,7 @@ export class UserCreateUseCase implements IUserCreateUseCase {
   
     const creds = UserCreds.new({
       email,
-      password,
+      password: await this.dataHasher.hash(password),
     });
   
     const user = User.new({

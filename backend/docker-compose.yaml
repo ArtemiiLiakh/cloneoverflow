@@ -22,7 +22,7 @@ services:
       - redis
 
   postgres:
-    image: postgres:15.0
+    image: postgres:17-alpine
     container_name: cloneoverflow-backend-postgres
     environment:
       - POSTGRES_USER=${POSTGRES_USER}

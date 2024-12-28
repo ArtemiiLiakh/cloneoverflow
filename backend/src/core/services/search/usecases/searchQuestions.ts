@@ -19,6 +19,15 @@ export class SearchQuestionsUseCase implements ISearchQuestionsUseCase {
     const questions = await this.questionRepository.getMany({
       where: SearchQuestionsFilterBy(searchFilter, filterBy),
       pagination,
+      select: {
+        id: true,
+        ownerId: true,
+        title: true,
+        rating: true,
+        views: true,
+        isClosed: true,
+        createdAt: true,
+      },
       include: {
         tags: true,
         owner: true,

@@ -9,7 +9,7 @@ export const UserIncludeAdapter = (
   return {
     questions: !include.questions ? undefined : {
       select: {
-        id: true,
+        questionId: true,
         ownerId: true,
         title: true,
         rate: true,
@@ -22,7 +22,7 @@ export const UserIncludeAdapter = (
 
     answers: !include.answers ? undefined : {
       select: {
-        id: true,
+        answerId: true,
         ownerId: true,
         questionId: true,
         rate: true,

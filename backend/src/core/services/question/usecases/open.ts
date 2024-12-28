@@ -14,8 +14,8 @@ export class QuestionOpenUseCase implements IQuestionOpenUseCase {
   async execute (
     { executorId, questionId, answerId }: QuestionServiceInput.OpenQuestion,
   ): Promise<QuestionServiceOutput.OpenQuestion> {
-    const question = await this.questionRepository.getPartialQuestion({ 
-      where: { id: questionId },
+    const question = await this.questionRepository.getPartialById({ 
+      questionId,
       select: {
         ownerId: true,
         isClosed: true,
@@ -26,7 +26,7 @@ export class QuestionOpenUseCase implements IQuestionOpenUseCase {
       throw new NoEntityWithIdException('Question');
     }
     
-    if (question.entity.ownerId !== executorId) {
+    if (question.ownerId !== executorId) {
       throw new ForbiddenException();
     }
     
@@ -40,7 +40,7 @@ export class QuestionOpenUseCase implements IQuestionOpenUseCase {
       throw new BadBodyException('Wrong answer id');
     }
 
-    if (!question.entity.isClosed) {
+    if (!question.isClosed) {
       throw new BadBodyException('The question is already opened');
     }
 

@@ -14,7 +14,12 @@ export class QuestionUpdateUseCase implements IQuestionUpdateUseCase {
   async execute (
     { executorId, questionId, data: { text, title, tags } }: QuestionServiceInput.Update,
   ): Promise<QuestionServiceOutput.Update> {
-    const question = await this.questionRepository.getById({ questionId });
+    const question = await this.questionRepository.getPartialById({
+      questionId,
+      select: {
+        ownerId: true,
+      },
+    });
 
     if (!question) {
       throw new NoEntityWithIdException('Question');

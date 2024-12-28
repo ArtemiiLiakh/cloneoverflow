@@ -8,8 +8,9 @@ import {
   PrismaQuestionRepositoryDI,
   PrismaUserRepositoryDI,
 } from '../repositories/PrismaRepositoriesDI';
+import ScryptHasherDI from '../security/hashers/ScryptHasherDI';
 
-const CreateUseCaseDI = new UserCreateUseCase(PrismaUserRepositoryDI);
+const CreateUseCaseDI = new UserCreateUseCase(PrismaUserRepositoryDI, ScryptHasherDI);
 const GetUseCaseDI = new UserGetUseCase(PrismaUserRepositoryDI);
 
 const GetProfileUseCaseDI = new UserGetProfileUseCase(

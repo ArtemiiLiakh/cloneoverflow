@@ -64,14 +64,11 @@ export class AuthServiceFacade {
   }
 
   async getMe ({ executorId }: AuthServiceInput.GetMe): Promise<AuthServiceOutput.GetMe> {
-    const user = await this.getUserUseCase.execute({
+    return this.getUserUseCase.execute({
       userId: executorId,
-    }).catch((err) => {
-      console.log(err);
+    }).catch(() => {
       throw new ForbiddenException();
     });
-
-    return user.entity;
   }
 
   deleteAccount (payload: AuthServiceInput.DeleteAccount): Promise<AuthServiceOutput.DeleteAccount> {

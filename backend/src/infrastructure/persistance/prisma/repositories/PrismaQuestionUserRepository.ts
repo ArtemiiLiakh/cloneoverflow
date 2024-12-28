@@ -13,7 +13,7 @@ export class PrismaQuestionUserRepository implements QuestionUserRepository {
   async getOne (
     { where }: QuestionUserRepositoryInput.GetOne,
   ): Promise<QuestionUserRepositoryOutput.GetOne> {
-    const questionUser = await this.prisma.userQuestions.findFirst({
+    const questionUser = await this.prisma.questionUser.findFirst({
       where: QuestionUserWhereAdapter(where),
     });
 
@@ -25,13 +25,19 @@ export class PrismaQuestionUserRepository implements QuestionUserRepository {
   async create (
     { user }: QuestionUserRepositoryInput.Create,
   ): Promise<QuestionUserRepositoryOutput.Create> {
-    await this.prisma.userQuestions.create({
+    await this.prisma.questionUser.create({
       data: {
-        id: user.id,
+        questionUserId: user.id,
         questionId: user.questionId,
         userId: user.userId,
         status: user.status,
         voteType: user.voteType,
+        question: {
+          connect: { questionId: user.questionId },
+        },
+        user: {
+          connect: { userId: user.userId },
+        },
       },
     });
   }
@@ -39,8 +45,8 @@ export class PrismaQuestionUserRepository implements QuestionUserRepository {
   async update (
     { questionUserId, data, returnEntity }: QuestionUserRepositoryInput.Update,
   ): Promise<QuestionUserRepositoryOutput.Update> {
-    const questionUser = await this.prisma.userQuestions.update({
-      where: { id: questionUserId },
+    const questionUser = await this.prisma.questionUser.update({
+      where: { questionUserId },
       data: {
         status: data.status,
         voteType: data.voteType,
@@ -53,8 +59,8 @@ export class PrismaQuestionUserRepository implements QuestionUserRepository {
   async delete (
     { questionUserId }: QuestionUserRepositoryInput.Delete,
   ): Promise<QuestionUserRepositoryOutput.Delete> {
-    await this.prisma.userQuestions.findFirst({
-      where: { id: questionUserId },
+    await this.prisma.questionUser.findFirst({
+      where: { questionUserId },
     });
   }
 }

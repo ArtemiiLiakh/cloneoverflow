@@ -16,12 +16,18 @@ export const SearchQuestionsFilterBy = (
     OR: authors ? [
       {
         owner: {
-          name: { in: authors },
+          name: { 
+            in: authors, 
+            ignoreCase: true,
+          },
         },
       },
       {
         owner: {
-          username: { in: authors },
+          username: { 
+            in: authors,
+            ignoreCase: true,
+          },
         },
       },
     ] : undefined,
@@ -35,8 +41,8 @@ export const SearchQuestionsFilterBy = (
 
   const filterAND: QuestionWhere['AND'] = [{
     OR: [
-      { title: { contains: text ?? '' } },
-      { text: { contains: text ?? '' } },
+      { title: { contains: text ?? '', ignoreCase: true } },
+      { text: { contains: text ?? '', ignoreCase: true } },
     ],
   }];
 
@@ -44,6 +50,7 @@ export const SearchQuestionsFilterBy = (
     filterAND.push({
       text: { 
         contains: keyword,
+        ignoreCase: true,
       },
     });
   });

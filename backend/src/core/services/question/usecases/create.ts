@@ -21,9 +21,7 @@ export class QuestionCreateUseCase implements IQuestionCreateUseCase {
         text,
       });
       
-      await unit.questionRepository.create({
-        question,
-      });
+      await unit.questionRepository.create({ question });
   
       await unit.questionUserRepository.create({
         user: QuestionUser.new({
@@ -32,7 +30,7 @@ export class QuestionCreateUseCase implements IQuestionCreateUseCase {
           status: QuestionUserStatusEnum.OWNER,
         }),
       });
-  
+
       if (tags?.length) {
         const tagEntities = await unit.tagRepository.createOrFindMany({ tags });
         await unit.questionRepository.refTags({
@@ -47,7 +45,7 @@ export class QuestionCreateUseCase implements IQuestionCreateUseCase {
     if (!question) {
       throw new Exception('Question create failed');
     }
-  
+
     return question;    
   }
 }
