@@ -1,4 +1,4 @@
-import { PaginatedData, UserStatusEnum } from '@cloneoverflow/common';
+import { PaginatedData } from '@cloneoverflow/common';
 import { Answer } from '@core/domain/entities/Answer';
 import { AnswerUser } from '@core/domain/entities/AnswerUser';
 
@@ -14,7 +14,6 @@ export namespace AnswerServiceOutput {
       username: string,
       name: string,
       rating: number,
-      status: UserStatusEnum,
     },
     question?: {
       id: string,
@@ -23,7 +22,7 @@ export namespace AnswerServiceOutput {
       rating: number,
       isClosed: boolean,
     },
-    userStats: AnswerUser | null,
+    voter?: AnswerUser,
   };
   
   export type VoteAnswer = void;
@@ -35,7 +34,6 @@ export namespace AnswerServiceOutput {
       username: string,
       name: string,
       rating: number,
-      status: UserStatusEnum,
     },
     question: {
       id: string,
@@ -43,6 +41,5 @@ export namespace AnswerServiceOutput {
       title: string,
       rating: number,
     },
-    userStats: AnswerUser | null,
   }>;
 }

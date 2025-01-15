@@ -33,7 +33,6 @@ const GetUseCaseDI = new AnswerGetUseCase(
 
 const GetAllUseCaseDI = new AnswerGetAllUseCase(
   PrismaAnswerRepositoryDI,
-  PrismaAnswerUserRepositoryDI,
 );
 
 const VoteAnswerUseCaseDI = new AnswerVoteUseCase(

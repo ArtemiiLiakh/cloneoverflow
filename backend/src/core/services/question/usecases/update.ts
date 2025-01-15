@@ -30,17 +30,19 @@ export class QuestionUpdateUseCase implements IQuestionUpdateUseCase {
     }
   
     const questionUpdate = await this.unitOfWork.execute(async (unit) => {
-      if (tags?.length) {
+      if (Array.isArray(tags)) {
         await unit.questionRepository.unrefAllTags({
           questionId: questionId,
         });
-  
-        const tagEntities = await unit.tagRepository.createOrFindMany({ tags });
         
-        await unit.questionRepository.refTags({
-          questionId: questionId,
-          tags: tagEntities,
-        });
+        if (tags.length > 0) {
+          const tagEntities = await unit.tagRepository.createOrFindMany({ tags });
+          
+          await unit.questionRepository.refTags({
+            questionId: questionId,
+            tags: tagEntities,
+          });
+        }
       }
   
       return await unit.questionRepository.update({

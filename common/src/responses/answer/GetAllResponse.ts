@@ -13,7 +13,6 @@ export interface MappedAnswerGetAllResponse {
     reputation: number;
   };
   questionId: string;
-  voteType?: VoteTypeEnum | null;
   createdAt: Date;
   updatedAt: Date;
 }

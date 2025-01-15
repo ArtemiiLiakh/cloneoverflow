@@ -34,11 +34,10 @@ export class AnswerController {
   }
 
   async getAll (
-    { executor, query }: WithOptionalAuth & WithQuery<AnswersGetAllDTO>,
+    { query }: WithOptionalAuth & WithQuery<AnswersGetAllDTO>,
     res: CoreResponse<AnswerGetAllResponse>,
   ) {
     const answers = await this.answerService.getAll({
-      executorId: executor?.userId,
       questionId: query.questionId,
       ownerId: query.ownerId,
       rateFrom: query.rateFrom,

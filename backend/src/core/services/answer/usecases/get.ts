@@ -4,6 +4,7 @@ import { AnswerUserRepository } from '@core/domain/repositories/answer/AnswerUse
 import { AnswerServiceInput } from '../dtos/AnswerServiceInput';
 import { AnswerServiceOutput } from '../dtos/AnswerServiceOutput';
 import { IAnswerGetUseCase } from '../types/usecases';
+import { AnswerUser } from '@core/domain/entities/AnswerUser';
 
 export class AnswerGetUseCase implements IAnswerGetUseCase {
   constructor (
@@ -26,18 +27,33 @@ export class AnswerGetUseCase implements IAnswerGetUseCase {
       throw new NoEntityWithIdException('Answer');
     }
 
-    const voter = await this.answerUserRepository.getOne({
-      where: {
-        userId: executorId,
-        status: AnswerUserStatusEnum.VOTER,
-      },
-    });
+    let voter: AnswerUser | undefined;
+
+    if (executorId) {
+      voter = await this.answerUserRepository.getOne({
+        where: {
+          userId: executorId,
+          status: AnswerUserStatusEnum.VOTER,
+        },
+      }) ?? undefined;
+    }
   
     return {
       entity: answer.entity,
-      owner: answer.owner!,
-      question: answer.question!,
-      userStats: voter ?? null,
+      owner: {
+        id: answer.owner!.id,
+        name: answer.owner!.name,
+        username: answer.owner!.username,
+        rating: answer.owner!.rating,
+      },
+      question: {
+        id: answer.question!.id,
+        ownerId: answer.question!.ownerId,
+        title: answer.question!.title,
+        rating: answer.question!.rating,
+        isClosed: answer.question!.isClosed,
+      },
+      voter,
     };
   }
 }

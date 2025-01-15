@@ -1,6 +1,7 @@
 import { QuestionUserStatusEnum } from '@cloneoverflow/common';
-import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
+import { QuestionUser } from '@core/domain/entities/QuestionUser';
 import { QuestionUserRepository } from '@core/domain/repositories/question/QuestionUserRepository';
+import { UnitOfWork } from '@core/domain/repositories/UnitOfWork';
 import { IValidateQuestionUseCase } from '@core/services/validation/types/usecases';
 import { QuestionServiceInput } from '../dtos/QuestionServiceInput';
 import { QuestionServiceOutput } from '../dtos/QuestionServiceOutput';
@@ -8,7 +9,7 @@ import { IQuestionAddViewerUseCase } from '../types/usecases';
 
 export class QuestionAddViewerUseCase implements IQuestionAddViewerUseCase {
   constructor (
-    private questionRepository: QuestionRepository,
+    private unitOfWork: UnitOfWork,
     private questionUserRepository: QuestionUserRepository,
     private validateQuestionUseCase: IValidateQuestionUseCase,
   ) {}
@@ -26,11 +27,19 @@ export class QuestionAddViewerUseCase implements IQuestionAddViewerUseCase {
       },
     });
 
-    if (!viewer) {
-      await this.questionRepository.addViewer({
+    if (viewer) return;
+
+    await this.unitOfWork.execute((unit) => [
+      unit.questionRepository.addViewer({
         questionId,
-        userId: executorId,
-      });
-    }
+      }),
+      unit.questionUserRepository.create({
+        user: QuestionUser.new({
+          questionId,
+          userId: executorId,
+          status: QuestionUserStatusEnum.VIEWER,
+        }),
+      }),
+    ]);
   }
 }

@@ -44,13 +44,12 @@ export namespace QuestionServiceInput {
   export type OpenQuestion = {
     executorId: string,
     questionId: string, 
-    answerId: string, 
   };
 
   export type CloseQuestion = {
     executorId: string,
     questionId: string, 
-    answerId: string, 
+    answerId: string,
   };
 
   export type VoteQuestion = {

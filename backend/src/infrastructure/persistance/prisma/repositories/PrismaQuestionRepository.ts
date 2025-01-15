@@ -2,7 +2,7 @@ import { VoteTypeEnum } from '@cloneoverflow/common';
 import { QuestionRepositoryInput } from '@core/domain/repositories/question/dtos/QuestionRepositoryInput';
 import { QuestionRepositoryOutput } from '@core/domain/repositories/question/dtos/QuestionRepositoryOutput';
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
-import { PrismaClient, UserQuestionStatus } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { QuestionCountsAdapter } from '../adapters/counts/QuestionCountsAdapter';
 import { AnswerMapper } from '../adapters/entityMappers/AnswerMapper';
 import { QuestionMapper } from '../adapters/entityMappers/QuestionMapper';
@@ -12,7 +12,7 @@ import { QuestionIncludeAdapter } from '../adapters/include/QuestionIncludeAdapt
 import { QuestionOrderByAdapter } from '../adapters/orderBy/QuestionOrderByAdapter';
 import { QuestionSelectAdapter } from '../adapters/select/QuestionSelectAdapter';
 import { QuestionWhereAdapter } from '../adapters/where/question/QuestionWhereAdapter';
-import { PrismaPaginationRepository } from './PrismaPagination';
+import { PrismaPaginationRepository } from './PrismaPaginationRepository';
 
 export class PrismaQuestionRepository implements QuestionRepository {
   constructor (
@@ -219,10 +219,8 @@ export class PrismaQuestionRepository implements QuestionRepository {
     });
   }
 
-  async addRating ({ 
-    questionId,
-    voteType, 
-  }: QuestionRepositoryInput.AddRating,
+  async addRating (
+    { questionId, voteType }: QuestionRepositoryInput.AddRating,
   ): Promise<QuestionRepositoryOutput.AddRating> {
     await this.prisma.question.update({
       where: { questionId },
@@ -242,23 +240,13 @@ export class PrismaQuestionRepository implements QuestionRepository {
   }
 
   async addViewer (
-    { questionId, userId }: QuestionRepositoryInput.AddViewer,
+    { questionId }: QuestionRepositoryInput.AddViewer,
   ): Promise<QuestionRepositoryOutput.AddViewer> {
     await this.prisma.question.update({
       where: { questionId },
       data: {
         views: {
           increment: 1,
-        },
-        questionUsers: {
-          create: {
-            questionId,
-            userId,
-            user: { 
-              connect: { userId }, 
-            },
-            status: UserQuestionStatus.VIEWER,
-          },
         },
       },
     });

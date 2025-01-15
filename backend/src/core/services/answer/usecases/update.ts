@@ -12,12 +12,7 @@ export class AnswerUpdateUseCase implements IAnswerUpdateUseCase {
   async execute (
     { executorId, answerId, text }: AnswerServiceInput.Update,
   ): Promise<AnswerServiceOutput.Update> {
-    const answer = await this.answerRepository.getPartialById({ 
-      answerId,
-      select: {
-        ownerId: true,
-      },
-    });
+    const answer = await this.answerRepository.getById({ answerId });
 
     if (!answer) {
       throw new NoEntityWithIdException('Answer');
@@ -27,12 +22,14 @@ export class AnswerUpdateUseCase implements IAnswerUpdateUseCase {
       throw new ForbiddenException();
     }
   
-    return this.answerRepository.update({ 
+    await this.answerRepository.update({ 
       answerId, 
       answer: {
         text,
       },
-      returnEntity: true,
-    }).then(answer => answer!);
+    });
+
+    answer.text = text;
+    return answer;
   }
 }

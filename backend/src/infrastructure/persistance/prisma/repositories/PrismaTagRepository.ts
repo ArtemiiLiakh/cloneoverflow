@@ -6,7 +6,7 @@ import { TagCountsAdapter } from '../adapters/counts/TagCountsAdapter';
 import { TagMapper } from '../adapters/entityMappers/TagMapper';
 import { TagOrderByAdapter } from '../adapters/orderBy/TagsOrderByAdapter';
 import { TagWhereAdapter } from '../adapters/where/tag/TagWhereAdapter';
-import { PrismaPaginationRepository } from './PrismaPagination';
+import { PrismaPaginationRepository } from './PrismaPaginationRepository';
 
 export class PrismaTagRepository implements TagRepository {
   constructor (

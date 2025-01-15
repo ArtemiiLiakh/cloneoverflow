@@ -31,9 +31,7 @@ export class AnswerDeleteUseCase implements IAnswerDeleteUseCase {
         });
       }
   
-      await unit.answerRepository.delete({
-        answerId,
-      });
+      await unit.answerRepository.delete({ answerId });
     });
   
     return answer;

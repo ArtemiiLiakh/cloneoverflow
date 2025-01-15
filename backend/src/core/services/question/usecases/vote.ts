@@ -17,7 +17,6 @@ export class QuestionVoteUseCase implements IQuestionVoteUseCase {
   async execute (
     { executorId, questionId, vote }: QuestionServiceInput.VoteQuestion,
   ): Promise<QuestionServiceOutput.VoteQuestion> {
-    
     const question = await this.questionRepository.getPartialById({
       questionId,
       select: {

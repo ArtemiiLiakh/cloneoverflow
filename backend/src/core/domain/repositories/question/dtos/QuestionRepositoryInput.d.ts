@@ -57,7 +57,6 @@ export namespace QuestionRepositoryInput {
   };
 
   export type AddViewer = {
-    userId: string;
     questionId: string;
   };
   

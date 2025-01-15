@@ -55,7 +55,7 @@ export class SearchQuestionsUseCase implements ISearchQuestionsUseCase {
           username: question.owner!.username,
           rating: question.owner!.rating,
         },
-        tags: question.tags!,
+        tags: question.tags ?? [],
         answersAmount: question.counts?.answers ?? 0,
       })),
       pagination: questions.pagination,

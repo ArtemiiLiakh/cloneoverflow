@@ -5,6 +5,7 @@ import { QuestionCreateUseCase } from '@core/services/question/usecases/create';
 import { QuestionDeleteUseCase } from '@core/services/question/usecases/delete';
 import { QuestionGetUseCase } from '@core/services/question/usecases/get';
 import { QuestionGetAllUseCase } from '@core/services/question/usecases/getAll';
+import { QuestionOpenUseCase } from '@core/services/question/usecases/open';
 import { QuestionUpdateUseCase } from '@core/services/question/usecases/update';
 import { QuestionVoteUseCase } from '@core/services/question/usecases/vote';
 import {
@@ -31,7 +32,7 @@ const DeleteUseCaseDI = new QuestionDeleteUseCase(
 const GetAllUseCaseDI = new QuestionGetAllUseCase(PrismaQuestionRepositoryDI);
 
 const AddViewerUseCaseDI = new QuestionAddViewerUseCase(
-  PrismaQuestionRepositoryDI,
+  PrismaTransactionDI,
   PrismaQuestionUserRepositoryDI, 
   ValidateQuestionUseCaseDI,
 );
@@ -48,9 +49,15 @@ const VoteQuestionUseCaseDI = new QuestionVoteUseCase(
   PrismaTransactionDI,
 );
 
-const CloseQuestionUseCaseUseCaseDI = new QuestionCloseUseCase(
+const OpenQuestionUseCaseDI = new QuestionOpenUseCase(
+  PrismaQuestionRepositoryDI, 
+  PrismaTransactionDI, 
+);
+
+const CloseQuestionUseCaseDI = new QuestionCloseUseCase(
   PrismaQuestionRepositoryDI, 
   PrismaAnswerRepositoryDI, 
+  PrismaTransactionDI,
 );
 
 export const questionServiceFacadeDI = QuestionServiceFacade.new({
@@ -59,7 +66,8 @@ export const questionServiceFacadeDI = QuestionServiceFacade.new({
   questionDeleteUseCase: DeleteUseCaseDI,
   questionGetAllUseCase: GetAllUseCaseDI,
   questionGetUseCase: GetUseCaseDI,
-  questionCloseUseCase: CloseQuestionUseCaseUseCaseDI,
+  questionOpenUseCase: OpenQuestionUseCaseDI,
+  questionCloseUseCase: CloseQuestionUseCaseDI,
   questionVoteUseCase: VoteQuestionUseCaseDI,
 });
 
@@ -71,5 +79,6 @@ export const questionUseCasesDI = {
   AddViewerUseCaseDI,
   GetUseCaseDI,
   VoteQuestionUseCaseDI,
-  CloseQuestionUseCaseUseCaseDI,
+  OpenQuestionUseCaseDI,
+  CloseQuestionUseCaseDI,
 };

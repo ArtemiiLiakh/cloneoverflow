@@ -1,6 +1,7 @@
 {
   "preset": "ts-jest",
   "testEnvironment": "node",
+  "testMatch": ["<rootDir>/tests/**/*.test.ts", "<rootDir>/tests/**/*.spec.ts"],
   "moduleNameMapper": {
     "@/(.*)$": "<rootDir>/src/$1",
     "@core/(.*)$": "<rootDir>/src/core/$1",

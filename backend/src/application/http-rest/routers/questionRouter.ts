@@ -1,8 +1,8 @@
 import { AdaptController } from '@application/adapters/AdaptController';
 import { QuestionController } from '@application/controllers/QuestionController';
 import { SearchController } from '@application/controllers/SearchController';
-import { AuthUserStatusValidatorDI } from '@application/di/security/AuthUserStatusValidatorDI';
-import { JwtTokenValidatorDI } from '@application/di/security/JwtTokenValidatorDI';
+import { AuthUserStatusValidatorDI } from '@application/di/security/validators/AuthUserStatusValidatorDI';
+import { JwtTokenValidatorDI } from '@application/di/security/validators/JwtTokenValidatorDI';
 import { questionServiceFacadeDI } from '@application/di/services/QuestionServiceDI';
 import { searchServiceFacadeDI } from '@application/di/services/SearchServiceDI';
 import { validateRequest } from '@application/middlewares/security/ValidateRequest';
@@ -60,6 +60,13 @@ questionRouter.delete(
   JwtTokenValidatorDI.validateAccess(),
   AuthUserStatusValidatorDI.validate(),
   AdaptController(controller.delete.bind(controller)),
+);
+
+questionRouter.post(
+  '/:questionId/open',
+  JwtTokenValidatorDI.validateAccess(),
+  AuthUserStatusValidatorDI.validate(),
+  AdaptController(controller.openQuestion.bind(controller)),
 );
 
 questionRouter.post(

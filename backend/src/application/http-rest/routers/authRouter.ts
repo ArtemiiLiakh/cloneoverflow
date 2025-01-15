@@ -1,7 +1,7 @@
 import { AdaptController } from '@application/adapters/AdaptController';
 import { AuthController } from '@application/controllers/AuthController';
-import { AuthUserStatusValidatorDI } from '@application/di/security/AuthUserStatusValidatorDI';
-import { JwtTokenValidatorDI } from '@application/di/security/JwtTokenValidatorDI';
+import { AuthUserStatusValidatorDI } from '@application/di/security/validators/AuthUserStatusValidatorDI';
+import { JwtTokenValidatorDI } from '@application/di/security/validators/JwtTokenValidatorDI';
 import { authServiceFacadeDI } from '@application/di/services/AuthServiceDI';
 import { validateRequest } from '@application/middlewares/security/ValidateRequest';
 import {

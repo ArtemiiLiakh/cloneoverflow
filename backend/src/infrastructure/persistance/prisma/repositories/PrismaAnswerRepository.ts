@@ -9,7 +9,7 @@ import { AnswerIncludeAdapter } from '../adapters/include/AnswerIncludeAdapter';
 import { AnswerOrderByAdapter } from '../adapters/orderBy/AnswerOrderByAdapter';
 import { AnswerSelectAdapter } from '../adapters/select/AnswerSelectAdapter';
 import { AnswerWhereAdapter } from '../adapters/where/answer/AnswerWhereAdapter';
-import { PrismaPaginationRepository } from './PrismaPagination';
+import { PrismaPaginationRepository } from './PrismaPaginationRepository';
 import { VoteTypeEnum } from '@cloneoverflow/common';
 
 export class PrismaAnswerRepository implements AnswerRepository {

@@ -8,9 +8,10 @@ import {
   PrismaQuestionRepositoryDI,
   PrismaUserRepositoryDI,
 } from '../repositories/PrismaRepositoriesDI';
-import ScryptHasherDI from '../security/hashers/ScryptHasherDI';
+import { DataHasherDI } from '../security/hashers/DataHasherDI';
+import { ValidateUserUseCaseDI } from './ValidationServiceDI';
 
-const CreateUseCaseDI = new UserCreateUseCase(PrismaUserRepositoryDI, ScryptHasherDI);
+const CreateUseCaseDI = new UserCreateUseCase(PrismaUserRepositoryDI, DataHasherDI);
 const GetUseCaseDI = new UserGetUseCase(PrismaUserRepositoryDI);
 
 const GetProfileUseCaseDI = new UserGetProfileUseCase(
@@ -20,6 +21,7 @@ const GetProfileUseCaseDI = new UserGetProfileUseCase(
 );
 const UpdateUseCaseDI = new UserUpdateUseCase(
   PrismaUserRepositoryDI,
+  ValidateUserUseCaseDI,
 );
 
 export const userServiceFacadeDI = UserServiceFacade.new({

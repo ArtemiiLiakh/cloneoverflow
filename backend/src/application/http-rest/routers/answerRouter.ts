@@ -1,7 +1,7 @@
 import { AdaptController } from '@application/adapters/AdaptController';
 import { AnswerController } from '@application/controllers/AnswerController';
-import { AuthUserStatusValidatorDI } from '@application/di/security/AuthUserStatusValidatorDI';
-import { JwtTokenValidatorDI } from '@application/di/security/JwtTokenValidatorDI';
+import { AuthUserStatusValidatorDI } from '@application/di/security/validators/AuthUserStatusValidatorDI';
+import { JwtTokenValidatorDI } from '@application/di/security/validators/JwtTokenValidatorDI';
 import { answerServiceFacadeDI } from '@application/di/services/AnswerServiceDI';
 import { validateRequest } from '@application/middlewares/security/ValidateRequest';
 import {

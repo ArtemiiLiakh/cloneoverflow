@@ -19,7 +19,6 @@ export const AnswerGetAllMapper = (
         reputation: answer.owner.rating,
         username: answer.owner.username,
       },
-      voteType: answer.userStats?.voteType,
     })),
     pagination,
   };

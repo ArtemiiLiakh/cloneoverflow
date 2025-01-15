@@ -10,14 +10,12 @@ export class UserGetUseCase implements IUserGetUseCase {
   ) {}
 
   async execute ({ userId }: UserServiceInput.Get): Promise<UserServiceOutput.Get> {
-    const user = await this.userRepository.getUser({ 
-      where: { userId },
-    });
+    const user = await this.userRepository.getById({ userId });
 
     if (!user) {
       throw new NoEntityWithIdException('User');
     }
 
-    return user.entity;
+    return user;
   }
 }

@@ -4,6 +4,7 @@ import { QuestionUserRepository } from '@core/domain/repositories/question/Quest
 import { QuestionServiceInput } from '../dtos/QuestionServiceInput';
 import { QuestionServiceOutput } from '../dtos/QuestionServiceOutput';
 import { IQuestionAddViewerUseCase, IQuestionGetUseCase } from '../types/usecases';
+import { QuestionUser } from '@core/domain/entities/QuestionUser';
 
 export class QuestionGetUseCase implements IQuestionGetUseCase {
   
@@ -28,7 +29,7 @@ export class QuestionGetUseCase implements IQuestionGetUseCase {
       throw new NoEntityWithIdException('Question');
     }
   
-    let voter;
+    let voter: QuestionUser | undefined;
 
     if (executorId) {
       await this.addViewerUseCase.execute({
@@ -42,7 +43,7 @@ export class QuestionGetUseCase implements IQuestionGetUseCase {
           userId: executorId,
           status: QuestionUserStatusEnum.VOTER,
         },
-      });
+      }) ?? undefined;
     }
   
     return {
@@ -53,8 +54,8 @@ export class QuestionGetUseCase implements IQuestionGetUseCase {
         rating: question.owner!.rating,
         username: question.owner!.username,
       },
-      tags: question.tags,
-      voter: voter ?? null,
+      tags: question.tags ?? [],
+      voter,
     };
   }
 }

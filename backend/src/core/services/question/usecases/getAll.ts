@@ -57,23 +57,26 @@ export class QuestionGetAllUseCase implements IQuestionGetAllUseCase {
       pagination,
     });
   
-    const data: QuestionServiceOutput.GetAll['data'] = questions.data.map((question) => ({
-      entity: {
-        id: question.entity.id!,
-        ownerId: question.entity.ownerId!,
-        title: question.entity.title!,
-        rating: question.entity.rating!,
-        views: question.entity.views!,
-        isClosed: question.entity.isClosed!,
-        createdAt: question.entity.createdAt!,
-      },
-      owner: question.owner!,
-      tags: question.tags!,
-      answerAmount: question.counts?.answers ?? 0,
-    }));
-  
     return {
-      data,
+      data: questions.data.map((question) => ({
+        entity: {
+          id: question.entity.id!,
+          ownerId: question.entity.ownerId!,
+          title: question.entity.title!,
+          rating: question.entity.rating!,
+          views: question.entity.views!,
+          isClosed: question.entity.isClosed!,
+          createdAt: question.entity.createdAt!,
+        },
+        owner: {
+          id: question.owner!.id,
+          name: question.owner!.name,
+          username: question.owner!.username,
+          rating: question.owner!.rating,
+        },
+        tags: question.tags ?? [],
+        answerAmount: question.counts?.answers ?? 0,
+      })),
       pagination: questions.pagination,
     };
   }

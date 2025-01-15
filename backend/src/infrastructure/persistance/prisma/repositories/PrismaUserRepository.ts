@@ -6,7 +6,7 @@ import { UserCountsAdapter } from '../adapters/counts/UserCountsAdapter';
 import { UserMapper } from '../adapters/entityMappers/UserMapper';
 import { UserOrderByAdapter } from '../adapters/orderBy/UserOrderByAdapter';
 import { UserWhereAdapter } from '../adapters/where/user/UserWhereAdapter';
-import { PrismaPaginationRepository } from './PrismaPagination';
+import { PrismaPaginationRepository } from './PrismaPaginationRepository';
 import { UserIncludeAdapter } from '../adapters/include/UserIncludeAdapter';
 import { QuestionMapper } from '../adapters/entityMappers/QuestionMapper';
 import { AnswerMapper } from '../adapters/entityMappers/AnswerMapper';

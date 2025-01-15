@@ -17,18 +17,13 @@ export class AnswerVoteUseCase implements IAnswerVoteUseCase {
   async execute (
     { executorId, answerId, vote }: AnswerServiceInput.VoteAnswer,
   ): Promise<AnswerServiceOutput.VoteAnswer> {
-    const answer = await this.answerRepository.getAnswer({
-      where: { answerId },
-      include: {
-        owner: true,
-      },
-    });
+    const answer = await this.answerRepository.getById({ answerId });
   
     if (!answer) {
       throw new NoEntityWithIdException('Answer');
     }
   
-    if (answer.entity.ownerId === executorId) {
+    if (answer.ownerId === executorId) {
       throw new ForbiddenException('You cannot vote your own answer');
     }
   

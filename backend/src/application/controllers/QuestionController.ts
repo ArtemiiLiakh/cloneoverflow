@@ -81,6 +81,18 @@ export class QuestionController {
 
     res.send({ message: 'ok' });
   }
+
+  async openQuestion (
+    { executor, params }: WithAuth & WithParams<{ questionId: string }>, 
+    res: CoreResponse,
+  ) {
+    await this.questionService.open({
+      executorId: executor.userId,
+      questionId: params.questionId,
+    });
+
+    res.send({ message: 'ok' });
+  }
   
   async voteQuestion (
     { body, params, executor }: WithAuth & WithParams<{ questionId: string }> & WithBody<VoteDTO>, 

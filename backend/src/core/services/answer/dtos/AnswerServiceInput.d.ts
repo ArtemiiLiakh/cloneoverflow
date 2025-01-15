@@ -19,7 +19,6 @@ export namespace AnswerServiceInput {
   };
 
   export type GetAll = {
-    executorId?: string,
     questionId?: string;
     sortBy?: AnswersSortByEnum;
     orderBy?: OrderByEnum;

@@ -1,14 +1,17 @@
-import { BadBodyException, ForbiddenException, NoEntityWithIdException } from '@cloneoverflow/common';
+import { BadBodyException, ForbiddenException, NoEntityWithIdException, QuestionUserStatusEnum } from '@cloneoverflow/common';
 import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
 import { QuestionServiceInput } from '../dtos/QuestionServiceInput';
 import { QuestionServiceOutput } from '../dtos/QuestionServiceOutput';
 import { IQuestionCloseUseCase } from '../types/usecases';
+import { UnitOfWork } from '@core/domain/repositories/UnitOfWork';
+import { QuestionUser } from '@core/domain/entities/QuestionUser';
 
 export class QuestionCloseUseCase implements IQuestionCloseUseCase {
   constructor (
     private questionRepository: QuestionRepository,
     private answerRepository: AnswerRepository,
+    private unitOfWork: UnitOfWork,
   ) {}
   
   async execute (
@@ -30,16 +33,16 @@ export class QuestionCloseUseCase implements IQuestionCloseUseCase {
       throw new ForbiddenException();
     }
     
-    const answer = await this.answerRepository.getPartialAnswer({ 
-      where: { answerId: answerId },
-      select: { questionId: true },
+    const answer = await this.answerRepository.getPartialById({ 
+      answerId,
+      select: { questionId: true, ownerId: true },
     });
     
     if (!answer) {
       throw new NoEntityWithIdException('Answer');
     }
     
-    if (answer.entity.questionId !== questionId) {
+    if (answer.questionId !== questionId) {
       throw new BadBodyException('Wrong answer id');
     }
 
@@ -47,9 +50,19 @@ export class QuestionCloseUseCase implements IQuestionCloseUseCase {
       throw new BadBodyException('The question is already closed');
     }
 
-    await this.questionRepository.closeQuestion({
-      questionId,
-      answerId,
-    });
+    await this.unitOfWork.execute((unit) => [
+      unit.questionRepository.closeQuestion({
+        questionId,
+        answerId,
+      }),
+
+      unit.questionUserRepository.create({
+        user: QuestionUser.new({
+          questionId,
+          userId: executorId,
+          status: QuestionUserStatusEnum.ANSWERER,
+        }),
+      }),
+    ]);
   }
 }
