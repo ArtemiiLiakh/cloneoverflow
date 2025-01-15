@@ -1,4 +1,5 @@
-import { NoEntityWithIdException, QuestionUserStatusEnum } from '@cloneoverflow/common';
+import { QuestionUserStatusEnum } from '@cloneoverflow/common';
+import { QuestionUser } from '@core/domain/entities/QuestionUser';
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
 import { QuestionUserRepository } from '@core/domain/repositories/question/QuestionUserRepository';
 import { QuestionServiceInput } from '../dtos/QuestionServiceInput';
@@ -24,11 +25,7 @@ export class QuestionGetUseCase implements IQuestionGetUseCase {
       },
     });
 
-    if (!question) {
-      throw new NoEntityWithIdException('Question');
-    }
-  
-    let voter;
+    let voter: QuestionUser | undefined;
 
     if (executorId) {
       await this.addViewerUseCase.execute({
@@ -42,7 +39,7 @@ export class QuestionGetUseCase implements IQuestionGetUseCase {
           userId: executorId,
           status: QuestionUserStatusEnum.VOTER,
         },
-      });
+      }) ?? undefined;
     }
   
     return {
@@ -53,8 +50,8 @@ export class QuestionGetUseCase implements IQuestionGetUseCase {
         rating: question.owner!.rating,
         username: question.owner!.username,
       },
-      tags: question.tags,
-      voter: voter ?? null,
+      tags: question.tags ?? [],
+      voter,
     };
   }
 }

@@ -23,7 +23,7 @@ export class DeleteAccountUseCase implements IDeleteAccountUseCase {
     });
   
     if (!confirmUser) {
-      throw new BadBodyException('Invalid user id');
+      throw new BadBodyException('Invalid user email');
     }
 
     const resolveCode = await this.cacheRepository.getObject<VerificationCodePayload>(

@@ -1,11 +1,11 @@
-import { ForbiddenException, NoEntityWithIdException, QuestionUserStatusEnum } from '@cloneoverflow/common';
+import { ForbiddenException, QuestionUserStatusEnum } from '@cloneoverflow/common';
+import { QuestionUser } from '@core/domain/entities/QuestionUser';
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
 import { QuestionUserRepository } from '@core/domain/repositories/question/QuestionUserRepository';
+import { UnitOfWork } from '@core/domain/repositories/UnitOfWork';
 import { QuestionServiceInput } from '../dtos/QuestionServiceInput';
 import { QuestionServiceOutput } from '../dtos/QuestionServiceOutput';
 import { IQuestionVoteUseCase } from '../types/usecases';
-import { UnitOfWork } from '@core/domain/repositories/UnitOfWork';
-import { QuestionUser } from '@core/domain/entities/QuestionUser';
 
 export class QuestionVoteUseCase implements IQuestionVoteUseCase {
   constructor (
@@ -17,22 +17,15 @@ export class QuestionVoteUseCase implements IQuestionVoteUseCase {
   async execute (
     { executorId, questionId, vote }: QuestionServiceInput.VoteQuestion,
   ): Promise<QuestionServiceOutput.VoteQuestion> {
-    
-    const question = await this.questionRepository.getPartialById({
+    const question = await this.questionRepository.getPartialById({ 
       questionId,
-      select: {
-        ownerId: true,
-      },
+      select: { ownerId: true },
     });
-  
-    if (!question) {
-      throw new NoEntityWithIdException('Question');
-    }
-  
+    
     if (question.ownerId === executorId) {
-      throw new ForbiddenException('You cannot vote your own question');
+      throw new ForbiddenException('You cannot vote your question');
     }
-  
+
     const questionVoter = await this.questionUserRepository.getOne({
       where: { 
         questionId, 

@@ -1,4 +1,6 @@
-export type DateType = Date | Date[] | {
+import { BasicType } from './BasicType';
+
+export type DateOptions = {
   eq?: Date;
   ls?: Date;
   gt?: Date;
@@ -6,3 +8,5 @@ export type DateType = Date | Date[] | {
   leq?: Date;
   in?: Date[];
 };
+
+export type DateType = BasicType<Date> | DateOptions;

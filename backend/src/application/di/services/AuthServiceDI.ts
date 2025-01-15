@@ -9,14 +9,14 @@ import { AuthServiceFacade } from '@application/services/AuthServiceFacade';
 import GoogleEmailProviderDI from '../email/GoogleEmailProviderDI';
 import { PrismaUserRepositoryDI } from '../repositories/PrismaRepositoriesDI';
 import RedisCacheRepositoryDI from '../repositories/RedisCacheRepositoryDI';
-import ScryptHasherDI from '../security/hashers/ScryptHasherDI';
+import { DataHasherDI } from '../security/hashers/DataHasherDI';
 import { JwtEncryptorDI } from '../security/JwtEncryptorDI';
 import { userUseCasesDI } from './UserServiceDI';
 
 const LoginUseCaseDI = new LoginUseCase(
   PrismaUserRepositoryDI, 
   JwtEncryptorDI, 
-  ScryptHasherDI,
+  DataHasherDI,
 );
 
 const SignUpUseCaseDI = new SignUpUseCase(
@@ -33,26 +33,26 @@ const RefreshTokenUseCaseDI = new RefreshTokenUseCase(
 const ChangePasswordUseCaseDI = new ChangePasswordUseCase(
   PrismaUserRepositoryDI, 
   RedisCacheRepositoryDI, 
-  ScryptHasherDI,
+  DataHasherDI,
 );
 
 const ForgotPasswordUseCaseDI = new ForgotPasswordUseCase(
   PrismaUserRepositoryDI, 
   RedisCacheRepositoryDI, 
-  ScryptHasherDI,
+  DataHasherDI,
 );
 
 const DeleteAccountUseCaseDI = new DeleteAccountUseCase(
   PrismaUserRepositoryDI, 
   RedisCacheRepositoryDI, 
-  ScryptHasherDI,
+  DataHasherDI,
 );
 
 const SendVerificationCodeDI = new SendVerificationCodeUseCase(
   PrismaUserRepositoryDI, 
   GoogleEmailProviderDI, 
   RedisCacheRepositoryDI, 
-  ScryptHasherDI,
+  DataHasherDI,
 );
 
 export const authServiceFacadeDI = AuthServiceFacade.new({

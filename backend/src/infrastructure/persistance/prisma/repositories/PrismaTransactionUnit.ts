@@ -20,7 +20,7 @@ export class PrismaTransactionUnit implements UnitOfWork  {
     private prisma: PrismaClient,
   ) {}
 
-  async execute<I> (fn: (unit: Unit) => Promise<I>, isolationLevel = IsolationLevel.ReadCommitted): Promise<I | null> {
+  async execute<I> (fn: (unit: Unit) => Promise<I> | Promise<unknown>[], isolationLevel = IsolationLevel.ReadCommitted): Promise<I | null> {
     return await this.prisma.$transaction(async (context) => {
       const prismaSession: Unit = {
         userRepository: new PrismaUserRepository(context as PrismaClient),
@@ -30,9 +30,13 @@ export class PrismaTransactionUnit implements UnitOfWork  {
         answerUserRepository: new PrismaAnswerUserRepository(context as PrismaClient),
         tagRepository: new PrismaTagRepository(context as PrismaClient),
       };
-      
       try {
-        return await fn(prismaSession);
+        const fnExpression = fn(prismaSession);
+        if (Array.isArray(fnExpression)) {
+          await Promise.all(fnExpression);
+          return null;
+        }
+        return fnExpression;
       }
       catch (err) {
         console.log(err);

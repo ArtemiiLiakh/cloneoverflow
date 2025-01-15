@@ -18,7 +18,7 @@
     "db:sync:test": "dotenvx run -f ./config/.env.test -- npx prisma db push --skip-generate",
     "db:migrate:create": "dotenvx run -f ./config/.env.dev -- npx prisma migrate dev --create-only",
     "db:migrate:push": "dotenvx run -f ./config/.env.dev -- npx prisma migrate dev",
-    "test:unit": "dotenvx run -f ./config/.env.test -- jest --config=jest.config.json --logHeapUsage",
+    "test:unit": "dotenvx run -f ./config/.env.test -- jest --config=jest.config.json --logHeapUsage --runInBand",
     "test:docker": "dotenvx run -f ./config/.env.test -- bash scripts/test.sh",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix"

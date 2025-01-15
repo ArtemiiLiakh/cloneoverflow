@@ -5,9 +5,8 @@ import { UserCountsOutput, UserIncludeOutput, UserSelectOutput } from './Params'
 export namespace UserRepositoryOutput {
   export type CreateWithCreds = void;
 
-  export type GetById = User | null;
+  export type GetById = User;
   export type GetByEmail = User | null;
-  export type GetByUsername = User | null;
 
   export type GetCreds = {
     creds: UserCreds,
@@ -17,12 +16,14 @@ export namespace UserRepositoryOutput {
   export type GetUser = {
     entity: User, 
     counts?: UserCountsOutput,
-  } & UserIncludeOutput | null
+  } & UserIncludeOutput;
 
   export type GetPartialUser = {
     entity: UserSelectOutput, 
     counts?: UserCountsOutput,
-  } & UserIncludeOutput | null
+  } & UserIncludeOutput;
+
+  export type GetPartialById = UserSelectOutput;
 
   export type GetMany = PaginatedData<{
     user: UserSelectOutput,
@@ -30,6 +31,7 @@ export namespace UserRepositoryOutput {
   } & UserIncludeOutput>;
 
   export type IsExist = boolean;
+  export type ValidateById = void;
   export type Update = User | undefined; 
   export type UpdateCreds = void;
   export type Delete = void;

@@ -1,22 +1,22 @@
-import { AnswerUserStatusEnum } from '@cloneoverflow/common';
+import { AnswerUserStatusEnum, Exception } from '@cloneoverflow/common';
 import { Answer } from '@core/domain/entities/Answer';
 import { AnswerUser } from '@core/domain/entities/AnswerUser';
+import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
 import { UnitOfWork } from '@core/domain/repositories/UnitOfWork';
 import { AnswerServiceInput } from '../dtos/AnswerServiceInput';
 import { AnswerServiceOutput } from '../dtos/AnswerServiceOutput';
 import { IAnswerCreateUseCase } from '../types/usecases';
-import { IValidateQuestionUseCase } from '@core/services/validation/types/usecases';
 
 export class AnswerCreateUseCase implements IAnswerCreateUseCase {
   constructor (
-    private validateQuestionUseCase: IValidateQuestionUseCase,
+    private questionRepository: QuestionRepository,
     private unitOfWork: UnitOfWork,
   ) {}
   
   async execute (
     { executorId, questionId, text }: AnswerServiceInput.Create,
   ): Promise<AnswerServiceOutput.Create> {
-    await this.validateQuestionUseCase.execute({ questionId });
+    await this.questionRepository.validateById({ questionId });
 
     const answer = await this.unitOfWork.execute(async (unit) => {
       const answer = Answer.new({
@@ -39,7 +39,7 @@ export class AnswerCreateUseCase implements IAnswerCreateUseCase {
     });
   
     if (!answer) {
-      throw new Error('Answer creation failed');
+      throw new Exception('Answer creation failed');
     }
   
     return answer;

@@ -42,7 +42,7 @@ export type AnswerIncludeOutput = {
   },
 }
 
-export type AnswerWhereInput = WhereInput<{
+export type AnswerWhere = WhereInput<{
   answerId?: BasicType<string>,
   ownerId?: BasicType<string>,
   questionId?: BasicType<string>,

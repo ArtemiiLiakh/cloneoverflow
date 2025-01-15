@@ -11,8 +11,7 @@ export const TagOrderByAdapter = (
     TagOrderByType,
     Prisma.TagOrderByWithRelationInput
   >(orderBy, (order) => ({
-    id: order.text,
-    createdAt: order.createdAt,
+    name: order.text,
     questions: !order.questionsAmount ? undefined : {
       _count: order.questionsAmount,
     },

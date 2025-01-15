@@ -4,8 +4,10 @@ import { TagRepositoryInput } from './dtos/TagRepositoryInput';
 export interface TagRepository {
   getTag(payload: TagRepositoryInput.GetTag): Promise<TagsRepositoryOutput.GetTag>;
   getMany(payload: TagRepositoryInput.GetMany): Promise<TagsRepositoryOutput.GetMany>;
+  
   isExist(payload: TagRepositoryInput.IsExist): Promise<TagsRepositoryOutput.IsExist>;
-
+  validateById(payload: TagRepositoryInput.ValidateById): Promise<TagsRepositoryOutput.ValidateById>;
+  
   create(payload: TagRepositoryInput.Create): Promise<TagsRepositoryOutput.Create>;
   createMany(payload: TagRepositoryInput.CreateMany): Promise<TagsRepositoryOutput.CreateMany>;
   createOrFindMany(payload: TagRepositoryInput.CreateOrFindMany): Promise<TagsRepositoryOutput.CreateOrFindMany>;

@@ -25,6 +25,6 @@ export function AnswerGetMapperOutput (answer: AnswerServiceOutput.Get): AnswerG
     updatedAt: answer.entity.updatedAt,
     owner,
     question,
-    voteType: answer.userStats?.voteType,
+    voteType: answer.voter?.voteType,
   };
 }

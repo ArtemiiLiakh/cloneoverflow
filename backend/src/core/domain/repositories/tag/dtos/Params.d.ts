@@ -19,7 +19,6 @@ export type TagCountOutput = {
 
 export type TagOrderByType = {
   text?: OrderByEnum,
-  createdAt?: OrderByEnum,
   questionsAmount?: OrderByEnum,
 };
 

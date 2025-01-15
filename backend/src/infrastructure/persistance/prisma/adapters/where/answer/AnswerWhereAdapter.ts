@@ -1,11 +1,11 @@
-import { AnswerWhereInput } from '@core/domain/repositories/answer/dtos/Params';
+import { AnswerWhere } from '@core/domain/repositories/answer/dtos/Params';
 import { Prisma } from '@prisma/client';
 import { BasicStringWhereAdapter } from '../dataTypes/BasicWhereAdapter';
 import { DateWhereAdapter } from '../dataTypes/DateWhereAdapter';
 import { NumberWhereAdapter } from '../dataTypes/NumberWhereAdapter ';
 import { StringWhereAdapter } from '../dataTypes/StringWhereAdapter';
 
-export const AnswerWhereAdapter = (where?: AnswerWhereInput): Prisma.AnswerWhereInput => {
+export const AnswerWhereAdapter = (where?: AnswerWhere): Prisma.AnswerWhereInput => {
   if (!where) return {};
   
   return {

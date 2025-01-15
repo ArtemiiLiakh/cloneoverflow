@@ -20,7 +20,7 @@ export class ForgotPasswordUseCase implements IForgotPasswordUseCase {
     const user = await this.userRepository.getByEmail({ email });
     
     if (!user) {
-      throw new BadBodyException('No user with this email');
+      throw new BadBodyException('Invalid user email');
     }
   
     const resolveCode = await this.cacheRepository.getObject<VerificationCodePayload>(

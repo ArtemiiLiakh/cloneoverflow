@@ -11,7 +11,6 @@ export namespace QuestionServiceInput {
   };
 
   export type Update = {
-    executorId: string, 
     questionId: string, 
     data: {
       title?: string;
@@ -37,20 +36,19 @@ export namespace QuestionServiceInput {
   };
 
   export type Delete = {
-    executorId: string
+    executorId: string,
     questionId: string, 
   };
 
   export type OpenQuestion = {
     executorId: string,
     questionId: string, 
-    answerId: string, 
   };
 
   export type CloseQuestion = {
     executorId: string,
     questionId: string, 
-    answerId: string, 
+    answerId: string,
   };
 
   export type VoteQuestion = {

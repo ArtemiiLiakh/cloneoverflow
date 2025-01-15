@@ -45,11 +45,10 @@ export class QuestionController {
   }
   
   async update (
-    { params, body, executor }: WithAuth & WithParams<{ questionId: string }> & WithBody<QuestionUpdateDTO>, 
+    { params, body }: WithAuth & WithParams<{ questionId: string }> & WithBody<QuestionUpdateDTO>, 
     res: CoreResponse<QuestionUpdateResponse>,
   ) {
     const question = await this.questionService.update({
-      executorId: executor.userId,
       data: body,
       questionId: params.questionId,
     });
@@ -76,6 +75,18 @@ export class QuestionController {
     await this.questionService.close({
       executorId: executor.userId,
       answerId: body.answerId,
+      questionId: params.questionId,
+    });
+
+    res.send({ message: 'ok' });
+  }
+
+  async openQuestion (
+    { executor, params }: WithAuth & WithParams<{ questionId: string }>, 
+    res: CoreResponse,
+  ) {
+    await this.questionService.open({
+      executorId: executor.userId,
       questionId: params.questionId,
     });
 

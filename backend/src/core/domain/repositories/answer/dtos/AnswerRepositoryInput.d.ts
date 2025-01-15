@@ -1,18 +1,18 @@
 import { PaginationDTO, VoteTypeEnum } from '@cloneoverflow/common';
 import { Answer } from '@core/domain/entities/Answer';
-import { AnswerIncludeInput, AnswerOrderBy, AnswerSelectInput, AnswerWhereInput } from './Params';
+import { AnswerIncludeInput, AnswerOrderBy, AnswerSelectInput, AnswerWhere } from './Params';
 
 export namespace AnswerRepositoryInput {
   export type GetById = { answerId: string };
 
   export type GetAnswer = { 
-    where: AnswerWhereInput,
+    where: AnswerWhere,
     orderBy?: AnswerOrderBy,
     include?: AnswerIncludeInput,
   };
   
   export type GetPartialAnswer = {
-    where: AnswerWhereInput,
+    where: AnswerWhere,
     select?: AnswerSelectInput,
     orderBy?: AnswerOrderBy,
     include?: AnswerIncludeInput,
@@ -24,19 +24,18 @@ export namespace AnswerRepositoryInput {
   };
   
   export type GetMany = {
-    where: AnswerWhereInput,
+    where: AnswerWhere,
     select?: AnswerSelectInput,
     orderBy?: AnswerOrderBy,
     include?: AnswerIncludeInput,
     pagination?: PaginationDTO,
   };
 
-  export type IsExist = {
-    answerId: string;
-  }
+  export type IsExist = AnswerWhere;
+  export type ValidateById = { answerId: string };
 
   export type Count = {
-    where: AnswerWhereInput,
+    where: AnswerWhere,
   }
 
   export type Create = {

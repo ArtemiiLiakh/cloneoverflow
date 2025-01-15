@@ -1,7 +1,8 @@
 import { QuestionUserStatusEnum } from '@cloneoverflow/common';
+import { QuestionUser } from '@core/domain/entities/QuestionUser';
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
 import { QuestionUserRepository } from '@core/domain/repositories/question/QuestionUserRepository';
-import { IValidateQuestionUseCase } from '@core/services/validation/types/usecases';
+import { UnitOfWork } from '@core/domain/repositories/UnitOfWork';
 import { QuestionServiceInput } from '../dtos/QuestionServiceInput';
 import { QuestionServiceOutput } from '../dtos/QuestionServiceOutput';
 import { IQuestionAddViewerUseCase } from '../types/usecases';
@@ -10,13 +11,13 @@ export class QuestionAddViewerUseCase implements IQuestionAddViewerUseCase {
   constructor (
     private questionRepository: QuestionRepository,
     private questionUserRepository: QuestionUserRepository,
-    private validateQuestionUseCase: IValidateQuestionUseCase,
+    private unitOfWork: UnitOfWork,
   ) {}
 
   async execute (
     { executorId, questionId }: QuestionServiceInput.AddViewer,
   ): Promise<QuestionServiceOutput.AddViewer> {
-    await this.validateQuestionUseCase.execute({ questionId });
+    await this.questionRepository.validateById({ questionId });
 
     const viewer = await this.questionUserRepository.getOne({
       where: {
@@ -26,11 +27,19 @@ export class QuestionAddViewerUseCase implements IQuestionAddViewerUseCase {
       },
     });
 
-    if (!viewer) {
-      await this.questionRepository.addViewer({
+    if (viewer) return;
+
+    await this.unitOfWork.execute((unit) => [
+      unit.questionRepository.addViewer({
         questionId,
-        userId: executorId,
-      });
-    }
+      }),
+      unit.questionUserRepository.create({
+        user: QuestionUser.new({
+          questionId,
+          userId: executorId,
+          status: QuestionUserStatusEnum.VIEWER,
+        }),
+      }),
+    ]);
   }
 }

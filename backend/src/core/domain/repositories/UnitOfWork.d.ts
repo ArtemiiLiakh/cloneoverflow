@@ -16,5 +16,5 @@ export interface Unit {
 }
 
 export interface UnitOfWork {
-  execute<I>(fn: (unit: Unit) => Promise<I>, isolationLevel?: IsolationLevel): Promise<I | null>;
+  execute<I>(fn: (unit: Unit) => Promise<I> | Promise<unknown>[], isolationLevel?: IsolationLevel): Promise<I | null>;
 }

@@ -1,16 +1,16 @@
+import { UnauthorizedException } from '@cloneoverflow/common';
 import { IUserGetUseCase } from '@core/services/user/types/usecases';
 import { AuthServiceInput } from '../auth/dtos/AuthServiceInput';
 import { AuthServiceOutput } from '../auth/dtos/AuthServiceOutput';
 import {
   IChangePasswordUseCase,
-  ISendVerificationCodeUseCase,
   IDeleteAccountUseCase,
   IForgotPasswordUseCase,
   ILoginUseCase,
   IRefreshTokenUseCase,
+  ISendVerificationCodeUseCase,
   ISignUpUseCase,
 } from '../auth/types/usecases';
-import { ForbiddenException } from '@cloneoverflow/common';
 
 export class AuthServiceFacade {
   constructor (
@@ -67,7 +67,7 @@ export class AuthServiceFacade {
     return this.getUserUseCase.execute({
       userId: executorId,
     }).catch(() => {
-      throw new ForbiddenException();
+      throw new UnauthorizedException();
     });
   }
 

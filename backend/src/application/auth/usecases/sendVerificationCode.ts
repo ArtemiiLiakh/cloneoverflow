@@ -1,14 +1,14 @@
 import config from '@/config';
+import { VerificationCodePayload } from '@application/auth/data/VerificationCodePayload';
+import { EmailProvider } from '@application/interfaces/email/EmailProvider';
+import { BadBodyException } from '@cloneoverflow/common';
+import { DataHasher } from '@core/data/DataHasher';
 import { CacheRepository } from '@core/domain/repositories/cache/CacheRepository';
+import { UserRepository } from '@core/domain/repositories/user/UserRepository';
 import { randomInt } from 'crypto';
 import { AuthServiceInput } from '../dtos/AuthServiceInput';
 import { AuthServiceOutput } from '../dtos/AuthServiceOutput';
 import { ISendVerificationCodeUseCase } from '../types/usecases';
-import { EmailProvider } from '@application/interfaces/email/EmailProvider';
-import { UserRepository } from '@core/domain/repositories/user/UserRepository';
-import { Exception } from '@cloneoverflow/common';
-import { DataHasher } from '@core/data/DataHasher';
-import { VerificationCodePayload } from '@application/auth/data/VerificationCodePayload';
 
 const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghigklmnopqrstuvwxyz0123456789';
 
@@ -21,12 +21,10 @@ export class SendVerificationCodeUseCase implements ISendVerificationCodeUseCase
   ) {}
   
   async execute ({ email, codeType }: AuthServiceInput.SendVerificationCode): Promise<AuthServiceOutput.SendVerificationCode> {
-    const user = await this.userRepository.getByEmail({
-      email,
-    });
+    const user = await this.userRepository.getByEmail({ email });
 
     if (!user) {
-      throw new Exception('User with such email is not found');
+      throw new BadBodyException('Invalid user email');
     }
 
     const code = await this.generateCode(`user:${codeType}:${user.id}`);

@@ -1,4 +1,4 @@
-import { AnswerUserStatusEnum, ForbiddenException, NoEntityWithIdException } from '@cloneoverflow/common';
+import { AnswerUserStatusEnum, ForbiddenException } from '@cloneoverflow/common';
 import { AnswerUser } from '@core/domain/entities/AnswerUser';
 import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
 import { AnswerUserRepository } from '@core/domain/repositories/answer/AnswerUserRepository';
@@ -17,18 +17,12 @@ export class AnswerVoteUseCase implements IAnswerVoteUseCase {
   async execute (
     { executorId, answerId, vote }: AnswerServiceInput.VoteAnswer,
   ): Promise<AnswerServiceOutput.VoteAnswer> {
-    const answer = await this.answerRepository.getAnswer({
-      where: { answerId },
-      include: {
-        owner: true,
-      },
+    const answer = await this.answerRepository.getPartialById({ 
+      answerId,
+      select: { ownerId: true },
     });
   
-    if (!answer) {
-      throw new NoEntityWithIdException('Answer');
-    }
-  
-    if (answer.entity.ownerId === executorId) {
+    if (answer.ownerId === executorId) {
       throw new ForbiddenException('You cannot vote your own answer');
     }
   
@@ -41,7 +35,7 @@ export class AnswerVoteUseCase implements IAnswerVoteUseCase {
     });
   
     if (answerVoter && answerVoter.voteType === vote) {
-      throw new ForbiddenException();
+      throw new ForbiddenException('You cannot vote question more than one time');
     }
   
     await this.unitOfWork.execute(async (unit) => {

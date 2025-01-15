@@ -1,10 +1,11 @@
+import { isObjectEmpty } from '@common/utils/objectUtils';
 import { UserSelectInput } from '@core/domain/repositories/user/dtos/Params';
 import { Prisma } from '@prisma/client';
 
 export const UserSelectAdapter = (
   select?: UserSelectInput,
 ): Prisma.UserSelect => {
-  if (!select) return {
+  if (!select || isObjectEmpty(select)) return {
     userId: true,
     name: true,
     username: true,

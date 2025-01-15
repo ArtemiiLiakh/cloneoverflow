@@ -14,17 +14,14 @@ export class UserCreateUseCase implements IUserCreateUseCase {
   async execute (
     { email, password, name, username, about }: UserServiceInput.Create,
   ): Promise<User> {
-    const existingUser = await this.userRepository.getPartialUser({
-      where: {
-        OR: [
-          { email },
-          { username },
-        ],
-      },
-      select: { id: true },
+    const isUserExists = await this.userRepository.isExist({
+      OR: [
+        { email },
+        { username },
+      ],
     });
-
-    if (existingUser) {
+    
+    if (isUserExists) {
       throw new AlreadyRegisteredException();
     }
   

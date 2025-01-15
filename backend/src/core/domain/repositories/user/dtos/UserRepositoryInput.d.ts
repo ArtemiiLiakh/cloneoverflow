@@ -3,6 +3,9 @@ import { User, UserCreds } from '@core/domain/entities/User';
 import { UserCountsInput, UserIncludeInput, UserOrderBy, UserSelectInput, UserWhere } from './Params';
 
 export namespace UserRepositoryInput {
+  export type IsExist = UserWhere;
+  export type ValidateById = { userId: string };
+
   export type CreateWithCreds = {
     user: User,
     creds: UserCreds
@@ -10,7 +13,6 @@ export namespace UserRepositoryInput {
 
   export type GetByEmail = { email: string };
   export type GetById = { userId: string };
-  export type GetByUsername = { username: string };
   
   export type GetCreds = {
     where: {
@@ -33,6 +35,11 @@ export namespace UserRepositoryInput {
     include?: UserIncludeInput,
   }
   
+  export type GetPartialById = {
+    userId: string,
+    select: UserSelectInput,
+  }
+
   export type GetMany = {
     where?: UserWhere,
     select?: UserSelectInput,
@@ -42,8 +49,6 @@ export namespace UserRepositoryInput {
     pagination?: PaginationDTO,
   }
   
-  export type IsExist = { userId: string }
-
   export type UpdateCreds = {
     userId: string,
     creds: {

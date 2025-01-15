@@ -1,4 +1,4 @@
-import { Exception, ForbiddenException, NoEntityWithIdException } from '@cloneoverflow/common';
+import { Exception } from '@cloneoverflow/common';
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
 import { UnitOfWork } from '@core/domain/repositories/UnitOfWork';
 import { QuestionServiceInput } from '../dtos/QuestionServiceInput';
@@ -12,35 +12,24 @@ export class QuestionUpdateUseCase implements IQuestionUpdateUseCase {
   ) {}
 
   async execute (
-    { executorId, questionId, data: { text, title, tags } }: QuestionServiceInput.Update,
+    { questionId, data: { text, title, tags } }: QuestionServiceInput.Update,
   ): Promise<QuestionServiceOutput.Update> {
-    const question = await this.questionRepository.getPartialById({
-      questionId,
-      select: {
-        ownerId: true,
-      },
-    });
+    await this.questionRepository.validateById({ questionId });
 
-    if (!question) {
-      throw new NoEntityWithIdException('Question');
-    }
-
-    if (question.ownerId !== executorId) {
-      throw new ForbiddenException('You are not owner of this question');
-    }
-  
     const questionUpdate = await this.unitOfWork.execute(async (unit) => {
-      if (tags?.length) {
+      if (Array.isArray(tags)) {
         await unit.questionRepository.unrefAllTags({
-          questionId: questionId,
+          questionId,
         });
-  
-        const tagEntities = await unit.tagRepository.createOrFindMany({ tags });
         
-        await unit.questionRepository.refTags({
-          questionId: questionId,
-          tags: tagEntities,
-        });
+        if (tags.length > 0) {
+          const tagEntities = await unit.tagRepository.createOrFindMany({ tags });
+          
+          await unit.questionRepository.refTags({
+            questionId,
+            tags: tagEntities,
+          });
+        }
       }
   
       return await unit.questionRepository.update({

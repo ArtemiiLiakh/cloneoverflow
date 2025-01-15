@@ -9,25 +9,34 @@ import { AnswerIncludeAdapter } from '../adapters/include/AnswerIncludeAdapter';
 import { AnswerOrderByAdapter } from '../adapters/orderBy/AnswerOrderByAdapter';
 import { AnswerSelectAdapter } from '../adapters/select/AnswerSelectAdapter';
 import { AnswerWhereAdapter } from '../adapters/where/answer/AnswerWhereAdapter';
-import { PrismaPaginationRepository } from './PrismaPagination';
-import { VoteTypeEnum } from '@cloneoverflow/common';
+import { PrismaPaginationRepository } from './PrismaPaginationRepository';
+import { NoEntityWithIdException, VoteTypeEnum } from '@cloneoverflow/common';
 
 export class PrismaAnswerRepository implements AnswerRepository {
   constructor (
     private prisma: PrismaClient,
   ) {}
 
-  async isExist (
-    { answerId }: AnswerRepositoryInput.IsExist,
-  ): Promise<AnswerRepositoryOutput.IsExist> {
+  async isExist (where: AnswerRepositoryInput.IsExist): Promise<AnswerRepositoryOutput.IsExist> {
     const answer = await this.prisma.answer.findFirst({
-      where: { answerId },
+      where: AnswerWhereAdapter(where),
       select: { answerId: true },
     });
 
     return !!answer;
   }
 
+  async validateById (
+    { answerId }: AnswerRepositoryInput.ValidateById,
+  ): Promise<AnswerRepositoryOutput.ValidateById> {
+    if (!await this.prisma.answer.findFirst({ 
+      where: { answerId },
+      select: { pk_id: true },
+    })) {
+      throw new NoEntityWithIdException('Answer');
+    }
+  }
+  
   async getById (
     { answerId }: AnswerRepositoryInput.GetById,
   ): Promise<AnswerRepositoryOutput.GetById> {
@@ -35,7 +44,7 @@ export class PrismaAnswerRepository implements AnswerRepository {
       where: { answerId },
     });
     
-    if (!answer) return null;
+    if (!answer) throw new NoEntityWithIdException('Answer');
     return AnswerMapper.toEntity(answer);
   }
 
@@ -48,7 +57,7 @@ export class PrismaAnswerRepository implements AnswerRepository {
       include: AnswerIncludeAdapter(include),
     });
 
-    if (!answer) return null;
+    if (!answer) throw new NoEntityWithIdException('Answer');
     return {
       entity: AnswerMapper.toEntity(answer),
       owner: answer.owner ? UserMapper.toEntity(answer.owner) : undefined,
@@ -68,7 +77,7 @@ export class PrismaAnswerRepository implements AnswerRepository {
       orderBy: AnswerOrderByAdapter(orderBy),
     });
 
-    if (!answer) return null;
+    if (!answer) throw new NoEntityWithIdException('Answer');
     return {
       entity: AnswerMapper.toEntity(answer),
       owner: answer.owner ? UserMapper.toEntity(answer.owner) : undefined,
@@ -84,7 +93,7 @@ export class PrismaAnswerRepository implements AnswerRepository {
       select: AnswerSelectAdapter(select),
     });
 
-    if (!answer) return null;
+    if (!answer) throw new NoEntityWithIdException('Answer');
     return AnswerMapper.toEntity(answer);
   }
 

@@ -1,11 +1,12 @@
 import { AdaptController } from '@application/adapters/AdaptController';
 import { UserController } from '@application/controllers/UserController';
-import { AuthUserStatusValidatorDI } from '@application/di/security/AuthUserStatusValidatorDI';
-import { JwtTokenValidatorDI } from '@application/di/security/JwtTokenValidatorDI';
+import { AuthUserValidatorDI } from '@application/di/security/validators/AuthUserValidatorDI';
+import { JwtTokenValidatorDI } from '@application/di/security/validators/JwtTokenValidatorDI';
 import { answerUseCaseDI } from '@application/di/services/AnswerServiceDI';
 import { questionUseCasesDI } from '@application/di/services/QuestionServiceDI';
 import { userServiceFacadeDI } from '@application/di/services/UserServiceDI';
 import { validateRequest } from '@application/middlewares/security/ValidateRequest';
+import { ValidateUUID } from '@application/middlewares/validators';
 import {
   UserGetAnswersDTO,
   UserGetQuestionsDTO,
@@ -22,18 +23,28 @@ const userController = new UserController(
 
 userRouter.get(
   '/:userId', 
+  validateRequest({
+    params: {
+      userId: ValidateUUID,
+    },
+  }),
   AdaptController(userController.getUser.bind(userController)),
 );
 
 userRouter.get(
   '/:userId/profile', 
+  validateRequest({
+    params: {
+      userId: ValidateUUID,
+    },
+  }),
   AdaptController(userController.getProfile.bind(userController)),
 );
 
 userRouter.patch(
   '/', 
   JwtTokenValidatorDI.validateAccess(),
-  AuthUserStatusValidatorDI.validate(),
+  AuthUserValidatorDI.validate(),
   validateRequest({
     body: UserUpdateDTO,
   }),
@@ -43,6 +54,9 @@ userRouter.patch(
 userRouter.get(
   '/:userId/questions', 
   validateRequest({
+    params: {
+      userId: ValidateUUID,
+    },
     query: UserGetQuestionsDTO,
   }),
   AdaptController(userController.getQuestions.bind(userController)),
@@ -51,6 +65,9 @@ userRouter.get(
 userRouter.get(
   '/:userId/answers', 
   validateRequest({
+    params: {
+      userId: ValidateUUID,
+    },
     query: UserGetAnswersDTO,
   }),
   AdaptController(userController.getAnswers.bind(userController)),

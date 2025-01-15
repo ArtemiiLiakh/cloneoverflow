@@ -35,9 +35,8 @@ export namespace QuestionRepositoryInput {
     pagination?: PaginationDTO,
   };
 
-  export type IsExist = {
-    questionId: string;
-  }
+  export type IsExist = QuestionWhere;
+  export type ValidateById = { questionId: string };
 
   export type Count = {
     where: QuestionWhere;
@@ -57,7 +56,6 @@ export namespace QuestionRepositoryInput {
   };
 
   export type AddViewer = {
-    userId: string;
     questionId: string;
   };
   

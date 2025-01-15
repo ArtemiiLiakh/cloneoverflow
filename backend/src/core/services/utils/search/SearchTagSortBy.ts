@@ -10,10 +10,6 @@ export const TagsSortBy = (
       text: orderBy ?? OrderByEnum.ASC,
     },
 
-    newest: {
-      createdAt: orderBy ?? OrderByEnum.DESC,
-    },
-    
     popular: {
       questionsAmount: orderBy ?? OrderByEnum.DESC,
     },

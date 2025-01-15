@@ -3,7 +3,7 @@ import { Tag } from '@core/domain/entities/Tag';
 import { TagCountOutput, TagSelectOutput } from './Params';
 
 export namespace TagsRepositoryOutput {
-  export type GetTag = Tag | null;
+  export type GetTag = Tag;
   
   export type GetMany = PaginatedData<{
     entity: TagSelectOutput,
@@ -11,6 +11,7 @@ export namespace TagsRepositoryOutput {
   }>;
   
   export type IsExist = boolean;
+  export type ValidateById = void;
 
   export type Create = void;
   export type CreateMany = void;

@@ -1,4 +1,4 @@
-import { ForbiddenException, NoEntityWithIdException } from '@cloneoverflow/common';
+import { ForbiddenException } from '@cloneoverflow/common';
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
 import { QuestionServiceInput } from '../dtos/QuestionServiceInput';
 import { QuestionServiceOutput } from '../dtos/QuestionServiceOutput';
@@ -14,17 +14,11 @@ export class QuestionDeleteUseCase implements IQuestionDeleteUseCase {
   ): Promise<QuestionServiceOutput.Delete> {
     const question = await this.questionRepository.getById({ questionId });
 
-    if (!question) {
-      throw new NoEntityWithIdException('Question');
-    }
-  
     if (question.ownerId !== executorId) {
-      throw new ForbiddenException('You are not owner of this question');
+      throw new ForbiddenException('You are not owner of the question');
     }
-  
-    await this.questionRepository.delete({
-      questionId,
-    });
+
+    await this.questionRepository.delete({ questionId });
   
     return question;
   }

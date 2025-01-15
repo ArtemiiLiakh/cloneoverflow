@@ -1,8 +1,8 @@
-import { VoteTypeEnum } from '@cloneoverflow/common';
+import { NoEntityWithIdException, VoteTypeEnum } from '@cloneoverflow/common';
 import { QuestionRepositoryInput } from '@core/domain/repositories/question/dtos/QuestionRepositoryInput';
 import { QuestionRepositoryOutput } from '@core/domain/repositories/question/dtos/QuestionRepositoryOutput';
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
-import { PrismaClient, UserQuestionStatus } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { QuestionCountsAdapter } from '../adapters/counts/QuestionCountsAdapter';
 import { AnswerMapper } from '../adapters/entityMappers/AnswerMapper';
 import { QuestionMapper } from '../adapters/entityMappers/QuestionMapper';
@@ -12,22 +12,31 @@ import { QuestionIncludeAdapter } from '../adapters/include/QuestionIncludeAdapt
 import { QuestionOrderByAdapter } from '../adapters/orderBy/QuestionOrderByAdapter';
 import { QuestionSelectAdapter } from '../adapters/select/QuestionSelectAdapter';
 import { QuestionWhereAdapter } from '../adapters/where/question/QuestionWhereAdapter';
-import { PrismaPaginationRepository } from './PrismaPagination';
+import { PrismaPaginationRepository } from './PrismaPaginationRepository';
 
 export class PrismaQuestionRepository implements QuestionRepository {
   constructor (
     private prisma: PrismaClient,
   ) {}
 
-  async isExist (
-    { questionId }: QuestionRepositoryInput.IsExist,
-  ): Promise<QuestionRepositoryOutput.IsExist> {
+  async isExist (where: QuestionRepositoryInput.IsExist): Promise<QuestionRepositoryOutput.IsExist> {
     const question = await this.prisma.question.findFirst({
-      where: { questionId },
+      where: QuestionWhereAdapter(where),
       select: { questionId: true },
     });
 
     return !!question;
+  }
+
+  async validateById (
+    { questionId }: QuestionRepositoryInput.ValidateById,
+  ): Promise<QuestionRepositoryOutput.ValidateById> {
+    if (!await this.prisma.question.findFirst({ 
+      where: { questionId },
+      select: { pk_id: true },
+    })) {
+      throw new NoEntityWithIdException('Question');
+    }
   }
 
   async getById (
@@ -37,7 +46,7 @@ export class PrismaQuestionRepository implements QuestionRepository {
       where: { questionId },
     });
 
-    if (!question) return null;
+    if (!question) throw new NoEntityWithIdException('Question');
 
     return QuestionMapper.toEntity(question);
   }
@@ -54,7 +63,7 @@ export class PrismaQuestionRepository implements QuestionRepository {
       orderBy: QuestionOrderByAdapter(orderBy),
     });
 
-    if (!question) return question;
+    if (!question) throw new NoEntityWithIdException('Question');
 
     return {
       entity: QuestionMapper.toEntity(question),
@@ -81,7 +90,7 @@ export class PrismaQuestionRepository implements QuestionRepository {
       orderBy: QuestionOrderByAdapter(orderBy),
     });
 
-    if (!question) return null;
+    if (!question) throw new NoEntityWithIdException('Question');
 
     return {
       entity: QuestionMapper.toEntity(question),
@@ -103,7 +112,7 @@ export class PrismaQuestionRepository implements QuestionRepository {
       select: QuestionSelectAdapter(select),
     });
 
-    if (!question) return null;
+    if (!question) throw new NoEntityWithIdException('Question');
 
     return QuestionMapper.toEntity(question);
   }
@@ -219,10 +228,8 @@ export class PrismaQuestionRepository implements QuestionRepository {
     });
   }
 
-  async addRating ({ 
-    questionId,
-    voteType, 
-  }: QuestionRepositoryInput.AddRating,
+  async addRating (
+    { questionId, voteType }: QuestionRepositoryInput.AddRating,
   ): Promise<QuestionRepositoryOutput.AddRating> {
     await this.prisma.question.update({
       where: { questionId },
@@ -242,23 +249,13 @@ export class PrismaQuestionRepository implements QuestionRepository {
   }
 
   async addViewer (
-    { questionId, userId }: QuestionRepositoryInput.AddViewer,
+    { questionId }: QuestionRepositoryInput.AddViewer,
   ): Promise<QuestionRepositoryOutput.AddViewer> {
     await this.prisma.question.update({
       where: { questionId },
       data: {
         views: {
           increment: 1,
-        },
-        questionUsers: {
-          create: {
-            questionId,
-            userId,
-            user: { 
-              connect: { userId }, 
-            },
-            status: UserQuestionStatus.VIEWER,
-          },
         },
       },
     });

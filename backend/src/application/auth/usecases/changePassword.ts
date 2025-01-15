@@ -1,5 +1,5 @@
+import { BadBodyException, LoginException, UnauthorizedException, VerificationCodeType } from '@cloneoverflow/common';
 import { DataHasher } from '@core/data/DataHasher';
-import { BadBodyException, LoginException, NoEntityWithIdException, VerificationCodeType } from '@cloneoverflow/common';
 import { CacheRepository } from '@core/domain/repositories/cache/CacheRepository';
 import { UserRepository } from '@core/domain/repositories/user/UserRepository';
 import { VerificationCodePayload } from '../data/VerificationCodePayload';
@@ -19,7 +19,7 @@ export class ChangePasswordUseCase implements IChangePasswordUseCase {
     });
 
     if (!creds) {
-      throw new NoEntityWithIdException('User');
+      throw new UnauthorizedException();
     }
 
     const resolveCode = await this.cacheRepository.getObject<VerificationCodePayload>(

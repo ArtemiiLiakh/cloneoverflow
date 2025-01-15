@@ -3,22 +3,23 @@ import { Answer } from '@core/domain/entities/Answer';
 import { AnswerIncludeOutput, AnswerSelectOutput } from './Params';
 
 export namespace AnswerRepositoryOutput {
-  export type GetById = Answer | null;
+  export type GetById = Answer;
   export type GetAnswer = {
     entity: Answer,
-  } & AnswerIncludeOutput | null;
+  } & AnswerIncludeOutput;
 
   export type GetPartialAnswer = {
     entity: AnswerSelectOutput,
-  } & AnswerIncludeOutput | null;
+  } & AnswerIncludeOutput;
   
-  export type GetPartialById = AnswerSelectOutput | null;
+  export type GetPartialById = AnswerSelectOutput;
 
   export type GetMany = PaginatedData<{
     entity: AnswerSelectOutput,
   } & AnswerIncludeOutput>;
 
   export type IsExist = boolean;
+  export type ValidateById = void;
 
   export type Count = number;
   export type Create = void;

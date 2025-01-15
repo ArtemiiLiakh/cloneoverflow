@@ -8,6 +8,7 @@ export interface QuestionRepository {
   getPartialById(payload: QuestionRepositoryInput.GetPartialById): Promise<QuestionRepositoryOutput.GetPartialById>;
   getMany(payload: QuestionRepositoryInput.GetMany): Promise<QuestionRepositoryOutput.GetMany>;
   isExist(payload: QuestionRepositoryInput.IsExist): Promise<QuestionRepositoryOutput.IsExist>;
+  validateById(payload: QuestionRepositoryInput.ValidateById): Promise<QuestionRepositoryOutput.ValidateById>;
 
   count(payload: QuestionRepositoryInput.Count): Promise<QuestionRepositoryOutput.Count>;
   create(payload: QuestionRepositoryInput.Create): Promise<QuestionRepositoryOutput.Create>;

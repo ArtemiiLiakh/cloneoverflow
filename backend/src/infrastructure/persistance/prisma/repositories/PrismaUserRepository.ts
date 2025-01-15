@@ -6,25 +6,37 @@ import { UserCountsAdapter } from '../adapters/counts/UserCountsAdapter';
 import { UserMapper } from '../adapters/entityMappers/UserMapper';
 import { UserOrderByAdapter } from '../adapters/orderBy/UserOrderByAdapter';
 import { UserWhereAdapter } from '../adapters/where/user/UserWhereAdapter';
-import { PrismaPaginationRepository } from './PrismaPagination';
+import { PrismaPaginationRepository } from './PrismaPaginationRepository';
 import { UserIncludeAdapter } from '../adapters/include/UserIncludeAdapter';
 import { QuestionMapper } from '../adapters/entityMappers/QuestionMapper';
 import { AnswerMapper } from '../adapters/entityMappers/AnswerMapper';
 import { UserSelectAdapter } from '../adapters/select/UserSelectAdapter';
 import { UserCredsMapper } from '../adapters/entityMappers/UserCredsMapper';
+import { NoEntityWithIdException } from '@cloneoverflow/common';
 
 export class PrismaUserRepository implements UserRepository {
   constructor (
     private prisma: PrismaClient,
   ) {}
 
-  async isExist ({ userId }: UserRepositoryInput.IsExist): Promise<UserRepositoryOutput.IsExist> {
+  async isExist (where: UserRepositoryInput.IsExist): Promise<UserRepositoryOutput.IsExist> {
     const user = await this.prisma.user.findFirst({ 
-      where: { userId },
+      where: UserWhereAdapter(where),
       select: { userId: true }, 
     });
 
     return !!user;
+  }
+
+  async validateById (
+    { userId }: UserRepositoryInput.ValidateById,
+  ): Promise<UserRepositoryOutput.ValidateById> {
+    if (!await this.prisma.user.findFirst({ 
+      where: { userId },
+      select: { pk_id: true },
+    })) {
+      throw new NoEntityWithIdException('User');
+    }
   }
 
   async getById (
@@ -32,17 +44,7 @@ export class PrismaUserRepository implements UserRepository {
   ): Promise<UserRepositoryOutput.GetById> {
     const user = await this.prisma.user.findFirst({ where: { userId } });
 
-    if (!user) return null;
-
-    return UserMapper.toEntity(user);
-  }
-
-  async getByUsername (
-    { username }: UserRepositoryInput.GetByUsername,
-  ): Promise<UserRepositoryOutput.GetByUsername> {
-    const user = await this.prisma.user.findFirst({ where: { username } });
-
-    if (!user) return null;
+    if (!user) throw new NoEntityWithIdException('User');
 
     return UserMapper.toEntity(user);
   }
@@ -74,7 +76,7 @@ export class PrismaUserRepository implements UserRepository {
       },
     });
 
-    if (!user) return null;
+    if (!user) throw new NoEntityWithIdException('User');
 
     return {
       entity: UserMapper.toEntity(user),
@@ -85,6 +87,19 @@ export class PrismaUserRepository implements UserRepository {
         answers: user._count.answers,
       } : undefined,
     };
+  }
+
+  async getPartialById (
+    { userId, select }: UserRepositoryInput.GetPartialById,
+  ): Promise<UserRepositoryOutput.GetPartialById> {
+    const user = await this.prisma.user.findFirst({
+      where: { userId },
+      select: UserSelectAdapter(select),
+    });
+
+    if (!user) throw new NoEntityWithIdException('User');
+
+    return UserMapper.toEntity(user);
   }
 
   async getPartialUser ({
@@ -102,7 +117,7 @@ export class PrismaUserRepository implements UserRepository {
       },
     });
 
-    if (!user) return null;
+    if (!user) throw new NoEntityWithIdException('User');
 
     return {
       entity: UserMapper.toEntity(user),

@@ -1,4 +1,5 @@
-import { AnswerUserStatusEnum, NoEntityWithIdException } from '@cloneoverflow/common';
+import { AnswerUserStatusEnum } from '@cloneoverflow/common';
+import { AnswerUser } from '@core/domain/entities/AnswerUser';
 import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
 import { AnswerUserRepository } from '@core/domain/repositories/answer/AnswerUserRepository';
 import { AnswerServiceInput } from '../dtos/AnswerServiceInput';
@@ -22,22 +23,33 @@ export class AnswerGetUseCase implements IAnswerGetUseCase {
       },
     });
   
-    if (!answer) {
-      throw new NoEntityWithIdException('Answer');
-    }
+    let voter: AnswerUser | undefined;
 
-    const voter = await this.answerUserRepository.getOne({
-      where: {
-        userId: executorId,
-        status: AnswerUserStatusEnum.VOTER,
-      },
-    });
+    if (executorId) {
+      voter = await this.answerUserRepository.getOne({
+        where: {
+          userId: executorId,
+          status: AnswerUserStatusEnum.VOTER,
+        },
+      }) ?? undefined;
+    }
   
     return {
       entity: answer.entity,
-      owner: answer.owner!,
-      question: answer.question!,
-      userStats: voter ?? null,
+      owner: {
+        id: answer.owner!.id,
+        name: answer.owner!.name,
+        username: answer.owner!.username,
+        rating: answer.owner!.rating,
+      },
+      question: {
+        id: answer.question!.id,
+        ownerId: answer.question!.ownerId,
+        title: answer.question!.title,
+        rating: answer.question!.rating,
+        isClosed: answer.question!.isClosed,
+      },
+      voter,
     };
   }
 }

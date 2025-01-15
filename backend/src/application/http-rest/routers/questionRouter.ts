@@ -1,11 +1,12 @@
 import { AdaptController } from '@application/adapters/AdaptController';
 import { QuestionController } from '@application/controllers/QuestionController';
 import { SearchController } from '@application/controllers/SearchController';
-import { AuthUserStatusValidatorDI } from '@application/di/security/AuthUserStatusValidatorDI';
-import { JwtTokenValidatorDI } from '@application/di/security/JwtTokenValidatorDI';
+import { AuthUserValidatorDI } from '@application/di/security/validators/AuthUserValidatorDI';
+import { JwtTokenValidatorDI } from '@application/di/security/validators/JwtTokenValidatorDI';
 import { questionServiceFacadeDI } from '@application/di/services/QuestionServiceDI';
 import { searchServiceFacadeDI } from '@application/di/services/SearchServiceDI';
 import { validateRequest } from '@application/middlewares/security/ValidateRequest';
+import { ValidateUUID } from '@application/middlewares/validators';
 import {
   QuestionCloseDTO,
   QuestionCreateDTO,
@@ -31,14 +32,19 @@ questionRouter.get(
 questionRouter.get(
   '/:questionId', 
   JwtTokenValidatorDI.validateAccess({ optional: true }),
-  AuthUserStatusValidatorDI.validate(),
+  AuthUserValidatorDI.validate(),
+  validateRequest({
+    params: {
+      questionId: ValidateUUID,
+    },
+  }),
   AdaptController(controller.get.bind(controller)),
 );
 
 questionRouter.post(
   '/', 
   JwtTokenValidatorDI.validateAccess(),
-  AuthUserStatusValidatorDI.validate(),
+  AuthUserValidatorDI.validate(),
   validateRequest({
     body: QuestionCreateDTO,
   }), 
@@ -48,8 +54,11 @@ questionRouter.post(
 questionRouter.patch(
   '/:questionId',
   JwtTokenValidatorDI.validateAccess(),
-  AuthUserStatusValidatorDI.validate(),
+  AuthUserValidatorDI.validate(),
   validateRequest({
+    params: {
+      questionId: ValidateUUID,
+    },
     body: QuestionUpdateDTO,
   }),
   AdaptController(controller.update.bind(controller)),
@@ -58,15 +67,35 @@ questionRouter.patch(
 questionRouter.delete(
   '/:questionId',
   JwtTokenValidatorDI.validateAccess(),
-  AuthUserStatusValidatorDI.validate(),
+  AuthUserValidatorDI.validate(),
+  validateRequest({
+    params: {
+      questionId: ValidateUUID,
+    },
+  }),
   AdaptController(controller.delete.bind(controller)),
+);
+
+questionRouter.post(
+  '/:questionId/open',
+  JwtTokenValidatorDI.validateAccess(),
+  AuthUserValidatorDI.validate(),
+  validateRequest({
+    params: {
+      questionId: ValidateUUID,
+    },
+  }),
+  AdaptController(controller.openQuestion.bind(controller)),
 );
 
 questionRouter.post(
   '/:questionId/close',
   JwtTokenValidatorDI.validateAccess(),
-  AuthUserStatusValidatorDI.validate(),
+  AuthUserValidatorDI.validate(),
   validateRequest({
+    params: {
+      questionId: ValidateUUID,
+    },
     body: QuestionCloseDTO,
   }),
   AdaptController(controller.closeQuestion.bind(controller)),
@@ -75,8 +104,11 @@ questionRouter.post(
 questionRouter.post(
   '/:questionId/vote',
   JwtTokenValidatorDI.validateAccess(),
-  AuthUserStatusValidatorDI.validate(),
+  AuthUserValidatorDI.validate(),
   validateRequest({
+    params: {
+      questionId: ValidateUUID,
+    },
     body: VoteDTO,
   }),
   AdaptController(controller.voteQuestion.bind(controller)),

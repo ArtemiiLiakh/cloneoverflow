@@ -6,25 +6,32 @@ import { TagCountsAdapter } from '../adapters/counts/TagCountsAdapter';
 import { TagMapper } from '../adapters/entityMappers/TagMapper';
 import { TagOrderByAdapter } from '../adapters/orderBy/TagsOrderByAdapter';
 import { TagWhereAdapter } from '../adapters/where/tag/TagWhereAdapter';
-import { PrismaPaginationRepository } from './PrismaPagination';
+import { PrismaPaginationRepository } from './PrismaPaginationRepository';
+import { NoEntityWithIdException } from '@cloneoverflow/common';
 
 export class PrismaTagRepository implements TagRepository {
   constructor (
     private prisma: PrismaClient,
   ) {}
 
-  async isExist (
-    { tagId, name }: TagRepositoryInput.IsExist,
-  ): Promise<TagsRepositoryOutput.IsExist> {
+  async isExist (where: TagRepositoryInput.IsExist): Promise<TagsRepositoryOutput.IsExist> {
     const tag = await this.prisma.tag.findFirst({
-      where: {
-        tagId,
-        name,
-      },
+      where: TagWhereAdapter(where),
       select: { tagId: true },
     });
 
     return !!tag;
+  }
+
+  async validateById (
+    { tagId }: TagRepositoryInput.ValidateById,
+  ): Promise<TagsRepositoryOutput.ValidateById> {
+    if (!await this.prisma.tag.findFirst({ 
+      where: { tagId },
+      select: { pk_id: true },
+    })) {
+      throw new NoEntityWithIdException('Tag');
+    }
   }
 
   async getTag (
@@ -36,7 +43,7 @@ export class PrismaTagRepository implements TagRepository {
       orderBy: TagOrderByAdapter(orderBy),
     });
 
-    if (!tag) return null;
+    if (!tag) throw new NoEntityWithIdException('Tag');
 
     return TagMapper.toEntity(tag); 
   }

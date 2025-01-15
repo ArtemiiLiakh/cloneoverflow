@@ -34,11 +34,10 @@ export class AnswerController {
   }
 
   async getAll (
-    { executor, query }: WithOptionalAuth & WithQuery<AnswersGetAllDTO>,
+    { query }: WithOptionalAuth & WithQuery<AnswersGetAllDTO>,
     res: CoreResponse<AnswerGetAllResponse>,
   ) {
     const answers = await this.answerService.getAll({
-      executorId: executor?.userId,
       questionId: query.questionId,
       ownerId: query.ownerId,
       rateFrom: query.rateFrom,
@@ -67,11 +66,10 @@ export class AnswerController {
   }
 
   async update (
-    { params, body, executor }: WithAuth & WithParams<{ answerId: string }> & WithBody<AnswerUpdateDTO>, 
+    { params, body }: WithAuth & WithParams<{ answerId: string }> & WithBody<AnswerUpdateDTO>, 
     res: CoreResponse<AnswerUpdateResponse>,
   ) {
     const answer = await this.answerService.update({
-      executorId: executor.userId,
       answerId: params.answerId,
       text: body.text,
     });

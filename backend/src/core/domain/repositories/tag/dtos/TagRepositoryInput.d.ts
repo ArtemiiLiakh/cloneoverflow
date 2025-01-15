@@ -16,10 +16,8 @@ export namespace TagRepositoryInput {
     pagination?: PaginationDTO,
   };
 
-  export type IsExist = {
-    tagId?: string,
-    name?: string,
-  };
+  export type IsExist = TagWhere;
+  export type ValidateById = { tagId: string };
 
   export type Create = { tag: Tag };
   export type CreateMany = { tags: Tag[] };

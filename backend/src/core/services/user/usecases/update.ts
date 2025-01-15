@@ -14,9 +14,7 @@ export class UserUpdateUseCase implements IUserUpdateUseCase {
     data: { name, username, about },
   }: UserServiceInput.Update): Promise<UserServiceOutput.Update> {
     if (username) {
-      const userWithUsername = await this.userRepository.getByUsername({ username });
-  
-      if (userWithUsername && userWithUsername.id !== executorId) {
+      if (await this.userRepository.isExist({ username })) {
         throw new BadBodyException('Username already exists');
       }
     }

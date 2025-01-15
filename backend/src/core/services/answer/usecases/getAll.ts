@@ -3,17 +3,13 @@ import { UserAnswersSortBy } from '@core/services/utils/answer/AnswersSortBy';
 import { AnswerServiceInput } from '../dtos/AnswerServiceInput';
 import { AnswerServiceOutput } from '../dtos/AnswerServiceOutput';
 import { IAnswerGetAllUseCase } from '../types/usecases';
-import { AnswerUserRepository } from '@core/domain/repositories/answer/AnswerUserRepository';
-import { AnswerUserStatusEnum } from '@cloneoverflow/common';
 
 export class AnswerGetAllUseCase implements IAnswerGetAllUseCase {
   constructor (
     private answerRepository: AnswerRepository,
-    private answerUserRepository: AnswerUserRepository,
   ) {}
 
   async execute ({ 
-    executorId,
     ownerId, 
     rateFrom, 
     rateTo, 
@@ -52,18 +48,7 @@ export class AnswerGetAllUseCase implements IAnswerGetAllUseCase {
       },
       orderBy: orderByMap,
     });
-
-    let voter;
   
-    if (executorId) {
-      voter = await this.answerUserRepository.getOne({
-        where: {
-          userId: executorId,
-          status: AnswerUserStatusEnum.VOTER,
-        },
-      });
-    }
-    
     return {
       data: answers.data.map(answer => ({
         entity: {
@@ -76,9 +61,18 @@ export class AnswerGetAllUseCase implements IAnswerGetAllUseCase {
           createdAt: answer.entity.createdAt!,
           updatedAt: answer.entity.updatedAt!,
         },
-        owner: answer.owner!,
-        question: answer.question!,
-        userStats: voter ?? null,
+        owner: {
+          id: answer.owner!.id,
+          name: answer.owner!.name,
+          rating: answer.owner!.rating,
+          username: answer.owner!.username,
+        },
+        question: {
+          id: answer.question!.id,
+          ownerId: answer.question!.ownerId,
+          rating: answer.question!.rating,
+          title: answer.question!.title,
+        },
       })),
       pagination: answers.pagination,
     };
