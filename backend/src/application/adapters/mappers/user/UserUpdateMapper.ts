@@ -1,7 +1,7 @@
 import { UserUpdateResponse } from '@cloneoverflow/common';
-import { UserServiceOutput } from '@core/services/user/dtos/UserServiceOutput';
+import { UserUpdateOutput } from '@core/services/user/update/dto';
 
-export function UserUpdateMapperOutput (user: UserServiceOutput.Update): UserUpdateResponse {
+export function UserUpdateMapperOutput (user: UserUpdateOutput): UserUpdateResponse {
   return {
     id: user.id,
     name: user.name,

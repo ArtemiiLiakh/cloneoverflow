@@ -1,13 +1,17 @@
-import { AnswerServiceInput } from '@core/services/answer/dtos/AnswerServiceInput';
-import { AnswerServiceOutput } from '@core/services/answer/dtos/AnswerServiceOutput';
+import { AnswerCreateInput, AnswerCreateOutput } from '@core/services/answer/create/dto';
+import { AnswerDeleteInput, AnswerDeleteOutput } from '@core/services/answer/delete/dto';
+import { AnswerGetInput, AnswerGetOutput } from '@core/services/answer/get/dto';
+import { AnswerGetManyInput, AnswerGetManyOutput } from '@core/services/answer/getMany/dto';
 import {
   IAnswerCreateUseCase,
   IAnswerDeleteUseCase,
-  IAnswerGetAllUseCase,
+  IAnswerGetManyUseCase,
   IAnswerGetUseCase,
   IAnswerUpdateUseCase,
   IAnswerVoteUseCase,
-} from '@core/services/answer/types/usecases';
+} from '@core/services/answer/types';
+import { AnswerUpdateInput, AnswerUpdateOutput } from '@core/services/answer/update/dto';
+import { AnswerVoteInput, AnswerVoteOutput } from '@core/services/answer/vote/dto';
 
 export class AnswerServiceFacade {
   constructor (
@@ -15,7 +19,7 @@ export class AnswerServiceFacade {
     private answerUpdateUseCase: IAnswerUpdateUseCase,
     private answerDeleteUseCase: IAnswerDeleteUseCase,
     private answerGetUseCase: IAnswerGetUseCase,
-    private answerGetAllUseCase: IAnswerGetAllUseCase,
+    private answerGetAllUseCase: IAnswerGetManyUseCase,
     private answerVoteUseCase: IAnswerVoteUseCase,
   ) {}
 
@@ -31,7 +35,7 @@ export class AnswerServiceFacade {
     answerUpdateUseCase: IAnswerUpdateUseCase,
     answerDeleteUseCase: IAnswerDeleteUseCase,
     answerGetUseCase: IAnswerGetUseCase,
-    answerGetAllUseCase: IAnswerGetAllUseCase,
+    answerGetAllUseCase: IAnswerGetManyUseCase,
     answerVoteUseCase: IAnswerVoteUseCase,
   }) {
     return new AnswerServiceFacade(
@@ -44,27 +48,27 @@ export class AnswerServiceFacade {
     );
   }
 
-  create (payload: AnswerServiceInput.Create): Promise<AnswerServiceOutput.Create> {
+  create (payload: AnswerCreateInput): Promise<AnswerCreateOutput> {
     return this.answerCreateUseCase.execute(payload);
   }
 
-  update (payload: AnswerServiceInput.Update): Promise<AnswerServiceOutput.Update> {
+  update (payload: AnswerUpdateInput): Promise<AnswerUpdateOutput> {
     return this.answerUpdateUseCase.execute(payload);
   }
 
-  delete (payload: AnswerServiceInput.Delete): Promise<AnswerServiceOutput.Delete> {
+  delete (payload: AnswerDeleteInput): Promise<AnswerDeleteOutput> {
     return this.answerDeleteUseCase.execute(payload);
   }
 
-  get (payload: AnswerServiceInput.Get): Promise<AnswerServiceOutput.Get> {
+  get (payload: AnswerGetInput): Promise<AnswerGetOutput> {
     return this.answerGetUseCase.execute(payload);
   }
 
-  getAll (payload: AnswerServiceInput.GetAll): Promise<AnswerServiceOutput.GetAll> {
+  getAll (payload: AnswerGetManyInput): Promise<AnswerGetManyOutput> {
     return this.answerGetAllUseCase.execute(payload);
   }
 
-  vote (payload: AnswerServiceInput.VoteAnswer): Promise<AnswerServiceOutput.VoteAnswer> {
+  vote (payload: AnswerVoteInput): Promise<AnswerVoteOutput> {
     return this.answerVoteUseCase.execute(payload);
   }
 }

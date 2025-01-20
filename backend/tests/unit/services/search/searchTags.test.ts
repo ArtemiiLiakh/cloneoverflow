@@ -3,8 +3,8 @@ import { StringOptions } from '@common/repository/Datatypes/StringType';
 import { Tag } from '@core/domain/entities/Tag';
 import { TagOrderByType } from '@core/domain/repositories/tag/dtos/Params';
 import { TagRepository } from '@core/domain/repositories/tag/TagRepository';
-import { SearchServiceInput } from '@core/services/search/dtos/SearchServiceInput';
-import { SearchTagsUseCase } from '@core/services/search/usecases/searchTags';
+import { SearchTagsUseCase } from '@core/services/search';
+import { SearchTagsInput } from '@core/services/search/searchTags/dto';
 
 describe('Service: test SearchTagsUseCase', () => {
   test('Search tags', async () => {
@@ -18,7 +18,7 @@ describe('Service: test SearchTagsUseCase', () => {
         page: 1,
         pageSize: 10,
       },
-    } as SearchServiceInput.SearchTags;
+    } as SearchTagsInput;
 
     const tagRepositoryMock = {
       getMany: async ({ where, orderBy, pagination }) => {

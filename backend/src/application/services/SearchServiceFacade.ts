@@ -1,20 +1,22 @@
-import { SearchServiceInput } from '@core/services/search/dtos/SearchServiceInput';
-import { SearchServiceOutput } from '@core/services/search/dtos/SearchServiceOutput';
-import { SearchQuestionsUseCase } from '@core/services/search/usecases/searchQuestions';
-import { SearchTagsUseCase } from '@core/services/search/usecases/searchTags';
+import { SearchQuestionsInput, SearchQuestionsOutput } from '@core/services/search/searchQuestions/dto';
+import { SearchTagsInput, SerachTagsOutput } from '@core/services/search/searchTags/dto';
+import {
+  ISearchQuestionsUseCase,
+  ISearchTagsUseCase,
+} from '@core/services/search/types';
 
 export class SearchServiceFacade {
   constructor (
-    private searchQuestionsUseCase: SearchQuestionsUseCase,
-    private searchTagsUseCase: SearchTagsUseCase,
+    private searchQuestionsUseCase: ISearchQuestionsUseCase,
+    private searchTagsUseCase: ISearchTagsUseCase,
   ) {}
 
   static new ({
     searchQuestionsUseCase,
     searchTagsUseCase,
   }: {
-    searchQuestionsUseCase: SearchQuestionsUseCase,
-    searchTagsUseCase: SearchTagsUseCase,
+    searchQuestionsUseCase: ISearchQuestionsUseCase,
+    searchTagsUseCase: ISearchTagsUseCase,
   }) {
     return new SearchServiceFacade(
       searchQuestionsUseCase,
@@ -22,11 +24,11 @@ export class SearchServiceFacade {
     );
   }
 
-  searchQuestions (payload: SearchServiceInput.SearchQuestions): Promise<SearchServiceOutput.SearchQuestions> {
+  searchQuestions (payload: SearchQuestionsInput): Promise<SearchQuestionsOutput> {
     return this.searchQuestionsUseCase.execute(payload);
   }
   
-  searchTags (payload: SearchServiceInput.SearchTags): Promise<SearchServiceOutput.SerachTags> {
+  searchTags (payload: SearchTagsInput): Promise<SerachTagsOutput> {
     return this.searchTagsUseCase.execute(payload);
   }
 }

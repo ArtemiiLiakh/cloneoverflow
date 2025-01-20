@@ -1,8 +1,8 @@
 import { BadBodyException } from '@cloneoverflow/common';
 import { User } from '@core/domain/entities/User';
 import { UserRepository } from '@core/domain/repositories/user/UserRepository';
-import { UserServiceInput } from '@core/services/user/dtos/UserServiceInput';
-import { UserUpdateUseCase } from '@core/services/user/usecases/update';
+import { UserUpdateUseCase } from '@core/services/user';
+import { UserUpdateInput } from '@core/services/user/update/dto';
 
 describe('Service: test UserGetUseCase', () => {
   test('Update user name, username and about information', async () => {
@@ -14,7 +14,7 @@ describe('Service: test UserGetUseCase', () => {
       username: 'username',
     });
 
-    const payload: UserServiceInput.Update = {
+    const payload: UserUpdateInput = {
       executorId,
       data: {
         name: 'name2',
@@ -49,7 +49,7 @@ describe('Service: test UserGetUseCase', () => {
       username: 'username',
     });
 
-    const payload: UserServiceInput.Update = {
+    const payload: UserUpdateInput = {
       executorId: user1.id,
       data: {
         name: 'name2',

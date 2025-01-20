@@ -3,39 +3,6 @@ import { Model } from '@common/model/Model';
 import { Timestamps } from '@common/model/Timestamp';
 import { randomUUID } from 'crypto';
 
-export class UserCreds implements Model, Timestamps {
-  constructor (
-    public id: string,
-    public email: string,
-    public password: string,
-    public createdAt: Date,
-    public updatedAt: Date,
-  ) {}
-
-  static new ({
-    id,
-    email,
-    password,
-    createdAt,
-    updatedAt,
-  }: {
-    id?: string,
-    email: string,
-    password: string,
-    createdAt?: Date,
-    updatedAt?: Date,
-  }) {
-    
-    return new UserCreds(
-      id ?? randomUUID(),
-      email, 
-      password,
-      createdAt ?? new Date(),
-      updatedAt ?? new Date(),
-    );
-  }
-}
-
 export class User implements Model, Timestamps {
   constructor (
     public id: string,
@@ -67,11 +34,10 @@ export class User implements Model, Timestamps {
     createdAt?: Date,
     updatedAt?: Date,
   }): User {
-    id = id ?? randomUUID();
     const date = new Date();
 
     return new User(
-      id,
+      id ?? randomUUID(),
       name, 
       username,
       rating ?? 0,

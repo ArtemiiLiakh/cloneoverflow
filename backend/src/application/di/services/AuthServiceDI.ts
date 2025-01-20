@@ -1,10 +1,13 @@
-import { ChangePasswordUseCase } from '@application/auth/usecases/changePassword';
-import { DeleteAccountUseCase } from '@application/auth/usecases/deleteAccount';
-import { ForgotPasswordUseCase } from '@application/auth/usecases/forgotPassword';
-import { LoginUseCase } from '@application/auth/usecases/login';
-import { RefreshTokenUseCase } from '@application/auth/usecases/refreshToken';
-import { SendVerificationCodeUseCase } from '@application/auth/usecases/sendVerificationCode';
-import { SignUpUseCase } from '@application/auth/usecases/signup';
+import {
+  ChangePasswordUseCase,
+  DeleteAccountUseCase,
+  ForgotPasswordUseCase,
+  GetMeUseCase,
+  LoginUseCase,
+  RefreshTokenUseCase,
+  SendVerificationCodeUseCase,
+  SignUpUseCase,
+} from '@application/auth/services';
 import { AuthServiceFacade } from '@application/services/AuthServiceFacade';
 import GoogleEmailProviderDI from '../email/GoogleEmailProviderDI';
 import { PrismaUserRepositoryDI } from '../repositories/PrismaRepositoriesDI';
@@ -23,7 +26,6 @@ const SignUpUseCaseDI = new SignUpUseCase(
   JwtEncryptorDI, 
   userUseCasesDI.CreateUseCaseDI,
 );
-
 
 const RefreshTokenUseCaseDI = new RefreshTokenUseCase(
   JwtEncryptorDI, 
@@ -48,22 +50,26 @@ const DeleteAccountUseCaseDI = new DeleteAccountUseCase(
   DataHasherDI,
 );
 
-const SendVerificationCodeDI = new SendVerificationCodeUseCase(
+const SendVerificationCodeUseCaseDI = new SendVerificationCodeUseCase(
   PrismaUserRepositoryDI, 
   GoogleEmailProviderDI, 
   RedisCacheRepositoryDI, 
   DataHasherDI,
 );
 
+const GetMeUseCaseDI = new GetMeUseCase(
+  PrismaUserRepositoryDI,
+);
+
 export const authServiceFacadeDI = AuthServiceFacade.new({
   loginUseCase: LoginUseCaseDI,
   signUpUseCase: SignUpUseCaseDI,
-  getUserUseCase: userUseCasesDI.GetUseCaseDI,
+  getMeUseCase: GetMeUseCaseDI,
   deleteAccountUseCase: DeleteAccountUseCaseDI,
   refreshTokenUseCase: RefreshTokenUseCaseDI,
   changePasswordUseCase: ChangePasswordUseCaseDI,
   forgotPasswordUseCase: ForgotPasswordUseCaseDI,
-  sendVerificationCodeUseCase: SendVerificationCodeDI,
+  sendVerificationCodeUseCase: SendVerificationCodeUseCaseDI,
 });
 
 export const authUseCasesDI = {
@@ -73,5 +79,5 @@ export const authUseCasesDI = {
   RefreshTokenUseCaseDI,
   ChangePasswordUseCaseDI,
   ForgotPasswordUseCaseDI,
-  SendVerificationCodeDI,
+  SendVerificationCodeUseCaseDI,
 };

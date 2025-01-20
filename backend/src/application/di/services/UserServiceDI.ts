@@ -1,8 +1,8 @@
 import { UserServiceFacade } from '@application/services/UserServiceFacade';
-import { UserCreateUseCase } from '@core/services/user/usecases/create';
-import { UserGetUseCase } from '@core/services/user/usecases/get';
-import { UserGetProfileUseCase } from '@core/services/user/usecases/getProfile';
-import { UserUpdateUseCase } from '@core/services/user/usecases/update';
+import { UserCreateUseCase } from '@core/services/user/create/usecase';
+import { UserGetUseCase } from '@core/services/user/get/usecase';
+import { UserGetProfileUseCase } from '@core/services/user/getProfile/usecase';
+import { UserUpdateUseCase } from '@core/services/user/update/usecase';
 import {
   PrismaAnswerRepositoryDI,
   PrismaQuestionRepositoryDI,

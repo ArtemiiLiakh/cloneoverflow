@@ -1,8 +1,8 @@
 import { QuestionCreateResponse } from '@cloneoverflow/common';
-import { QuestionServiceOutput } from '@core/services/question/dtos/QuestionServiceOutput';
+import { QuestionCreateOutput } from '@core/services/question/create/dto';
 
 export function QuestionCreateMapperOutput (
-  question: QuestionServiceOutput.Create,
+  question: QuestionCreateOutput,
 ): QuestionCreateResponse {
   return {
     id: question.id,

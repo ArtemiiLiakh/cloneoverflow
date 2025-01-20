@@ -6,7 +6,7 @@ import { QuestionUserRepositoryInput } from '@core/domain/repositories/question/
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
 import { QuestionUserRepository } from '@core/domain/repositories/question/QuestionUserRepository';
 import { Unit, UnitOfWork } from '@core/domain/repositories/UnitOfWork';
-import { QuestionCloseUseCase } from '@core/services/question/usecases/close';
+import { QuestionCloseUseCase } from '@core/services/question';
 
 describe('Service: test QuestionCloseUseCase', () => {
   test('Close question', async () => {
@@ -139,7 +139,7 @@ describe('Service: test QuestionCloseUseCase', () => {
     const closeUseCase = new QuestionCloseUseCase(
       questionRepositoryMock as QuestionRepository,
       answerRepositoryMock as AnswerRepository,
-      { execute: async () => {} } as UnitOfWork,
+      { execute: async () => true } as UnitOfWork,
     );
 
     expect(closeUseCase.execute({

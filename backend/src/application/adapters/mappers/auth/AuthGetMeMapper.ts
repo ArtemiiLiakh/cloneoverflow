@@ -1,7 +1,7 @@
-import { AuthServiceOutput } from '@application/auth/dtos/AuthServiceOutput';
+import { GetMeOutput } from '@application/auth/services/getMe/dto';
 import { AuthGetMeResponse } from '@cloneoverflow/common';
 
-export function AuthGetMeMapperOutput (user: AuthServiceOutput.GetMe): AuthGetMeResponse {
+export function AuthGetMeMapperOutput (user: GetMeOutput): AuthGetMeResponse {
   return {
     id: user.id,
     name: user.name,

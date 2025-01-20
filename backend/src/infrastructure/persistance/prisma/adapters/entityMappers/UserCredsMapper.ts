@@ -1,4 +1,4 @@
-import { UserCreds } from '@core/domain/entities/User';
+import { UserCreds } from '@core/domain/entities/UserCreds';
 import Prisma from '@prisma/client';
 
 export class UserCredsMapper {

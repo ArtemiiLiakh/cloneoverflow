@@ -1,19 +1,20 @@
 import { QuestionServiceFacade } from '@application/services/QuestionServiceFacade';
-import { QuestionAddViewerUseCase } from '@core/services/question/usecases/addViewer';
-import { QuestionCloseUseCase } from '@core/services/question/usecases/close';
-import { QuestionCreateUseCase } from '@core/services/question/usecases/create';
-import { QuestionDeleteUseCase } from '@core/services/question/usecases/delete';
-import { QuestionGetUseCase } from '@core/services/question/usecases/get';
-import { QuestionGetAllUseCase } from '@core/services/question/usecases/getAll';
-import { QuestionOpenUseCase } from '@core/services/question/usecases/open';
-import { QuestionUpdateUseCase } from '@core/services/question/usecases/update';
-import { QuestionVoteUseCase } from '@core/services/question/usecases/vote';
+import { QuestionAddViewerUseCase } from '@core/services/question/addViewer/usecase';
+import { QuestionCloseUseCase } from '@core/services/question/close/usecase';
+import { QuestionCreateUseCase } from '@core/services/question/create/usecase';
+import { QuestionDeleteUseCase } from '@core/services/question/delete/usecase';
+import { QuestionGetUseCase } from '@core/services/question/get/usecase';
+import { QuestionGetManyUseCase } from '@core/services/question/getMany/usecase';
+import { QuestionOpenUseCase } from '@core/services/question/open/usecase';
+import { QuestionUpdateUseCase } from '@core/services/question/update/usecase';
+import { QuestionVoteUseCase } from '@core/services/question/vote/usecase';
 import {
   PrismaAnswerRepositoryDI,
   PrismaQuestionRepositoryDI,
   PrismaQuestionUserRepositoryDI,
   PrismaTransactionDI,
 } from '../repositories/PrismaRepositoriesDI';
+import { QuestionAddViewerService } from '@core/services/question/addViewer/service';
 
 const CreateUseCaseDI = new QuestionCreateUseCase(
   PrismaTransactionDI,
@@ -28,12 +29,16 @@ const DeleteUseCaseDI = new QuestionDeleteUseCase(
   PrismaQuestionRepositoryDI,
 );
 
-const GetAllUseCaseDI = new QuestionGetAllUseCase(PrismaQuestionRepositoryDI);
+const GetAllUseCaseDI = new QuestionGetManyUseCase(PrismaQuestionRepositoryDI);
+
+const AddViewerServiceDI = new QuestionAddViewerService(
+  PrismaQuestionUserRepositoryDI,
+  PrismaTransactionDI,
+);
 
 const AddViewerUseCaseDI = new QuestionAddViewerUseCase(
   PrismaQuestionRepositoryDI,
-  PrismaQuestionUserRepositoryDI, 
-  PrismaTransactionDI,
+  AddViewerServiceDI,
 );
 
 const GetUseCaseDI = new QuestionGetUseCase(
@@ -42,18 +47,18 @@ const GetUseCaseDI = new QuestionGetUseCase(
   AddViewerUseCaseDI,
 );
 
-const VoteQuestionUseCaseDI = new QuestionVoteUseCase(
+const QuestionVoteUseCaseDI = new QuestionVoteUseCase(
   PrismaQuestionRepositoryDI, 
   PrismaQuestionUserRepositoryDI,
   PrismaTransactionDI,
 );
 
-const OpenQuestionUseCaseDI = new QuestionOpenUseCase(
+const QuestionOpenUseCaseDI = new QuestionOpenUseCase(
   PrismaQuestionRepositoryDI, 
-  PrismaTransactionDI, 
+  PrismaTransactionDI,
 );
 
-const CloseQuestionUseCaseDI = new QuestionCloseUseCase(
+const QuestionCloseUseCaseDI = new QuestionCloseUseCase(
   PrismaQuestionRepositoryDI, 
   PrismaAnswerRepositoryDI, 
   PrismaTransactionDI,
@@ -63,11 +68,11 @@ export const questionServiceFacadeDI = QuestionServiceFacade.new({
   questionCreateUseCase: CreateUseCaseDI,
   questionUpdateUseCase: UpdateUseCaseDI,
   questionDeleteUseCase: DeleteUseCaseDI,
-  questionGetAllUseCase: GetAllUseCaseDI,
+  questionGetManyUseCase: GetAllUseCaseDI,
   questionGetUseCase: GetUseCaseDI,
-  questionOpenUseCase: OpenQuestionUseCaseDI,
-  questionCloseUseCase: CloseQuestionUseCaseDI,
-  questionVoteUseCase: VoteQuestionUseCaseDI,
+  questionOpenUseCase: QuestionOpenUseCaseDI,
+  questionCloseUseCase: QuestionCloseUseCaseDI,
+  questionVoteUseCase: QuestionVoteUseCaseDI,
 });
 
 export const questionUseCasesDI = {
@@ -77,7 +82,7 @@ export const questionUseCasesDI = {
   GetAllUseCaseDI,
   AddViewerUseCaseDI,
   GetUseCaseDI,
-  VoteQuestionUseCaseDI,
-  OpenQuestionUseCaseDI,
-  CloseQuestionUseCaseDI,
+  QuestionVoteUseCaseDI,
+  QuestionOpenUseCaseDI,
+  QuestionCloseUseCaseDI,
 };

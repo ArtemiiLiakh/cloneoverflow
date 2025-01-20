@@ -1,12 +1,12 @@
 import { AlreadyRegisteredException } from '@cloneoverflow/common';
 import { DataHasher } from '@core/data/DataHasher';
 import { UserRepository } from '@core/domain/repositories/user/UserRepository';
-import { UserServiceInput } from '@core/services/user/dtos/UserServiceInput';
-import { UserCreateUseCase } from '@core/services/user/usecases/create';
+import { UserCreateUseCase } from '@core/services/user';
+import { UserCreateInput } from '@core/services/user/create/dto';
 
 describe('Service: test UserCreateUseCase', () => {
   test('Create user', async () => {
-    const payload: UserServiceInput.Create = {
+    const payload: UserCreateInput = {
       name: 'name',
       username: 'username',
       about: 'about',
@@ -47,7 +47,7 @@ describe('Service: test UserCreateUseCase', () => {
   });
 
   test('Throw an error because user already exist', () => {
-    const payload: UserServiceInput.Create = {
+    const payload: UserCreateInput = {
       name: 'name',
       username: 'username',
       about: 'about',

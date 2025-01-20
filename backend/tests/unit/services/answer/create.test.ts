@@ -4,8 +4,8 @@ import { AnswerRepository } from '@core/domain/repositories/answer/AnswerReposit
 import { AnswerUserRepository } from '@core/domain/repositories/answer/AnswerUserRepository';
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
 import { Unit, UnitOfWork } from '@core/domain/repositories/UnitOfWork';
-import { AnswerServiceInput } from '@core/services/answer/dtos/AnswerServiceInput';
-import { AnswerCreateUseCase } from '@core/services/answer/usecases/create';
+import { AnswerCreateUseCase } from '@core/services/answer';
+import { AnswerCreateInput } from '@core/services/answer/create/dto';
 
 describe('Service: test AnswerCreateUseCase', () => {
   test('Create answer', async () => {
@@ -13,7 +13,7 @@ describe('Service: test AnswerCreateUseCase', () => {
       executorId: 'executorId',
       questionId: 'questionId',
       text: 'text',
-    } as AnswerServiceInput.Create;
+    } as AnswerCreateInput;
 
     let answerEntity: Answer | null = null;
 

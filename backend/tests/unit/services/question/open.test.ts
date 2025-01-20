@@ -4,7 +4,7 @@ import { QuestionUser } from '@core/domain/entities/QuestionUser';
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
 import { QuestionUserRepository } from '@core/domain/repositories/question/QuestionUserRepository';
 import { Unit, UnitOfWork } from '@core/domain/repositories/UnitOfWork';
-import { QuestionOpenUseCase } from '@core/services/question/usecases/open';
+import { QuestionOpenUseCase } from '@core/services/question';
 
 describe('Service: test QuestionOpenUseCase', () => {
   test('Open question', async () => {

@@ -1,7 +1,7 @@
 import { AnswerCreateResponse } from '@cloneoverflow/common';
-import { AnswerServiceOutput } from '@core/services/answer/dtos/AnswerServiceOutput';
+import { AnswerCreateOutput } from '@core/services/answer/create/dto';
 
-export function AnswerCreateMapperOutput (answer: AnswerServiceOutput.Create): AnswerCreateResponse {
+export function AnswerCreateMapperOutput (answer: AnswerCreateOutput): AnswerCreateResponse {
   return {
     id: answer.id,
     ownerId: answer.ownerId,

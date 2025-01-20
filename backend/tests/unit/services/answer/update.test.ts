@@ -1,7 +1,7 @@
 import { Answer } from '@core/domain/entities/Answer';
 import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
 import { AnswerRepositoryInput } from '@core/domain/repositories/answer/dtos/AnswerRepositoryInput';
-import { AnswerUpdateUseCase } from '@core/services/answer/usecases/update';
+import { AnswerUpdateUseCase } from '@core/services/answer';
 
 describe('Service: test AnswerUpdateUseCase', () => {
   test('Update answer', async () => {

@@ -1,22 +1,27 @@
-import { UnauthorizedException } from '@cloneoverflow/common';
-import { IUserGetUseCase } from '@core/services/user/types/usecases';
-import { AuthServiceInput } from '../auth/dtos/AuthServiceInput';
-import { AuthServiceOutput } from '../auth/dtos/AuthServiceOutput';
+import { ChangePasswordInput, ChangePasswordOutput } from '@application/auth/services/changePassword/dto';
+import { DeleteAccountInput, DeleteAccountOutput } from '@application/auth/services/deleteAccount/dto';
+import { ForgotPasswordInput, ForgotPasswordOutput } from '@application/auth/services/forgotPassword/dto';
+import { GetMeInput, GetMeOutput } from '@application/auth/services/getMe/dto';
+import { LoginInput, LoginOutput } from '@application/auth/services/login/dto';
+import { RefreshTokenInput, RefreshTokenOutput } from '@application/auth/services/refreshToken/dto';
+import { SendVerificationCodeInput, SendVerificationCodeOutput } from '@application/auth/services/sendVerificationCode/dto';
+import { SignUpInput, SignUpOutput } from '@application/auth/services/signup/dto';
 import {
   IChangePasswordUseCase,
   IDeleteAccountUseCase,
   IForgotPasswordUseCase,
+  IGetMeUseCase,
   ILoginUseCase,
   IRefreshTokenUseCase,
   ISendVerificationCodeUseCase,
   ISignUpUseCase,
-} from '../auth/types/usecases';
+} from '@application/auth/services/types';
 
 export class AuthServiceFacade {
   constructor (
     private loginUseCase: ILoginUseCase,
     private signUpUseCase: ISignUpUseCase,
-    private getUserUseCase: IUserGetUseCase,
+    private getMeUseCase: IGetMeUseCase,
     private deleteAccountUseCase: IDeleteAccountUseCase,
     private refreshTokenUseCase: IRefreshTokenUseCase,
     private changePasswordUseCase: IChangePasswordUseCase,
@@ -27,7 +32,7 @@ export class AuthServiceFacade {
   static new ({
     loginUseCase,
     signUpUseCase,
-    getUserUseCase,
+    getMeUseCase,
     deleteAccountUseCase,
     refreshTokenUseCase,
     changePasswordUseCase,
@@ -36,7 +41,7 @@ export class AuthServiceFacade {
   }: {
     loginUseCase: ILoginUseCase,
     signUpUseCase: ISignUpUseCase,
-    getUserUseCase: IUserGetUseCase,
+    getMeUseCase: IGetMeUseCase,
     deleteAccountUseCase: IDeleteAccountUseCase,
     refreshTokenUseCase: IRefreshTokenUseCase,
     changePasswordUseCase: IChangePasswordUseCase,
@@ -46,7 +51,7 @@ export class AuthServiceFacade {
     return new AuthServiceFacade(
       loginUseCase,
       signUpUseCase,
-      getUserUseCase,
+      getMeUseCase,
       deleteAccountUseCase,
       refreshTokenUseCase,
       changePasswordUseCase,
@@ -55,39 +60,35 @@ export class AuthServiceFacade {
     );
   }
 
-  login (payload: AuthServiceInput.Login): Promise<AuthServiceOutput.Login> {
+  login (payload: LoginInput): Promise<LoginOutput> {
     return this.loginUseCase.execute(payload);
   }
 
-  signUp (payload: AuthServiceInput.SignUp): Promise<AuthServiceOutput.SignUp> {
+  signUp (payload: SignUpInput): Promise<SignUpOutput> {
     return this.signUpUseCase.execute(payload);
   }
 
-  async getMe ({ executorId }: AuthServiceInput.GetMe): Promise<AuthServiceOutput.GetMe> {
-    return this.getUserUseCase.execute({
-      userId: executorId,
-    }).catch(() => {
-      throw new UnauthorizedException();
-    });
+  async getMe (payload: GetMeInput): Promise<GetMeOutput> {
+    return this.getMeUseCase.execute(payload);
   }
 
-  deleteAccount (payload: AuthServiceInput.DeleteAccount): Promise<AuthServiceOutput.DeleteAccount> {
+  deleteAccount (payload: DeleteAccountInput): Promise<DeleteAccountOutput> {
     return this.deleteAccountUseCase.execute(payload);
   }
 
-  refreshToken (payload: AuthServiceInput.RefreshToken): Promise<AuthServiceOutput.RefreshToken> {
+  refreshToken (payload: RefreshTokenInput): Promise<RefreshTokenOutput> {
     return this.refreshTokenUseCase.execute(payload);
   }
 
-  changePassword (payload: AuthServiceInput.ChangePassword): Promise<AuthServiceOutput.ChangePassword> {
+  changePassword (payload: ChangePasswordInput): Promise<ChangePasswordOutput> {
     return this.changePasswordUseCase.execute(payload);
   }
 
-  forgotPassword (payload: AuthServiceInput.ForgotPassword): Promise<AuthServiceOutput.ForgotPassword> {
+  forgotPassword (payload: ForgotPasswordInput): Promise<ForgotPasswordOutput> {
     return this.forgotPasswordUseCase.execute(payload);
   }
 
-  sendVerificationCode (payload: AuthServiceInput.SendVerificationCode): Promise<AuthServiceOutput.SendVerificationCode> {
+  sendVerificationCode (payload: SendVerificationCodeInput): Promise<SendVerificationCodeOutput> {
     return this.sendVerificationCodeUseCase.execute(payload);
   }
 }

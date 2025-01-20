@@ -1,15 +1,21 @@
-import { QuestionServiceInput } from '@core/services/question/dtos/QuestionServiceInput';
-import { QuestionServiceOutput } from '@core/services/question/dtos/QuestionServiceOutput';
+import { QuestionCloseInput, QuestionCloseOutput } from '@core/services/question/close/dto';
+import { QuestionCreateInput, QuestionCreateOutput } from '@core/services/question/create/dto';
+import { QuestionDeleteInput, QuestionDeleteOutput } from '@core/services/question/delete/dto';
+import { QuestionGetInput, QuestionGetOutput } from '@core/services/question/get/dto';
+import { QuestionGetManyInput, QuestionGetManyOutput } from '@core/services/question/getMany/dto';
+import { QuestionOpenInput, QuestionOpenOutput } from '@core/services/question/open/dto';
 import {
   IQuestionCloseUseCase,
   IQuestionCreateUseCase,
   IQuestionDeleteUseCase,
-  IQuestionGetAllUseCase,
+  IQuestionGetManyUseCase,
   IQuestionGetUseCase,
   IQuestionOpenUseCase,
   IQuestionUpdateUseCase,
   IQuestionVoteUseCase,
-} from '@core/services/question/types/usecases';
+} from '@core/services/question/types';
+import { QuestionUpdateInput, QuestionUpdateOutput } from '@core/services/question/update/dto';
+import { QuestionVoteInput, QuestionVoteOutput } from '@core/services/question/vote/dto';
 
 export class QuestionServiceFacade {
   constructor (
@@ -17,7 +23,7 @@ export class QuestionServiceFacade {
     private questionUpdateUseCase: IQuestionUpdateUseCase,
     private questionGetUseCase: IQuestionGetUseCase,
     private questionDeleteUseCase: IQuestionDeleteUseCase,
-    private questionGetAllUseCase: IQuestionGetAllUseCase,
+    private questionGetManyUseCase: IQuestionGetManyUseCase,
     private questionVoteUseCase: IQuestionVoteUseCase,
     private questionOpenUseCase: IQuestionOpenUseCase,
     private questionCloseUseCase: IQuestionCloseUseCase,
@@ -28,7 +34,7 @@ export class QuestionServiceFacade {
     questionUpdateUseCase,
     questionGetUseCase,
     questionDeleteUseCase,
-    questionGetAllUseCase,
+    questionGetManyUseCase,
     questionVoteUseCase,
     questionOpenUseCase,
     questionCloseUseCase,
@@ -37,7 +43,7 @@ export class QuestionServiceFacade {
     questionUpdateUseCase: IQuestionUpdateUseCase,
     questionGetUseCase: IQuestionGetUseCase,
     questionDeleteUseCase: IQuestionDeleteUseCase,
-    questionGetAllUseCase: IQuestionGetAllUseCase,
+    questionGetManyUseCase: IQuestionGetManyUseCase,
     questionVoteUseCase: IQuestionVoteUseCase,
     questionOpenUseCase: IQuestionOpenUseCase,
     questionCloseUseCase: IQuestionCloseUseCase,
@@ -47,42 +53,42 @@ export class QuestionServiceFacade {
       questionUpdateUseCase,
       questionGetUseCase,
       questionDeleteUseCase,
-      questionGetAllUseCase,
+      questionGetManyUseCase,
       questionVoteUseCase,
       questionOpenUseCase,
       questionCloseUseCase,
     );
   }
 
-  create (payload: QuestionServiceInput.Create): Promise<QuestionServiceOutput.Create> {
+  create (payload: QuestionCreateInput): Promise<QuestionCreateOutput> {
     return this.questionCreateUseCase.execute(payload);
   }
   
-  update (payload: QuestionServiceInput.Update): Promise<QuestionServiceOutput.Update> {
+  update (payload: QuestionUpdateInput): Promise<QuestionUpdateOutput> {
     return this.questionUpdateUseCase.execute(payload);
   }
 
-  get (payload: QuestionServiceInput.Get): Promise<QuestionServiceOutput.Get> {
+  get (payload: QuestionGetInput): Promise<QuestionGetOutput> {
     return this.questionGetUseCase.execute(payload);
   }
   
-  delete (payload: QuestionServiceInput.Delete): Promise<QuestionServiceOutput.Delete> {
+  delete (payload: QuestionDeleteInput): Promise<QuestionDeleteOutput> {
     return this.questionDeleteUseCase.execute(payload);
   }
   
-  getAll (payload: QuestionServiceInput.GetAll): Promise<QuestionServiceOutput.GetAll> {
-    return this.questionGetAllUseCase.execute(payload);
+  getAll (payload: QuestionGetManyInput): Promise<QuestionGetManyOutput> {
+    return this.questionGetManyUseCase.execute(payload);
   }
   
-  vote (payload: QuestionServiceInput.VoteQuestion): Promise<QuestionServiceOutput.VoteQuestion> {
+  vote (payload: QuestionVoteInput): Promise<QuestionVoteOutput> {
     return this.questionVoteUseCase.execute(payload);
   }
   
-  open (payload: QuestionServiceInput.OpenQuestion): Promise<QuestionServiceOutput.OpenQuestion> {
+  open (payload: QuestionOpenInput): Promise<QuestionOpenOutput> {
     return this.questionOpenUseCase.execute(payload);
   }
 
-  close (payload: QuestionServiceInput.CloseQuestion): Promise<QuestionServiceOutput.CloseQuestion> {
+  close (payload: QuestionCloseInput): Promise<QuestionCloseOutput> {
     return this.questionCloseUseCase.execute(payload);
   }
 }

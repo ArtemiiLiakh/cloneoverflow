@@ -1,7 +1,7 @@
 import { ForbiddenException } from '@cloneoverflow/common';
 import { Question } from '@core/domain/entities/Question';
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
-import { QuestionDeleteUseCase } from '@core/services/question/usecases/delete';
+import { QuestionDeleteUseCase } from '@core/services/question';
 
 describe('Service: test QuestionDeleteUseCase', () => {
   test('Delete question', async () => {

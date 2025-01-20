@@ -4,7 +4,7 @@ import { AnswerRepositoryInput } from '@core/domain/repositories/answer/dtos/Ans
 import { QuestionRepositoryInput } from '@core/domain/repositories/question/dtos/QuestionRepositoryInput';
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
 import { Unit, UnitOfWork } from '@core/domain/repositories/UnitOfWork';
-import { AnswerDeleteUseCase } from '@core/services/answer/usecases/delete';
+import { AnswerDeleteUseCase } from '@core/services/answer';
 
 describe('Service: test AnswerDeleteUseCase', () => {
   test('Delete answer', async () => {

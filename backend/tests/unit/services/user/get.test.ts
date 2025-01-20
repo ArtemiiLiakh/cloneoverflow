@@ -1,6 +1,6 @@
 import { User } from '@core/domain/entities/User';
 import { UserRepository } from '@core/domain/repositories/user/UserRepository';
-import { UserGetUseCase } from '@core/services/user/usecases/get';
+import { UserGetUseCase } from '@core/services/user';
 
 describe('Service: test UserGetUseCase', () => {
   test('Get user', async () => {

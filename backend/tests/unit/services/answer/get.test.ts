@@ -4,7 +4,7 @@ import { AnswerUser } from '@core/domain/entities/AnswerUser';
 import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
 import { AnswerUserRepository } from '@core/domain/repositories/answer/AnswerUserRepository';
 import { AnswerIncludeOutput } from '@core/domain/repositories/answer/dtos/Params';
-import { AnswerGetUseCase } from '@core/services/answer/usecases/get';
+import { AnswerGetUseCase } from '@core/services/answer';
 
 describe('Service: test AnswerGetUseCase', () => {
   const ownerInclude: AnswerIncludeOutput['owner'] = {
