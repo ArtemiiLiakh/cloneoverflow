@@ -4,7 +4,7 @@ import { User } from '@core/domain/entities/User';
 import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
 import { UserRepository } from '@core/domain/repositories/user/UserRepository';
-import { UserGetProfileUseCase } from '@core/services/user/usecases/getProfile';
+import { UserGetProfileUseCase } from '@core/services/user';
 
 describe('Service: test UserGetProfileUseCase', () => {
   test('Get user profile', async () => {

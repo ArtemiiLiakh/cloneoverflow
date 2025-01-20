@@ -1,7 +1,7 @@
 import { UserGetQuestionResponse } from '@cloneoverflow/common';
-import { QuestionServiceOutput } from '@core/services/question/dtos/QuestionServiceOutput';
+import { QuestionGetManyOutput } from '@core/services/question/getMany/dto';
 
-export function UserGetQuestionMapperOutput (questions: QuestionServiceOutput.GetAll): UserGetQuestionResponse {
+export function UserGetQuestionMapperOutput (questions: QuestionGetManyOutput): UserGetQuestionResponse {
   return {
     questions: questions.data.map(question => ({
       id: question.entity.id,

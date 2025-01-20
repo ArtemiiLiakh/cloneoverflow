@@ -1,8 +1,8 @@
 import { SearchQuestionsResponse } from '@cloneoverflow/common';
-import { SearchServiceOutput } from '@core/services/search/dtos/SearchServiceOutput';
+import { SearchQuestionsOutput } from '@core/services/search/searchQuestions/dto';
 
 export function SearchQuestionsMapperOutput (
-  questions: SearchServiceOutput.SearchQuestions,
+  questions: SearchQuestionsOutput,
 ): SearchQuestionsResponse {
   return {
     questions: questions.data.map(question => ({

@@ -1,8 +1,8 @@
 import { QuestionGetResponse } from '@cloneoverflow/common';
-import { QuestionServiceOutput } from '@core/services/question/dtos/QuestionServiceOutput';
+import { QuestionGetOutput } from '@core/services/question/get/dto';
 
 export function QuestionGetMapperOutput (
-  question: QuestionServiceOutput.Get,
+  question: QuestionGetOutput,
 ): QuestionGetResponse {
   const owner = question.owner ? {
     id: question.owner.id,

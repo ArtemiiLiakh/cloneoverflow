@@ -1,5 +1,6 @@
 import { PaginatedData } from '@cloneoverflow/common';
-import { User, UserCreds } from '@core/domain/entities/User';
+import { User } from '@core/domain/entities/User';
+import { UserCreds } from '@core/domain/entities/UserCreds';
 import { UserCountsOutput, UserIncludeOutput, UserSelectOutput } from './Params';
 
 export namespace UserRepositoryOutput {

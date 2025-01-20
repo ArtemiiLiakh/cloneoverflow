@@ -1,5 +1,6 @@
 import { PaginationDTO } from '@cloneoverflow/common';
-import { User, UserCreds } from '@core/domain/entities/User';
+import { User } from '@core/domain/entities/User';
+import { UserCreds } from '@core/domain/entities/UserCreds';
 import { UserCountsInput, UserIncludeInput, UserOrderBy, UserSelectInput, UserWhere } from './Params';
 
 export namespace UserRepositoryInput {

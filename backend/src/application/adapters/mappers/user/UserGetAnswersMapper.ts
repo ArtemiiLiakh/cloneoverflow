@@ -1,7 +1,7 @@
 import { UserGetAnswersResponse } from '@cloneoverflow/common';
-import { AnswerServiceOutput } from '@core/services/answer/dtos/AnswerServiceOutput';
+import { AnswerGetManyOutput } from '@core/services/answer/getMany/dto';
 
-export function UserGetAnswerMapperOutput ({ data, pagination }: AnswerServiceOutput.GetAll): UserGetAnswersResponse {
+export function UserGetAnswerMapperOutput ({ data, pagination }: AnswerGetManyOutput): UserGetAnswersResponse {
   return {
     answers: data.map(answer => ({
       id: answer.entity.id,

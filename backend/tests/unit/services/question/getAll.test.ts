@@ -6,8 +6,8 @@ import { Tag } from '@core/domain/entities/Tag';
 import { User } from '@core/domain/entities/User';
 import { QuestionOrderByType } from '@core/domain/repositories/question/dtos/Params';
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
-import { QuestionServiceInput } from '@core/services/question/dtos/QuestionServiceInput';
-import { QuestionGetAllUseCase } from '@core/services/question/usecases/getAll';
+import { QuestionGetManyUseCase } from '@core/services/question';
+import { QuestionGetManyInput } from '@core/services/question/getMany/dto';
 
 describe('Service: test QuestionGetAllUseCase', () => {
   const paginationOutput: PaginationResponse = {
@@ -43,7 +43,7 @@ describe('Service: test QuestionGetAllUseCase', () => {
         page: 0,
         pageSize: 10,
       },
-    } as QuestionServiceInput.GetAll;
+    } as QuestionGetManyInput;
 
     const questionRepositoryMock = {
       getMany: async ({ where, orderBy, pagination }) => {
@@ -63,7 +63,7 @@ describe('Service: test QuestionGetAllUseCase', () => {
       },
     } as Partial<QuestionRepository>;
 
-    const questionGetAllUseCase = new QuestionGetAllUseCase(
+    const questionGetAllUseCase = new QuestionGetManyUseCase(
       questionRepositoryMock as QuestionRepository,
     );
 
@@ -83,7 +83,7 @@ describe('Service: test QuestionGetAllUseCase', () => {
       }),
     } as Partial<QuestionRepository>;
 
-    const questionGetAllUseCase = new QuestionGetAllUseCase(
+    const questionGetAllUseCase = new QuestionGetManyUseCase(
       questionRepositoryMock as QuestionRepository,
     );
 

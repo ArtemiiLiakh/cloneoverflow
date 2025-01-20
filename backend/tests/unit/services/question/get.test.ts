@@ -5,8 +5,8 @@ import { Tag } from '@core/domain/entities/Tag';
 import { QuestionIncludeOutput } from '@core/domain/repositories/question/dtos/Params';
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
 import { QuestionUserRepository } from '@core/domain/repositories/question/QuestionUserRepository';
-import { IQuestionAddViewerUseCase } from '@core/services/question/types/usecases';
-import { QuestionGetUseCase } from '@core/services/question/usecases/get';
+import { IQuestionAddViewerUseCase } from '@core/services/question/types';
+import { QuestionGetUseCase } from '@core/services/question';
 
 describe('Service: test QuestionGetUseCase', () => {
   const ownerInclude: QuestionIncludeOutput['owner'] = {

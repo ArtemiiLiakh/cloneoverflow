@@ -1,10 +1,10 @@
 import { AnswerServiceFacade } from '@application/services/AnswerServiceFacade';
-import { AnswerCreateUseCase } from '@core/services/answer/usecases/create';
-import { AnswerDeleteUseCase } from '@core/services/answer/usecases/delete';
-import { AnswerGetUseCase } from '@core/services/answer/usecases/get';
-import { AnswerGetAllUseCase } from '@core/services/answer/usecases/getAll';
-import { AnswerUpdateUseCase } from '@core/services/answer/usecases/update';
-import { AnswerVoteUseCase } from '@core/services/answer/usecases/vote';
+import { AnswerCreateUseCase } from '@core/services/answer/create/usecase';
+import { AnswerDeleteUseCase } from '@core/services/answer/delete/usecase';
+import { AnswerGetUseCase } from '@core/services/answer/get/usecase';
+import { AnswerGetManyUseCase } from '@core/services/answer/getMany/usecase';
+import { AnswerUpdateUseCase } from '@core/services/answer/update/usecase';
+import { AnswerVoteUseCase } from '@core/services/answer/vote/usecase';
 import {
   PrismaAnswerRepositoryDI,
   PrismaAnswerUserRepositoryDI,
@@ -30,11 +30,11 @@ const GetUseCaseDI = new AnswerGetUseCase(
   PrismaAnswerUserRepositoryDI,
 );
 
-const GetAllUseCaseDI = new AnswerGetAllUseCase(
+const GetAllUseCaseDI = new AnswerGetManyUseCase(
   PrismaAnswerRepositoryDI,
 );
 
-const VoteAnswerUseCaseDI = new AnswerVoteUseCase(
+const AnswerVoteUseCaseDI = new AnswerVoteUseCase(
   PrismaAnswerRepositoryDI, 
   PrismaAnswerUserRepositoryDI,
   PrismaTransactionDI,
@@ -46,7 +46,7 @@ export const answerServiceFacadeDI = AnswerServiceFacade.new({
   answerDeleteUseCase: DeleteUseCaseDI,
   answerGetUseCase: GetUseCaseDI,
   answerGetAllUseCase: GetAllUseCaseDI,
-  answerVoteUseCase: VoteAnswerUseCaseDI,
+  answerVoteUseCase: AnswerVoteUseCaseDI,
 });
 
 export const answerUseCaseDI = {
@@ -55,5 +55,5 @@ export const answerUseCaseDI = {
   UpdateUseCaseDI,
   GetUseCaseDI,
   GetAllUseCaseDI,
-  VoteAnswerUseCaseDI,
+  AnswerVoteUseCaseDI,
 };

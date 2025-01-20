@@ -1,10 +1,10 @@
 import { SearchTagsReponse } from '@cloneoverflow/common';
-import { SearchServiceOutput } from '@core/services/search/dtos/SearchServiceOutput';
+import { SerachTagsOutput } from '@core/services/search/searchTags/dto';
 
 export function SearchTagsMapperOutput ({
   data,
   pagination,
-}: SearchServiceOutput.SerachTags): SearchTagsReponse {
+}: SerachTagsOutput): SearchTagsReponse {
   return {
     tags: data.map(({ entity, questionsAmount }) => ({
       id: entity.id,

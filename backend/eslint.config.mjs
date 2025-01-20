@@ -61,6 +61,7 @@ export default tseslint.config(
       "@typescript-eslint/no-unsafe-member-access": "off",
       "@typescript-eslint/no-namespace": "off",
       "@typescript-eslint/no-empty-object-type": "off",
+      "@typescript-eslint/no-unsafe-call": "warn"
     },
   },
 );

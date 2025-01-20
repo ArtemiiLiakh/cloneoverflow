@@ -1,4 +1,5 @@
-export interface FieldValidator {
+import { Validator } from '@common/utils/validator';
+
+export interface FieldValidator<T = unknown> extends Validator<T, boolean> {
   message: string;
-  validate(value: unknown): boolean;
 }

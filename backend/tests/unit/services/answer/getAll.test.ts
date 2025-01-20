@@ -6,8 +6,8 @@ import { Question } from '@core/domain/entities/Question';
 import { User } from '@core/domain/entities/User';
 import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
 import { AnswerOrderByType } from '@core/domain/repositories/answer/dtos/Params';
-import { AnswerServiceInput } from '@core/services/answer/dtos/AnswerServiceInput';
-import { AnswerGetAllUseCase } from '@core/services/answer/usecases/getAll';
+import { AnswerGetManyUseCase } from '@core/services/answer';
+import { AnswerGetManyInput } from '@core/services/answer/getMany/dto';
 
 describe('Service: test AnswerGetAllUseCase', () => {
   const paginationOutput: PaginationResponse = {
@@ -37,7 +37,7 @@ describe('Service: test AnswerGetAllUseCase', () => {
       text: 'text',
     });
 
-    const inputData: AnswerServiceInput.GetAll = {
+    const inputData: AnswerGetManyInput = {
       ownerId: 'ownerId',
       questionId: 'questionId',
       searchText: 'searchText',
@@ -72,7 +72,7 @@ describe('Service: test AnswerGetAllUseCase', () => {
       },
     } as Partial<AnswerRepository>;
 
-    const answerGetAllUseCase = new AnswerGetAllUseCase(
+    const answerGetAllUseCase = new AnswerGetManyUseCase(
       answerRepositoryMock as AnswerRepository,
     );
 
@@ -91,7 +91,7 @@ describe('Service: test AnswerGetAllUseCase', () => {
       }),
     } as Partial<AnswerRepository>;
 
-    const answerGetAllUseCase = new AnswerGetAllUseCase(
+    const answerGetAllUseCase = new AnswerGetManyUseCase(
       answerRepositoryMock as AnswerRepository,
     );
 

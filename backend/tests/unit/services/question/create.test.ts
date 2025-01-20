@@ -4,12 +4,12 @@ import { QuestionRepository } from '@core/domain/repositories/question/QuestionR
 import { QuestionUserRepository } from '@core/domain/repositories/question/QuestionUserRepository';
 import { TagRepository } from '@core/domain/repositories/tag/TagRepository';
 import { Unit, UnitOfWork } from '@core/domain/repositories/UnitOfWork';
-import { QuestionServiceInput } from '@core/services/question/dtos/QuestionServiceInput';
-import { QuestionCreateUseCase } from '@core/services/question/usecases/create';
+import { QuestionCreateUseCase } from '@core/services/question';
+import { QuestionCreateInput } from '@core/services/question/create/dto';
 
 describe('Service: test QuestionCreateUseCase', () => {
   test('Create question', async () => {
-    const payload: QuestionServiceInput.Create = {
+    const payload: QuestionCreateInput = {
       executorId: 'user',
       data: {
         title: 'title',

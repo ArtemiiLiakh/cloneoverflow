@@ -6,7 +6,7 @@ import { QuestionUserRepositoryInput } from '@core/domain/repositories/question/
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
 import { QuestionUserRepository } from '@core/domain/repositories/question/QuestionUserRepository';
 import { Unit, UnitOfWork } from '@core/domain/repositories/UnitOfWork';
-import { QuestionVoteUseCase } from '@core/services/question/usecases/vote';
+import { QuestionVoteUseCase } from '@core/services/question';
 
 describe('Service: test QuestionVoteUseCase', () => {
   test('Vote question for the first time', async () => {

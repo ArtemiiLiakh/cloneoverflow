@@ -14,16 +14,16 @@ import {
   UserUpdateDTO,
   UserUpdateResponse,
 } from '@cloneoverflow/common';
-import { IAnswerGetAllUseCase } from '@core/services/answer/types/usecases';
-import { IQuestionGetAllUseCase } from '@core/services/question/types/usecases';
+import { IAnswerGetManyUseCase } from '@core/services/answer/types';
+import { IQuestionGetManyUseCase } from '@core/services/question/types';
 import { WithAuth, WithBody, WithParams, WithQuery } from './types/Request';
 import { CoreResponse } from './types/Response';
 
 export class UserController {
   constructor (
     private userService: UserServiceFacade,
-    private answerGetAllUseCase: IAnswerGetAllUseCase,
-    private questionGetAllUseCase: IQuestionGetAllUseCase,
+    private answerGetManyUseCase: IAnswerGetManyUseCase,
+    private questionGetManyUseCase: IQuestionGetManyUseCase,
   ) {}
 
   async getUser (
@@ -62,7 +62,7 @@ export class UserController {
     { params, query }: WithParams<{ userId: string }> & WithQuery<UserGetAnswersDTO>, 
     res: CoreResponse<UserGetAnswersResponse>,
   ) {
-    const answers = await this.answerGetAllUseCase.execute({
+    const answers = await this.answerGetManyUseCase.execute({
       ownerId: params.userId, 
       orderBy: query.orderBy,
       pagination: query.pagination,
@@ -76,7 +76,7 @@ export class UserController {
     { params, query }: WithParams<{ userId: string }> & WithQuery<UserGetQuestionsDTO>, 
     res: CoreResponse<UserGetQuestionResponse>,
   ) {
-    const questions = await this.questionGetAllUseCase.execute({
+    const questions = await this.questionGetManyUseCase.execute({
       ownerId: params.userId,
       orderBy: query.orderBy,
       pagination: query.pagination,

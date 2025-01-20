@@ -4,8 +4,8 @@ import { Tag } from '@core/domain/entities/Tag';
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
 import { TagRepository } from '@core/domain/repositories/tag/TagRepository';
 import { Unit, UnitOfWork } from '@core/domain/repositories/UnitOfWork';
-import { QuestionServiceInput } from '@core/services/question/dtos/QuestionServiceInput';
-import { QuestionUpdateUseCase } from '@core/services/question/usecases/update';
+import { QuestionUpdateUseCase } from '@core/services/question';
+import { QuestionUpdateInput } from '@core/services/question/update/dto';
 
 describe('Service: test QuestionUpdateUseCase', () => {
   test('Update question without tags', async () => {
@@ -20,7 +20,7 @@ describe('Service: test QuestionUpdateUseCase', () => {
     const updateData = {
       title: 'title2',
       text: 'text2',
-    } as QuestionServiceInput.Update['data'];
+    } as QuestionUpdateInput['data'];
 
     const questionRepositoryMock = {
       validateById: async () => {},
@@ -68,7 +68,7 @@ describe('Service: test QuestionUpdateUseCase', () => {
       title: 'title2',
       text: 'text2',
       tags: [tagEntity.name],
-    } as QuestionServiceInput.Update['data'];
+    } as QuestionUpdateInput['data'];
 
     const questionRepositoryMock = {
       validateById: async () => {},
@@ -127,19 +127,15 @@ describe('Service: test QuestionUpdateUseCase', () => {
     const updateData = {
       title: 'title2',
       text: 'text2',
-    } as QuestionServiceInput.Update['data'];
+    } as QuestionUpdateInput['data'];
 
     const questionRepositoryMock = {
       validateById: async () => {},
     } as Partial<QuestionRepository>;
 
-    const unitOfWork = {
-      execute: async () => null, 
-    } as UnitOfWork;
-
     const updateUseCase = new QuestionUpdateUseCase(
       questionRepositoryMock as QuestionRepository,
-      unitOfWork,
+      { execute: async () => null } as UnitOfWork,
     );
 
     expect(updateUseCase.execute({

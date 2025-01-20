@@ -1,7 +1,7 @@
 import { AnswerGetResponse } from '@cloneoverflow/common';
-import { AnswerServiceOutput } from '@core/services/answer/dtos/AnswerServiceOutput';
+import { AnswerGetOutput } from '@core/services/answer/get/dto';
 
-export function AnswerGetMapperOutput (answer: AnswerServiceOutput.Get): AnswerGetResponse {
+export function AnswerGetMapperOutput (answer: AnswerGetOutput): AnswerGetResponse {
   const owner: AnswerGetResponse['owner'] = answer.owner ? {
     id: answer.owner?.id,
     name: answer.owner?.name,

@@ -5,7 +5,8 @@ import { QuestionUserRepositoryInput } from '@core/domain/repositories/question/
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
 import { QuestionUserRepository } from '@core/domain/repositories/question/QuestionUserRepository';
 import { Unit, UnitOfWork } from '@core/domain/repositories/UnitOfWork';
-import { QuestionAddViewerUseCase } from '@core/services/question/usecases/addViewer';
+import { QuestionAddViewerUseCase } from '@core/services/question';
+import { QuestionAddViewerService } from '@core/services/question/addViewer/service';
 
 describe('Service: test QuestionAddViewerUseCase', () => {
   test('Add a new viewer to question', async () => {
@@ -40,10 +41,14 @@ describe('Service: test QuestionAddViewerUseCase', () => {
       questionUserRepository: questionUserRepositoryMock,
     } as Partial<Unit>;
     
+    const addViewerService = new QuestionAddViewerService(
+      questionUserRepositoryMock as QuestionUserRepository,
+      { execute: (fn) => fn(unitMock) } as UnitOfWork,
+    );
+
     const addViewerUseCase = new QuestionAddViewerUseCase(
       questionRepositoryMock as QuestionRepository,
-      questionUserRepositoryMock as QuestionUserRepository,
-      { execute: (fn) => fn(unitMock as Unit) } as UnitOfWork,
+      addViewerService,
     );
 
     await addViewerUseCase.execute({
@@ -74,13 +79,17 @@ describe('Service: test QuestionAddViewerUseCase', () => {
       create: jest.fn(),
     } as Partial<QuestionUserRepository>;
 
-    const addViwerUseCase = new QuestionAddViewerUseCase(
-      questionRepositoryMock as QuestionRepository,
+    const addViewerService = new QuestionAddViewerService(
       questionUserRepositoryMock as QuestionUserRepository,
       { execute: (fn) => fn({
         questionRepository: questionRepositoryMock,
         questionUserRepository: questionUserRepositoryMock,
       } as Unit) } as UnitOfWork,
+    );
+
+    const addViwerUseCase = new QuestionAddViewerUseCase(
+      questionRepositoryMock as QuestionRepository,
+      addViewerService,
     );
 
     await addViwerUseCase.execute({

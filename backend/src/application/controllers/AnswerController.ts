@@ -14,7 +14,7 @@ import {
 } from '@cloneoverflow/common';
 import { WithAuth, WithBody, WithOptionalAuth, WithParams, WithQuery } from './types/Request';
 import { CoreResponse } from './types/Response';
-import { AnswerGetAllMapper } from '@application/adapters/mappers/answers/AnswerGetAllMapper';
+import { AnswerGetManyMapper } from '@application/adapters/mappers/answers/AnswerGetManyMapper';
 
 export class AnswerController {
   constructor (
@@ -48,7 +48,7 @@ export class AnswerController {
       pagination: query.pagination,
     });
 
-    res.send(AnswerGetAllMapper(answers));
+    res.send(AnswerGetManyMapper(answers));
   }
 
   async create (

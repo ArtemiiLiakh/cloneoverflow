@@ -5,7 +5,7 @@ import { AnswerRepository } from '@core/domain/repositories/answer/AnswerReposit
 import { AnswerUserRepository } from '@core/domain/repositories/answer/AnswerUserRepository';
 import { AnswerUserRepositoryInput } from '@core/domain/repositories/answer/dtos/answerUser/AnswerUserRepositoryInput';
 import { Unit, UnitOfWork } from '@core/domain/repositories/UnitOfWork';
-import { AnswerVoteUseCase } from '@core/services/answer/usecases/vote';
+import { AnswerVoteUseCase } from '@core/services/answer';
 
 describe('Service: test AnswerVoteUseCase', () => {
   test('Vote answer for the first time', async () => {
@@ -120,6 +120,9 @@ describe('Service: test AnswerVoteUseCase', () => {
   });
 
   test('Throw an error because answer was voted UP twice', () => {
+    const executorId = 'userId';
+    const vote = VoteTypeEnum.DOWN;
+
     const answer = Answer.new({
       ownerId: 'ownerId',
       questionId: 'questionId',
@@ -132,9 +135,6 @@ describe('Service: test AnswerVoteUseCase', () => {
       status: AnswerUserStatusEnum.VOTER,
       voteType: VoteTypeEnum.DOWN,
     });
-
-    const executorId = 'userId';
-    const vote = VoteTypeEnum.DOWN;
     
     const answerRepositoryMock = {
       getPartialById: async () => answer,

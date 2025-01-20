@@ -4,8 +4,8 @@ import { Tag } from '@core/domain/entities/Tag';
 import { User } from '@core/domain/entities/User';
 import { QuestionOrderByType } from '@core/domain/repositories/question/dtos/Params';
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
-import { SearchServiceInput } from '@core/services/search/dtos/SearchServiceInput';
-import { SearchQuestionsUseCase } from '@core/services/search/usecases/searchQuestions';
+import { SearchQuestionsUseCase } from '@core/services/search';
+import { SearchQuestionsInput } from '@core/services/search/searchQuestions/dto';
 
 describe('Service: test SearchQuestionUseCase', () => {
   test('Search questions', async () => {
@@ -29,7 +29,7 @@ describe('Service: test SearchQuestionUseCase', () => {
       },
       filterBy: SearchQuestionFilterByEnum.CLOSED,
       search: 'hello',
-    } as SearchServiceInput.SearchQuestions;
+    } as SearchQuestionsInput;
 
     const questionRepositoryMock = {
       getMany: async ({ where, orderBy, pagination }) => {
