@@ -6,7 +6,7 @@ export const getManyOutputMapper = (
 ): QuestionGetManyOutput => ({
   data: questions.data.map((question) => ({
     entity: {
-      id: question.entity.id!,
+      id: question.entity.id!.toString(),
       ownerId: question.entity.ownerId!,
       title: question.entity.title!,
       rating: question.entity.rating!,
@@ -14,12 +14,12 @@ export const getManyOutputMapper = (
       isClosed: question.entity.isClosed!,
       createdAt: question.entity.createdAt!,
     },
-    owner: {
-      id: question.owner!.id,
-      name: question.owner!.name,
-      username: question.owner!.username,
-      rating: question.owner!.rating,
-    },
+    owner: question.owner ? {
+      id: question.owner.id,
+      name: question.owner.name,
+      username: question.owner.username,
+      rating: question.owner.rating,
+    } : null,
     tags: question.tags ?? [],
     answerAmount: question.counts?.answers ?? 0,
   })),

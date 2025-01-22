@@ -21,7 +21,7 @@ export class QuestionAddViewerService implements IQuestionAddViewerService {
 
     if (viewer) return;
     
-    const result = await this.unitOfWork.execute((unit) => [
+    await this.unitOfWork.executeAll((unit) => [
       unit.questionRepository.addViewer({
         questionId,
       }),
@@ -32,10 +32,8 @@ export class QuestionAddViewerService implements IQuestionAddViewerService {
           status: QuestionUserStatusEnum.VIEWER,
         }),
       }),
-    ]);
-
-    if (!result) {
+    ]).catch(() => {
       throw new Exception('Adding viewer failed');
-    }
+    });
   }
 }

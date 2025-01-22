@@ -7,7 +7,7 @@ export const AnswerSelectAdapter = (
 ): Prisma.AnswerSelect => {
   if (!select || isObjectEmpty(select)) {
     return {
-      answerId: true,
+      id: true,
       ownerId: true,
       questionId: true,
       text: true,
@@ -19,7 +19,7 @@ export const AnswerSelectAdapter = (
   }
 
   return {
-    answerId: select.id,
+    id: select.id,
     ownerId: select.ownerId,
     questionId: select.questionId,
     rate: select.rating,

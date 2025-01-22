@@ -9,23 +9,6 @@ export interface UserGetResponse {
   status: UserStatusEnum;
   createdAt: Date;
   updatedAt: Date;
-  questions?: {
-    id: string;
-    title: string;
-    rate: number;
-    views: number;
-    isClosed: boolean;
-    createdAt: Date;
-    updatedAt: Date;
-  }[];
-  answers?: {
-    id: string;
-    questionId: string;
-    rate: number;
-    isSolution: boolean;
-    createdAt: Date;
-    updatedAt: Date;
-  }[];
   questionsAmount?: number;
   answersAmount?: number;
 }

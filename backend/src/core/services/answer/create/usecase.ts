@@ -17,30 +17,29 @@ export class AnswerCreateUseCase implements IAnswerCreateUseCase {
   ): Promise<AnswerCreateOutput> {
     await this.questionRepository.validateById({ questionId });
 
-    const answer = await this.unitOfWork.execute(async (unit) => {
-      const answer = Answer.new({
-        ownerId: executorId,
-        questionId,
-        text,
-      });
-  
-      await unit.answerRepository.create({ answer });
-  
+    const newAnswer = Answer.new({
+      ownerId: executorId,
+      questionId,
+      text,
+    });
+
+    await this.unitOfWork.execute(async (unit) => {
+      newAnswer.id = await unit.answerRepository.create({ 
+        answer: newAnswer, 
+        returnId: true,
+      }).then(id => id!);
+
       await unit.answerUserRepository.create({
         user: AnswerUser.new({
           userId: executorId,
-          answerId: answer.id,
+          answerId: newAnswer.id,
           status: AnswerUserStatusEnum.OWNER,
         }),
       });
-  
-      return answer;
+    }).catch(() => { 
+      throw new Exception('Answer creation failed'); 
     });
   
-    if (!answer) {
-      throw new Exception('Answer creation failed');
-    }
-  
-    return answer;
+    return newAnswer;
   }
 }

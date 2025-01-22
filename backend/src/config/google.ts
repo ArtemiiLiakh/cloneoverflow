@@ -9,7 +9,7 @@ interface GCredentials {
 let google: GCredentials;
 
 try {
-  google = JSON.parse(readFileSync(path.join(process.cwd(), 'config', 'credentials.json')).toString('utf-8'));
+  google = JSON.parse(readFileSync(path.join(process.cwd(), 'environment', 'credentials.json')).toString('utf-8'));
 }
 catch {
   google = {

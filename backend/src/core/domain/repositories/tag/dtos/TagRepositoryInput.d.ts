@@ -19,15 +19,22 @@ export namespace TagRepositoryInput {
   export type IsExist = TagWhere;
   export type ValidateById = { tagId: string };
 
-  export type Create = { tag: Tag };
+  export type Create = { 
+    tag: Tag,
+    returnId?: true,
+  };
+
   export type CreateMany = { tags: Tag[] };
   export type CreateOrFindMany = { tags: string[] };
   
   export type Update = { 
     tagId: string, 
     name: string
-    returnEntity?: boolean;
+    returnEntity?: true;
   };
 
-  export type Delete = { tagId: string };
+  export type Delete = { 
+    tagId?: string,
+    name?: string,
+  };
 }

@@ -14,12 +14,12 @@ export const searchQuestionsOutputMapper = (
       isClosed: question.entity.isClosed!,
       createdAt: question.entity.createdAt!,
     },
-    owner: {
-      userId: question.owner!.id,
-      name: question.owner!.name,
-      username: question.owner!.username,
-      rating: question.owner!.rating,
-    },
+    owner: question.owner ? {
+      userId: question.owner.id,
+      name: question.owner.name,
+      username: question.owner.username,
+      rating: question.owner.rating,
+    } : null,
     tags: question.tags ?? [],
     answersAmount: question.counts?.answers ?? 0,
   })),

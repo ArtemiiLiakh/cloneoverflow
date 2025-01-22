@@ -1,6 +1,7 @@
 import { AnswerRepositoryOutput } from '@core/domain/repositories/answer/dtos/AnswerRepositoryOutput';
 import { QuestionRepositoryOutput } from '@core/domain/repositories/question/dtos/QuestionRepositoryOutput';
 import { UserRepositoryOutput } from '@core/domain/repositories/user/dtos/UserRepositoryOutput';
+import { UserGetProfileOutput } from './dto';
 
 interface MapperProps {
   user: UserRepositoryOutput.GetUser,
@@ -12,7 +13,7 @@ export const getProfileOutputMapper = ({
   user,
   bestQuestion,
   bestAnswer,
-}: MapperProps) => ({
+}: MapperProps): UserGetProfileOutput => ({
   user: user.entity, 
   bestQuestion: bestQuestion ? {
     entity: {

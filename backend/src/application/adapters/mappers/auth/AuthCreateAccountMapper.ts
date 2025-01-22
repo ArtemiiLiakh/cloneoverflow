@@ -1,7 +1,7 @@
-import { SignUpOutput } from '@application/auth/services/signup/dto';
+import { CreateAccountOutput } from '@application/auth/services/createAccount/dto';
 import { AuthSignUpResponse } from '@cloneoverflow/common';
 
-export function AuthSingUpMapperOutput (user: SignUpOutput['user']): AuthSignUpResponse {
+export function AuthCreateAccountMapperOutput (user: CreateAccountOutput['user']): AuthSignUpResponse {
   return {
     id: user.id,
     name: user.name,

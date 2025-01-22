@@ -8,7 +8,8 @@ export namespace AnswerUserRepositoryInput {
   };
 
   export type Create = {
-    user: AnswerUser
+    user: AnswerUser,
+    returnId?: true,
   };
 
   export type Update = {
@@ -17,7 +18,7 @@ export namespace AnswerUserRepositoryInput {
       status?: AnswerUserStatusEnum,
       voteType?: VoteTypeEnum | null,
     },
-    returnEntity?: boolean;
+    returnEntity?: true;
   };
 
   export type Delete = {

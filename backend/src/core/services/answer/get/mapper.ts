@@ -12,12 +12,12 @@ export const getOutputMapper = ({
   voter,
 }: MapperProps): AnswerGetOutput => ({
   entity: answer.entity,
-  owner: {
-    id: answer.owner!.id,
-    name: answer.owner!.name,
-    username: answer.owner!.username,
-    rating: answer.owner!.rating,
-  },
+  owner: answer.owner ? {
+    id: answer.owner.id,
+    name: answer.owner.name,
+    username: answer.owner.username,
+    rating: answer.owner.rating,
+  } : null,
   question: {
     id: answer.question!.id,
     ownerId: answer.question!.ownerId,

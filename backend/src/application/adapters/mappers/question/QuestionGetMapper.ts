@@ -4,13 +4,6 @@ import { QuestionGetOutput } from '@core/services/question/get/dto';
 export function QuestionGetMapperOutput (
   question: QuestionGetOutput,
 ): QuestionGetResponse {
-  const owner = question.owner ? {
-    id: question.owner.id,
-    name: question.owner.name,
-    reputation: question.owner.rating,
-    username: question.owner.username,
-  } : undefined;
-
   return {
     id: question.entity.id,
     title: question.entity.title,
@@ -22,6 +15,11 @@ export function QuestionGetMapperOutput (
     updatedAt: question.entity.updatedAt,
     tags: question.tags?.map(tag => tag.name),
     voteType: question.voter?.voteType,
-    owner,
+    owner: question.owner ? {
+      id: question.owner.id,
+      name: question.owner.name,
+      username: question.owner.username,
+      reputation: question.owner.rating,
+    } : null,
   };
 }

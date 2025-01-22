@@ -2,16 +2,18 @@ import { makeAccessToken } from '@application/auth/utils/makeAccessToken';
 import { makeRefreshToken } from '@application/auth/utils/makeRequestToken';
 import { DataEncryptor } from '@application/interfaces/security/DataEncryptor';
 import { IUserCreateUseCase } from '@core/services/user/types';
-import { SignUpInput, SignUpOutput } from './dto';
-import { ISignUpUseCase } from './type';
+import { CreateAccountInput, CreateAccountOutput } from './dto';
+import { ICreateAccountUseCase } from './type';
 
-export class SignUpUseCase implements ISignUpUseCase {
+export class CreateAccountUseCase implements ICreateAccountUseCase {
   constructor (
     private dataEncryptor: DataEncryptor,
     private userCreateUseCase: IUserCreateUseCase,
   ) {}
 
-  async execute ({ email, name, password, username, about }: SignUpInput): Promise<SignUpOutput> {
+  async execute (
+    { email, name, password, username, about }: CreateAccountInput,
+  ): Promise<CreateAccountOutput> {
     const user = await this.userCreateUseCase.execute({ 
       email, 
       password, 

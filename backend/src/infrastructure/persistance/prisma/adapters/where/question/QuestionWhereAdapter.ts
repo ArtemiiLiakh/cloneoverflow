@@ -1,6 +1,7 @@
 import { QuestionWhere } from '@core/domain/repositories/question/dtos/Params';
+import { parseNumberOrArray } from '@infrastructure/persistance/prisma/utils/number';
 import { Prisma } from '@prisma/client';
-import { BasicStringWhereAdapter } from '../dataTypes/BasicWhereAdapter';
+import { BasicNumberWhereAdapter, BasicUUIDWhereAdapter } from '../dataTypes/BasicWhereAdapter';
 import { DateWhereAdapter } from '../dataTypes/DateWhereAdapter';
 import { NumberWhereAdapter } from '../dataTypes/NumberWhereAdapter ';
 import { StringWhereAdapter } from '../dataTypes/StringWhereAdapter';
@@ -9,8 +10,8 @@ export const QuestionWhereAdapter = (where?: QuestionWhere): Prisma.QuestionWher
   if (!where) return {};
 
   return {
-    questionId: BasicStringWhereAdapter(where.questionId),
-    ownerId: StringWhereAdapter(where.ownerId),
+    id: BasicNumberWhereAdapter(parseNumberOrArray(where.questionId)),
+    ownerId: BasicUUIDWhereAdapter(where.ownerId),
     title: StringWhereAdapter(where.title),
     text: StringWhereAdapter(where.text),
     isClosed: where.isClosed,
@@ -18,13 +19,13 @@ export const QuestionWhereAdapter = (where?: QuestionWhere): Prisma.QuestionWher
     rate: NumberWhereAdapter(where.rating),
     createdAt: DateWhereAdapter(where.createdAt),
     owner: {
-      userId: BasicStringWhereAdapter(where.owner?.id),
+      id: BasicUUIDWhereAdapter(where.owner?.id),
       username: StringWhereAdapter(where.owner?.username),
       name: StringWhereAdapter(where.owner?.name),
     },
     tags: !where.tags ? undefined : {
       some: {
-        tagId: BasicStringWhereAdapter(where.tags.id),
+        id: BasicNumberWhereAdapter(parseNumberOrArray(where.tags.id)),
         name: StringWhereAdapter(where.tags.name),
       },
     },

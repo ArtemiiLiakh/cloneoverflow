@@ -5,13 +5,13 @@ export interface AnswerGetResponse {
   text: string;
   rate: number;
   isSolution: boolean;
-  owner?: {
+  owner: {
     id: string;
     name: string;
     username: string;
     reputation: number;
-  };
-  question?: {
+  } | null;
+  question: {
     id: string;
     title: string;
     rate: number;

@@ -14,7 +14,7 @@ export class SearchTagsUseCase implements ISearchTagsUseCase {
   ): Promise<SerachTagsOutput> {
     const tags = await this.tagRepository.getMany({
       where: {
-        text: {
+        name: {
           contains: name,
         },
       },

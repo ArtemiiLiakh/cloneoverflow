@@ -16,4 +16,6 @@ export interface UserRepository {
   update(payload: UserRepositoryInput.Update): Promise<UserRepositoryOutput.Update>;  
   updateCreds(payload: UserRepositoryInput.UpdateCreds): Promise<UserRepositoryOutput.UpdateCreds>; 
   delete(payload: UserRepositoryInput.Delete): Promise<UserRepositoryOutput.Delete>; 
+  
+  addRating(payload: UserRepositoryInput.AddRating): Promise<UserRepositoryOutput.AddRating>; 
 }

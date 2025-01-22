@@ -15,6 +15,6 @@ export type QuestionGetOutput = {
     username: string,
     name: string,
     rating: number,
-  },
+  } | null,
   voter?: QuestionUser,
 };

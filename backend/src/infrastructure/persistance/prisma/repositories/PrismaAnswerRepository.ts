@@ -1,3 +1,4 @@
+import { NoEntityWithIdException, VoteTypeEnum } from '@cloneoverflow/common';
 import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
 import { AnswerRepositoryInput } from '@core/domain/repositories/answer/dtos/AnswerRepositoryInput';
 import { AnswerRepositoryOutput } from '@core/domain/repositories/answer/dtos/AnswerRepositoryOutput';
@@ -9,8 +10,8 @@ import { AnswerIncludeAdapter } from '../adapters/include/AnswerIncludeAdapter';
 import { AnswerOrderByAdapter } from '../adapters/orderBy/AnswerOrderByAdapter';
 import { AnswerSelectAdapter } from '../adapters/select/AnswerSelectAdapter';
 import { AnswerWhereAdapter } from '../adapters/where/answer/AnswerWhereAdapter';
+import { uuidToBytes } from '../utils/uuid';
 import { PrismaPaginationRepository } from './PrismaPaginationRepository';
-import { NoEntityWithIdException, VoteTypeEnum } from '@cloneoverflow/common';
 
 export class PrismaAnswerRepository implements AnswerRepository {
   constructor (
@@ -20,7 +21,7 @@ export class PrismaAnswerRepository implements AnswerRepository {
   async isExist (where: AnswerRepositoryInput.IsExist): Promise<AnswerRepositoryOutput.IsExist> {
     const answer = await this.prisma.answer.findFirst({
       where: AnswerWhereAdapter(where),
-      select: { answerId: true },
+      select: { id: true },
     });
 
     return !!answer;
@@ -30,8 +31,8 @@ export class PrismaAnswerRepository implements AnswerRepository {
     { answerId }: AnswerRepositoryInput.ValidateById,
   ): Promise<AnswerRepositoryOutput.ValidateById> {
     if (!await this.prisma.answer.findFirst({ 
-      where: { answerId },
-      select: { pk_id: true },
+      where: { id: +answerId },
+      select: { id: true },
     })) {
       throw new NoEntityWithIdException('Answer');
     }
@@ -41,7 +42,7 @@ export class PrismaAnswerRepository implements AnswerRepository {
     { answerId }: AnswerRepositoryInput.GetById,
   ): Promise<AnswerRepositoryOutput.GetById> {
     const answer = await this.prisma.answer.findFirst({ 
-      where: { answerId },
+      where: { id: +answerId },
     });
     
     if (!answer) throw new NoEntityWithIdException('Answer');
@@ -89,7 +90,7 @@ export class PrismaAnswerRepository implements AnswerRepository {
     { answerId, select }: AnswerRepositoryInput.GetPartialById,
   ): Promise<AnswerRepositoryOutput.GetPartialById> {
     const answer = await this.prisma.answer.findFirst({
-      where: { answerId },
+      where: { id: +answerId },
       select: AnswerSelectAdapter(select),
     });
 
@@ -133,33 +134,29 @@ export class PrismaAnswerRepository implements AnswerRepository {
   }
 
   async create (
-    { answer }: AnswerRepositoryInput.Create,
+    { answer, returnId: returnId }: AnswerRepositoryInput.Create,
   ): Promise<AnswerRepositoryOutput.Create> {
-    await this.prisma.answer.create({
+    const answerId = await this.prisma.answer.create({
       data: {
-        answerId: answer.id,
-        ownerId: answer.ownerId,
-        questionId: answer.questionId,
+        ownerId: uuidToBytes(answer.ownerId),
+        questionId: +answer.questionId,
         text: answer.text,
         rate: answer.rating,
         isSolution: answer.isSolution,
         createdAt: answer.createdAt,
         updatedAt: answer.updatedAt,
-        owner: {
-          connect: { userId: answer.ownerId },
-        },
-        question: {
-          connect: { questionId: answer.questionId },
-        },
       },
+      select: returnId ? { id: true } : undefined,
     });
+
+    if (returnId) return answerId.id.toString();
   }
 
   async update (
     { answerId, answer, returnEntity }: AnswerRepositoryInput.Update,
   ): Promise<AnswerRepositoryOutput.Update> {
     const updatedAnswer = await this.prisma.answer.update({
-      where: { answerId },
+      where: { id: +answerId },
       data: {
         text: answer.text,
       },
@@ -172,7 +169,7 @@ export class PrismaAnswerRepository implements AnswerRepository {
     { answerId }: AnswerRepositoryInput.Delete,
   ): Promise<AnswerRepositoryOutput.Delete> {
     await this.prisma.answer.delete({
-      where: { answerId },
+      where: { id: +answerId },
     });
   }
 
@@ -181,17 +178,10 @@ export class PrismaAnswerRepository implements AnswerRepository {
     voteType,
   }: AnswerRepositoryInput.AddRating): Promise<AnswerRepositoryOutput.AddRating> {
     await this.prisma.answer.update({
-      where: { answerId },
+      where: { id: +answerId },
       data: {
         rate: {
           increment: voteType === VoteTypeEnum.UP ? 1 : -1,
-        },
-        owner: {
-          update: {
-            reputation: {
-              increment: voteType === VoteTypeEnum.UP ? 1 : -1,
-            },
-          },
         },
       },
     });

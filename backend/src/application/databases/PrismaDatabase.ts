@@ -12,6 +12,12 @@ class PrismaDatabase {
     await this.client.$connect();
   }
 
+  async disconnect () {
+    if (this.client) {
+      await this.client.$disconnect();
+    }
+  }
+
   getClient () {
     return this.client;
   }

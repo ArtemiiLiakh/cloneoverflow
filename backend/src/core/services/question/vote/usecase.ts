@@ -1,4 +1,4 @@
-import { ForbiddenException, QuestionUserStatusEnum } from '@cloneoverflow/common';
+import { Exception, ForbiddenException, QuestionUserStatusEnum } from '@cloneoverflow/common';
 import { QuestionUser } from '@core/domain/entities/QuestionUser';
 import { UnitOfWork } from '@core/domain/repositories';
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
@@ -61,6 +61,15 @@ export class QuestionVoteUseCase implements IQuestionVoteUseCase {
         questionId,
         voteType: vote,
       });
+
+      if (question.ownerId) {
+        await unit.userRepository.addRating({
+          userId: question.ownerId,
+          voteType: vote,
+        });
+      }
+    }).catch(() => {
+      throw new Exception('Question voting failed');
     });
   }
 }

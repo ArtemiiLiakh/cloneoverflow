@@ -10,11 +10,11 @@
 
 /backend/prisma/migrations
 /backend/prisma/.client
-/backend/config/*
+/backend/environment/*
 
 /Kubernetes
 
-!/backend/config/.env.example
-!/backend/config/credentials.example.json
-!/backend/config/redis
+!/backend/environment/.env.example
+!/backend/environment/credentials.example.json
+!/backend/environment/redis
 

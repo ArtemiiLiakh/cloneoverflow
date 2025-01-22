@@ -6,7 +6,7 @@ export const QuestionSelectAdapter = (
   select?: QuestionSelectInput,
 ): Prisma.QuestionSelect => {
   if (!select || isObjectEmpty(select)) return {
-    questionId: true,
+    id: true,
     title: true,
     text: true,
     rate: true,
@@ -18,7 +18,7 @@ export const QuestionSelectAdapter = (
   };
 
   return {
-    questionId: select.id,
+    id: select.id,
     title: select.title,
     text: select.text,
     rate: select.rating,

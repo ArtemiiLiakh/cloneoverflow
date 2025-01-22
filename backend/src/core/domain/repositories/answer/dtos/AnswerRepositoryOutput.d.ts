@@ -22,7 +22,7 @@ export namespace AnswerRepositoryOutput {
   export type ValidateById = void;
 
   export type Count = number;
-  export type Create = void;
+  export type Create = string | undefined;
   export type Update = Answer | undefined;
   export type Delete = void;
   export type MarkSolution = void;

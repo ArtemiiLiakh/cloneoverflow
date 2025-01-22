@@ -1,6 +1,5 @@
 import { AuthGetMeMapperOutput } from '@application/adapters/mappers/auth/AuthGetMeMapper';
 import { AuthLoginMapperOutput } from '@application/adapters/mappers/auth/AuthLoginMapper';
-import { AuthSingUpMapperOutput } from '@application/adapters/mappers/auth/AuthSignUpMapper';
 import {
   AuthChangePasswordDTO,
   AuthDeleteAccountDTO,
@@ -15,6 +14,7 @@ import {
 import { AuthServiceFacade } from '../services/AuthServiceFacade';
 import { WithAuth, WithBody } from './types/Request';
 import { CoreResponse } from './types/Response';
+import { AuthCreateAccountMapperOutput } from '@application/adapters/mappers/auth/AuthCreateAccountMapper';
 
 export class AuthController {
   constructor (
@@ -34,11 +34,11 @@ export class AuthController {
     res.send(AuthLoginMapperOutput(user));
   }
 
-  async signup (
+  async createAccount (
     { body }: WithBody<AuthSignupDTO>, 
     res: CoreResponse<AuthSignUpResponse>,
   ) {
-    const { user, tokens } = await this.authService.signUp({
+    const { user, tokens } = await this.authService.createAccount({
       email: body.email,
       password: body.password,
       name: body.name,
@@ -50,7 +50,7 @@ export class AuthController {
     res.setCookie('refreshToken', tokens.refresh_token);
 
     res.status(201);
-    res.send(AuthSingUpMapperOutput(user));
+    res.send(AuthCreateAccountMapperOutput(user));
   }
 
   async getMe (

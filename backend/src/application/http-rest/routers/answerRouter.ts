@@ -4,7 +4,7 @@ import { AuthUserValidatorDI } from '@application/di/security/validators/AuthUse
 import { JwtTokenValidatorDI } from '@application/di/security/validators/JwtTokenValidatorDI';
 import { answerServiceFacadeDI } from '@application/di/services/AnswerServiceDI';
 import { validateRequest } from '@application/middlewares/security/ValidateRequest';
-import { ValidateUUID } from '@application/middlewares/validators';
+import { ValidateNumber } from '@application/middlewares/validators/ValidateNumber';
 import {
   AnswerCreateDTO,
   AnswersGetAllDTO,
@@ -17,7 +17,6 @@ const answerRouter = express.Router();
 const controller = new AnswerController(answerServiceFacadeDI);
 
 answerRouter.get('/', 
-  JwtTokenValidatorDI.validateAccess({ optional: true }),
   validateRequest({
     query: AnswersGetAllDTO,
   }),
@@ -25,11 +24,9 @@ answerRouter.get('/',
 );
 
 answerRouter.get('/:answerId', 
-  JwtTokenValidatorDI.validateAccess({ optional: true }),
-  AuthUserValidatorDI.validate(),
   validateRequest({
     params: {
-      answerId: ValidateUUID,
+      answerId: ValidateNumber,
     },
   }),
   AdaptController(controller.get.bind(controller)),
@@ -39,9 +36,6 @@ answerRouter.post('/',
   JwtTokenValidatorDI.validateAccess(), 
   AuthUserValidatorDI.validate(),
   validateRequest({
-    params: {
-      answerId: ValidateUUID,
-    },
     body: AnswerCreateDTO,
   }), 
   AdaptController(controller.create.bind(controller)),
@@ -52,7 +46,7 @@ answerRouter.patch('/:answerId',
   AuthUserValidatorDI.validate(),
   validateRequest({
     params: {
-      answerId: ValidateUUID,
+      answerId: ValidateNumber,
     },
     body: AnswerUpdateDTO,
   }), 
@@ -62,6 +56,11 @@ answerRouter.patch('/:answerId',
 answerRouter.delete('/:answerId',
   JwtTokenValidatorDI.validateAccess(),
   AuthUserValidatorDI.validate(),
+  validateRequest({
+    params: {
+      answerId: ValidateNumber,
+    },
+  }),
   AdaptController(controller.delete.bind(controller)),
 );
 
@@ -69,9 +68,6 @@ answerRouter.post('/:answerId/vote',
   JwtTokenValidatorDI.validateAccess(), 
   AuthUserValidatorDI.validate(),
   validateRequest({ 
-    params: {
-      answerId: ValidateUUID,
-    },
     body: VoteDTO,
   }),
   AdaptController(controller.voteAnswer.bind(controller)),

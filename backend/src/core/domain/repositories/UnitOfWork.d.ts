@@ -19,12 +19,10 @@ export interface UnitOfWork {
   execute<I>(
     fn: (unit: Unit) => Promise<I>, 
     isolationLevel?: IsolationLevel,
-  ): Promise<I | null>;
-}
+  ): Promise<I>;
 
-export interface UnitOfWork {
-  execute(
+  executeAll(
     fn: (unit: Unit) => Promise<unknown>[], 
     isolationLevel?: IsolationLevel,
-  ): Promise<true | null>;
+  ): Promise<void>;
 }

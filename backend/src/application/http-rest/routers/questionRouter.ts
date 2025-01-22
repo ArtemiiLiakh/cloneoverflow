@@ -6,7 +6,7 @@ import { JwtTokenValidatorDI } from '@application/di/security/validators/JwtToke
 import { questionServiceFacadeDI } from '@application/di/services/QuestionServiceDI';
 import { searchServiceFacadeDI } from '@application/di/services/SearchServiceDI';
 import { validateRequest } from '@application/middlewares/security/ValidateRequest';
-import { ValidateUUID } from '@application/middlewares/validators';
+import { ValidateNumber } from '@application/middlewares/validators/ValidateNumber';
 import {
   QuestionCloseDTO,
   QuestionCreateDTO,
@@ -31,11 +31,9 @@ questionRouter.get(
 
 questionRouter.get(
   '/:questionId', 
-  JwtTokenValidatorDI.validateAccess({ optional: true }),
-  AuthUserValidatorDI.validate(),
   validateRequest({
     params: {
-      questionId: ValidateUUID,
+      questionId: ValidateNumber,
     },
   }),
   AdaptController(controller.get.bind(controller)),
@@ -57,7 +55,7 @@ questionRouter.patch(
   AuthUserValidatorDI.validate(),
   validateRequest({
     params: {
-      questionId: ValidateUUID,
+      questionId: ValidateNumber,
     },
     body: QuestionUpdateDTO,
   }),
@@ -70,7 +68,7 @@ questionRouter.delete(
   AuthUserValidatorDI.validate(),
   validateRequest({
     params: {
-      questionId: ValidateUUID,
+      questionId: ValidateNumber,
     },
   }),
   AdaptController(controller.delete.bind(controller)),
@@ -82,7 +80,7 @@ questionRouter.post(
   AuthUserValidatorDI.validate(),
   validateRequest({
     params: {
-      questionId: ValidateUUID,
+      questionId: ValidateNumber,
     },
   }),
   AdaptController(controller.openQuestion.bind(controller)),
@@ -94,7 +92,7 @@ questionRouter.post(
   AuthUserValidatorDI.validate(),
   validateRequest({
     params: {
-      questionId: ValidateUUID,
+      questionId: ValidateNumber,
     },
     body: QuestionCloseDTO,
   }),
@@ -107,7 +105,7 @@ questionRouter.post(
   AuthUserValidatorDI.validate(),
   validateRequest({
     params: {
-      questionId: ValidateUUID,
+      questionId: ValidateNumber,
     },
     body: VoteDTO,
   }),

@@ -27,7 +27,7 @@ export type QuestionGetManyOutput = PaginatedData<{
     username: string,
     name: string,
     rating: number,
-  },
+  } | null,
   tags?: Tag[],
   answerAmount?: number 
 }>;

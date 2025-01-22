@@ -1,3 +1,4 @@
+import { NoEntityWithIdException } from '@cloneoverflow/common';
 import { TagRepositoryInput } from '@core/domain/repositories/tag/dtos/TagRepositoryInput';
 import { TagsRepositoryOutput } from '@core/domain/repositories/tag/dtos/TagRepositoryOutput';
 import { TagRepository } from '@core/domain/repositories/tag/TagRepository';
@@ -7,7 +8,6 @@ import { TagMapper } from '../adapters/entityMappers/TagMapper';
 import { TagOrderByAdapter } from '../adapters/orderBy/TagsOrderByAdapter';
 import { TagWhereAdapter } from '../adapters/where/tag/TagWhereAdapter';
 import { PrismaPaginationRepository } from './PrismaPaginationRepository';
-import { NoEntityWithIdException } from '@cloneoverflow/common';
 
 export class PrismaTagRepository implements TagRepository {
   constructor (
@@ -17,7 +17,7 @@ export class PrismaTagRepository implements TagRepository {
   async isExist (where: TagRepositoryInput.IsExist): Promise<TagsRepositoryOutput.IsExist> {
     const tag = await this.prisma.tag.findFirst({
       where: TagWhereAdapter(where),
-      select: { tagId: true },
+      select: { id: true },
     });
 
     return !!tag;
@@ -27,8 +27,8 @@ export class PrismaTagRepository implements TagRepository {
     { tagId }: TagRepositoryInput.ValidateById,
   ): Promise<TagsRepositoryOutput.ValidateById> {
     if (!await this.prisma.tag.findFirst({ 
-      where: { tagId },
-      select: { pk_id: true },
+      where: { id: +tagId },
+      select: { id: true },
     })) {
       throw new NoEntityWithIdException('Tag');
     }
@@ -74,24 +74,21 @@ export class PrismaTagRepository implements TagRepository {
   }
   
   async create (
-    { tag }: TagRepositoryInput.Create,
+    { tag, returnId: returnId }: TagRepositoryInput.Create,
   ): Promise<TagsRepositoryOutput.Create> {
-    await this.prisma.tag.create({
-      data: {
-        tagId: tag.id,
-        name: tag.name,
-      },
+    const tagId = await this.prisma.tag.create({
+      data: { name: tag.name },
+      select: returnId ? { id: true } : undefined,
     });
+
+    if (returnId) return tagId.id.toString();
   }
   
   async createMany (
     { tags }: TagRepositoryInput.CreateMany,
   ): Promise<TagsRepositoryOutput.CreateMany> {
     await this.prisma.tag.createMany({
-      data: tags.map(tag => ({
-        id: tag.id,
-        name: tag.name,
-      })),
+      data: tags.map(tag => ({ name: tag.name })),
       skipDuplicates: true,
     });
   }
@@ -117,7 +114,7 @@ export class PrismaTagRepository implements TagRepository {
     { tagId, name, returnEntity }: TagRepositoryInput.Update,
   ): Promise<TagsRepositoryOutput.Update> {
     const tag = await this.prisma.tag.update({
-      where: { tagId },
+      where: { id: +tagId },
       data: { name },
     });
 
@@ -125,8 +122,13 @@ export class PrismaTagRepository implements TagRepository {
   }
   
   async delete (
-    { tagId }: TagRepositoryInput.Delete,
+    { tagId, name }: TagRepositoryInput.Delete,
   ): Promise<TagsRepositoryOutput.Delete> {
-    await this.prisma.tag.delete({ where: { tagId } });
+    await this.prisma.tag.delete({ 
+      where: { 
+        id: tagId ? +tagId : undefined,
+        name,
+      }, 
+    });
   }
 }

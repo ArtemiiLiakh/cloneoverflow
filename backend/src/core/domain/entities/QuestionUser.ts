@@ -1,6 +1,5 @@
 import { QuestionUserStatusEnum, VoteTypeEnum } from '@cloneoverflow/common';
 import { Model } from '@common/model/Model';
-import { randomUUID } from 'crypto';
 
 export class QuestionUser implements Model {
   constructor (
@@ -25,7 +24,7 @@ export class QuestionUser implements Model {
     voteType?: VoteTypeEnum | null
   }) {
     return new QuestionUser(
-      id ?? randomUUID(), 
+      id ?? '', 
       questionId, 
       userId, 
       status, 

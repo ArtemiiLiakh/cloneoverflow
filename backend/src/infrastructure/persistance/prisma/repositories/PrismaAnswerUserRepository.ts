@@ -4,6 +4,7 @@ import { AnswerUserRepositoryOutput } from '@core/domain/repositories/answer/dto
 import { PrismaClient } from '@prisma/client';
 import { AnswerUserMapper } from '../adapters/entityMappers/AnswerUserMapper';
 import { AnswerUserWhereAdapter } from '../adapters/where/answer/AnswerUserWhereAdapter';
+import { uuidToBytes } from '../utils/uuid';
 
 export class PrismaAnswerUserRepository implements AnswerUserRepository {
   constructor (
@@ -22,27 +23,25 @@ export class PrismaAnswerUserRepository implements AnswerUserRepository {
     return AnswerUserMapper.toEntity(answerUser);    
   }
 
-  async create ({ user }: AnswerUserRepositoryInput.Create): Promise<AnswerUserRepositoryOutput.Create> {
-    await this.prisma.answerUser.create({
+  async create (
+    { user, returnId: returnId }: AnswerUserRepositoryInput.Create,
+  ): Promise<AnswerUserRepositoryOutput.Create> {
+    const answerUserId = await this.prisma.answerUser.create({
       data: {
-        answerUserId: user.id,
-        userId: user.userId,
-        answerId: user.answerId,
+        userId: uuidToBytes(user.userId),
+        answerId: +user.answerId,
         status: user.status,
         voteType: user.voteType,
-        answer: {
-          connect: { answerId: user.answerId },
-        },
-        user: {
-          connect: { userId: user.userId },
-        },
       },
+      select: returnId ? { id: true } : undefined,
     });
+
+    if (returnId) return answerUserId.id.toString();
   }
 
   async update ({ answerUserId, data, returnEntity }: AnswerUserRepositoryInput.Update): Promise<AnswerUserRepositoryOutput.Update> {
     const answerUser = await this.prisma.answerUser.update({
-      where: { answerUserId },
+      where: { id: +answerUserId },
       data: {
         status: data.status,
         voteType: data.voteType,
@@ -56,7 +55,7 @@ export class PrismaAnswerUserRepository implements AnswerUserRepository {
 
   async delete ({ answerUserId }: AnswerUserRepositoryInput.Delete): Promise<AnswerUserRepositoryOutput.Delete> {
     await this.prisma.answerUser.delete({
-      where: { answerUserId },
+      where: { id: +answerUserId },
     });
   }
 }

@@ -12,7 +12,8 @@ import { QuestionMapper } from '../adapters/entityMappers/QuestionMapper';
 import { AnswerMapper } from '../adapters/entityMappers/AnswerMapper';
 import { UserSelectAdapter } from '../adapters/select/UserSelectAdapter';
 import { UserCredsMapper } from '../adapters/entityMappers/UserCredsMapper';
-import { NoEntityWithIdException } from '@cloneoverflow/common';
+import { NoEntityWithIdException, VoteTypeEnum } from '@cloneoverflow/common';
+import { uuidToBytes } from '../utils/uuid';
 
 export class PrismaUserRepository implements UserRepository {
   constructor (
@@ -22,7 +23,7 @@ export class PrismaUserRepository implements UserRepository {
   async isExist (where: UserRepositoryInput.IsExist): Promise<UserRepositoryOutput.IsExist> {
     const user = await this.prisma.user.findFirst({ 
       where: UserWhereAdapter(where),
-      select: { userId: true }, 
+      select: { id: true }, 
     });
 
     return !!user;
@@ -32,8 +33,10 @@ export class PrismaUserRepository implements UserRepository {
     { userId }: UserRepositoryInput.ValidateById,
   ): Promise<UserRepositoryOutput.ValidateById> {
     if (!await this.prisma.user.findFirst({ 
-      where: { userId },
-      select: { pk_id: true },
+      where: { 
+        id: uuidToBytes(userId),
+      },
+      select: { id: true },
     })) {
       throw new NoEntityWithIdException('User');
     }
@@ -42,7 +45,9 @@ export class PrismaUserRepository implements UserRepository {
   async getById (
     { userId }: UserRepositoryInput.GetById,
   ): Promise<UserRepositoryOutput.GetById> {
-    const user = await this.prisma.user.findFirst({ where: { userId } });
+    const user = await this.prisma.user.findFirst({ 
+      where: { id: uuidToBytes(userId) },
+    });
 
     if (!user) throw new NoEntityWithIdException('User');
 
@@ -93,7 +98,7 @@ export class PrismaUserRepository implements UserRepository {
     { userId, select }: UserRepositoryInput.GetPartialById,
   ): Promise<UserRepositoryOutput.GetPartialById> {
     const user = await this.prisma.user.findFirst({
-      where: { userId },
+      where: { id: uuidToBytes(userId) },
       select: UserSelectAdapter(select),
     });
 
@@ -172,13 +177,13 @@ export class PrismaUserRepository implements UserRepository {
   ): Promise<UserRepositoryOutput.GetCreds> {
     const creds = await this.prisma.userCreds.findFirst({
       where: {
-        userId: where.userId,
+        id: where.userId ? uuidToBytes(where.userId) : undefined,
         email: where.email,
       },
       include: {
         user: withUser ? {
           select: {
-            userId: true,
+            id: true,
             name: true,
             username: true,
             reputation: true,
@@ -202,12 +207,11 @@ export class PrismaUserRepository implements UserRepository {
   ): Promise<UserRepositoryOutput.CreateWithCreds> {
     await this.prisma.userCreds.create({
       data: {
-        userId: creds.id,
+        id: uuidToBytes(creds.id),
         email: creds.email,
         password: creds.password,
         user: {
           create: {
-            userId: user.id,
             name: user.name,
             username: user.username,
             about: user.about,
@@ -223,7 +227,7 @@ export class PrismaUserRepository implements UserRepository {
     { userId, user, returnEntity }: UserRepositoryInput.Update,
   ): Promise<UserRepositoryOutput.Update> {
     const updatedUser = await this.prisma.user.update({
-      where: { userId },
+      where: { id: uuidToBytes(userId) },
       data: {
         name: user.name,
         username: user.username,
@@ -238,7 +242,7 @@ export class PrismaUserRepository implements UserRepository {
     { userId, creds }: UserRepositoryInput.UpdateCreds,
   ): Promise<UserRepositoryOutput.UpdateCreds> {
     await this.prisma.userCreds.update({
-      where: { userId },
+      where: { id: uuidToBytes(userId) },
       data: {
         email: creds.email,
         password: creds.password,
@@ -249,6 +253,21 @@ export class PrismaUserRepository implements UserRepository {
   async delete (
     { userId }: UserRepositoryInput.Delete,
   ): Promise<UserRepositoryOutput.Delete> {
-    await this.prisma.userCreds.delete({ where: { userId } });
+    await this.prisma.userCreds.delete({ 
+      where: { id: uuidToBytes(userId) },
+    });
+  }
+
+  async addRating (
+    { userId, voteType }: UserRepositoryInput.AddRating,
+  ): Promise<UserRepositoryOutput.AddRating> {
+    await this.prisma.user.update({
+      where: { id: uuidToBytes(userId) },
+      data: {
+        reputation: {
+          increment: voteType === VoteTypeEnum.UP ? 1 : -1,
+        },
+      },
+    });
   }
 }

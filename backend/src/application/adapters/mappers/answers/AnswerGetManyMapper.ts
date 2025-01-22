@@ -13,12 +13,12 @@ export const AnswerGetManyMapper = (
       isSolution: answer.entity.isSolution,
       createdAt: answer.entity.createdAt,
       updatedAt: answer.entity.updatedAt,
-      owner: {
+      owner: answer.owner ? {
         id: answer.owner.id,
         name: answer.owner.name,
         reputation: answer.owner.rating,
         username: answer.owner.username,
-      },
+      } : null,
     })),
     pagination,
   };

@@ -24,7 +24,7 @@ export class QuestionOpenUseCase implements IQuestionOpenUseCase {
       throw new BadBodyException('The question is already opened');
     }
 
-    const result = await this.unitOfWork.execute(async (unit) => {
+    await this.unitOfWork.execute(async (unit) => {
       const questionAnswerer = await unit.questionUserRepository.getOne({
         where: {
           questionId,
@@ -41,10 +41,8 @@ export class QuestionOpenUseCase implements IQuestionOpenUseCase {
 
       await unit.questionRepository.openQuestion({ questionId });
       return true;
-    });
-
-    if (!result) {
+    }).catch(() => {
       throw new Exception('Question opening failed');
-    }
+    });
   }
 }

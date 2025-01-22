@@ -5,4 +5,4 @@ export * from './getMe/type';
 export * from './login/type';
 export * from './refreshToken/type';
 export * from './sendVerificationCode/type';
-export * from './signup/type';
+export * from './createAccount/type';
