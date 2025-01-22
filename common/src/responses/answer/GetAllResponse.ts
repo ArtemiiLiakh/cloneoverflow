@@ -11,7 +11,7 @@ export interface MappedAnswerGetAllResponse {
     name: string;
     username: string;
     reputation: number;
-  };
+  } | null;
   questionId: string;
   createdAt: Date;
   updatedAt: Date;

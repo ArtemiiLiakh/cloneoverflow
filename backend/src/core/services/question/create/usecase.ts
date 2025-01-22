@@ -20,7 +20,10 @@ export class QuestionCreateUseCase implements IQuestionCreateUseCase {
         text,
       });
       
-      await unit.questionRepository.create({ question });
+      question.id = await unit.questionRepository.create({ 
+        question, 
+        returnId: true,
+      }).then(id => id!);
   
       await unit.questionUserRepository.create({
         user: QuestionUser.new({
@@ -39,12 +42,10 @@ export class QuestionCreateUseCase implements IQuestionCreateUseCase {
       }
   
       return question;
+    }).catch(() => {
+      throw new Exception('Question creation failed');
     });
   
-    if (!question) {
-      throw new Exception('Question create failed');
-    }
-
     return question;    
   }
 }

@@ -37,7 +37,7 @@ export class AnswerVoteUseCase implements IAnswerVoteUseCase {
       throw new ForbiddenException('You cannot vote question more than one time');
     }
   
-    const result = await this.unitOfWork.execute(async (unit) => {
+    await this.unitOfWork.execute(async (unit) => {
       if (!voter) {
         await unit.answerUserRepository.create({
           user: AnswerUser.new({
@@ -62,11 +62,14 @@ export class AnswerVoteUseCase implements IAnswerVoteUseCase {
         voteType: vote,
       });
 
-      return true;
-    });
-
-    if (!result) {
+      if (answer.ownerId) {
+        await unit.userRepository.addRating({
+          userId: answer.ownerId,
+          voteType: vote,
+        });
+      }
+    }).catch(() => {
       throw new Exception('Voting answer failed');
-    }
+    });
   }
 }

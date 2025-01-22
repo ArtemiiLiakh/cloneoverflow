@@ -44,6 +44,7 @@ export namespace QuestionRepositoryInput {
 
   export type Create = {
     question: Question;
+    returnId?: true,
   };
   
   export type Update = {
@@ -52,7 +53,7 @@ export namespace QuestionRepositoryInput {
       title?: string,
       text?: string,
     };
-    returnEntity?: boolean;
+    returnEntity?: true;
   };
 
   export type AddViewer = {

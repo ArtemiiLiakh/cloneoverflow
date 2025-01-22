@@ -1,6 +1,5 @@
 import { Model } from '@common/model/Model';
 import { Timestamps } from '@common/model/Timestamp';
-import { randomUUID } from 'crypto';
 
 export class Question implements Model, Timestamps {
   constructor (
@@ -39,7 +38,7 @@ export class Question implements Model, Timestamps {
     const date = new Date();
 
     return new Question(
-      id ?? randomUUID(),
+      id ?? '',
       ownerId,
       title,
       text,

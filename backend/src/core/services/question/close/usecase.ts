@@ -19,6 +19,7 @@ export class QuestionCloseUseCase implements IQuestionCloseUseCase {
     const question = await this.questionRepository.getPartialById({ 
       questionId,
       select: {
+        ownerId: true,
         isClosed: true,
       },
     });
@@ -40,7 +41,7 @@ export class QuestionCloseUseCase implements IQuestionCloseUseCase {
       throw new BadBodyException('Wrong answer id');
     }
 
-    const result = await this.unitOfWork.execute((unit) => [
+    await this.unitOfWork.executeAll((unit) => [
       unit.questionRepository.closeQuestion({
         questionId,
         answerId,
@@ -53,10 +54,8 @@ export class QuestionCloseUseCase implements IQuestionCloseUseCase {
           status: QuestionUserStatusEnum.ANSWERER,
         }),
       }),
-    ]);
-
-    if (!result) {
+    ]).catch(() => {
       throw new Exception('Closing quetion failed');
-    }
+    });
   }
 }

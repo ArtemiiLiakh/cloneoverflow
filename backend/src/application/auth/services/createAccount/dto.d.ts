@@ -1,6 +1,6 @@
 import { User } from '@core/domain/entities/User';
 
-export type SignUpInput = {
+export type CreateAccountInput = {
   email: string;
   password: string;
   name: string;
@@ -8,7 +8,7 @@ export type SignUpInput = {
   about: string;
 };
 
-export type SignUpOutput = {
+export type CreateAccountOutput = {
   user: User,
   tokens: {
     access_token: string, 

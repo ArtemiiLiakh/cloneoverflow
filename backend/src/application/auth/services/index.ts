@@ -5,4 +5,4 @@ export * from './getMe/usecase';
 export * from './login/usecase';
 export * from './refreshToken/usecase';
 export * from './sendVerificationCode/usecase';
-export * from './signup/usecase';
+export * from './createAccount/usecase';

@@ -6,7 +6,7 @@ export const UserSelectAdapter = (
   select?: UserSelectInput,
 ): Prisma.UserSelect => {
   if (!select || isObjectEmpty(select)) return {
-    userId: true,
+    id: true,
     name: true,
     username: true,
     reputation: true,
@@ -17,7 +17,7 @@ export const UserSelectAdapter = (
   };
 
   return {
-    userId: select.id,
+    id: select.id,
     name: select.name,
     username: select.username,
     reputation: select.rating,

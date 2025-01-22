@@ -30,7 +30,7 @@ authRouter.post(
   validateRequest({
     body: AuthSignupDTO,
   }), 
-  AdaptController(authController.signup.bind(authController)),
+  AdaptController(authController.createAccount.bind(authController)),
 );
 
 authRouter.get(
@@ -78,6 +78,7 @@ authRouter.delete(
 
 authRouter.post(
   '/sendVerificationCode',
+  JwtTokenValidatorDI.validateAccess(),
   validateRequest({
     body: AuthVerificationCodeDTO,
   }),

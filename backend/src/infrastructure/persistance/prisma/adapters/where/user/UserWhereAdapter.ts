@@ -1,14 +1,15 @@
 import { UserWhere } from '@core/domain/repositories/user/dtos/Params';
+import { parseNumberOrArray } from '@infrastructure/persistance/prisma/utils/number';
 import { Prisma, VoteType } from '@prisma/client';
+import { BasicNumberWhereAdapter, BasicStringWhereAdapter, BasicUUIDWhereAdapter } from '../dataTypes/BasicWhereAdapter';
 import { DateWhereAdapter } from '../dataTypes/DateWhereAdapter';
 import { NumberWhereAdapter } from '../dataTypes/NumberWhereAdapter ';
 import { StringWhereAdapter } from '../dataTypes/StringWhereAdapter';
-import { BasicStringWhereAdapter } from '../dataTypes/BasicWhereAdapter';
 
 export const UserWhereAdapter = (where?: UserWhere): Prisma.UserWhereInput => {
   if (!where) return {};
   return {
-    userId: BasicStringWhereAdapter(where.userId),
+    id: BasicUUIDWhereAdapter(where.userId),
     name: StringWhereAdapter(where.name),
     username: StringWhereAdapter(where.username),
     reputation: NumberWhereAdapter(where.rating),
@@ -21,16 +22,16 @@ export const UserWhereAdapter = (where?: UserWhere): Prisma.UserWhereInput => {
     },
     questionUsers: where.userQuestions ? {
       some: {
-        userId: BasicStringWhereAdapter(where.userQuestions.userId),
-        questionId: BasicStringWhereAdapter(where.userQuestions.questionId),
+        userId: BasicUUIDWhereAdapter(where.userQuestions.userId),
+        questionId: BasicNumberWhereAdapter(parseNumberOrArray(where.userQuestions.questionId)),
         status: BasicStringWhereAdapter(where.userQuestions.status) as Prisma.EnumUserQuestionStatusFilter,
         voteType: BasicStringWhereAdapter(where.userQuestions.voteType) as Prisma.EnumVoteTypeNullableFilter,
       },
     } : undefined,
     answerUsers: where.userAnswers ? {
       some: {
-        userId: BasicStringWhereAdapter(where.userAnswers.userId),
-        answerId: BasicStringWhereAdapter(where.userAnswers.answerId),
+        userId: BasicUUIDWhereAdapter(where.userAnswers.userId),
+        answerId: BasicNumberWhereAdapter(parseNumberOrArray(where.userAnswers.answerId)),
         status: BasicStringWhereAdapter(where.userAnswers.status) as Prisma.EnumUserAnswerStatusFilter,
         voteType: where.userAnswers.voteType as VoteType,
       },

@@ -39,12 +39,10 @@ export class QuestionUpdateUseCase implements IQuestionUpdateUseCase {
         },
         returnEntity: true,
       }).then(question => question!);
+    }).catch(() => {
+      throw new Exception('Question update failed');
     });
     
-    if (!question) {
-      throw new Exception('Question update failed');
-    }
-
     return question;
   }
 }

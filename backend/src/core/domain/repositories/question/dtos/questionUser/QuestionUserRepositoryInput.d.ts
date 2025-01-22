@@ -8,7 +8,8 @@ export namespace QuestionUserRepositoryInput {
   };
 
   export type Create = {
-    user: QuestionUser
+    user: QuestionUser,
+    returnId?: true,
   };
 
   export type Update = {

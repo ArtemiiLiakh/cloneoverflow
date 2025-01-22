@@ -7,12 +7,12 @@ export const TagSelectAdapter = (
 ): Prisma.TagSelect => {
   if (!select || isObjectEmpty(select)) {
     return {
-      tagId: true,
+      id: true,
       name: true,
     };
   } 
   return {
-    tagId: select.id,
+    id: select.id,
     name: select.name,
   };
 };

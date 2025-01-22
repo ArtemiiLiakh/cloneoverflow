@@ -30,7 +30,7 @@ export type SearchQuestionsOutput = PaginatedData<{
     name: string,
     username: string,
     rating: number,
-  },
+  } | null,
   tags: Tag[],
   answersAmount: number,
 }>;

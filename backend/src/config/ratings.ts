@@ -19,5 +19,5 @@ interface RatingSchema {
 }
 
 export const ratings = JSON.parse(
-  readFileSync(path.join(process.cwd(), 'config', 'ratings.json')).toString('utf-8'),
+  readFileSync(path.join(process.cwd(), 'environment', 'ratings.json')).toString('utf-8'),
 ) as RatingSchema;

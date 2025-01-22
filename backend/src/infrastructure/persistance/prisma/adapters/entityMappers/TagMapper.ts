@@ -2,10 +2,10 @@ import { Tag } from '@core/domain/entities/Tag';
 import Prisma from '@prisma/client';
 
 export class TagMapper {
-  static toEntity (tag: Prisma.Tag): Tag {
-    return {
-      id: tag.tagId,
-      name: tag.name,
-    };
+  static toEntity (tag: Partial<Prisma.Tag>): Tag {
+    return Tag.new({
+      id: tag.id?.toString(),
+      name: tag.name ?? '',
+    });
   }
 }

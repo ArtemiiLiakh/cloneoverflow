@@ -1,4 +1,4 @@
-import { ForbiddenException } from '@cloneoverflow/common';
+import { Exception, ForbiddenException } from '@cloneoverflow/common';
 import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
 import { UnitOfWork } from '@core/domain/repositories/UnitOfWork';
 import { AnswerDeleteInput, AnswerDeleteOutput } from './dto';
@@ -27,6 +27,8 @@ export class AnswerDeleteUseCase implements IAnswerDeleteUseCase {
       }
   
       await unit.answerRepository.delete({ answerId });
+    }).catch(() => {
+      throw new Exception('Answer deleting failed');
     });
   
     return answer;

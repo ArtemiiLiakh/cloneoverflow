@@ -13,7 +13,7 @@ export namespace TagsRepositoryOutput {
   export type IsExist = boolean;
   export type ValidateById = void;
 
-  export type Create = void;
+  export type Create = string | undefined;
   export type CreateMany = void;
   export type CreateOrFindMany = Tag[];
   

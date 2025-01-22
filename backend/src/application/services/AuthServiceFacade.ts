@@ -1,26 +1,26 @@
 import { ChangePasswordInput, ChangePasswordOutput } from '@application/auth/services/changePassword/dto';
+import { CreateAccountInput, CreateAccountOutput } from '@application/auth/services/createAccount/dto';
 import { DeleteAccountInput, DeleteAccountOutput } from '@application/auth/services/deleteAccount/dto';
 import { ForgotPasswordInput, ForgotPasswordOutput } from '@application/auth/services/forgotPassword/dto';
 import { GetMeInput, GetMeOutput } from '@application/auth/services/getMe/dto';
 import { LoginInput, LoginOutput } from '@application/auth/services/login/dto';
 import { RefreshTokenInput, RefreshTokenOutput } from '@application/auth/services/refreshToken/dto';
 import { SendVerificationCodeInput, SendVerificationCodeOutput } from '@application/auth/services/sendVerificationCode/dto';
-import { SignUpInput, SignUpOutput } from '@application/auth/services/signup/dto';
 import {
   IChangePasswordUseCase,
+  ICreateAccountUseCase,
   IDeleteAccountUseCase,
   IForgotPasswordUseCase,
   IGetMeUseCase,
   ILoginUseCase,
   IRefreshTokenUseCase,
   ISendVerificationCodeUseCase,
-  ISignUpUseCase,
 } from '@application/auth/services/types';
 
 export class AuthServiceFacade {
   constructor (
     private loginUseCase: ILoginUseCase,
-    private signUpUseCase: ISignUpUseCase,
+    private createAccountUseCase: ICreateAccountUseCase,
     private getMeUseCase: IGetMeUseCase,
     private deleteAccountUseCase: IDeleteAccountUseCase,
     private refreshTokenUseCase: IRefreshTokenUseCase,
@@ -31,7 +31,7 @@ export class AuthServiceFacade {
 
   static new ({
     loginUseCase,
-    signUpUseCase,
+    createAccountUseCase,
     getMeUseCase,
     deleteAccountUseCase,
     refreshTokenUseCase,
@@ -40,7 +40,7 @@ export class AuthServiceFacade {
     sendVerificationCodeUseCase,
   }: {
     loginUseCase: ILoginUseCase,
-    signUpUseCase: ISignUpUseCase,
+    createAccountUseCase: ICreateAccountUseCase,
     getMeUseCase: IGetMeUseCase,
     deleteAccountUseCase: IDeleteAccountUseCase,
     refreshTokenUseCase: IRefreshTokenUseCase,
@@ -50,7 +50,7 @@ export class AuthServiceFacade {
   }) {
     return new AuthServiceFacade(
       loginUseCase,
-      signUpUseCase,
+      createAccountUseCase,
       getMeUseCase,
       deleteAccountUseCase,
       refreshTokenUseCase,
@@ -64,8 +64,8 @@ export class AuthServiceFacade {
     return this.loginUseCase.execute(payload);
   }
 
-  signUp (payload: SignUpInput): Promise<SignUpOutput> {
-    return this.signUpUseCase.execute(payload);
+  createAccount (payload: CreateAccountInput): Promise<CreateAccountOutput> {
+    return this.createAccountUseCase.execute(payload);
   }
 
   async getMe (payload: GetMeInput): Promise<GetMeOutput> {

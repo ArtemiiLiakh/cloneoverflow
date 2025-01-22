@@ -26,7 +26,7 @@ export type TagOrderBy = OrderByInput<TagOrderByType>;
 
 export type TagWhere = WhereInput<{
   tagId?: BasicType<string>,
-  text?: StringType,
+  name?: StringType,
   questions?: {
     questionId?: BasicType<string>,
   },

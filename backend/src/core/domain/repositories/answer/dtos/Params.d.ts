@@ -54,11 +54,6 @@ export type AnswerWhere = WhereInput<{
     questionId?: BasicType<string>,
     title?: StringType,
   },
-  userAnswer?: {
-    userId?: BasicType<string>,
-    status?: BasicType<AnswerUserStatusEnum>,
-    voteType?: VoteTypeEnum,
-  },
 }>;
 
 export type AnswerUserWhere = WhereInput<{

@@ -25,7 +25,7 @@ export namespace QuestionRepositoryOutput {
   export type IsExist = boolean;
   export type ValidateById = void;
 
-  export type Create = void;
+  export type Create = string | undefined;
   export type Update = Question | undefined;
   export type Delete = void;
   export type Count = number;

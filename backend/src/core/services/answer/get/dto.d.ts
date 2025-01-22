@@ -13,8 +13,8 @@ export type AnswerGetOutput = {
     username: string,
     name: string,
     rating: number,
-  },
-  question?: {
+  } | null,
+  question: {
     id: string,
     ownerId: string,
     title: string,

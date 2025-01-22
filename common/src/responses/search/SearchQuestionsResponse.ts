@@ -13,7 +13,7 @@ export interface MappedSearchQuestionResponse {
     name: string;
     username: string;
     reputation: number;
-  };
+  } | null;
   answersAmount: number;
 }
 

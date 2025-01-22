@@ -27,11 +27,11 @@ export class UserController {
   ) {}
 
   async getUser (
-    { params }: WithParams<{ id: string }>, 
+    { params }: WithParams<{ userId: string }>, 
     res: CoreResponse<UserGetResponse>,
   ) {
     const user = await this.userService.get({
-      userId: params.id,
+      userId: params.userId,
     });
 
     res.send(UserGetMapperOutput(user));

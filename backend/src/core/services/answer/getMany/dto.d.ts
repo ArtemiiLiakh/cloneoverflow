@@ -19,7 +19,7 @@ export type AnswerGetManyOutput = PaginatedData<{
     username: string,
     name: string,
     rating: number,
-  },
+  } | null,
   question: {
     id: string,
     ownerId: string,

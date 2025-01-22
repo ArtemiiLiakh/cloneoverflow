@@ -1,4 +1,4 @@
-import { PaginationDTO } from '@cloneoverflow/common';
+import { PaginationDTO, VoteTypeEnum } from '@cloneoverflow/common';
 import { User } from '@core/domain/entities/User';
 import { UserCreds } from '@core/domain/entities/UserCreds';
 import { UserCountsInput, UserIncludeInput, UserOrderBy, UserSelectInput, UserWhere } from './Params';
@@ -65,8 +65,13 @@ export namespace UserRepositoryInput {
       username?: string,
       about?: string,
     },
-    returnEntity?: boolean,
+    returnEntity?: true,
   };
 
   export type Delete = { userId: string };
+  
+  export type AddRating = { 
+    userId: string,
+    voteType: VoteTypeEnum,
+  };
 }

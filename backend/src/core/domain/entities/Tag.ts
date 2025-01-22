@@ -1,5 +1,4 @@
 import { Model } from '@common/model/Model';
-import { randomUUID } from 'crypto';
 
 export class Tag implements Model {
   constructor (
@@ -15,7 +14,7 @@ export class Tag implements Model {
     name: string,
   }) {
     return new Tag(
-      id ?? randomUUID(),
+      id ?? '',
       name,
     );
   }

@@ -24,10 +24,10 @@ app.use(cookieParser());
 const api = express.Router();
 
 api.use('/auth', authRouter);
-api.use('/users', userRouter);
-api.use('/questions', questionRouter);
-api.use('/answers', answerRouter);
-api.use('/tags', tagRouter);
+api.use('/user', userRouter);
+api.use('/question', questionRouter);
+api.use('/answer', answerRouter);
+api.use('/tag', tagRouter);
 
 app.use('/api', api);
 

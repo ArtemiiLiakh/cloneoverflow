@@ -2,8 +2,9 @@ import { QuestionUserRepositoryInput } from '@core/domain/repositories/question/
 import { QuestionUserRepositoryOutput } from '@core/domain/repositories/question/dtos/questionUser/QuestionUserRepositoryOutput';
 import { QuestionUserRepository } from '@core/domain/repositories/question/QuestionUserRepository';
 import { PrismaClient } from '@prisma/client';
-import { QuestionUserWhereAdapter } from '../adapters/where/question/QuestionUserWhereAdapter';
 import { QuestionUserMapper } from '../adapters/entityMappers/QuestionUserMapper';
+import { QuestionUserWhereAdapter } from '../adapters/where/question/QuestionUserWhereAdapter';
+import { uuidToBytes } from '../utils/uuid';
 
 export class PrismaQuestionUserRepository implements QuestionUserRepository {
   constructor (
@@ -23,30 +24,26 @@ export class PrismaQuestionUserRepository implements QuestionUserRepository {
   }
 
   async create (
-    { user }: QuestionUserRepositoryInput.Create,
+    { user, returnId: returnId }: QuestionUserRepositoryInput.Create,
   ): Promise<QuestionUserRepositoryOutput.Create> {
-    await this.prisma.questionUser.create({
+    const questionUserId = await this.prisma.questionUser.create({
       data: {
-        questionUserId: user.id,
-        questionId: user.questionId,
-        userId: user.userId,
+        questionId: +user.questionId,
+        userId: uuidToBytes(user.userId),
         status: user.status,
         voteType: user.voteType,
-        question: {
-          connect: { questionId: user.questionId },
-        },
-        user: {
-          connect: { userId: user.userId },
-        },
       },
+      select: returnId ? { id: true } : undefined,
     });
+
+    if (returnId) return questionUserId.id.toString();
   }
 
   async update (
     { questionUserId, data, returnEntity }: QuestionUserRepositoryInput.Update,
   ): Promise<QuestionUserRepositoryOutput.Update> {
     const questionUser = await this.prisma.questionUser.update({
-      where: { questionUserId },
+      where: { id: +questionUserId },
       data: {
         status: data.status,
         voteType: data.voteType,
@@ -60,7 +57,7 @@ export class PrismaQuestionUserRepository implements QuestionUserRepository {
     { questionUserId }: QuestionUserRepositoryInput.Delete,
   ): Promise<QuestionUserRepositoryOutput.Delete> {
     await this.prisma.questionUser.findFirst({
-      where: { questionUserId },
+      where: { id: +questionUserId },
     });
   }
 }

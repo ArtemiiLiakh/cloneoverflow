@@ -13,12 +13,12 @@ export function SearchQuestionsMapperOutput (
       isClosed: question.entity.isClosed,
       createdAt: question.entity.createdAt,
       answersAmount: question.answersAmount,
-      owner: {
+      owner: question.owner ? {
         id: question.owner.userId,
         name: question.owner.name,
         reputation: question.owner.rating,
         username: question.owner.username,
-      },
+      } : null,
       tags: question.tags.map(tag => tag.name),
     })),
     pagination: questions.pagination,

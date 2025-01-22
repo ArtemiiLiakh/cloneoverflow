@@ -15,12 +15,12 @@ export const getManyOutputMapper = (
       createdAt: answer.entity.createdAt!,
       updatedAt: answer.entity.updatedAt!,
     },
-    owner: {
-      id: answer.owner!.id,
-      name: answer.owner!.name,
-      rating: answer.owner!.rating,
-      username: answer.owner!.username,
-    },
+    owner: answer.owner ? {
+      id: answer.owner.id,
+      name: answer.owner.name,
+      rating: answer.owner.rating,
+      username: answer.owner.username,
+    } : null,
     question: {
       id: answer.question!.id,
       ownerId: answer.question!.ownerId,

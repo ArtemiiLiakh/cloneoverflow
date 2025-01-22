@@ -43,12 +43,12 @@ export class QuestionGetUseCase implements IQuestionGetUseCase {
 
     return {
       entity: question.entity, 
-      owner: {
-        id: question.owner!.id,
-        name: question.owner!.name,
-        rating: question.owner!.rating,
-        username: question.owner!.username,
-      },
+      owner: question.owner ? {
+        id: question.owner.id,
+        name: question.owner.name,
+        rating: question.owner.rating,
+        username: question.owner.username,
+      } : null,
       tags: question.tags ?? [],
       voter,
     };

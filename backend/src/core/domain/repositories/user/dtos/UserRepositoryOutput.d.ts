@@ -36,4 +36,6 @@ export namespace UserRepositoryOutput {
   export type Update = User | undefined; 
   export type UpdateCreds = void;
   export type Delete = void;
+  
+  export type AddRating = void;
 }

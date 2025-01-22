@@ -39,7 +39,8 @@ export namespace AnswerRepositoryInput {
   }
 
   export type Create = {
-    answer: Answer
+    answer: Answer,
+    returnId?: true,
   };
 
   export type Update = {
@@ -47,7 +48,7 @@ export namespace AnswerRepositoryInput {
     answer: {
       text?: string,
     },
-    returnEntity?: boolean;
+    returnEntity?: true;
   };
 
   export type Delete = {

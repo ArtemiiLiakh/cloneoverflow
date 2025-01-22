@@ -1,12 +1,12 @@
 import {
   ChangePasswordUseCase,
+  CreateAccountUseCase,
   DeleteAccountUseCase,
   ForgotPasswordUseCase,
   GetMeUseCase,
   LoginUseCase,
   RefreshTokenUseCase,
   SendVerificationCodeUseCase,
-  SignUpUseCase,
 } from '@application/auth/services';
 import { AuthServiceFacade } from '@application/services/AuthServiceFacade';
 import GoogleEmailProviderDI from '../email/GoogleEmailProviderDI';
@@ -22,7 +22,7 @@ const LoginUseCaseDI = new LoginUseCase(
   DataHasherDI,
 );
 
-const SignUpUseCaseDI = new SignUpUseCase(
+const CreateAccountUseCaseDI = new CreateAccountUseCase(
   JwtEncryptorDI, 
   userUseCasesDI.CreateUseCaseDI,
 );
@@ -63,7 +63,7 @@ const GetMeUseCaseDI = new GetMeUseCase(
 
 export const authServiceFacadeDI = AuthServiceFacade.new({
   loginUseCase: LoginUseCaseDI,
-  signUpUseCase: SignUpUseCaseDI,
+  createAccountUseCase: CreateAccountUseCaseDI,
   getMeUseCase: GetMeUseCaseDI,
   deleteAccountUseCase: DeleteAccountUseCaseDI,
   refreshTokenUseCase: RefreshTokenUseCaseDI,
@@ -74,7 +74,7 @@ export const authServiceFacadeDI = AuthServiceFacade.new({
 
 export const authUseCasesDI = {
   LoginUseCaseDI,
-  SignUpUseCaseDI,
+  CreateAccountUseCaseDI,
   DeleteAccountUseCaseDI,
   RefreshTokenUseCaseDI,
   ChangePasswordUseCaseDI,
