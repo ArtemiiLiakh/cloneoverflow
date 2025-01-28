@@ -17,4 +17,6 @@
 !/backend/environment/.env.example
 !/backend/environment/credentials.example.json
 !/backend/environment/redis
+!/backend/environment/postgres
+!/backend/environment/ratings.json
 

@@ -41,7 +41,6 @@ FROM node:17-alpine as production
 USER node
 
 WORKDIR /app
-RUN chown -R node:node /app
 
 COPY ./package.json /app/package.json 
 COPY --from=package --chown=node:node /app/node_modules /app/node_modules
