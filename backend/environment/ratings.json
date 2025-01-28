@@ -1,0 +1,16 @@
+{
+  "question": {
+    "voteUp": 50,
+    "voteDown": 100,
+    "update": 1000,
+    "open": 5000,
+    "close": 5000,
+    "delete": 10000
+  },
+  "answer": {
+    "voteUp": 50,
+    "voteDown": 100,
+    "update": 1000,
+    "delete": 10000
+  }
+}
