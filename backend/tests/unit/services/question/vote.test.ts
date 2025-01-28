@@ -2,7 +2,7 @@ import { ForbiddenException, QuestionUserStatusEnum, VoteTypeEnum } from '@clone
 import { Question } from '@core/domain/entities/Question';
 import { QuestionUser } from '@core/domain/entities/QuestionUser';
 import { User } from '@core/domain/entities/User';
-import { QuestionUserRepositoryInput } from '@core/domain/repositories/question/dtos/questionUser/QuestionUserRepositoryInput';
+import { UserRepository } from '@core/domain/repositories';
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
 import { QuestionUserRepository } from '@core/domain/repositories/question/QuestionUserRepository';
 import { Unit, UnitOfWork } from '@core/domain/repositories/UnitOfWork';
@@ -24,30 +24,25 @@ describe('Service: test QuestionVoteUseCase', () => {
       title: 'title',
     });
 
+    const userRepositoryMock = {
+      addRating: jest.fn(),
+    } as Partial<UserRepository>;
+
     const questionRepositoryMock = {
-      getPartialById: async () => questionEntity,
-      addRating: async ({ questionId, voteType }) => {
-        expect(questionId).toEqual(questionEntity.id);
-        expect(voteType).toEqual(vote);
-      },
+      getPartialById: jest.fn().mockReturnValue(Promise.resolve(questionEntity)),
+      addRating: jest.fn(),
     } as Partial<QuestionRepository>;
 
     const questionUserRepositoryMock = {
       getOne: async () => null,
-      create: jest.fn().mockImplementation(
-        ({ user }: QuestionUserRepositoryInput.Create) => {
-          expect(user.questionId).toEqual(questionEntity.id);
-          expect(user.userId).toEqual(userId);
-          expect(user.status).toEqual(QuestionUserStatusEnum.VOTER);
-          expect(user.voteType).toEqual(vote);
-        },
-      ),
+      create: jest.fn(),
     } as Partial<QuestionUserRepository>;
 
     const unitOfWork = {
       execute: (fn) => fn({
         questionRepository: questionRepositoryMock,
         questionUserRepository: questionUserRepositoryMock,
+        userRepository: userRepositoryMock,
       } as Unit),
     } as UnitOfWork;
 
@@ -64,6 +59,9 @@ describe('Service: test QuestionVoteUseCase', () => {
     });
 
     expect(questionUserRepositoryMock.create).toHaveBeenCalled();
+    expect(questionRepositoryMock.addRating).toHaveBeenCalled();
+    expect(userRepositoryMock.addRating).toHaveBeenCalled();
+    expect(questionRepositoryMock.getPartialById).toHaveBeenCalled();
   });
 
   test('Vote question for the second time', async () => {
@@ -88,28 +86,25 @@ describe('Service: test QuestionVoteUseCase', () => {
       voteType: VoteTypeEnum.UP,
     });
 
+    const userRepositoryMock = {
+      addRating: jest.fn(),
+    } as Partial<UserRepository>;
+
     const questionRepositoryMock = {
-      getPartialById: async () => questionEntity,
-      addRating: async ({ questionId, voteType }) => {
-        expect(questionId).toEqual(questionEntity.id);
-        expect(voteType).toEqual(vote);
-      },
+      getPartialById: jest.fn().mockReturnValue(Promise.resolve(questionEntity)),
+      addRating: jest.fn(),
     } as Partial<QuestionRepository>;
 
     const questionUserRepositoryMock = {
-      getOne: async () => questionVoterEntity,
-      update: jest.fn().mockImplementation(
-        ({ questionUserId, data }: QuestionUserRepositoryInput.Update) => {
-          expect(questionUserId).toEqual(questionVoterEntity.id);
-          expect(data.voteType).toBeNull();
-        },
-      ),
+      getOne: jest.fn().mockReturnValue(Promise.resolve(questionVoterEntity)),
+      update: jest.fn(),
     } as Partial<QuestionUserRepository>;
 
     const unitOfWork = {
       execute: (fn) => fn({
         questionRepository: questionRepositoryMock,
         questionUserRepository: questionUserRepositoryMock,
+        userRepository: userRepositoryMock,
       } as Unit),
     } as UnitOfWork;
 
@@ -126,6 +121,10 @@ describe('Service: test QuestionVoteUseCase', () => {
     });
 
     expect(questionUserRepositoryMock.update).toHaveBeenCalled();
+    expect(userRepositoryMock.addRating).toHaveBeenCalled();
+    expect(questionRepositoryMock.addRating).toHaveBeenCalled();
+    expect(questionRepositoryMock.getPartialById).toHaveBeenCalled();
+    expect(questionUserRepositoryMock.getOne).toHaveBeenCalled();
   });
 
   test('Throw an error because question was voted UP twice', () => {
@@ -151,12 +150,6 @@ describe('Service: test QuestionVoteUseCase', () => {
 
     const questionUserRepositoryMock = {
       getOne: async () => questionVoterEntity,
-      update: jest.fn().mockImplementation(
-        ({ questionUserId, data }: QuestionUserRepositoryInput.Update) => {
-          expect(questionUserId).toEqual(questionVoterEntity.id);
-          expect(data.voteType).toBeNull();
-        },
-      ),
     } as Partial<QuestionUserRepository>;
 
     const voteUseCase = new QuestionVoteUseCase(

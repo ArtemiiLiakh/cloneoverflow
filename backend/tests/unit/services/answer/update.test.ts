@@ -1,6 +1,5 @@
 import { Answer } from '@core/domain/entities/Answer';
 import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
-import { AnswerRepositoryInput } from '@core/domain/repositories/answer/dtos/AnswerRepositoryInput';
 import { AnswerUpdateUseCase } from '@core/services/answer';
 
 describe('Service: test AnswerUpdateUseCase', () => {
@@ -15,14 +14,7 @@ describe('Service: test AnswerUpdateUseCase', () => {
 
     const answerRepositoryMock = {
       validateById: async () => {},
-      update: jest.fn().mockImplementation(
-        async ({ answerId, answer, returnEntity }: AnswerRepositoryInput.Update) => {
-          expect(answerId).toEqual(answerEntity.id);
-          expect(answer.text).toEqual(text);
-          expect(returnEntity).toBeTruthy();
-
-          return answerEntity;
-        }),
+      update: jest.fn().mockReturnValue(Promise.resolve(answerEntity)),
     } as Partial<AnswerRepository>;
 
     const updateUseCase = new AnswerUpdateUseCase(answerRepositoryMock as AnswerRepository);

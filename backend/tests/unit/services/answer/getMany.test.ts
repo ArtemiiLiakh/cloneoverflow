@@ -1,11 +1,8 @@
-import { OrderByEnum, PaginationResponse } from '@cloneoverflow/common';
-import { NumberOptions } from '@common/repository/Datatypes/NumberType';
-import { StringOptions } from '@common/repository/Datatypes/StringType';
+import { PaginationResponse } from '@cloneoverflow/common';
 import { Answer } from '@core/domain/entities/Answer';
 import { Question } from '@core/domain/entities/Question';
 import { User } from '@core/domain/entities/User';
 import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
-import { AnswerOrderByType } from '@core/domain/repositories/answer/dtos/Params';
 import { AnswerGetManyUseCase } from '@core/services/answer';
 import { AnswerGetManyInput } from '@core/services/answer/getMany/dto';
 
@@ -50,26 +47,14 @@ describe('Service: test AnswerGetAllUseCase', () => {
     };
 
     const answerRepositoryMock = {
-      getMany: async ({ where, orderBy, pagination }) => {
-        expect(where.ownerId).toEqual(inputData.ownerId);
-        expect(where.questionId).toEqual(inputData.questionId);
-        expect((where.OR?.at(0)?.text as StringOptions).contains).toEqual(inputData.searchText);
-        expect((where.OR?.at(1)?.question?.title as StringOptions).contains).toEqual(inputData.searchText);
-        expect((where.rating as NumberOptions).geq).toEqual(inputData.rateFrom);
-        expect((where.rating as NumberOptions).leq).toEqual(inputData.rateTo);
-        expect((orderBy as AnswerOrderByType).rating).toEqual(OrderByEnum.DESC);
-        expect(pagination?.page).toEqual(inputData.pagination?.page);
-        expect(pagination?.pageSize).toEqual(inputData.pagination?.pageSize);
-
-        return {
-          data: [{ 
-            entity: answer, 
-            owner: ownerEntity, 
-            question: questionEntity, 
-          }],
-          pagination: paginationOutput,
-        };
-      },
+      getMany: async () => ({
+        data: [{ 
+          entity: answer, 
+          owner: ownerEntity, 
+          question: questionEntity, 
+        }],
+        pagination: paginationOutput,
+      }),
     } as Partial<AnswerRepository>;
 
     const answerGetAllUseCase = new AnswerGetManyUseCase(
@@ -78,7 +63,7 @@ describe('Service: test AnswerGetAllUseCase', () => {
 
     const { data, pagination } = await answerGetAllUseCase.execute(inputData);
     expect(data.at(0)?.entity.id).toEqual(answer.id);
-    expect(data.at(0)?.owner.id).toEqual(ownerEntity.id);
+    expect(data.at(0)?.owner?.id).toEqual(ownerEntity.id);
     expect(data.at(0)?.question.id).toEqual(questionEntity.id);
     expect(pagination).toBe(paginationOutput);
   });

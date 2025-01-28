@@ -1,8 +1,6 @@
 import { Exception, ForbiddenException, QuestionUserStatusEnum } from '@cloneoverflow/common';
 import { QuestionUser } from '@core/domain/entities/QuestionUser';
-import { UnitOfWork } from '@core/domain/repositories';
-import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
-import { QuestionUserRepository } from '@core/domain/repositories/question/QuestionUserRepository';
+import { QuestionRepository, QuestionUserRepository, UnitOfWork } from '@core/domain/repositories';
 import { QuestionVoteInput, QuestionVoteOutput } from './dto';
 import { IQuestionVoteUseCase } from './type';
 

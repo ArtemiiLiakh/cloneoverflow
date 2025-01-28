@@ -1,6 +1,5 @@
 import { Exception } from '@cloneoverflow/common';
-import { UnitOfWork } from '@core/domain/repositories';
-import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
+import { QuestionRepository, UnitOfWork } from '@core/domain/repositories';
 import { QuestionUpdateInput, QuestionUpdateOutput } from './dto';
 import { IQuestionUpdateUseCase } from './type';
 

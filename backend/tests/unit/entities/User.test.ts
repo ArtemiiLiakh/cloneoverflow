@@ -1,6 +1,5 @@
 import { UserStatusEnum } from '@cloneoverflow/common';
 import { User } from '@core/domain/entities/User';
-import { isUUID } from 'class-validator';
 
 describe('Entity: test User entity', () => {
   test('Create User entity with default fields', () => {
@@ -11,7 +10,6 @@ describe('Entity: test User entity', () => {
       username: 'username',
     });
 
-    expect(isUUID(user.id)).toBeTruthy();
     expect(user.name).toEqual('name');
     expect(user.username).toEqual('username');
     expect(user.rating).toEqual(0);

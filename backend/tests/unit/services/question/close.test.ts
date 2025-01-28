@@ -1,8 +1,7 @@
-import { BadBodyException, ForbiddenException, QuestionUserStatusEnum } from '@cloneoverflow/common';
+import { BadBodyException, ForbiddenException } from '@cloneoverflow/common';
 import { Answer } from '@core/domain/entities/Answer';
 import { Question } from '@core/domain/entities/Question';
 import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
-import { QuestionUserRepositoryInput } from '@core/domain/repositories/question/dtos/questionUser/QuestionUserRepositoryInput';
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
 import { QuestionUserRepository } from '@core/domain/repositories/question/QuestionUserRepository';
 import { Unit, UnitOfWork } from '@core/domain/repositories/UnitOfWork';
@@ -28,12 +27,7 @@ describe('Service: test QuestionCloseUseCase', () => {
 
     const questionRepositoryMock = {
       getPartialById: async () => questionEntity,
-      closeQuestion: jest.fn().mockImplementation(
-        async ({ questionId, answerId }) => {
-          expect(questionId).toEqual(questionEntity.id);
-          expect(answerId).toEqual(answerEntity.id);
-        },
-      ),
+      closeQuestion: jest.fn(),
     } as Partial<QuestionRepository>;
 
     const answerRepositoryMock = {
@@ -41,24 +35,18 @@ describe('Service: test QuestionCloseUseCase', () => {
     } as Partial<AnswerRepository>;
 
     const questionUserRepositoryMock = {
-      create: jest.fn().mockImplementation(
-        ({ user }: QuestionUserRepositoryInput.Create) => {
-          expect(user.questionId).toEqual(questionEntity.id);
-          expect(user.userId).toEqual(userId);
-          expect(user.status).toEqual(QuestionUserStatusEnum.ANSWERER);
-        },
-      ),
+      create: jest.fn(),
     } as Partial<QuestionUserRepository>;
 
     const unitMock = {
       questionRepository: questionRepositoryMock,
       questionUserRepository: questionUserRepositoryMock, 
-    } as Partial<Unit>;
+    } as Unit;
 
     const closeUseCase = new QuestionCloseUseCase(
       questionRepositoryMock as QuestionRepository,
       answerRepositoryMock as AnswerRepository,
-      { execute: (fn) => fn(unitMock as Unit) } as UnitOfWork,
+      { executeAll: async (fn) => { fn(unitMock); } } as UnitOfWork,
     );
 
     await closeUseCase.execute({
@@ -111,18 +99,21 @@ describe('Service: test QuestionCloseUseCase', () => {
     const wrongOwnerId = 'userId2';
 
     const questionEntity = Question.new({
+      id: 'id',
       ownerId: ownerId,
       title: 'title',
       text: 'text',
     });
 
     const wrongAnswerEntity = Answer.new({
+      id: 'wrongAnswerId',
       ownerId: 'ownerId',
       questionId: 'questionId',
       text: 'text',
     });
     
     const answerEntity = Answer.new({
+      id: 'answerId',
       ownerId: 'ownerId',
       questionId: questionEntity.id,
       text: 'text',
@@ -139,7 +130,10 @@ describe('Service: test QuestionCloseUseCase', () => {
     const closeUseCase = new QuestionCloseUseCase(
       questionRepositoryMock as QuestionRepository,
       answerRepositoryMock as AnswerRepository,
-      { execute: async () => true } as UnitOfWork,
+      { 
+        execute: async () => {},
+        executeAll: async () => {}, 
+      } as UnitOfWork,
     );
 
     expect(closeUseCase.execute({

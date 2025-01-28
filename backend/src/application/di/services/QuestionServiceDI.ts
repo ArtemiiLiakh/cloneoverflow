@@ -14,7 +14,7 @@ import {
   PrismaQuestionUserRepositoryDI,
   PrismaTransactionDI,
 } from '../repositories/PrismaRepositoriesDI';
-import { QuestionAddViewerService } from '@core/services/question/addViewer/service';
+import { QuestionGetVoterUseCase } from '@core/services/question';
 
 const CreateUseCaseDI = new QuestionCreateUseCase(
   PrismaTransactionDI,
@@ -31,20 +31,14 @@ const DeleteUseCaseDI = new QuestionDeleteUseCase(
 
 const GetAllUseCaseDI = new QuestionGetManyUseCase(PrismaQuestionRepositoryDI);
 
-const AddViewerServiceDI = new QuestionAddViewerService(
+const AddViewerUseCaseDI = new QuestionAddViewerUseCase(
+  PrismaQuestionRepositoryDI,
   PrismaQuestionUserRepositoryDI,
   PrismaTransactionDI,
 );
 
-const AddViewerUseCaseDI = new QuestionAddViewerUseCase(
-  PrismaQuestionRepositoryDI,
-  AddViewerServiceDI,
-);
-
 const GetUseCaseDI = new QuestionGetUseCase(
   PrismaQuestionRepositoryDI, 
-  PrismaQuestionUserRepositoryDI,
-  AddViewerUseCaseDI,
 );
 
 const QuestionVoteUseCaseDI = new QuestionVoteUseCase(
@@ -64,6 +58,10 @@ const QuestionCloseUseCaseDI = new QuestionCloseUseCase(
   PrismaTransactionDI,
 );
 
+const QuestionGetVoterUseCaseDI = new QuestionGetVoterUseCase(
+  PrismaQuestionUserRepositoryDI,
+);
+
 export const questionServiceFacadeDI = QuestionServiceFacade.new({
   questionCreateUseCase: CreateUseCaseDI,
   questionUpdateUseCase: UpdateUseCaseDI,
@@ -73,6 +71,8 @@ export const questionServiceFacadeDI = QuestionServiceFacade.new({
   questionOpenUseCase: QuestionOpenUseCaseDI,
   questionCloseUseCase: QuestionCloseUseCaseDI,
   questionVoteUseCase: QuestionVoteUseCaseDI,
+  questionAddViewerUseCase: AddViewerUseCaseDI,
+  questionGetVoterUseCase: QuestionGetVoterUseCaseDI,
 });
 
 export const questionUseCasesDI = {
@@ -85,4 +85,5 @@ export const questionUseCasesDI = {
   QuestionVoteUseCaseDI,
   QuestionOpenUseCaseDI,
   QuestionCloseUseCaseDI,
+  QuestionGetVoterUseCaseDI,
 };

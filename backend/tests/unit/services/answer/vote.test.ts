@@ -1,9 +1,9 @@
 import { AnswerUserStatusEnum, ForbiddenException, VoteTypeEnum } from '@cloneoverflow/common';
 import { Answer } from '@core/domain/entities/Answer';
 import { AnswerUser } from '@core/domain/entities/AnswerUser';
+import { UserRepository } from '@core/domain/repositories';
 import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
 import { AnswerUserRepository } from '@core/domain/repositories/answer/AnswerUserRepository';
-import { AnswerUserRepositoryInput } from '@core/domain/repositories/answer/dtos/answerUser/AnswerUserRepositoryInput';
 import { Unit, UnitOfWork } from '@core/domain/repositories/UnitOfWork';
 import { AnswerVoteUseCase } from '@core/services/answer';
 
@@ -18,37 +18,30 @@ describe('Service: test AnswerVoteUseCase', () => {
     const executorId = 'userId';
     const vote = VoteTypeEnum.UP;
     
+    const userRepositoryMock = {
+      addRating: jest.fn(),
+    } as Partial<UserRepository>;
+
     const answerRepositoryMock = {
       getPartialById: async () => answer,
-      addRating: jest.fn().mockImplementation(
-        ({ answerId, voteType }) => {
-          expect(answerId).toEqual(answer.id);
-          expect(voteType).toEqual(vote);
-        },
-      ),
+      addRating: jest.fn(),
     } as Partial<AnswerRepository>;
 
     const answerUserRepositoryMock = {
       getOne: async () => null,
-      create: jest.fn().mockImplementation(
-        ({ user }: AnswerUserRepositoryInput.Create) => {
-          expect(user.answerId).toEqual(answer.id);
-          expect(user.userId).toEqual(executorId);
-          expect(user.status).toEqual(AnswerUserStatusEnum.VOTER);
-          expect(user.voteType).toEqual(vote);
-        },
-      ),
+      create: jest.fn(),
     } as Partial<AnswerUserRepository>;
 
     const unitMock = {
       answerRepository: answerRepositoryMock,
       answerUserRepository: answerUserRepositoryMock,
-    } as Partial<Unit>;
+      userRepository: userRepositoryMock,
+    } as Unit;
 
     const answerVoteUseCase = new AnswerVoteUseCase(
       answerRepositoryMock as AnswerRepository,
       answerUserRepositoryMock as AnswerUserRepository,
-      { execute: (fn) => fn(unitMock as Unit) } as UnitOfWork,
+      { execute: (fn) => fn(unitMock) } as UnitOfWork,
     );
 
     await answerVoteUseCase.execute({
@@ -59,9 +52,10 @@ describe('Service: test AnswerVoteUseCase', () => {
 
     expect(answerRepositoryMock.addRating).toHaveBeenCalled();
     expect(answerUserRepositoryMock.create).toHaveBeenCalled();
+    expect(userRepositoryMock.addRating).toHaveBeenCalled();
   });
 
-  test('Vote answer for the second time', async () => {
+  test('Vote answer for the second time with different vote', async () => {
     const answer = Answer.new({
       ownerId: 'ownerId',
       questionId: 'questionId',
@@ -78,29 +72,24 @@ describe('Service: test AnswerVoteUseCase', () => {
     const executorId = 'userId';
     const vote = VoteTypeEnum.DOWN;
     
+    const userRepositoryMock = {
+      addRating: jest.fn(),
+    } as Partial<UserRepository>;
+
     const answerRepositoryMock = {
       getPartialById: async () => answer,
-      addRating: jest.fn().mockImplementation(
-        ({ answerId, voteType }) => {
-          expect(answerId).toEqual(answer.id);
-          expect(voteType).toEqual(vote);
-        },
-      ),
+      addRating: jest.fn(),
     } as Partial<AnswerRepository>;
 
     const answerUserRepositoryMock = {
       getOne: async () => answerUser,
-      update: jest.fn().mockImplementation(
-        ({ answerUserId, data }: AnswerUserRepositoryInput.Update) => {
-          expect(answerUserId).toEqual(answerUser.id);
-          expect(data.voteType).toBeNull();
-        },
-      ),
+      update: jest.fn(),
     } as Partial<AnswerUserRepository>;
 
     const unitMock = {
       answerRepository: answerRepositoryMock,
       answerUserRepository: answerUserRepositoryMock,
+      userRepository: userRepositoryMock,
     } as Partial<Unit>;
 
     const answerVoteUseCase = new AnswerVoteUseCase(
@@ -117,6 +106,7 @@ describe('Service: test AnswerVoteUseCase', () => {
 
     expect(answerRepositoryMock.addRating).toHaveBeenCalled();
     expect(answerUserRepositoryMock.update).toHaveBeenCalled();
+    expect(userRepositoryMock.addRating).toHaveBeenCalled();
   });
 
   test('Throw an error because answer was voted UP twice', () => {

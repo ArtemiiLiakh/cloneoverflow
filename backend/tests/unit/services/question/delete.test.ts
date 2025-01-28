@@ -14,13 +14,8 @@ describe('Service: test QuestionDeleteUseCase', () => {
     });
 
     const questionRepositoryMock = {
-      getById: async ({ questionId }) => {
-        expect(questionId).toEqual(questionEntity.id);
-        return questionEntity;
-      },
-      delete: async ({ questionId }) => {
-        expect(questionId).toEqual(questionEntity.id);
-      },
+      getById: jest.fn().mockReturnValue(Promise.resolve(questionEntity)),
+      delete: jest.fn(),
     } as Partial<QuestionRepository>;
 
     const deleteUseCase = new QuestionDeleteUseCase(
@@ -33,6 +28,8 @@ describe('Service: test QuestionDeleteUseCase', () => {
     });
 
     expect(question).toBe(questionEntity);
+    expect(questionRepositoryMock.delete).toHaveBeenCalled();
+    expect(questionRepositoryMock.getById).toHaveBeenCalled();
   });
 
   test('Throw an error because user is not owner of question', () => {

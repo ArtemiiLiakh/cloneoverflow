@@ -1,12 +1,10 @@
 import { OrderByEnum } from '@cloneoverflow/common';
-import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
+import { AnswerRepository, QuestionRepository, UserRepository } from '@core/domain/repositories';
 import { AnswerRepositoryOutput } from '@core/domain/repositories/answer/dtos/AnswerRepositoryOutput';
 import { QuestionRepositoryOutput } from '@core/domain/repositories/question/dtos/QuestionRepositoryOutput';
-import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
-import { UserRepository } from '@core/domain/repositories/user/UserRepository';
 import { UserGetProfileInput, UserGetProfileOutput } from './dto';
-import { IUserGetProfileUseCase } from './type';
 import { getProfileOutputMapper } from './mapper';
+import { IUserGetProfileUseCase } from './type';
 
 export class UserGetProfileUseCase implements IUserGetProfileUseCase {
   constructor (

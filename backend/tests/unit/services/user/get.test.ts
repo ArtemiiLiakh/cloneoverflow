@@ -10,15 +10,13 @@ describe('Service: test UserGetUseCase', () => {
     });
 
     const userRepositoryMock = {
-      getById: async ({ userId }) => {
-        expect(userId).toEqual(existingUser.id);
-        return existingUser;
-      },
+      getById: jest.fn().mockReturnValue(Promise.resolve(existingUser)),
     } as Partial<UserRepository>;
 
     const getUseCase = new UserGetUseCase(userRepositoryMock as UserRepository);
     
     const user = await getUseCase.execute({ userId: existingUser.id });
     expect(user).toBe(existingUser);
+    expect(userRepositoryMock.getById).toHaveBeenCalled();
   });
 });

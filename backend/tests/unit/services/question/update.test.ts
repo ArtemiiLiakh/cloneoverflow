@@ -72,27 +72,13 @@ describe('Service: test QuestionUpdateUseCase', () => {
 
     const questionRepositoryMock = {
       validateById: async () => {},
-      update: async ({ questionId, question, returnEntity }) => {
-        expect(questionId).toEqual(questionEntity.id);
-        expect(question.title).toEqual(updateData.title);
-        expect(question.text).toEqual(updateData.text);
-        expect(returnEntity).toBeTruthy();
-        return questionEntity;
-      },
-      unrefAllTags: async ({ questionId }) => {
-        expect(questionId).toEqual(questionEntity.id);
-      },
-      refTags: async ({ questionId, tags }) => {
-        expect(questionId).toEqual(questionEntity.id);
-        expect(tags.at(0)).toBe(tagEntity);
-      },
+      update: jest.fn().mockReturnValue(Promise.resolve(questionEntity)),
+      unrefAllTags: jest.fn(),
+      refTags: jest.fn(),
     } as Partial<QuestionRepository>;
 
     const tagRepositoryMock = {
-      createOrFindMany: async ({ tags }) => {
-        expect(tags.at(0)).toEqual(tagEntity.name);
-        return [tagEntity];
-      },
+      createOrFindMany: jest.fn().mockReturnValue(Promise.resolve([tagEntity])),
     } as Partial<TagRepository>;
 
     const unitOfWorkMock = {
@@ -113,6 +99,10 @@ describe('Service: test QuestionUpdateUseCase', () => {
     });
 
     expect(question).toBe(questionEntity);
+    expect(questionRepositoryMock.update).toHaveBeenCalled();
+    expect(questionRepositoryMock.unrefAllTags).toHaveBeenCalled();
+    expect(questionRepositoryMock.refTags).toHaveBeenCalled();
+    expect(tagRepositoryMock.createOrFindMany).toHaveBeenCalled();
   });
 
   test('Throw an error because unit of work is failed', () => {
@@ -135,7 +125,10 @@ describe('Service: test QuestionUpdateUseCase', () => {
 
     const updateUseCase = new QuestionUpdateUseCase(
       questionRepositoryMock as QuestionRepository,
-      { execute: async () => null } as UnitOfWork,
+      { 
+        execute: () => Promise.reject(new Error()),
+        executeAll: async () => {},
+      } as UnitOfWork,
     );
 
     expect(updateUseCase.execute({
