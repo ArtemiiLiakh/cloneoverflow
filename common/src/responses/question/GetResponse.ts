@@ -1,6 +1,3 @@
-import { VoteTypeEnum } from '@enums/VoteType';
-import { AnswerGetResponse } from '@responses/answer/GetResponse';
-
 export interface QuestionGetResponse {
   id: string;
   owner: {
@@ -16,6 +13,5 @@ export interface QuestionGetResponse {
   isClosed: boolean;
   createdAt: Date;
   updatedAt: Date;
-  voteType?: VoteTypeEnum | null;
   tags?: string[];
 }

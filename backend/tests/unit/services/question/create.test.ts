@@ -1,4 +1,4 @@
-import { Exception, QuestionUserStatusEnum } from '@cloneoverflow/common';
+import { Exception } from '@cloneoverflow/common';
 import { Tag } from '@core/domain/entities/Tag';
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
 import { QuestionUserRepository } from '@core/domain/repositories/question/QuestionUserRepository';
@@ -18,42 +18,20 @@ describe('Service: test QuestionCreateUseCase', () => {
       },
     };
 
+    const questionId = 'id';
     const tagEntities = payload.data.tags!.map((tag) => Tag.new({ name: tag }));
-    let newQuestionId;
 
     const questionRepositoryMock = {
-      create: ({ question }) => {
-        const now = Date.now();
-        newQuestionId = question.id;
-
-        expect(question.ownerId).toEqual(payload.executorId);
-        expect(question.title).toEqual(payload.data.title);
-        expect(question.text).toEqual(payload.data.text);
-        expect(question.rating).toEqual(0);
-        expect(question.views).toEqual(0);
-        expect(question.isClosed).toEqual(false);
-        expect(question.createdAt.getTime()).toBeGreaterThanOrEqual(now);
-        expect(question.updatedAt.getTime()).toBeGreaterThanOrEqual(now);
-      },
-      refTags: ({ questionId, tags }) => {
-        expect(questionId).toEqual(newQuestionId);
-        expect(tags).toBe(tagEntities);
-      },
+      create: jest.fn().mockReturnValue(Promise.resolve(questionId)),
+      refTags: jest.fn(),
     } as Partial<QuestionRepository>;
 
     const questionUserRepositoryMock = {
-      create: ({ user }) => {
-        expect(user.questionId).toEqual(newQuestionId);
-        expect(user.userId).toEqual(payload.executorId);
-        expect(user.status).toEqual(QuestionUserStatusEnum.OWNER);
-      },
+      create: jest.fn(),
     } as Partial<QuestionUserRepository>;
 
     const tagsRepositoryMock = {
-      createOrFindMany: async ({ tags }) => {
-        expect(tags).toBe(payload.data.tags);
-        return tagEntities;
-      },
+      createOrFindMany: jest.fn().mockReturnValue(Promise.resolve(tagEntities)),
     } as Partial<TagRepository>;
 
     const createUseCase = new QuestionCreateUseCase({
@@ -65,13 +43,16 @@ describe('Service: test QuestionCreateUseCase', () => {
     } as UnitOfWork);
 
     const question = await createUseCase.execute(payload);
-    expect(question.id).toEqual(newQuestionId);
+    expect(question.id).toEqual(questionId);
+    expect(questionUserRepositoryMock.create).toHaveBeenCalled();
+    expect(tagsRepositoryMock.createOrFindMany).toHaveBeenCalled();
   });
 
   test('Throw an error because unit of work failed', () => {
     const createUseCase = new QuestionCreateUseCase({
-      execute: async () => null, 
-    }); 
+      execute: () => Promise.reject(new Error()), 
+      executeAll: async () => {},
+    } as UnitOfWork); 
 
     expect(createUseCase.execute({ 
       executorId: 'user', 

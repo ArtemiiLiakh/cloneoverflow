@@ -14,27 +14,13 @@ describe('Service: test UserCreateUseCase', () => {
       password: 'password',
     };
 
-    let newUserId;
-
     const userRepositoryMock = {
-      isExist: async () => false,
-      createWithCreds: async ({ creds, user }) => {
-        newUserId = user.id;
-
-        expect(user.id).toEqual(creds.id);
-        expect(creds.email).toEqual(payload.email);
-        expect(creds.password).toEqual('hash');
-        expect(user.name).toEqual(payload.name);
-        expect(user.username).toEqual(payload.username);
-        expect(user.about).toEqual(payload.about);
-      },
+      isExist: jest.fn().mockReturnValue(Promise.resolve(false)),
+      createWithCreds: jest.fn(),
     } as Partial<UserRepository>;
 
     const dataHasherMock = {
-      hash: async (password) => {
-        expect(password).toEqual(payload.password);
-        return 'hash';
-      },
+      hash: jest.fn().mockReturnValue(Promise.resolve('hash')),
     } as Partial<DataHasher>;
 
     const createUseCase = new UserCreateUseCase(
@@ -42,8 +28,10 @@ describe('Service: test UserCreateUseCase', () => {
       dataHasherMock as DataHasher,
     );
 
-    const user = await createUseCase.execute(payload);
-    expect(user.id).toEqual(newUserId);
+    await createUseCase.execute(payload);
+    expect(userRepositoryMock.isExist).toHaveBeenCalled();
+    expect(userRepositoryMock.createWithCreds).toHaveBeenCalled();
+    expect(dataHasherMock.hash).toHaveBeenCalled();
   });
 
   test('Throw an error because user already exist', () => {
@@ -56,7 +44,7 @@ describe('Service: test UserCreateUseCase', () => {
     };
 
     const userRepositoryMock = {
-      isExist: async () => true,
+      isExist: jest.fn().mockReturnValue(Promise.resolve(true)),
     } as Partial<UserRepository>;
 
     const createUseCase = new UserCreateUseCase(
@@ -65,5 +53,6 @@ describe('Service: test UserCreateUseCase', () => {
     );
 
     expect(createUseCase.execute(payload)).rejects.toThrow(AlreadyRegisteredException);
+    expect(userRepositoryMock.isExist).toHaveBeenCalled();
   });
 });

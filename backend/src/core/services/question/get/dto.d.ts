@@ -1,9 +1,7 @@
 import { Question } from '@core/domain/entities/Question';
-import { QuestionUser } from '@core/domain/entities/QuestionUser';
 import { Tag } from '@core/domain/entities/Tag';
 
 export type QuestionGetInput = {
-  executorId?: string,
   questionId: string, 
 };
 
@@ -16,5 +14,4 @@ export type QuestionGetOutput = {
     name: string,
     rating: number,
   } | null,
-  voter?: QuestionUser,
 };

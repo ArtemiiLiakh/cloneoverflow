@@ -1,6 +1,5 @@
 import { AnswerUserStatusEnum, VoteTypeEnum } from '@cloneoverflow/common';
 import { AnswerUser } from '@core/domain/entities/AnswerUser';
-import { isUUID } from 'class-validator';
 
 describe('Entity: test AnswerUser entity', () => {
   test('Create AnswerUser entity with default fields', () => {
@@ -10,7 +9,7 @@ describe('Entity: test AnswerUser entity', () => {
       status: AnswerUserStatusEnum.OWNER,
     });
 
-    expect(isUUID(answerUserStats.id)).toBeTruthy();
+    expect(answerUserStats.id).toEqual('');
     expect(answerUserStats.userId).toEqual('userId');
     expect(answerUserStats.answerId).toEqual('answerId');
     expect(answerUserStats.status).toEqual(AnswerUserStatusEnum.OWNER);

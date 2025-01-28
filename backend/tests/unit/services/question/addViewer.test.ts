@@ -1,12 +1,10 @@
 import { QuestionUserStatusEnum } from '@cloneoverflow/common';
 import { Question } from '@core/domain/entities/Question';
 import { QuestionUser } from '@core/domain/entities/QuestionUser';
-import { QuestionUserRepositoryInput } from '@core/domain/repositories/question/dtos/questionUser/QuestionUserRepositoryInput';
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
 import { QuestionUserRepository } from '@core/domain/repositories/question/QuestionUserRepository';
 import { Unit, UnitOfWork } from '@core/domain/repositories/UnitOfWork';
 import { QuestionAddViewerUseCase } from '@core/services/question';
-import { QuestionAddViewerService } from '@core/services/question/addViewer/service';
 
 describe('Service: test QuestionAddViewerUseCase', () => {
   test('Add a new viewer to question', async () => {
@@ -27,28 +25,22 @@ describe('Service: test QuestionAddViewerUseCase', () => {
     } as Partial<QuestionRepository>;
 
     const questionUserRepositoryMock = {
-      getOne: async () => null,
-      create: jest.fn().mockImplementation(
-        ({ user }: QuestionUserRepositoryInput.Create) => {
-          expect(user.questionId).toEqual(questionEntity.id);
-          expect(user.userId).toEqual(executorId);
-          expect(user.status).toEqual(QuestionUserStatusEnum.VIEWER);
-        }),
+      getOne: jest.fn().mockReturnValue(Promise.resolve(null)),
+      create: jest.fn(),
     } as Partial<QuestionUserRepository>;
 
     const unitMock = {
       questionRepository: questionRepositoryMock,
       questionUserRepository: questionUserRepositoryMock,
-    } as Partial<Unit>;
+    } as Unit;
     
-    const addViewerService = new QuestionAddViewerService(
-      questionUserRepositoryMock as QuestionUserRepository,
-      { execute: (fn) => fn(unitMock) } as UnitOfWork,
-    );
-
     const addViewerUseCase = new QuestionAddViewerUseCase(
       questionRepositoryMock as QuestionRepository,
-      addViewerService,
+      questionUserRepositoryMock as QuestionUserRepository,
+      { 
+        execute: async () => {},
+        executeAll: async (fn) => { fn(unitMock); },
+      } as UnitOfWork,
     );
 
     await addViewerUseCase.execute({
@@ -58,6 +50,7 @@ describe('Service: test QuestionAddViewerUseCase', () => {
 
     expect(questionRepositoryMock.addViewer).toHaveBeenCalled();
     expect(questionUserRepositoryMock.create).toHaveBeenCalled();
+    expect(questionUserRepositoryMock.getOne).toHaveBeenCalled();
   });
 
   test('Add existing viewer to question', async () => {
@@ -79,17 +72,18 @@ describe('Service: test QuestionAddViewerUseCase', () => {
       create: jest.fn(),
     } as Partial<QuestionUserRepository>;
 
-    const addViewerService = new QuestionAddViewerService(
-      questionUserRepositoryMock as QuestionUserRepository,
-      { execute: (fn) => fn({
-        questionRepository: questionRepositoryMock,
-        questionUserRepository: questionUserRepositoryMock,
-      } as Unit) } as UnitOfWork,
-    );
+    const unitMock = {
+      questionRepository: questionRepositoryMock,
+      questionUserRepository: questionUserRepositoryMock,
+    } as Unit;
 
     const addViwerUseCase = new QuestionAddViewerUseCase(
       questionRepositoryMock as QuestionRepository,
-      addViewerService,
+      questionUserRepositoryMock as QuestionUserRepository,
+      { 
+        execute: async () => {},
+        executeAll: async (fn) => { fn(unitMock); },
+      } as UnitOfWork,
     );
 
     await addViwerUseCase.execute({

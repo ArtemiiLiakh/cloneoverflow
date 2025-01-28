@@ -21,6 +21,5 @@ export function AnswerGetMapperOutput (answer: AnswerGetOutput): AnswerGetRespon
       rate: answer.question.rating,
       isClosed: answer.question.isClosed,
     },
-    voteType: answer.voter?.voteType,
   };
 }

@@ -105,6 +105,8 @@ model QuestionUser {
   status            UserQuestionStatus    @default(OWNER)
   voteType          VoteType?             @map("vote_type")
 
+  @@index([userId])
+  @@index([questionId])
   @@map("question_user_stats")
 }
 

@@ -24,15 +24,8 @@ describe('Service: test UserGetUseCase', () => {
     };
 
     const userRepositoryMock = {
-      isExist: async () => false,
-      update: async ({ userId, user, returnEntity }) => {
-        expect(userId).toEqual(executorId);
-        expect(user.name).toEqual(payload.data.name);
-        expect(user.username).toEqual(payload.data.username);
-        expect(user.about).toEqual(payload.data.about);
-        expect(returnEntity).toBeTruthy();
-        return userEntity;
-      },
+      isExist: jest.fn().mockResolvedValue(Promise.resolve(false)),
+      update: jest.fn().mockResolvedValue(Promise.resolve(userEntity)),
     } as Partial<UserRepository>;
 
     const updateUseCase = new UserUpdateUseCase(
@@ -41,6 +34,8 @@ describe('Service: test UserGetUseCase', () => {
 
     const updatedUser = await updateUseCase.execute(payload);
     expect(updatedUser).toBe(userEntity);
+    expect(userRepositoryMock.isExist).toHaveBeenCalled();
+    expect(userRepositoryMock.update).toHaveBeenCalled();
   });
 
   test('Throw an error because username is already exist and it belongs to another user', () => {
@@ -59,12 +54,13 @@ describe('Service: test UserGetUseCase', () => {
     };
 
     const userRepositoryMock = {
-      isExist: async () => true,
+      isExist: jest.fn().mockResolvedValue(Promise.resolve(true)),
     } as Partial<UserRepository>;
 
     const updateUseCase = new UserUpdateUseCase(
       userRepositoryMock as UserRepository,
     );
     expect(updateUseCase.execute(payload)).rejects.toThrow(BadBodyException);
+    expect(userRepositoryMock.isExist).toHaveBeenCalled();
   });
 });

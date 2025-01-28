@@ -19,6 +19,7 @@ export class QuestionCloseUseCase implements IQuestionCloseUseCase {
     const question = await this.questionRepository.getPartialById({ 
       questionId,
       select: {
+        id: true,
         ownerId: true,
         isClosed: true,
       },
@@ -37,7 +38,7 @@ export class QuestionCloseUseCase implements IQuestionCloseUseCase {
       select: { questionId: true },
     });
     
-    if (answer.questionId !== questionId) {
+    if (answer.questionId !== question.id) {
       throw new BadBodyException('Wrong answer id');
     }
 

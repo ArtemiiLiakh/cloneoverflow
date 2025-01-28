@@ -1,15 +1,19 @@
+import { QuestionAddViewerInput, QuestionAddViewerOutput } from '@core/services/question/addViewer/dto';
 import { QuestionCloseInput, QuestionCloseOutput } from '@core/services/question/close/dto';
 import { QuestionCreateInput, QuestionCreateOutput } from '@core/services/question/create/dto';
 import { QuestionDeleteInput, QuestionDeleteOutput } from '@core/services/question/delete/dto';
 import { QuestionGetInput, QuestionGetOutput } from '@core/services/question/get/dto';
 import { QuestionGetManyInput, QuestionGetManyOutput } from '@core/services/question/getMany/dto';
+import { QuestionGetVoterInput, QuestionGetVoterOutput } from '@core/services/question/getVoter/dto';
 import { QuestionOpenInput, QuestionOpenOutput } from '@core/services/question/open/dto';
 import {
+  IQuestionAddViewerUseCase,
   IQuestionCloseUseCase,
   IQuestionCreateUseCase,
   IQuestionDeleteUseCase,
   IQuestionGetManyUseCase,
   IQuestionGetUseCase,
+  IQuestionGetVoterUseCase,
   IQuestionOpenUseCase,
   IQuestionUpdateUseCase,
   IQuestionVoteUseCase,
@@ -27,6 +31,8 @@ export class QuestionServiceFacade {
     private questionVoteUseCase: IQuestionVoteUseCase,
     private questionOpenUseCase: IQuestionOpenUseCase,
     private questionCloseUseCase: IQuestionCloseUseCase,
+    private questionAddViewerUseCase: IQuestionAddViewerUseCase,
+    private questionGetVoterUseCase: IQuestionGetVoterUseCase,
   ) {}
 
   static new ({
@@ -38,6 +44,8 @@ export class QuestionServiceFacade {
     questionVoteUseCase,
     questionOpenUseCase,
     questionCloseUseCase,
+    questionAddViewerUseCase,
+    questionGetVoterUseCase,
   }: {
     questionCreateUseCase: IQuestionCreateUseCase,
     questionUpdateUseCase: IQuestionUpdateUseCase,
@@ -47,6 +55,8 @@ export class QuestionServiceFacade {
     questionVoteUseCase: IQuestionVoteUseCase,
     questionOpenUseCase: IQuestionOpenUseCase,
     questionCloseUseCase: IQuestionCloseUseCase,
+    questionAddViewerUseCase: IQuestionAddViewerUseCase,
+    questionGetVoterUseCase: IQuestionGetVoterUseCase,
   }) {
     return new QuestionServiceFacade(    
       questionCreateUseCase,
@@ -57,6 +67,8 @@ export class QuestionServiceFacade {
       questionVoteUseCase,
       questionOpenUseCase,
       questionCloseUseCase,
+      questionAddViewerUseCase,
+      questionGetVoterUseCase,
     );
   }
 
@@ -90,5 +102,13 @@ export class QuestionServiceFacade {
 
   close (payload: QuestionCloseInput): Promise<QuestionCloseOutput> {
     return this.questionCloseUseCase.execute(payload);
+  }
+
+  addViewer (payload: QuestionAddViewerInput): Promise<QuestionAddViewerOutput> {
+    return this.questionAddViewerUseCase.execute(payload);
+  }
+
+  getVoter (payload: QuestionGetVoterInput): Promise<QuestionGetVoterOutput> {
+    return this.questionGetVoterUseCase.execute(payload);
   }
 }

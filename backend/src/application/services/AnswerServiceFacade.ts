@@ -2,6 +2,8 @@ import { AnswerCreateInput, AnswerCreateOutput } from '@core/services/answer/cre
 import { AnswerDeleteInput, AnswerDeleteOutput } from '@core/services/answer/delete/dto';
 import { AnswerGetInput, AnswerGetOutput } from '@core/services/answer/get/dto';
 import { AnswerGetManyInput, AnswerGetManyOutput } from '@core/services/answer/getMany/dto';
+import { AnswerGetVoterInput, AnswerGetVoterOutput } from '@core/services/answer/getVoter/dto';
+import { IAnswerGetVoterUseCase } from '@core/services/answer/getVoter/type';
 import {
   IAnswerCreateUseCase,
   IAnswerDeleteUseCase,
@@ -21,6 +23,7 @@ export class AnswerServiceFacade {
     private answerGetUseCase: IAnswerGetUseCase,
     private answerGetAllUseCase: IAnswerGetManyUseCase,
     private answerVoteUseCase: IAnswerVoteUseCase,
+    private answerGetVoterUseCase: IAnswerGetVoterUseCase,
   ) {}
 
   static new ({
@@ -29,7 +32,8 @@ export class AnswerServiceFacade {
     answerDeleteUseCase,
     answerGetUseCase,
     answerGetAllUseCase,
-    answerVoteUseCase,    
+    answerVoteUseCase,
+    answerGetVoterUseCase,
   }: {
     answerCreateUseCase: IAnswerCreateUseCase,
     answerUpdateUseCase: IAnswerUpdateUseCase,
@@ -37,6 +41,7 @@ export class AnswerServiceFacade {
     answerGetUseCase: IAnswerGetUseCase,
     answerGetAllUseCase: IAnswerGetManyUseCase,
     answerVoteUseCase: IAnswerVoteUseCase,
+    answerGetVoterUseCase: IAnswerGetVoterUseCase,
   }) {
     return new AnswerServiceFacade(
       answerCreateUseCase,
@@ -44,7 +49,8 @@ export class AnswerServiceFacade {
       answerDeleteUseCase,
       answerGetUseCase,
       answerGetAllUseCase,
-      answerVoteUseCase,      
+      answerVoteUseCase,
+      answerGetVoterUseCase,
     );
   }
 
@@ -70,5 +76,9 @@ export class AnswerServiceFacade {
 
   vote (payload: AnswerVoteInput): Promise<AnswerVoteOutput> {
     return this.answerVoteUseCase.execute(payload);
+  }
+
+  getVoter (payload: AnswerGetVoterInput): Promise<AnswerGetVoterOutput> {
+    return this.answerGetVoterUseCase.execute(payload);
   }
 }

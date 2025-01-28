@@ -23,12 +23,12 @@ export const QuestionWhereAdapter = (where?: QuestionWhere): Prisma.QuestionWher
       username: StringWhereAdapter(where.owner?.username),
       name: StringWhereAdapter(where.owner?.name),
     },
-    tags: !where.tags ? undefined : {
+    tags: where.tags ? {
       some: {
         id: BasicNumberWhereAdapter(parseNumberOrArray(where.tags.id)),
         name: StringWhereAdapter(where.tags.name),
       },
-    },
+    } : undefined,
     OR: where.OR?.map((item) => QuestionWhereAdapter(item)),
     AND: where.AND?.map((item) => QuestionWhereAdapter(item)),
   };

@@ -24,7 +24,6 @@ export default tseslint.config(
       "space-before-function-paren": "error",
       semi: "error",
       quotes: ["error", "single"],
-      "brace-style": ["error", "stroustrup"],
       "object-curly-spacing": ["error", "always"],
       "no-extra-parens": "error",
       "func-call-spacing": "error",

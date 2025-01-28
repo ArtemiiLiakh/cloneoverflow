@@ -1,16 +1,7 @@
-import { AnswerUser } from '@core/domain/entities/AnswerUser';
 import { AnswerRepositoryOutput } from '@core/domain/repositories/answer/dtos/AnswerRepositoryOutput';
 import { AnswerGetOutput } from './dto';
 
-interface MapperProps {
-  answer: AnswerRepositoryOutput.GetAnswer,
-  voter?: AnswerUser,
-}
-
-export const getOutputMapper = ({
-  answer,
-  voter,
-}: MapperProps): AnswerGetOutput => ({
+export const getOutputMapper = (answer: AnswerRepositoryOutput.GetAnswer): AnswerGetOutput => ({
   entity: answer.entity,
   owner: answer.owner ? {
     id: answer.owner.id,
@@ -25,5 +16,4 @@ export const getOutputMapper = ({
     rating: answer.question!.rating,
     isClosed: answer.question!.isClosed,
   },
-  voter,
 });

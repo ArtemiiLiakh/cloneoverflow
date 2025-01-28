@@ -7,6 +7,7 @@ import {
   AnswerCreateResponse,
   AnswerGetAllResponse,
   AnswerGetResponse,
+  AnswerGetVoterResponse,
   AnswersGetAllDTO,
   AnswerUpdateDTO,
   AnswerUpdateResponse,
@@ -100,5 +101,23 @@ export class AnswerController {
     });
 
     res.send({ message: 'ok' });
+  }
+
+  async getVoter (
+    { params, executor }: WithAuth & WithParams<{ answerId: string }>,
+    res: CoreResponse<AnswerGetVoterResponse>,
+  ) {
+    const voter = await this.answerService.getVoter({
+      answerId: params.answerId,
+      userId: executor.userId,
+    });
+
+    res.send({
+      voter: voter ? {
+        answerId: voter.answerId,
+        userId: voter.userId,
+        voteType: voter.voteType,
+      } : null,
+    });
   }
 }

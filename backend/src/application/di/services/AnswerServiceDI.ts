@@ -11,6 +11,7 @@ import {
   PrismaQuestionRepositoryDI,
   PrismaTransactionDI,
 } from '../repositories/PrismaRepositoriesDI';
+import { AnswerGetVoterUseCase } from '@core/services/answer/getVoter/usercase';
 
 const CreateUseCaseDI = new AnswerCreateUseCase(
   PrismaQuestionRepositoryDI, 
@@ -27,18 +28,19 @@ const UpdateUseCaseDI = new AnswerUpdateUseCase(
 
 const GetUseCaseDI = new AnswerGetUseCase(
   PrismaAnswerRepositoryDI,
-  PrismaAnswerUserRepositoryDI,
 );
 
 const GetAllUseCaseDI = new AnswerGetManyUseCase(
   PrismaAnswerRepositoryDI,
 );
 
-const AnswerVoteUseCaseDI = new AnswerVoteUseCase(
+const VoteUseCaseDI = new AnswerVoteUseCase(
   PrismaAnswerRepositoryDI, 
   PrismaAnswerUserRepositoryDI,
   PrismaTransactionDI,
 );
+
+const GetVoterUseCaseDI = new AnswerGetVoterUseCase(PrismaAnswerUserRepositoryDI);
 
 export const answerServiceFacadeDI = AnswerServiceFacade.new({
   answerCreateUseCase: CreateUseCaseDI,
@@ -46,7 +48,8 @@ export const answerServiceFacadeDI = AnswerServiceFacade.new({
   answerDeleteUseCase: DeleteUseCaseDI,
   answerGetUseCase: GetUseCaseDI,
   answerGetAllUseCase: GetAllUseCaseDI,
-  answerVoteUseCase: AnswerVoteUseCaseDI,
+  answerVoteUseCase: VoteUseCaseDI,
+  answerGetVoterUseCase: GetVoterUseCaseDI,
 });
 
 export const answerUseCaseDI = {
@@ -55,5 +58,5 @@ export const answerUseCaseDI = {
   UpdateUseCaseDI,
   GetUseCaseDI,
   GetAllUseCaseDI,
-  AnswerVoteUseCaseDI,
+  VoteUseCaseDI,
 };

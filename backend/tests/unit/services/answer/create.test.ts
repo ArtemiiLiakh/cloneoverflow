@@ -1,5 +1,3 @@
-import { AnswerUserStatusEnum } from '@cloneoverflow/common';
-import { Answer } from '@core/domain/entities/Answer';
 import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
 import { AnswerUserRepository } from '@core/domain/repositories/answer/AnswerUserRepository';
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
@@ -15,27 +13,18 @@ describe('Service: test AnswerCreateUseCase', () => {
       text: 'text',
     } as AnswerCreateInput;
 
-    let answerEntity: Answer | null = null;
+    const answerId = 'id';
 
     const questionRepositoryMock = {
-      validateById: async () => {},
+      validateById: jest.fn(),
     } as Partial<QuestionRepository>;
 
     const answerRepositoryMock = {
-      create: async ({ answer }) => {
-        expect(answer.text).toEqual(inputData.text);
-        expect(answer.questionId).toEqual(inputData.questionId);
-        expect(answer.ownerId).toEqual(inputData.executorId);
-        answerEntity = answer;
-      },
+      create: jest.fn().mockReturnValue(Promise.resolve(answerId)),
     } as Partial<AnswerRepository>;
 
     const answerUserRepositoryMock = {
-      create: async ({ user }) => {
-        expect(user.answerId).toEqual(answerEntity?.id);
-        expect(user.userId).toEqual(inputData.executorId);
-        expect(user.status).toEqual(AnswerUserStatusEnum.OWNER);
-      },
+      create: jest.fn(),
     } as Partial<AnswerUserRepository>;
 
     const unitOfWorkMock = {
@@ -51,7 +40,15 @@ describe('Service: test AnswerCreateUseCase', () => {
     );
 
     const answer = await createUseCase.execute(inputData);
-    expect(answer).toBe(answerEntity);
+
+    expect(questionRepositoryMock.validateById).toHaveBeenCalled();
+    expect(answerRepositoryMock.create).toHaveBeenCalled();
+    expect(answerUserRepositoryMock.create).toHaveBeenCalled();
+
+    expect(answer.id).toBe(answerId);
+    expect(answer.questionId).toBe(inputData.questionId);
+    expect(answer.ownerId).toBe(inputData.executorId);
+    expect(answer.text).toBe(inputData.text);
   });
 
   test('Throw an error because unit of work failed', () => {
@@ -61,7 +58,10 @@ describe('Service: test AnswerCreateUseCase', () => {
 
     const createUseCase = new AnswerCreateUseCase(
       questionRepositoryMock as QuestionRepository,
-      { execute: async () => null } as UnitOfWork, 
+      { 
+        execute: () => Promise.reject(new Error()),
+        executeAll: async () => {}, 
+      } as UnitOfWork, 
     ); 
 
     expect(createUseCase.execute({ 
