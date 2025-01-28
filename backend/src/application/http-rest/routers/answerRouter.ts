@@ -67,10 +67,24 @@ answerRouter.delete('/:answerId',
 answerRouter.post('/:answerId/vote', 
   JwtTokenValidatorDI.validateAccess(), 
   AuthUserValidatorDI.validate(),
-  validateRequest({ 
+  validateRequest({
+    params: {
+      answerId: ValidateNumber,
+    },
     body: VoteDTO,
   }),
   AdaptController(controller.voteAnswer.bind(controller)),
+);
+
+answerRouter.get('/:answerId/voter', 
+  JwtTokenValidatorDI.validateAccess(), 
+  AuthUserValidatorDI.validate(),
+  validateRequest({
+    params: {
+      answerId: ValidateNumber,
+    },
+  }),
+  AdaptController(controller.getVoter.bind(controller)),
 );
 
 export { answerRouter };

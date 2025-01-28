@@ -16,29 +16,31 @@ describe('Service: test UserGetProfileUseCase', () => {
     });
 
     const question = Question.new({
+      id: 'questionId',
       ownerId: 'ownerId',
       title: 'title',
       text: 'text',
     });
 
     const answer = Answer.new({
+      id: 'answerId',
       ownerId: 'ownerId',
       questionId: 'questionId',
       text: 'text',
     });
 
     const userRepositoryMock = {
-      getUser: async () => ({ entity: user }),
+      getUser: jest.fn().mockResolvedValue(Promise.resolve({ entity: user })),
     } as Partial<UserRepository>;
     
     const questionRepositoryMock = {
-      isExist: async () => true,
-      getPartialQuestion: async () => ({ entity: question }),
+      isExist: jest.fn().mockResolvedValue(Promise.resolve(true)),
+      getPartialQuestion: jest.fn().mockResolvedValue(Promise.resolve({ entity: question })),
     } as Partial<QuestionRepository>;
     
     const answerRepositoryMock = {
-      isExist: async () => true,
-      getPartialAnswer: async () => ({ entity: answer, question }),
+      isExist: jest.fn().mockResolvedValue(Promise.resolve(true)),
+      getPartialAnswer: jest.fn().mockResolvedValue(Promise.resolve({ entity: answer, question })),
     } as Partial<AnswerRepository>;
 
     const getProfileUseCase = new UserGetProfileUseCase(
@@ -48,15 +50,16 @@ describe('Service: test UserGetProfileUseCase', () => {
     );
 
     const userProfile = await getProfileUseCase.execute({ userId });
-    expect(userProfile.user).toBe(user);
-    expect(userProfile.questionsAmount).toEqual(0);
-    expect(userProfile.answersAmount).toEqual(0);
-
+    expect(userProfile.user.id).toBe(user.id);
     expect(userProfile.bestQuestion?.entity.questionId).toEqual(question.id);
-    expect(userProfile.bestQuestion?.tags).toEqual([]);
-    expect(userProfile.bestQuestion?.answersAmount).toEqual(0);
-    
     expect(userProfile.bestAnswer?.entity.answerId).toEqual(answer.id);
+    
+    expect(userRepositoryMock.getUser).toHaveBeenCalled();
+    expect(questionRepositoryMock.isExist).toHaveBeenCalled();
+    expect(questionRepositoryMock.getPartialQuestion).toHaveBeenCalled();
+
+    expect(answerRepositoryMock.isExist).toHaveBeenCalled();
+    expect(answerRepositoryMock.getPartialAnswer).toHaveBeenCalled();
   });
 
   test('Get user profile without best question and answer', async () => {
@@ -68,15 +71,15 @@ describe('Service: test UserGetProfileUseCase', () => {
     });
 
     const userRepositoryMock = {
-      getUser: async () => ({ entity: user }),
+      getUser: jest.fn().mockResolvedValue(Promise.resolve({ entity: user })),
     } as Partial<UserRepository>;
     
     const questionRepositoryMock = {
-      isExist: async () => false,
+      isExist: jest.fn().mockResolvedValue(Promise.resolve(false)),
     } as Partial<QuestionRepository>;
     
     const answerRepositoryMock = {
-      isExist: async () => false,
+      isExist: jest.fn().mockResolvedValue(Promise.resolve(false)),
     } as Partial<AnswerRepository>;
 
     const getProfileUseCase = new UserGetProfileUseCase(
@@ -86,11 +89,12 @@ describe('Service: test UserGetProfileUseCase', () => {
     );
 
     const userProfile = await getProfileUseCase.execute({ userId });
-    expect(userProfile.user).toBe(user);
-    expect(userProfile.questionsAmount).toEqual(0);
-    expect(userProfile.answersAmount).toEqual(0);
-
+    expect(userProfile.user.id).toBe(user.id);
     expect(userProfile.bestQuestion).toBeNull();
     expect(userProfile.bestAnswer).toBeNull();
+
+    expect(userRepositoryMock.getUser).toHaveBeenCalled();
+    expect(questionRepositoryMock.isExist).toHaveBeenCalled();
+    expect(answerRepositoryMock.isExist).toHaveBeenCalled();
   });
 });

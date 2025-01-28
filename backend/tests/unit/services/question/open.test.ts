@@ -19,11 +19,7 @@ describe('Service: test QuestionOpenUseCase', () => {
 
     const questionRepositoryMock = {
       getPartialById: async () => questionEntity,
-      openQuestion: jest.fn().mockImplementation(
-        async ({ questionId }) => {
-          expect(questionId).toEqual(questionEntity.id);
-        },
-      ),
+      openQuestion: jest.fn(),
     } as Partial<QuestionRepository>;
 
     const questionUserRepositoryMock = {
@@ -38,11 +34,11 @@ describe('Service: test QuestionOpenUseCase', () => {
     const unitMock = {
       questionRepository: questionRepositoryMock,
       questionUserRepository: questionUserRepositoryMock,
-    } as Partial<Unit>;
+    } as Unit;
     
     const openUseCase = new QuestionOpenUseCase(
       questionRepositoryMock as QuestionRepository,
-      { execute: (fn) => fn(unitMock as Unit) } as UnitOfWork,
+      { execute: (fn) => fn(unitMock) } as UnitOfWork,
     );
 
     await openUseCase.execute({

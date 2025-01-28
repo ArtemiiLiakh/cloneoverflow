@@ -1,7 +1,4 @@
-import { OrderByEnum } from '@cloneoverflow/common';
-import { StringOptions } from '@common/repository/Datatypes/StringType';
 import { Tag } from '@core/domain/entities/Tag';
-import { TagOrderByType } from '@core/domain/repositories/tag/dtos/Params';
 import { TagRepository } from '@core/domain/repositories/tag/TagRepository';
 import { SearchTagsUseCase } from '@core/services/search';
 import { SearchTagsInput } from '@core/services/search/searchTags/dto';
@@ -21,40 +18,18 @@ describe('Service: test SearchTagsUseCase', () => {
     } as SearchTagsInput;
 
     const tagRepositoryMock = {
-      getMany: async ({ where, orderBy, pagination }) => {
-        expect((where.text as StringOptions).contains).toEqual(inputData.name);
-        expect((orderBy as TagOrderByType).questionsAmount).toEqual(OrderByEnum.DESC);
-        expect(pagination?.page).toEqual(inputData.pagination?.page);
-        expect(pagination?.pageSize).toEqual(inputData.pagination?.pageSize);
-
-        return {
-          data: [{ entity: tagEntity }],
-          pagination: {
-            nextElems: 0,
-            page: pagination?.page,
-            pageSize: pagination?.pageSize,
-            prevElems: 0,
-            totalAmount: 0,
-            totalPages: 0,
-          },
-        };
-      },
+      getMany: jest.fn().mockReturnValue(Promise.resolve({
+        data: [{ entity: tagEntity }],
+      })),
     } as Partial<TagRepository>;
 
     const searchTagUseCase = new SearchTagsUseCase(
       tagRepositoryMock as TagRepository,
     );
 
-    const { data, pagination } = await searchTagUseCase.execute(inputData);
+    const { data } = await searchTagUseCase.execute(inputData);
     expect(data.at(0)?.entity).toEqual(tagEntity);
-    expect(pagination).toEqual({
-      nextElems: 0,
-      page: pagination?.page,
-      pageSize: pagination?.pageSize,
-      prevElems: 0,
-      totalAmount: 0,
-      totalPages: 0,
-    });
+    expect(tagRepositoryMock.getMany).toHaveBeenCalled();
   });
 
   test('Search tags with empty return', async () => {

@@ -153,7 +153,7 @@ export class PrismaQuestionRepository implements QuestionRepository {
   }
 
   async create (
-    { question, returnId: returnId }: QuestionRepositoryInput.Create,
+    { question, returnId }: QuestionRepositoryInput.Create,
   ): Promise<QuestionRepositoryOutput.Create> {
     const questionId = await this.prisma.question.create({
       data: {

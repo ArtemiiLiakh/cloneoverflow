@@ -10,11 +10,11 @@ export const TagWhereAdapter = (where?: TagWhere): Prisma.TagWhereInput => {
   return {
     id: BasicNumberWhereAdapter(parseNumberOrArray(where.tagId)),
     name: StringWhereAdapter(where.name),
-    questions: {
+    questions: where.questions ? {
       some: {
-        id: BasicNumberWhereAdapter(parseNumberOrArray(where.questions?.questionId)),
+        id: BasicNumberWhereAdapter(parseNumberOrArray(where.questions.questionId)),
       },
-    },
+    } : undefined,
     OR: where.OR?.map((item) => TagWhereAdapter(item)),
     AND: where.AND?.map((item) => TagWhereAdapter(item)),
   };

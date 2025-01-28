@@ -7,3 +7,4 @@ export * from './getMany/type';
 export * from './open/type';
 export * from './update/type';
 export * from './vote/type';
+export * from './getVoter/type';

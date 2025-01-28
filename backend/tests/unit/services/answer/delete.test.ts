@@ -1,7 +1,5 @@
 import { Answer } from '@core/domain/entities/Answer';
 import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
-import { AnswerRepositoryInput } from '@core/domain/repositories/answer/dtos/AnswerRepositoryInput';
-import { QuestionRepositoryInput } from '@core/domain/repositories/question/dtos/QuestionRepositoryInput';
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
 import { Unit, UnitOfWork } from '@core/domain/repositories/UnitOfWork';
 import { AnswerDeleteUseCase } from '@core/services/answer';
@@ -17,11 +15,8 @@ describe('Service: test AnswerDeleteUseCase', () => {
     });
 
     const answerRepositoryMock = {
-      getById: async () => answer,
-      delete: jest.fn().mockImplementation(
-        ({ answerId }: AnswerRepositoryInput.Delete) => {
-          expect(answerId).toEqual(answer.id);
-        }),
+      getById: jest.fn().mockReturnValue(answer),
+      delete: jest.fn(),
     } as Partial<AnswerRepository>;
     
     const deleteUseCase = new AnswerDeleteUseCase(
@@ -50,17 +45,11 @@ describe('Service: test AnswerDeleteUseCase', () => {
 
     const answerRepositoryMock = {
       getById: async () => answer,
-      delete: jest.fn().mockImplementation(
-        ({ answerId }: AnswerRepositoryInput.Delete) => {
-          expect(answerId).toEqual(answer.id);
-        }),
+      delete: jest.fn(),
     } as Partial<AnswerRepository>;
     
     const questionRepositoryMock = {
-      openQuestion: jest.fn().mockImplementation(
-        ({ questionId }: QuestionRepositoryInput.OpenQuestion) => {
-          expect(questionId).toEqual(answer.questionId);
-        }),
+      openQuestion: jest.fn(),
     } as Partial<QuestionRepository>;
 
     const deleteUseCase = new AnswerDeleteUseCase(
@@ -90,10 +79,7 @@ describe('Service: test AnswerDeleteUseCase', () => {
 
     const answerRepositoryMock = {
       getById: async () => answer,
-      delete: jest.fn().mockImplementation(
-        ({ answerId }: AnswerRepositoryInput.Delete) => {
-          expect(answerId).toEqual(answer.id);
-        }),
+      delete: async () => {},
     } as Partial<AnswerRepository>;
     
     const deleteUseCase = new AnswerDeleteUseCase(

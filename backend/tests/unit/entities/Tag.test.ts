@@ -1,5 +1,4 @@
 import { Tag } from '@core/domain/entities/Tag';
-import { isUUID } from 'class-validator';
 
 describe('Entity: test Tag entity', () => {
   test('Create Tag entity with default fields', () => {
@@ -7,7 +6,7 @@ describe('Entity: test Tag entity', () => {
       name: 'tag',
     });
 
-    expect(isUUID(tag.id)).toBeTruthy();
+    expect(tag.id).toEqual('');
     expect(tag.name).toEqual('tag');
   });
 

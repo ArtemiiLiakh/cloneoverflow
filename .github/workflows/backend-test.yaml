@@ -46,7 +46,7 @@ jobs:
       - name: Setup backend
         run: npm ci
       - name: Generate prisma models
-        run: npm run test:db:generate
+        run: npm run db:test:generate
       - name: Run build
         run: npm run build
   deploy:
@@ -67,6 +67,6 @@ jobs:
       - name: Setup backend
         run: npm ci
       - name: Generate prisma models
-        run: npm run test:db:generate
+        run: npm run db:test:generate
       - name: Run backend tests
-        run: npm run test:docker
+        run: npm run test

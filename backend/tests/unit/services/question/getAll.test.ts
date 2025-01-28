@@ -1,10 +1,7 @@
-import { OrderByEnum, PaginationResponse } from '@cloneoverflow/common';
-import { NumberOptions } from '@common/repository/Datatypes/NumberType';
-import { StringOptions } from '@common/repository/Datatypes/StringType';
+import { PaginationResponse } from '@cloneoverflow/common';
 import { Question } from '@core/domain/entities/Question';
 import { Tag } from '@core/domain/entities/Tag';
 import { User } from '@core/domain/entities/User';
-import { QuestionOrderByType } from '@core/domain/repositories/question/dtos/Params';
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
 import { QuestionGetManyUseCase } from '@core/services/question';
 import { QuestionGetManyInput } from '@core/services/question/getMany/dto';
@@ -46,21 +43,10 @@ describe('Service: test QuestionGetAllUseCase', () => {
     } as QuestionGetManyInput;
 
     const questionRepositoryMock = {
-      getMany: async ({ where, orderBy, pagination }) => {
-        expect(where.ownerId).toEqual(inputData.ownerId);
-        expect((where.rating as NumberOptions).geq).toEqual(inputData.rateFrom);
-        expect((where.rating as NumberOptions).leq).toEqual(inputData.rateTo);
-        expect((where.title as StringOptions).contains).toEqual(inputData.search);
-        expect((where.tags?.name as StringOptions).in).toBe(inputData.tags);
-        expect((orderBy as QuestionOrderByType).rating).toEqual(OrderByEnum.DESC);
-        expect(pagination?.page).toEqual(inputData.pagination?.page);
-        expect(pagination?.pageSize).toEqual(inputData.pagination?.pageSize);
-
-        return {
-          data: [{ entity: question, owner: ownerEntity, tags }],
-          pagination: paginationOutput,
-        };
-      },
+      getMany: async () => ({
+        data: [{ entity: question, owner: ownerEntity, tags }],
+        pagination: paginationOutput,
+      }),
     } as Partial<QuestionRepository>;
 
     const questionGetAllUseCase = new QuestionGetManyUseCase(

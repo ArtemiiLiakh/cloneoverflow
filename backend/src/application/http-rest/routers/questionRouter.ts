@@ -40,6 +40,30 @@ questionRouter.get(
 );
 
 questionRouter.post(
+  '/:questionId/viewer', 
+  JwtTokenValidatorDI.validateAccess(),
+  AuthUserValidatorDI.validate(),
+  validateRequest({
+    params: {
+      questionId: ValidateNumber,
+    },
+  }),
+  AdaptController(controller.addViewer.bind(controller)),
+);
+
+questionRouter.get(
+  '/:questionId/voter', 
+  JwtTokenValidatorDI.validateAccess(),
+  AuthUserValidatorDI.validate(),
+  validateRequest({
+    params: {
+      questionId: ValidateNumber,
+    },
+  }),
+  AdaptController(controller.getVoter.bind(controller)),
+);
+
+questionRouter.post(
   '/', 
   JwtTokenValidatorDI.validateAccess(),
   AuthUserValidatorDI.validate(),
@@ -74,7 +98,7 @@ questionRouter.delete(
   AdaptController(controller.delete.bind(controller)),
 );
 
-questionRouter.post(
+questionRouter.patch(
   '/:questionId/open',
   JwtTokenValidatorDI.validateAccess(),
   AuthUserValidatorDI.validate(),
@@ -86,7 +110,7 @@ questionRouter.post(
   AdaptController(controller.openQuestion.bind(controller)),
 );
 
-questionRouter.post(
+questionRouter.patch(
   '/:questionId/close',
   JwtTokenValidatorDI.validateAccess(),
   AuthUserValidatorDI.validate(),

@@ -1,5 +1,4 @@
 import { Answer } from '@core/domain/entities/Answer';
-import { isUUID } from 'class-validator';
 
 describe('Entity: test Answer entity', () => {
   test('Create Answer entity with default fields', () => {
@@ -11,7 +10,7 @@ describe('Entity: test Answer entity', () => {
       text: 'text',
     });
 
-    expect(isUUID(answer.id)).toBeTruthy();
+    expect(answer.id).toEqual('');
     expect(answer.ownerId).toEqual('ownerId');
     expect(answer.text).toEqual('text');
     expect(answer.rating).toEqual(0);

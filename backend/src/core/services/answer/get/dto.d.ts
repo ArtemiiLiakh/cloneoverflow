@@ -1,5 +1,4 @@
 import { Answer } from '@core/domain/entities/Answer';
-import { AnswerUser } from '@core/domain/entities/AnswerUser';
 
 export type AnswerGetInput = {
   executorId?: string,
@@ -21,5 +20,4 @@ export type AnswerGetOutput = {
     rating: number,
     isClosed: boolean,
   },
-  voter?: AnswerUser,
 };

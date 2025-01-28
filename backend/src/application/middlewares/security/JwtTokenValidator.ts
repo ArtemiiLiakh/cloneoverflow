@@ -8,12 +8,12 @@ import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { NextFunction, Response } from 'express';
 
-interface TokenDto {
+interface ValidatorPayload {
   tokenType: TokenType,
   optional?: boolean,
 }
 
-export class JwtTokenValidator implements MiddlewareValidator<TokenDto> {
+export class JwtTokenValidator implements MiddlewareValidator<ValidatorPayload> {
   constructor (
     private dataEncryptor: DataEncryptor,
   ) {}
@@ -21,7 +21,7 @@ export class JwtTokenValidator implements MiddlewareValidator<TokenDto> {
   validate ({
     tokenType,
     optional,
-  }: TokenDto) {
+  }: ValidatorPayload) {
     return async (req: ExpressRequest, res: Response, next: NextFunction) => {
       let token: string | undefined;        
       
