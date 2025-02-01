@@ -4,19 +4,19 @@ import { Constructor } from '@common/utils/classTypes';
 import { plainToInstance } from 'class-transformer';
 import { validate, ValidationError } from 'class-validator';
 import { NextFunction, Response } from 'express';
-import { FieldValidator } from '../../interfaces/security/FieldValidator';
+import { DataValidator } from '../../interfaces/security/DataValidator';
 
 interface RequestFields<P, Q, B> {
-  params?: Constructor<P> | Record<string, FieldValidator>;
-  query?: Constructor<Q> | Record<string, FieldValidator>;
-  body?: Constructor<B> | Record<string, FieldValidator>;
+  params?: Constructor<P> | Record<string, DataValidator>;
+  query?: Constructor<Q> | Record<string, DataValidator>;
+  body?: Constructor<B> | Record<string, DataValidator>;
 }
 
 export const validateRequest = <P, Q, B>(fields: RequestFields<P, Q, B>) => {
   return async (req: ExpressRequest, res: Response, next: NextFunction) => {
     for (const [key, validator] of Object.entries(fields)) {
       if (typeof validator === 'object') {
-        for (const [fieldKey, type] of Object.entries<FieldValidator>(validator)) {
+        for (const [fieldKey, type] of Object.entries<DataValidator>(validator)) {
           if (!type.validate(req[key][fieldKey])) {
             const error = new ValidationError();
 

@@ -1,10 +1,10 @@
-import { AnswerUserStatusEnum, Exception } from '@cloneoverflow/common';
+import { AnswerUserStatusEnum, Exception, NoEntityWithIdException } from '@cloneoverflow/common';
 import { Answer } from '@core/domain/entities/Answer';
 import { AnswerUser } from '@core/domain/entities/AnswerUser';
-import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
 import { UnitOfWork } from '@core/domain/repositories/UnitOfWork';
 import { AnswerCreateInput, AnswerCreateOutput } from './dto';
 import { IAnswerCreateUseCase } from './type';
+import { QuestionRepository } from '@core/domain/repositories';
 
 export class AnswerCreateUseCase implements IAnswerCreateUseCase {
   constructor (
@@ -15,7 +15,9 @@ export class AnswerCreateUseCase implements IAnswerCreateUseCase {
   async execute (
     { executorId, questionId, text }: AnswerCreateInput,
   ): Promise<AnswerCreateOutput> {
-    await this.questionRepository.validateById({ questionId });
+    if (!await this.questionRepository.isExist({ questionId })) {
+      throw new NoEntityWithIdException('Question');
+    }
 
     const newAnswer = Answer.new({
       ownerId: executorId,

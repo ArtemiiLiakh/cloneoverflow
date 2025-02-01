@@ -1,13 +1,16 @@
-import { AnswerUserStatusEnum, Exception, ForbiddenException } from '@cloneoverflow/common';
+import { AnswerUserStatusEnum, Exception, ForbiddenException, VoteTypeEnum } from '@cloneoverflow/common';
+import { UserRatingActions } from '@common/enums/UserRatingActions';
 import { AnswerUser } from '@core/domain/entities/AnswerUser';
 import { UnitOfWork } from '@core/domain/repositories';
 import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
 import { AnswerUserRepository } from '@core/domain/repositories/answer/AnswerUserRepository';
+import { IUserRatingValidator } from '@core/services/validators/types';
 import { AnswerVoteInput, AnswerVoteOutput } from './dto';
 import { IAnswerVoteUseCase } from './type';
 
 export class AnswerVoteUseCase implements IAnswerVoteUseCase {
   constructor (
+    private userRatingValidator: IUserRatingValidator,
     private answerRepository: AnswerRepository,
     private answerUserRepository: AnswerUserRepository,
     private unitOfWork: UnitOfWork,
@@ -22,8 +25,13 @@ export class AnswerVoteUseCase implements IAnswerVoteUseCase {
     });
   
     if (answer.ownerId === executorId) {
-      throw new ForbiddenException('You cannot vote your own answer');
+      throw new ForbiddenException('You cannot vote your answer');
     }
+
+    await this.userRatingValidator.validate({
+      userId: executorId,
+      action: vote === VoteTypeEnum.UP ? UserRatingActions.AnswerVoteUp : UserRatingActions.AnswerVoteDown,
+    });
   
     const voter = await this.answerUserRepository.getOne({
       where: {

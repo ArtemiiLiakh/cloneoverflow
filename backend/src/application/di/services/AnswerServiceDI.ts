@@ -12,6 +12,7 @@ import {
   PrismaTransactionDI,
 } from '../repositories/PrismaRepositoriesDI';
 import { AnswerGetVoterUseCase } from '@core/services/answer/getVoter/usercase';
+import { UserRatingValidatorDI } from '../security/validators/UserRatingValidatorDI';
 
 const CreateUseCaseDI = new AnswerCreateUseCase(
   PrismaQuestionRepositoryDI, 
@@ -23,6 +24,7 @@ const DeleteUseCaseDI = new AnswerDeleteUseCase(
 );
 
 const UpdateUseCaseDI = new AnswerUpdateUseCase(
+  UserRatingValidatorDI,
   PrismaAnswerRepositoryDI,
 );
 
@@ -35,6 +37,7 @@ const GetAllUseCaseDI = new AnswerGetManyUseCase(
 );
 
 const VoteUseCaseDI = new AnswerVoteUseCase(
+  UserRatingValidatorDI,
   PrismaAnswerRepositoryDI, 
   PrismaAnswerUserRepositoryDI,
   PrismaTransactionDI,

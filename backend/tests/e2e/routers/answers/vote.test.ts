@@ -18,7 +18,7 @@ describe('POST /api/answers/:id/vote', () => {
 
   beforeAll(async () => {
     const owner = await userUtils.create();
-    const user = await userUtils.create();
+    const user = await userUtils.create({ rating: 10000 });
 
     ownerId = owner.id;
     const questionId = (await questionUtils.create({ ownerId })).id;
@@ -70,7 +70,7 @@ describe('POST /api/answers/:id/vote', () => {
       .expect(403);
   });
 
-  test('When owner votes expect it returns error 400', async () => {
+  test('When owner votes expect it returns error 403', async () => {
     await supertest(app)
       .post(`/api/answers/${answerId}/vote`)
       .send({ vote: VoteTypeEnum.UP })

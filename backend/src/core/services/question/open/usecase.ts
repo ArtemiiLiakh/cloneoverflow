@@ -1,10 +1,13 @@
-import { BadBodyException, Exception, ForbiddenException, QuestionUserStatusEnum } from '@cloneoverflow/common';
+import { BadBodyException, Exception, QuestionUserStatusEnum } from '@cloneoverflow/common';
+import { UserRatingActions } from '@common/enums/UserRatingActions';
 import { QuestionRepository, UnitOfWork } from '@core/domain/repositories';
+import { IUserRatingValidator } from '@core/services/validators/types';
 import { QuestionOpenInput, QuestionOpenOutput } from './dto';
 import { IQuestionOpenUseCase } from './type';
 
 export class QuestionOpenUseCase implements IQuestionOpenUseCase {
   constructor (
+    private userRatingValidator: IUserRatingValidator,
     private questionRepository: QuestionRepository,
     private unitOfWork: UnitOfWork,
   ) {}
@@ -21,7 +24,10 @@ export class QuestionOpenUseCase implements IQuestionOpenUseCase {
     });
 
     if (executorId !== question.ownerId) {
-      throw new ForbiddenException('You are not owner of this question');
+      await this.userRatingValidator.validate({
+        userId: executorId,
+        action: UserRatingActions.QuestionOpen,
+      });
     }
 
     if (!question.isClosed) {

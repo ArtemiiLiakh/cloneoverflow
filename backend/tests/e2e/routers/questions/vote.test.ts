@@ -16,7 +16,7 @@ describe('PATCH /api/questions/:questionId/vote', () => {
   beforeAll(async () => {
 
     const owner = await userUtils.create();
-    const user = await userUtils.create();
+    const user = await userUtils.create({ rating: 10000 });
 
     ownerId = owner.id;
     questionId = (await questionUtils.create({ ownerId })).id;
@@ -61,7 +61,7 @@ describe('PATCH /api/questions/:questionId/vote', () => {
     expect(question?.rating).toEqual(0);
   });
 
-  test('When user votes the same type twice expect it returns error 400', async () => {
+  test('When user votes the same type twice expect it returns error 403', async () => {
     await supertest(app)
       .post(`/api/questions/${questionId}/vote`)
       .send({ vote: VoteTypeEnum.UP })

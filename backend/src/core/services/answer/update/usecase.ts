@@ -1,16 +1,29 @@
+import { UserRatingActions } from '@common/enums/UserRatingActions';
 import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
-import { IAnswerUpdateUseCase } from './type';
+import { IUserRatingValidator } from '@core/services/validators/types';
 import { AnswerUpdateInput, AnswerUpdateOutput } from './dto';
+import { IAnswerUpdateUseCase } from './type';
 
 export class AnswerUpdateUseCase implements IAnswerUpdateUseCase {
   constructor (
+    private userRatingValidator: IUserRatingValidator,
     private answerRepository: AnswerRepository,
   ) {}
 
   async execute (
-    { answerId, text }: AnswerUpdateInput,
+    { executorId, answerId, text }: AnswerUpdateInput,
   ): Promise<AnswerUpdateOutput> {
-    await this.answerRepository.validateById({ answerId });
+    const answer = await this.answerRepository.getPartialById({
+      answerId,
+      select: { ownerId: true },
+    });
+
+    if (answer.ownerId !== executorId) {
+      await this.userRatingValidator.validate({
+        userId: executorId,
+        action: UserRatingActions.AnswerUpdate,
+      });
+    }
 
     return await this.answerRepository.update({ 
       answerId, 

@@ -17,7 +17,6 @@ export namespace TagRepositoryInput {
   };
 
   export type IsExist = TagWhere;
-  export type ValidateById = { tagId: string };
 
   export type Create = { 
     tag: Tag,

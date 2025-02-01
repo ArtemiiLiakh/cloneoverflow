@@ -1,7 +1,7 @@
-import { FieldValidator } from '@application/interfaces/security/FieldValidator';
+import { DataValidator } from '@application/interfaces/security/DataValidator';
 import { isUUID } from 'class-validator';
 
-export const ValidateUUID: FieldValidator<string> = {
+export const ValidateUUID: DataValidator<string> = {
   message: 'value must be in UUID format',
   validate (value: string) {
     return isUUID(value); 

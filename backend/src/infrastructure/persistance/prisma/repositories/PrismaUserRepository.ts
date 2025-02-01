@@ -29,19 +29,6 @@ export class PrismaUserRepository implements UserRepository {
     return !!user;
   }
 
-  async validateById (
-    { userId }: UserRepositoryInput.ValidateById,
-  ): Promise<UserRepositoryOutput.ValidateById> {
-    if (!await this.prisma.user.findFirst({ 
-      where: { 
-        id: uuidToBytes(userId),
-      },
-      select: { id: true },
-    })) {
-      throw new NoEntityWithIdException('User');
-    }
-  }
-
   async getById (
     { userId }: UserRepositoryInput.GetById,
   ): Promise<UserRepositoryOutput.GetById> {

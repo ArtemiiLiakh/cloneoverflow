@@ -29,7 +29,7 @@ describe('GET /api/questions/:questionId/voter', () => {
     const questionUtils = new QuestionUtils(PrismaQuestionRepositoryDI, PrismaTransactionDI);
 
     const owner = await userUtils.create();
-    const voter = await userUtils.create();
+    const voter = await userUtils.create({ rating: 10000 });
     const question = await questionUtils.create({ ownerId: owner.id });
     
     voterId = voter.id;

@@ -27,17 +27,6 @@ export class PrismaAnswerRepository implements AnswerRepository {
     return !!answer;
   }
 
-  async validateById (
-    { answerId }: AnswerRepositoryInput.ValidateById,
-  ): Promise<AnswerRepositoryOutput.ValidateById> {
-    if (!await this.prisma.answer.findFirst({ 
-      where: { id: +answerId },
-      select: { id: true },
-    })) {
-      throw new NoEntityWithIdException('Answer');
-    }
-  }
-  
   async getById (
     { answerId }: AnswerRepositoryInput.GetById,
   ): Promise<AnswerRepositoryOutput.GetById> {

@@ -45,12 +45,13 @@ export class QuestionController {
   }
   
   async update (
-    { params, body }: WithAuth & WithParams<{ questionId: string }> & WithBody<QuestionUpdateDTO>, 
+    { params, body, executor }: WithAuth & WithParams<{ questionId: string }> & WithBody<QuestionUpdateDTO>, 
     res: CoreResponse<QuestionUpdateResponse>,
   ) {
     const question = await this.questionService.update({
-      data: body,
+      executorId: executor.userId,
       questionId: params.questionId,
+      data: body,
     });
 
     res.send(QuestionUpdateMapperOutput(question));

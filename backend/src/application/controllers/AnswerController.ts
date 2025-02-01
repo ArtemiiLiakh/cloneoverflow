@@ -67,10 +67,11 @@ export class AnswerController {
   }
 
   async update (
-    { params, body }: WithAuth & WithParams<{ answerId: string }> & WithBody<AnswerUpdateDTO>, 
+    { params, body, executor }: WithAuth & WithParams<{ answerId: string }> & WithBody<AnswerUpdateDTO>, 
     res: CoreResponse<AnswerUpdateResponse>,
   ) {
     const answer = await this.answerService.update({
+      executorId: executor.userId,
       answerId: params.answerId,
       text: body.text,
     });

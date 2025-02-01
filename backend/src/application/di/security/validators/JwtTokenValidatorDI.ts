@@ -1,6 +1,4 @@
-import { JwtTokenValidator } from '@application/middlewares/security/JwtTokenValidator';
+import { JwtTokenValidator } from '@application/middlewares/validators/JwtTokenValidator';
 import { JwtEncryptorDI } from '../JwtEncryptorDI';
 
-export const JwtTokenValidatorDI = new JwtTokenValidator(
-  JwtEncryptorDI,
-);
+export const JwtTokenValidatorDI = new JwtTokenValidator(JwtEncryptorDI);

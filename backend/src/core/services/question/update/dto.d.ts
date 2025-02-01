@@ -1,6 +1,7 @@
 import { Question } from '@core/domain/entities/Question';
 
 export type QuestionUpdateInput = {
+  executorId: string,
   questionId: string, 
   data: {
     title?: string;

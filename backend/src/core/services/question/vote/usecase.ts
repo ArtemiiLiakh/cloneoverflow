@@ -1,11 +1,14 @@
-import { Exception, ForbiddenException, QuestionUserStatusEnum } from '@cloneoverflow/common';
+import { Exception, ForbiddenException, QuestionUserStatusEnum, VoteTypeEnum } from '@cloneoverflow/common';
+import { UserRatingActions } from '@common/enums/UserRatingActions';
 import { QuestionUser } from '@core/domain/entities/QuestionUser';
 import { QuestionRepository, QuestionUserRepository, UnitOfWork } from '@core/domain/repositories';
+import { IUserRatingValidator } from '@core/services/validators/types';
 import { QuestionVoteInput, QuestionVoteOutput } from './dto';
 import { IQuestionVoteUseCase } from './type';
 
 export class QuestionVoteUseCase implements IQuestionVoteUseCase {
   constructor (
+    private userRatingValidator: IUserRatingValidator,
     private questionRepository: QuestionRepository,
     private questionUserRepository: QuestionUserRepository,
     private unitOfWork: UnitOfWork,
@@ -22,6 +25,11 @@ export class QuestionVoteUseCase implements IQuestionVoteUseCase {
     if (question.ownerId === executorId) {
       throw new ForbiddenException('You cannot vote your own question');
     }
+
+    await this.userRatingValidator.validate({
+      userId: executorId,
+      action: vote === VoteTypeEnum.UP ? UserRatingActions.QuestionVoteUp : UserRatingActions.QuestionVoteDown,
+    });
 
     const questionVoter = await this.questionUserRepository.getOne({
       where: {

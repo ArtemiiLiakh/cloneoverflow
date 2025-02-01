@@ -10,7 +10,6 @@ export interface UserRepository {
   getPartialById(payload: UserRepositoryInput.GetPartialById): Promise<UserRepositoryOutput.GetPartialById>; 
   getMany(payload: UserRepositoryInput.GetMany): Promise<UserRepositoryOutput.GetMany>;
   isExist(payload: UserRepositoryInput.IsExist): Promise<UserRepositoryOutput.IsExist>; 
-  validateById(payload: UserRepositoryInput.ValidateById): Promise<UserRepositoryOutput.ValidateById>; 
   
   createWithCreds(payload: UserRepositoryInput.CreateWithCreds): Promise<UserRepositoryOutput.CreateWithCreds>; 
   update(payload: UserRepositoryInput.Update): Promise<UserRepositoryOutput.Update>;  

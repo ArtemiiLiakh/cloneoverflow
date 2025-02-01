@@ -15,12 +15,14 @@ import {
   PrismaTransactionDI,
 } from '../repositories/PrismaRepositoriesDI';
 import { QuestionGetVoterUseCase } from '@core/services/question';
+import { UserRatingValidatorDI } from '../security/validators/UserRatingValidatorDI';
 
 const CreateUseCaseDI = new QuestionCreateUseCase(
   PrismaTransactionDI,
 );
 
 const UpdateUseCaseDI = new QuestionUpdateUseCase(
+  UserRatingValidatorDI,
   PrismaQuestionRepositoryDI,
   PrismaTransactionDI,
 );
@@ -42,17 +44,20 @@ const GetUseCaseDI = new QuestionGetUseCase(
 );
 
 const QuestionVoteUseCaseDI = new QuestionVoteUseCase(
+  UserRatingValidatorDI,
   PrismaQuestionRepositoryDI, 
   PrismaQuestionUserRepositoryDI,
   PrismaTransactionDI,
 );
 
 const QuestionOpenUseCaseDI = new QuestionOpenUseCase(
+  UserRatingValidatorDI,
   PrismaQuestionRepositoryDI, 
   PrismaTransactionDI,
 );
 
 const QuestionCloseUseCaseDI = new QuestionCloseUseCase(
+  UserRatingValidatorDI,
   PrismaQuestionRepositoryDI, 
   PrismaAnswerRepositoryDI, 
   PrismaTransactionDI,

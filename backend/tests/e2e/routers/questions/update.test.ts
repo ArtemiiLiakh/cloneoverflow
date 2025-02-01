@@ -10,11 +10,11 @@ import supertest from 'supertest';
 describe('PATCH /api/questions', () => {
   let question: Question;
   let accessToken: string;
+  const userUtils = new UserUtils(PrismaUserRepositoryDI);
   const questionUtils = new QuestionUtils(PrismaQuestionRepositoryDI, PrismaTransactionDI);
   const tagUtils = new TagUtils(PrismaTagRepositoryDI, PrismaTransactionDI);
   
   beforeAll(async () => {
-    const userUtils = new UserUtils(PrismaUserRepositoryDI);
     const owner = await userUtils.create();
     question = await questionUtils.create({
       ownerId: owner.id,
@@ -95,7 +95,15 @@ describe('PATCH /api/questions', () => {
       .expect(401);
   });
 
-  test.todo('Expect it updates question when user is owner or his rating more than was passed');
+  test('Expect it updates question when user is owner or his rating more than was passed', async () => {
+    const user = await userUtils.create({ rating: 0 });
+    const userAccessToken = 'accessToken='+(await userUtils.getTokens(user)).accessToken;
+
+    await supertest(app)
+      .patch(`/api/questions/${question.id}`)
+      .set('Cookie', userAccessToken)
+      .expect(403);
+  });
 
   test('When question id is wrong expect it returns 404 or 400', async () => {
     await supertest(app)

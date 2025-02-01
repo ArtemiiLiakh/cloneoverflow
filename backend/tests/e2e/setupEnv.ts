@@ -1,6 +1,6 @@
 import { prismaDatabase } from '@application/databases/PrismaDatabase';
 
-afterAll(async () => {
+beforeAll(async () => {
   const prisma = prismaDatabase.getClient();
   await prisma.tag.deleteMany();
   await prisma.question.deleteMany();

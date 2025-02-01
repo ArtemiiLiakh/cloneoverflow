@@ -21,31 +21,31 @@ describe('Service: test QuestionCreateUseCase', () => {
     const questionId = 'id';
     const tagEntities = payload.data.tags!.map((tag) => Tag.new({ name: tag }));
 
-    const questionRepositoryMock = {
-      create: jest.fn().mockReturnValue(Promise.resolve(questionId)),
-      refTags: jest.fn(),
-    } as Partial<QuestionRepository>;
+    const unitMock = {
+      questionRepository: {
+        create: jest.fn().mockReturnValue(Promise.resolve(questionId)),
+        refTags: jest.fn(),
+      } as Partial<QuestionRepository>,
 
-    const questionUserRepositoryMock = {
-      create: jest.fn(),
-    } as Partial<QuestionUserRepository>;
+      questionUserRepository: {
+        create: jest.fn(),
+      } as Partial<QuestionUserRepository>,
 
-    const tagsRepositoryMock = {
-      createOrFindMany: jest.fn().mockReturnValue(Promise.resolve(tagEntities)),
-    } as Partial<TagRepository>;
+      tagRepository: {
+        createOrFindMany: jest.fn().mockReturnValue(Promise.resolve(tagEntities)),
+      } as Partial<TagRepository>,
+    } as Unit;
 
     const createUseCase = new QuestionCreateUseCase({
-      execute: (fn) => fn({
-        questionRepository: questionRepositoryMock,
-        tagRepository: tagsRepositoryMock,
-        questionUserRepository: questionUserRepositoryMock,
-      } as Unit),
+      execute: (fn) => fn(unitMock),
     } as UnitOfWork);
 
     const question = await createUseCase.execute(payload);
     expect(question.id).toEqual(questionId);
-    expect(questionUserRepositoryMock.create).toHaveBeenCalled();
-    expect(tagsRepositoryMock.createOrFindMany).toHaveBeenCalled();
+    expect(unitMock.questionRepository.create).toHaveBeenCalled();
+    expect(unitMock.questionRepository.refTags).toHaveBeenCalled();
+    expect(unitMock.questionUserRepository.create).toHaveBeenCalled();
+    expect(unitMock.tagRepository.createOrFindMany).toHaveBeenCalled();
   });
 
   test('Throw an error because unit of work failed', () => {

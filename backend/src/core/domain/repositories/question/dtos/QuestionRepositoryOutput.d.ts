@@ -23,7 +23,6 @@ export namespace QuestionRepositoryOutput {
   } & QuestionIncludeOutput>;
 
   export type IsExist = boolean;
-  export type ValidateById = void;
 
   export type Create = string | undefined;
   export type Update = Question | undefined;
