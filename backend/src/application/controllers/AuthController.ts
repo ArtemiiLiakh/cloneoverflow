@@ -30,7 +30,7 @@ export class AuthController {
     res.setCookie('accessToken', tokens.access_token);
     res.setCookie('refreshToken', tokens.refresh_token);
 
-    res.status(201);
+    res.status(200);
     res.send(AuthLoginMapperOutput(user));
   }
 
@@ -96,6 +96,7 @@ export class AuthController {
       code: body.code, 
       newPassword: body.newPassword,
     });
+
     res.send({ message: 'ok' });
   }
 

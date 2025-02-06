@@ -1,4 +1,4 @@
-import { RedisCacheRepository } from '@infrastructure/persistance/redis/RedisCacheRepository';
-import RedisDatabaseDI from '../database/RedisDatabaseDI';
+import { RedisCacheRepository } from '@infrastructure/persistance/cache/RedisCacheRepository';
+import { RedisDatabaseDI } from '../database/RedisDatabaseDI';
 
-export default new RedisCacheRepository(RedisDatabaseDI);
+export const RedisCacheRepositoryDI = new RedisCacheRepository(RedisDatabaseDI);

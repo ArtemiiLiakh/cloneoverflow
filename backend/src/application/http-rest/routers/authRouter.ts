@@ -26,7 +26,7 @@ authRouter.post(
 );
 
 authRouter.post(
-  '/signup', 
+  '/account', 
   validateRequest({
     body: AuthSignupDTO,
   }), 
@@ -47,8 +47,9 @@ authRouter.post(
   AdaptController(authController.refreshToken.bind(authController)),
 );
 
-authRouter.post(
-  '/changePassword',
+authRouter.patch(
+  '/account/password',
+  JwtTokenValidatorDI.validateRefresh(), 
   JwtTokenValidatorDI.validateAccess(),
   AuthUserValidatorDI.validate(),
   validateRequest({
@@ -58,7 +59,7 @@ authRouter.post(
 );
 
 authRouter.post(
-  '/forgotPassword',
+  '/account/forgotPassword',
   validateRequest({
     body: AuthForgotPasswordDTO,
   }),
@@ -66,7 +67,7 @@ authRouter.post(
 );
 
 authRouter.delete(
-  '/deleteAccount',
+  '/account',
   JwtTokenValidatorDI.validateRefresh(), 
   JwtTokenValidatorDI.validateAccess(),
   AuthUserValidatorDI.validate(),
@@ -77,7 +78,7 @@ authRouter.delete(
 );  
 
 authRouter.post(
-  '/sendVerificationCode',
+  '/email/verificationCode',
   JwtTokenValidatorDI.validateAccess(),
   validateRequest({
     body: AuthVerificationCodeDTO,

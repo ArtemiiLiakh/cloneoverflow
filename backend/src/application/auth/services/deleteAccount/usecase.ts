@@ -1,13 +1,14 @@
-import { VerificationCodePayload } from '@application/auth/data/VerificationCodePayload';
-import { BadBodyException, LoginException, RetriesExpiredException, VerificationCodeType } from '@cloneoverflow/common';
+import { BadBodyException, LoginException, VerificationCodeType } from '@cloneoverflow/common';
 import { DataHasher } from '@core/data/DataHasher';
 import { CacheRepository } from '@core/domain/repositories/cache/CacheRepository';
 import { UserRepository } from '@core/domain/repositories/user/UserRepository';
 import { DeleteAccountInput, DeleteAccountOutput } from './dto';
 import { IDeleteAccountUseCase } from './type';
+import { IVerificationCodeValidator } from '../validators/types';
 
 export class DeleteAccountUseCase implements IDeleteAccountUseCase {
   constructor (
+    private codeValidator: IVerificationCodeValidator,
     private userRepository: UserRepository,
     private cacheRepository: CacheRepository,
     private dataHasher: DataHasher,
@@ -25,23 +26,11 @@ export class DeleteAccountUseCase implements IDeleteAccountUseCase {
       throw new BadBodyException('Invalid user email');
     }
 
-    const resolveCode = await this.cacheRepository.getObject<VerificationCodePayload>(
-      `user:${VerificationCodeType.DeletePassword}:${executorId}`,
-    );
-    
-    if (!resolveCode) {
-      throw new BadBodyException('User does not have verification code');
-    }
-
-    if (resolveCode.retries <= 0) {
-      await this.cacheRepository.delete(`user:${VerificationCodeType.DeletePassword}:${executorId}`);
-  
-      throw new RetriesExpiredException();
-    }
-
-    if (!await this.dataHasher.compareHash(code, resolveCode.code)) {
-      throw new BadBodyException('Code does not match');
-    }
+    await this.codeValidator.validate({
+      userId: confirmUser.creds.id,
+      code,
+      codeType: VerificationCodeType.DeletePassword,
+    });
 
     if (
       confirmUser.creds.email !== email || 
@@ -49,6 +38,8 @@ export class DeleteAccountUseCase implements IDeleteAccountUseCase {
     ) {
       throw new LoginException();
     }
+
+    await this.cacheRepository.delete(`user:${VerificationCodeType.DeletePassword}:${confirmUser.creds.id}`);
 
     await this.userRepository.delete({ 
       userId: executorId,

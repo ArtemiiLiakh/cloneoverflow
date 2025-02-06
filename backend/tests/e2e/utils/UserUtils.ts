@@ -1,5 +1,6 @@
 import { makeAccessToken } from '@application/auth/utils/makeAccessToken';
 import { makeRefreshToken } from '@application/auth/utils/makeRequestToken';
+import { DataHasherDI } from '@application/di/security/hashers/DataHasherDI';
 import { User } from '@core/domain/entities/User';
 import { UserCreds } from '@core/domain/entities/UserCreds';
 import { UserRepository } from '@core/domain/repositories';
@@ -11,10 +12,10 @@ export class UserUtils {
     private userRepository: UserRepository,
   ) {}
 
-  async create (user?: Partial<User> & { email?: string }): Promise<User> {
+  async create (user?: Partial<User> & { email?: string, password?: string }): Promise<User> {
     const creds = UserCreds.new({
       email: user?.email ?? randomUUID()+'@gmail.com',
-      password: 'q12345678',
+      password: await DataHasherDI.hash(user?.password ?? 'q12345678'),
     });
 
     const newUser = User.new({

@@ -9,11 +9,12 @@ import {
   SendVerificationCodeUseCase,
 } from '@application/auth/services';
 import { AuthServiceFacade } from '@application/services/AuthServiceFacade';
-import GoogleEmailProviderDI from '../email/GoogleEmailProviderDI';
+import { GoogleEmailProviderDI } from '../email/GoogleEmailProviderDI';
 import { PrismaUserRepositoryDI } from '../repositories/PrismaRepositoriesDI';
-import RedisCacheRepositoryDI from '../repositories/RedisCacheRepositoryDI';
+import { RedisCacheRepositoryDI } from '../repositories/RedisCacheRepositoryDI';
 import { DataHasherDI } from '../security/hashers/DataHasherDI';
 import { JwtEncryptorDI } from '../security/JwtEncryptorDI';
+import { VerificationCodeValidatorDI } from '../security/validators/VerificationCodeValidatorDI';
 import { userUseCasesDI } from './UserServiceDI';
 
 const LoginUseCaseDI = new LoginUseCase(
@@ -33,18 +34,21 @@ const RefreshTokenUseCaseDI = new RefreshTokenUseCase(
 );
 
 const ChangePasswordUseCaseDI = new ChangePasswordUseCase(
+  VerificationCodeValidatorDI,
   PrismaUserRepositoryDI, 
   RedisCacheRepositoryDI, 
   DataHasherDI,
 );
 
 const ForgotPasswordUseCaseDI = new ForgotPasswordUseCase(
+  VerificationCodeValidatorDI,
   PrismaUserRepositoryDI, 
   RedisCacheRepositoryDI, 
   DataHasherDI,
 );
 
 const DeleteAccountUseCaseDI = new DeleteAccountUseCase(
+  VerificationCodeValidatorDI,
   PrismaUserRepositoryDI, 
   RedisCacheRepositoryDI, 
   DataHasherDI,

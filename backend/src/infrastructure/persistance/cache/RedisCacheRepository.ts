@@ -1,7 +1,11 @@
 import { CacheRepository, CacheSetOptions } from '@core/domain/repositories/cache/CacheRepository';
 import { RedisClientType, RedisFunctions, RedisModules, RedisScripts, SetOptions } from 'redis';
 
-export class RedisCacheRepository<M extends RedisModules, F extends RedisFunctions, S extends RedisScripts> implements CacheRepository {
+export class RedisCacheRepository<
+  M extends RedisModules, 
+  F extends RedisFunctions, 
+  S extends RedisScripts,
+> implements CacheRepository {
   constructor (
     private client: RedisClientType<M, F, S>,
   ) {}
