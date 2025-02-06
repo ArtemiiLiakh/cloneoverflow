@@ -1,7 +1,7 @@
-import { FieldValidator } from '@application/interfaces/security/FieldValidator';
+import { DataValidator } from '@application/interfaces/security/DataValidator';
 import { isNumberString } from 'class-validator';
 
-export const ValidateNumber: FieldValidator<string> = {
+export const ValidateNumber: DataValidator<string> = {
   message: 'value must be a number',
   validate (value) {
     return isNumberString(value);

@@ -7,11 +7,11 @@ import { UserUtils } from '@tests/e2e/utils/UserUtils';
 import supertest from 'supertest';
 
 describe('PATCH /api/answers/:answerId', () => {
+  const userUtils = new UserUtils(PrismaUserRepositoryDI);
   let answerId: string;
   let ownerAccessToken: string;
   
   beforeAll(async () => {
-    const userUtils = new UserUtils(PrismaUserRepositoryDI);
     const questionUtils = new QuestionUtils(PrismaQuestionRepositoryDI, PrismaTransactionDI);
     const answerUtils = new AnswerUtils(PrismaAnswerRepositoryDI, PrismaTransactionDI);
 
@@ -39,7 +39,16 @@ describe('PATCH /api/answers/:answerId', () => {
     expect(updatedAnswer.text).toBe(updateData.text);
   });
 
-  test.todo('When user is not answer owner and his rating less than required expect it returns 403');
+  test('When user is not answer owner and his rating less than required expect it returns error 403', async () => {
+    const user = await userUtils.create({ rating: 0 });
+    const userAccessToken = 'accessToken='+(await userUtils.getTokens(user)).accessToken;
+    
+    await supertest(app)
+      .patch(`/api/answers/${answerId}`)
+      .send({ text: 'Updated text' } as AnswerUpdateDTO)
+      .set('Cookie', userAccessToken)
+      .expect(403);
+  });
 
   test('When answer is not found or id is wrong expect it returns 404 or 400', async () => {
     await supertest(app)

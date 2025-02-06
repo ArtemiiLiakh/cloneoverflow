@@ -5,8 +5,8 @@ import { AuthUserValidatorDI } from '@application/di/security/validators/AuthUse
 import { JwtTokenValidatorDI } from '@application/di/security/validators/JwtTokenValidatorDI';
 import { questionServiceFacadeDI } from '@application/di/services/QuestionServiceDI';
 import { searchServiceFacadeDI } from '@application/di/services/SearchServiceDI';
-import { validateRequest } from '@application/middlewares/security/ValidateRequest';
-import { ValidateNumber } from '@application/middlewares/validators/ValidateNumber';
+import { validateRequest } from '@application/middlewares/validators/ValidateRequest';
+import { ValidateNumber } from '@application/middlewares/validators/data/ValidateNumber';
 import {
   QuestionCloseDTO,
   QuestionCreateDTO,

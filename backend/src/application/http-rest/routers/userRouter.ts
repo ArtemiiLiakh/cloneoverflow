@@ -5,8 +5,8 @@ import { JwtTokenValidatorDI } from '@application/di/security/validators/JwtToke
 import { answerUseCaseDI } from '@application/di/services/AnswerServiceDI';
 import { questionUseCasesDI } from '@application/di/services/QuestionServiceDI';
 import { userServiceFacadeDI } from '@application/di/services/UserServiceDI';
-import { validateRequest } from '@application/middlewares/security/ValidateRequest';
-import { ValidateUUID } from '@application/middlewares/validators';
+import { ValidateUUID } from '@application/middlewares/validators/data';
+import { validateRequest } from '@application/middlewares/validators/ValidateRequest';
 import {
   UserGetAnswersDTO,
   UserGetQuestionsDTO,

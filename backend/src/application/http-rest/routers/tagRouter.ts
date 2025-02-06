@@ -1,7 +1,7 @@
 import { AdaptController } from '@application/adapters/AdaptController';
 import { SearchController } from '@application/controllers/SearchController';
 import { searchServiceFacadeDI } from '@application/di/services/SearchServiceDI';
-import { validateRequest } from '@application/middlewares/security/ValidateRequest';
+import { validateRequest } from '@application/middlewares/validators/ValidateRequest';
 import { SearchTagsDTO } from '@cloneoverflow/common';
 import express from 'express';
 

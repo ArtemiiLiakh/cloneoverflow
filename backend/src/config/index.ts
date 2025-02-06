@@ -2,7 +2,6 @@ import { cache } from './cache';
 import { google } from './google';
 import { jwt } from './jwt';
 import { pagination } from './pagination';
-import { ratings } from './ratings';
 
 export default {
   SERVER_PORT: + (process.env.SERVER_PORT ?? 8000),
@@ -12,5 +11,4 @@ export default {
   jwt,
   google,
   cache,
-  ratings,
 };

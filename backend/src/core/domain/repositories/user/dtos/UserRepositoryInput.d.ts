@@ -5,7 +5,6 @@ import { UserCountsInput, UserIncludeInput, UserOrderBy, UserSelectInput, UserWh
 
 export namespace UserRepositoryInput {
   export type IsExist = UserWhere;
-  export type ValidateById = { userId: string };
 
   export type CreateWithCreds = {
     user: User,

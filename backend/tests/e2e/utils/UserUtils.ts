@@ -11,9 +11,9 @@ export class UserUtils {
     private userRepository: UserRepository,
   ) {}
 
-  async create (email?: string, user?: Partial<User>): Promise<User> {
+  async create (user?: Partial<User> & { email?: string }): Promise<User> {
     const creds = UserCreds.new({
-      email: email ?? randomUUID()+'@gmail.com',
+      email: user?.email ?? randomUUID()+'@gmail.com',
       password: 'q12345678',
     });
 

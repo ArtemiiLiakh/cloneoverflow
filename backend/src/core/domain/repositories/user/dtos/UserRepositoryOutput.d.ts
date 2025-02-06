@@ -32,7 +32,6 @@ export namespace UserRepositoryOutput {
   } & UserIncludeOutput>;
 
   export type IsExist = boolean;
-  export type ValidateById = void;
   export type Update = User | undefined; 
   export type UpdateCreds = void;
   export type Delete = void;

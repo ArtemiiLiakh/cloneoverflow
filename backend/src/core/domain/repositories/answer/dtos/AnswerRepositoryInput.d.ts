@@ -32,7 +32,6 @@ export namespace AnswerRepositoryInput {
   };
 
   export type IsExist = AnswerWhere;
-  export type ValidateById = { answerId: string };
 
   export type Count = {
     where: AnswerWhere,

@@ -4,8 +4,10 @@ import { AnswerUser } from '@core/domain/entities/AnswerUser';
 import { UserRepository } from '@core/domain/repositories';
 import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
 import { AnswerUserRepository } from '@core/domain/repositories/answer/AnswerUserRepository';
+import { AnswerUserRepositoryInput } from '@core/domain/repositories/answer/dtos/answerUser/AnswerUserRepositoryInput';
 import { Unit, UnitOfWork } from '@core/domain/repositories/UnitOfWork';
 import { AnswerVoteUseCase } from '@core/services/answer';
+import { IUserRatingValidator } from '@core/services/validators/types';
 
 describe('Service: test AnswerVoteUseCase', () => {
   test('Vote answer for the first time', async () => {
@@ -29,9 +31,16 @@ describe('Service: test AnswerVoteUseCase', () => {
 
     const answerUserRepositoryMock = {
       getOne: async () => null,
-      create: jest.fn(),
+      create: jest.fn().mockImplementation((answerUser: AnswerUserRepositoryInput.Create) => {
+        expect(answerUser.user.status).toEqual(AnswerUserStatusEnum.VOTER);
+        expect(answerUser.user.voteType).toEqual(vote);
+      }),
     } as Partial<AnswerUserRepository>;
-
+    
+    const userRatingValidatorMock = {
+      validate: jest.fn(),
+    } as IUserRatingValidator;
+    
     const unitMock = {
       answerRepository: answerRepositoryMock,
       answerUserRepository: answerUserRepositoryMock,
@@ -39,6 +48,7 @@ describe('Service: test AnswerVoteUseCase', () => {
     } as Unit;
 
     const answerVoteUseCase = new AnswerVoteUseCase(
+      userRatingValidatorMock,
       answerRepositoryMock as AnswerRepository,
       answerUserRepositoryMock as AnswerUserRepository,
       { execute: (fn) => fn(unitMock) } as UnitOfWork,
@@ -50,6 +60,7 @@ describe('Service: test AnswerVoteUseCase', () => {
       vote,
     });
 
+    expect(userRatingValidatorMock.validate).toHaveBeenCalled();
     expect(answerRepositoryMock.addRating).toHaveBeenCalled();
     expect(answerUserRepositoryMock.create).toHaveBeenCalled();
     expect(userRepositoryMock.addRating).toHaveBeenCalled();
@@ -72,13 +83,8 @@ describe('Service: test AnswerVoteUseCase', () => {
     const executorId = 'userId';
     const vote = VoteTypeEnum.DOWN;
     
-    const userRepositoryMock = {
-      addRating: jest.fn(),
-    } as Partial<UserRepository>;
-
     const answerRepositoryMock = {
       getPartialById: async () => answer,
-      addRating: jest.fn(),
     } as Partial<AnswerRepository>;
 
     const answerUserRepositoryMock = {
@@ -87,15 +93,30 @@ describe('Service: test AnswerVoteUseCase', () => {
     } as Partial<AnswerUserRepository>;
 
     const unitMock = {
-      answerRepository: answerRepositoryMock,
-      answerUserRepository: answerUserRepositoryMock,
-      userRepository: userRepositoryMock,
-    } as Partial<Unit>;
+      answerRepository: {
+        addRating: jest.fn(),
+      } as Partial<AnswerRepository>,
 
+      answerUserRepository: {
+        update: jest.fn().mockImplementation(({ data }: AnswerUserRepositoryInput.Update) => {
+          answerUser.voteType = data.voteType!;
+        }),
+      } as Partial<AnswerUserRepository>,
+
+      userRepository: {
+        addRating: jest.fn(),
+      } as Partial<UserRepository>,
+    } as Unit;
+
+    const userRatingValidatorMock = { 
+      validate: jest.fn(),
+    } as IUserRatingValidator;
+    
     const answerVoteUseCase = new AnswerVoteUseCase(
+      userRatingValidatorMock,
       answerRepositoryMock as AnswerRepository,
       answerUserRepositoryMock as AnswerUserRepository,
-      { execute: (fn) => fn(unitMock as Unit) } as UnitOfWork,
+      { execute: (fn) => fn(unitMock) } as UnitOfWork,
     );
 
     await answerVoteUseCase.execute({
@@ -104,9 +125,12 @@ describe('Service: test AnswerVoteUseCase', () => {
       vote,
     });
 
-    expect(answerRepositoryMock.addRating).toHaveBeenCalled();
-    expect(answerUserRepositoryMock.update).toHaveBeenCalled();
-    expect(userRepositoryMock.addRating).toHaveBeenCalled();
+    expect(answerUser.voteType).toBeNull();
+
+    expect(userRatingValidatorMock.validate).toHaveBeenCalled();
+    expect(unitMock.answerRepository.addRating).toHaveBeenCalled();
+    expect(unitMock.answerUserRepository.update).toHaveBeenCalled();
+    expect(unitMock.userRepository.addRating).toHaveBeenCalled();
   });
 
   test('Throw an error because answer was voted UP twice', () => {
@@ -123,7 +147,7 @@ describe('Service: test AnswerVoteUseCase', () => {
       answerId: 'answerId',
       userId: 'userId',
       status: AnswerUserStatusEnum.VOTER,
-      voteType: VoteTypeEnum.DOWN,
+      voteType: vote,
     });
     
     const answerRepositoryMock = {
@@ -135,6 +159,7 @@ describe('Service: test AnswerVoteUseCase', () => {
     } as Partial<AnswerUserRepository>;
 
     const answerVoteUseCase = new AnswerVoteUseCase(
+      { validate: async () => {} } as IUserRatingValidator,
       answerRepositoryMock as AnswerRepository,
       answerUserRepositoryMock as AnswerUserRepository,
       {} as UnitOfWork,
@@ -147,27 +172,34 @@ describe('Service: test AnswerVoteUseCase', () => {
     })).rejects.toThrow(ForbiddenException);
   });
 
-  test('Throw an error if owner votes his own answer', () => {
+  test('Throw an error if owner votes his own answer', async () => {
     const answer = Answer.new({
       ownerId: 'ownerId',
       questionId: 'questionId',
       text: 'text',
     });
     
+    const userRatingValidatorMock = {
+      validate: jest.fn(),
+    } as IUserRatingValidator;
+    
     const answerRepositoryMock = {
       getPartialById: async () => answer,
     } as Partial<AnswerRepository>;
 
     const answerVoteUseCase = new AnswerVoteUseCase(
+      userRatingValidatorMock,
       answerRepositoryMock as AnswerRepository,
       {} as AnswerUserRepository,
       {} as UnitOfWork,
     );
 
-    expect(answerVoteUseCase.execute({
+    await expect(answerVoteUseCase.execute({
       executorId: answer.ownerId,
       answerId: answer.id,
       vote: VoteTypeEnum.UP,
     })).rejects.toThrow(ForbiddenException);
+
+    expect(userRatingValidatorMock.validate).not.toHaveBeenCalled();
   });
 });

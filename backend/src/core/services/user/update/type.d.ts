@@ -1,4 +1,4 @@
-import { UseCase } from '@common/usecase/UseCase';
+import { UseCase } from '@common/services/UseCase';
 import { UserUpdateInput, UserUpdateOutput } from './dto';
 
 export interface IUserUpdateUseCase extends UseCase<UserUpdateInput, UserUpdateOutput> {}

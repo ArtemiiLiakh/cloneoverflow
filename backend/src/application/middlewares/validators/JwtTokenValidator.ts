@@ -1,27 +1,27 @@
 import { ExpressRequest } from '@application/adapters/types/ExpressRequest';
 import { AuthPayload } from '@application/auth/data/AuthPayload';
 import { TokenPayload, TokenType } from '@application/auth/data/TokenPayload';
-import { DataEncryptor } from '@application/interfaces/security/DataEncryptor';
 import { MiddlewareValidator } from '@application/interfaces/security/MiddlewareValidator';
 import { ForbiddenException, UnauthorizedException } from '@cloneoverflow/common';
+import { JwtEncryptorImpl } from '@infrastructure/security/JwtEncryptorImpl';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { NextFunction, Response } from 'express';
 
-interface ValidatorPayload {
+interface MiddlewarePayload {
   tokenType: TokenType,
   optional?: boolean,
 }
 
-export class JwtTokenValidator implements MiddlewareValidator<ValidatorPayload> {
+export class JwtTokenValidator implements MiddlewareValidator<MiddlewarePayload> {
   constructor (
-    private dataEncryptor: DataEncryptor,
+    private jwtEncryptor: JwtEncryptorImpl,
   ) {}
 
   validate ({
     tokenType,
     optional,
-  }: ValidatorPayload) {
+  }: MiddlewarePayload) {
     return async (req: ExpressRequest, res: Response, next: NextFunction) => {
       let token: string | undefined;        
       
@@ -41,7 +41,7 @@ export class JwtTokenValidator implements MiddlewareValidator<ValidatorPayload> 
         throw new UnauthorizedException();
       }
 
-      const decode = await this.dataEncryptor.decrypt<TokenPayload>(token).catch(() => { 
+      const decode = await this.jwtEncryptor.decrypt<TokenPayload>(token).catch(() => { 
         throw new UnauthorizedException; 
       });
       

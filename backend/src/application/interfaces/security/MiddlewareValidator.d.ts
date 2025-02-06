@@ -1,4 +1,4 @@
 import { ExpressFunction } from '@application/adapters/types/ExpressFunction';
-import { Validator } from '@common/utils/validator';
+import { Validator } from '@common/services/Validator';
 
 export interface MiddlewareValidator<T=unknown> extends Validator<T, ExpressFunction> {}

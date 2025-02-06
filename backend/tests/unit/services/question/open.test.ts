@@ -5,13 +5,14 @@ import { QuestionRepository } from '@core/domain/repositories/question/QuestionR
 import { QuestionUserRepository } from '@core/domain/repositories/question/QuestionUserRepository';
 import { Unit, UnitOfWork } from '@core/domain/repositories/UnitOfWork';
 import { QuestionOpenUseCase } from '@core/services/question';
+import { IUserRatingValidator } from '@core/services/validators/types';
 
 describe('Service: test QuestionOpenUseCase', () => {
-  test('Open question', async () => {
-    const userId = 'userId';
+  test('Open question by owner', async () => {
+    const ownerId = 'userId';
     
     const questionEntity = Question.new({
-      ownerId: userId,
+      ownerId: ownerId,
       text: 'text',
       title: 'title',
       isClosed: true,
@@ -19,26 +20,68 @@ describe('Service: test QuestionOpenUseCase', () => {
 
     const questionRepositoryMock = {
       getPartialById: async () => questionEntity,
-      openQuestion: jest.fn(),
     } as Partial<QuestionRepository>;
 
-    const questionUserRepositoryMock = {
-      getOne: async () => QuestionUser.new({
-        questionId: questionEntity.id,
-        userId: userId,
-        status: QuestionUserStatusEnum.ANSWERER,
-      }),
-      delete: jest.fn(),
-    } as Partial<QuestionUserRepository>;
-
     const unitMock = {
-      questionRepository: questionRepositoryMock,
-      questionUserRepository: questionUserRepositoryMock,
+      questionRepository: {
+        openQuestion: jest.fn(),
+      } as Partial<QuestionRepository>,
+
+      questionUserRepository: {
+        getOne: async () => QuestionUser.new({
+          questionId: questionEntity.id,
+          userId: ownerId,
+          status: QuestionUserStatusEnum.ANSWERER,
+        }),
+        delete: jest.fn(),
+      } as Partial<QuestionUserRepository>,
     } as Unit;
     
+    const userRatingValidator = {
+      validate: jest.fn(),
+    } as IUserRatingValidator;
+
     const openUseCase = new QuestionOpenUseCase(
+      userRatingValidator,
       questionRepositoryMock as QuestionRepository,
       { execute: (fn) => fn(unitMock) } as UnitOfWork,
+    );
+
+    await openUseCase.execute({
+      executorId: ownerId,
+      questionId: questionEntity.id,
+    });
+
+    expect(userRatingValidator.validate).not.toHaveBeenCalled();
+    expect(unitMock.questionRepository.openQuestion).toHaveBeenCalled();
+    expect(unitMock.questionUserRepository.delete).toHaveBeenCalled();
+  });
+
+  test('Open question by another user', async () => {
+    const userId = 'userId';
+    
+    const questionEntity = Question.new({
+      ownerId: 'ownerId',
+      text: 'text',
+      title: 'title',
+      isClosed: true,
+    });
+
+    const questionRepositoryMock = {
+      getPartialById: async () => questionEntity,
+    } as Partial<QuestionRepository>;
+
+    const userRatingValidator = {
+      validate: jest.fn(),
+    } as IUserRatingValidator;
+
+    const openUseCase = new QuestionOpenUseCase(
+      userRatingValidator,
+      questionRepositoryMock as QuestionRepository,
+      { 
+        execute: async () => {},
+        executeAll: async () => {},
+      } as UnitOfWork,
     );
 
     await openUseCase.execute({
@@ -46,8 +89,7 @@ describe('Service: test QuestionOpenUseCase', () => {
       questionId: questionEntity.id,
     });
 
-    expect(questionRepositoryMock.openQuestion).toHaveBeenCalled();
-    expect(questionUserRepositoryMock.delete).toHaveBeenCalled();
+    expect(userRatingValidator.validate).toHaveBeenCalled();
   });
 
   test('Throw an error because question is already opened', () => {
@@ -64,6 +106,7 @@ describe('Service: test QuestionOpenUseCase', () => {
     } as Partial<QuestionRepository>;
 
     const openUseCase = new QuestionOpenUseCase(
+      {} as IUserRatingValidator,
       questionRepositoryMock as QuestionRepository,
       {} as UnitOfWork,
     );

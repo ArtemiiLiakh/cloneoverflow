@@ -1,4 +1,4 @@
-import { QuestionUserStatusEnum } from '@cloneoverflow/common';
+import { NoEntityWithIdException, QuestionUserStatusEnum } from '@cloneoverflow/common';
 import { Question } from '@core/domain/entities/Question';
 import { QuestionUser } from '@core/domain/entities/QuestionUser';
 import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
@@ -17,7 +17,7 @@ describe('Service: test QuestionAddViewerUseCase', () => {
     });
 
     const questionRepositoryMock = {
-      validateById: async () => {},
+      isExist: jest.fn().mockReturnValue(Promise.resolve(true)),
       addViewer: jest.fn().mockImplementation(
         async ({ questionId }) => {
           expect(questionId).toEqual(questionEntity.id);
@@ -48,6 +48,7 @@ describe('Service: test QuestionAddViewerUseCase', () => {
       questionId: questionEntity.id,
     });
 
+    expect(questionRepositoryMock.isExist).toHaveBeenCalled();
     expect(questionRepositoryMock.addViewer).toHaveBeenCalled();
     expect(questionUserRepositoryMock.create).toHaveBeenCalled();
     expect(questionUserRepositoryMock.getOne).toHaveBeenCalled();
@@ -63,18 +64,21 @@ describe('Service: test QuestionAddViewerUseCase', () => {
     });
 
     const questionRepositoryMock = {
-      validateById: async () => {},
-      addViewer: jest.fn(),
+      isExist: jest.fn().mockReturnValue(Promise.resolve(true)),
     } as Partial<QuestionRepository>;
 
     const questionUserRepositoryMock = {
       getOne: async () => viewer,
-      create: jest.fn(),
     } as Partial<QuestionUserRepository>;
 
     const unitMock = {
-      questionRepository: questionRepositoryMock,
-      questionUserRepository: questionUserRepositoryMock,
+      questionRepository: {
+        addViewer: jest.fn(),
+      } as Partial<QuestionRepository>,
+
+      questionUserRepository: {
+        create: jest.fn(),
+      } as Partial<QuestionUserRepository>,
     } as Unit;
 
     const addViwerUseCase = new QuestionAddViewerUseCase(
@@ -91,7 +95,24 @@ describe('Service: test QuestionAddViewerUseCase', () => {
       questionId: viewer.questionId,
     });
 
-    expect(questionRepositoryMock.addViewer).not.toHaveBeenCalled();
-    expect(questionUserRepositoryMock.create).not.toHaveBeenCalled();
+    expect(unitMock.questionRepository.addViewer).not.toHaveBeenCalled();
+    expect(unitMock.questionUserRepository.create).not.toHaveBeenCalled();
+  });
+
+  test('When question does not exist expect it throws an error', async () => {
+    const questionRepositoryMock = {
+      isExist: jest.fn().mockReturnValue(Promise.resolve(false)),
+    } as Partial<QuestionRepository>;
+
+    const addViwerUseCase = new QuestionAddViewerUseCase(
+      questionRepositoryMock as QuestionRepository,
+      {} as QuestionUserRepository,
+      {} as UnitOfWork,
+    );
+
+    expect(addViwerUseCase.execute({
+      executorId: 'executorId',
+      questionId: 'questionId',
+    })).rejects.toThrow(NoEntityWithIdException);
   });
 });

@@ -3,8 +3,8 @@ import { AnswerController } from '@application/controllers/AnswerController';
 import { AuthUserValidatorDI } from '@application/di/security/validators/AuthUserValidatorDI';
 import { JwtTokenValidatorDI } from '@application/di/security/validators/JwtTokenValidatorDI';
 import { answerServiceFacadeDI } from '@application/di/services/AnswerServiceDI';
-import { validateRequest } from '@application/middlewares/security/ValidateRequest';
-import { ValidateNumber } from '@application/middlewares/validators/ValidateNumber';
+import { validateRequest } from '@application/middlewares/validators/ValidateRequest';
+import { ValidateNumber } from '@application/middlewares/validators/data/ValidateNumber';
 import {
   AnswerCreateDTO,
   AnswersGetAllDTO,

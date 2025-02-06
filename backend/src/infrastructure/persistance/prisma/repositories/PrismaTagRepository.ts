@@ -23,17 +23,6 @@ export class PrismaTagRepository implements TagRepository {
     return !!tag;
   }
 
-  async validateById (
-    { tagId }: TagRepositoryInput.ValidateById,
-  ): Promise<TagsRepositoryOutput.ValidateById> {
-    if (!await this.prisma.tag.findFirst({ 
-      where: { id: +tagId },
-      select: { id: true },
-    })) {
-      throw new NoEntityWithIdException('Tag');
-    }
-  }
-
   async getTag (
     { where, counts, orderBy }: TagRepositoryInput.GetTag,
   ): Promise<TagsRepositoryOutput.GetTag> {

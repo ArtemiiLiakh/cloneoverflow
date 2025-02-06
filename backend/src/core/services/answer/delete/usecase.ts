@@ -16,7 +16,7 @@ export class AnswerDeleteUseCase implements IAnswerDeleteUseCase {
     const answer = await this.answerRepository.getById({ answerId });
   
     if (answer.ownerId !== executorId) {
-      throw new ForbiddenException('You are not owner of this answer');
+      throw new ForbiddenException('You can delete only your answers');
     }
   
     await this.unitOfWork.execute(async (unit) => {

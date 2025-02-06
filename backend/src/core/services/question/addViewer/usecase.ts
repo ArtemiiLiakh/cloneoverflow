@@ -1,7 +1,6 @@
-import { Exception, QuestionUserStatusEnum } from '@cloneoverflow/common';
+import { Exception, NoEntityWithIdException, QuestionUserStatusEnum } from '@cloneoverflow/common';
 import { QuestionUser } from '@core/domain/entities';
-import { QuestionUserRepository, UnitOfWork } from '@core/domain/repositories';
-import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
+import { QuestionRepository, QuestionUserRepository, UnitOfWork } from '@core/domain/repositories';
 import { QuestionAddViewerInput, QuestionAddViewerOutput } from './dto';
 import { IQuestionAddViewerUseCase } from './type';
 
@@ -15,7 +14,9 @@ export class QuestionAddViewerUseCase implements IQuestionAddViewerUseCase {
   async execute (
     { executorId, questionId }: QuestionAddViewerInput,
   ): Promise<QuestionAddViewerOutput> {
-    await this.questionRepository.validateById({ questionId });
+    if (!await this.questionRepository.isExist({ questionId })) {
+      throw new NoEntityWithIdException('Question');
+    }
 
     const viewer = await this.questionUserRepository.getOne({
       where: {

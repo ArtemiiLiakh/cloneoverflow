@@ -1,20 +1,33 @@
 import { Exception } from '@cloneoverflow/common';
+import { UserRatingActions } from '@common/enums/UserRatingActions';
 import { QuestionRepository, UnitOfWork } from '@core/domain/repositories';
+import { IUserRatingValidator } from '@core/services/validators/types';
 import { QuestionUpdateInput, QuestionUpdateOutput } from './dto';
 import { IQuestionUpdateUseCase } from './type';
 
 export class QuestionUpdateUseCase implements IQuestionUpdateUseCase {
   constructor (
+    private userRatingValidator: IUserRatingValidator,
     private questionRepository: QuestionRepository,
     private unitOfWork: UnitOfWork,
   ) {}
 
   async execute (
-    { questionId, data: { text, title, tags } }: QuestionUpdateInput,
+    { executorId, questionId, data: { text, title, tags } }: QuestionUpdateInput,
   ): Promise<QuestionUpdateOutput> {
-    await this.questionRepository.validateById({ questionId });
+    const question = await this.questionRepository.getPartialById({
+      questionId,
+      select: { ownerId: true },
+    });
 
-    const question = await this.unitOfWork.execute(async (unit) => {
+    if (question.ownerId !== executorId) {
+      await this.userRatingValidator.validate({
+        userId: executorId,
+        action: UserRatingActions.QuestionUpdate,
+      });
+    }
+
+    return this.unitOfWork.execute(async (unit) => {
       if (Array.isArray(tags)) {
         await unit.questionRepository.unrefAllTags({
           questionId,
@@ -41,7 +54,5 @@ export class QuestionUpdateUseCase implements IQuestionUpdateUseCase {
     }).catch(() => {
       throw new Exception('Question update failed');
     });
-    
-    return question;
   }
 }

@@ -6,13 +6,14 @@ import { TagRepository } from '@core/domain/repositories/tag/TagRepository';
 import { Unit, UnitOfWork } from '@core/domain/repositories/UnitOfWork';
 import { QuestionUpdateUseCase } from '@core/services/question';
 import { QuestionUpdateInput } from '@core/services/question/update/dto';
+import { IUserRatingValidator } from '@core/services/validators/types';
 
 describe('Service: test QuestionUpdateUseCase', () => {
   test('Update question without tags', async () => {
-    const userId = 'userId';
+    const ownerId = 'userId';
 
     const questionEntity = Question.new({
-      ownerId: userId,
+      ownerId: ownerId,
       text: 'text',
       title: 'title',
     });
@@ -23,39 +24,43 @@ describe('Service: test QuestionUpdateUseCase', () => {
     } as QuestionUpdateInput['data'];
 
     const questionRepositoryMock = {
-      validateById: async () => {},
-      update: async ({ questionId, question, returnEntity }) => {
-        expect(questionId).toEqual(questionEntity.id);
-        expect(question).toEqual(updateData);
-        expect(returnEntity).toBeTruthy();
-        return questionEntity;
-      },
+      getPartialById: jest.fn().mockReturnValue(Promise.resolve(questionEntity)),
     } as Partial<QuestionRepository>;
 
-    const unitOfWorkMock = {
-      execute: (fn) => fn({ 
-        questionRepository: questionRepositoryMock,
-      } as Unit),
-    } as UnitOfWork;
+    const unitMock = {
+      questionRepository: {
+        update: jest.fn().mockReturnValue(Promise.resolve(questionEntity)),
+      } as Partial<QuestionRepository>,
+    } as Unit;
+
+    const userRatingValidatorMock = {
+      validate: jest.fn(),
+    } as IUserRatingValidator;
 
     const updateUseCase = new QuestionUpdateUseCase(
+      userRatingValidatorMock,
       questionRepositoryMock as QuestionRepository,
-      unitOfWorkMock,
+      {
+        execute: (fn) => fn(unitMock),
+      } as UnitOfWork,
     );
 
     const updatedQuestion = await updateUseCase.execute({
+      executorId: ownerId,
       questionId: questionEntity.id,
       data: updateData,
     });
 
     expect(updatedQuestion).toBe(questionEntity);
+    expect(questionRepositoryMock.getPartialById).toHaveBeenCalled();
+    expect(userRatingValidatorMock.validate).not.toHaveBeenCalled();
   });
 
   test('Update question with tags', async () => {
-    const userId = 'userId';
+    const ownerId = 'userId';
 
     const questionEntity = Question.new({
-      ownerId: userId,
+      ownerId: ownerId,
       text: 'text',
       title: 'title',
     });
@@ -71,45 +76,84 @@ describe('Service: test QuestionUpdateUseCase', () => {
     } as QuestionUpdateInput['data'];
 
     const questionRepositoryMock = {
-      validateById: async () => {},
-      update: jest.fn().mockReturnValue(Promise.resolve(questionEntity)),
-      unrefAllTags: jest.fn(),
-      refTags: jest.fn(),
+      getPartialById: jest.fn().mockReturnValue(Promise.resolve(questionEntity)),
     } as Partial<QuestionRepository>;
 
-    const tagRepositoryMock = {
-      createOrFindMany: jest.fn().mockReturnValue(Promise.resolve([tagEntity])),
-    } as Partial<TagRepository>;
+    const unitMock = {
+      questionRepository: {
+        update: jest.fn().mockReturnValue(Promise.resolve(questionEntity)),
+        unrefAllTags: jest.fn(),
+        refTags: jest.fn(),
+      } as Partial<QuestionRepository>,
 
-    const unitOfWorkMock = {
-      execute: (fn) => fn({ 
-        questionRepository: questionRepositoryMock,
-        tagRepository: tagRepositoryMock,
-      } as Unit),
-    } as UnitOfWork;
+      tagRepository: {
+        createOrFindMany: jest.fn().mockReturnValue(Promise.resolve([tagEntity])),
+      } as Partial<TagRepository>,
+    } as Unit;
 
     const updateUseCase = new QuestionUpdateUseCase(
+      {} as IUserRatingValidator,
       questionRepositoryMock as QuestionRepository,
-      unitOfWorkMock,
+      {
+        execute: (fn) => fn(unitMock),
+      } as UnitOfWork,
     );
 
     const question = await updateUseCase.execute({ 
+      executorId: ownerId,
       questionId: questionEntity.id,
       data: updateData,
     });
 
     expect(question).toBe(questionEntity);
-    expect(questionRepositoryMock.update).toHaveBeenCalled();
-    expect(questionRepositoryMock.unrefAllTags).toHaveBeenCalled();
-    expect(questionRepositoryMock.refTags).toHaveBeenCalled();
-    expect(tagRepositoryMock.createOrFindMany).toHaveBeenCalled();
+    expect(questionRepositoryMock.getPartialById).toHaveBeenCalled();
+    expect(unitMock.questionRepository.update).toHaveBeenCalled();
+    expect(unitMock.questionRepository.unrefAllTags).toHaveBeenCalled();
+    expect(unitMock.questionRepository.refTags).toHaveBeenCalled();
+    expect(unitMock.tagRepository.createOrFindMany).toHaveBeenCalled();
+  });
+
+  test('Update question with another user', async () => {
+    const userId = 'userId'; 
+    
+    const questionEntity = Question.new({
+      ownerId: 'ownerId',
+      title: 'title',
+      text: 'text',
+    });
+    
+    const userRatingValidatorMock = {
+      validate: jest.fn(),
+    } as IUserRatingValidator;
+
+    const questionRepositoryMock = {
+      getPartialById: jest.fn().mockReturnValue(Promise.resolve(questionEntity)),
+    } as Partial<QuestionRepository>;
+
+    const updateUseCase = new QuestionUpdateUseCase(
+      userRatingValidatorMock,
+      questionRepositoryMock as QuestionRepository,
+      {
+        execute: async () => {},
+        executeAll: async () => {},
+      } as UnitOfWork,
+    );
+
+    await updateUseCase.execute({
+      executorId: userId,
+      questionId: questionEntity.id,
+      data: {},
+    });
+
+    expect(userRatingValidatorMock.validate).toHaveBeenCalled();
+    expect(questionRepositoryMock.getPartialById).toHaveBeenCalled();
   });
 
   test('Throw an error because unit of work is failed', () => {
-    const userId = 'userId';
+    const ownerId = 'userId';
 
     const questionEntity = Question.new({
-      ownerId: userId,
+      ownerId: ownerId,
       text: 'text',
       title: 'title',
     });
@@ -120,10 +164,11 @@ describe('Service: test QuestionUpdateUseCase', () => {
     } as QuestionUpdateInput['data'];
 
     const questionRepositoryMock = {
-      validateById: async () => {},
+      getPartialById: async () => questionEntity,
     } as Partial<QuestionRepository>;
 
     const updateUseCase = new QuestionUpdateUseCase(
+      {} as IUserRatingValidator,
       questionRepositoryMock as QuestionRepository,
       { 
         execute: () => Promise.reject(new Error()),
@@ -132,6 +177,7 @@ describe('Service: test QuestionUpdateUseCase', () => {
     );
 
     expect(updateUseCase.execute({
+      executorId: ownerId,
       questionId: questionEntity.id,
       data: updateData,
     })).rejects.toThrow(Exception);

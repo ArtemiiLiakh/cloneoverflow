@@ -19,7 +19,6 @@ export namespace AnswerRepositoryOutput {
   } & AnswerIncludeOutput>;
 
   export type IsExist = boolean;
-  export type ValidateById = void;
 
   export type Count = number;
   export type Create = string | undefined;
