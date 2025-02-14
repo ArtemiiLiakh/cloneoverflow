@@ -1,5 +1,5 @@
 import { UserGetAnswersResponse } from '@cloneoverflow/common';
-import { AnswerGetManyOutput } from '@core/services/answer/getMany/dto';
+import { AnswerGetManyOutput } from '@core/services/answer/dtos';
 
 export function UserGetAnswerMapperOutput ({ data, pagination }: AnswerGetManyOutput): UserGetAnswersResponse {
   return {

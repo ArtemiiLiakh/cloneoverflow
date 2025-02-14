@@ -1,19 +1,19 @@
+import { BadBodyException, NoEntityWithIdException, VoteTypeEnum } from '@cloneoverflow/common';
 import { UserRepository } from '@core/domain/repositories/user/UserRepository';
 import { UserRepositoryInput } from '@core/domain/repositories/user/dtos/UserRepositoryInput';
 import { UserRepositoryOutput } from '@core/domain/repositories/user/dtos/UserRepositoryOutput';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { UserCountsAdapter } from '../adapters/counts/UserCountsAdapter';
-import { UserMapper } from '../adapters/entityMappers/UserMapper';
-import { UserOrderByAdapter } from '../adapters/orderBy/UserOrderByAdapter';
-import { UserWhereAdapter } from '../adapters/where/user/UserWhereAdapter';
-import { PrismaPaginationRepository } from './PrismaPaginationRepository';
-import { UserIncludeAdapter } from '../adapters/include/UserIncludeAdapter';
-import { QuestionMapper } from '../adapters/entityMappers/QuestionMapper';
 import { AnswerMapper } from '../adapters/entityMappers/AnswerMapper';
-import { UserSelectAdapter } from '../adapters/select/UserSelectAdapter';
+import { QuestionMapper } from '../adapters/entityMappers/QuestionMapper';
 import { UserCredsMapper } from '../adapters/entityMappers/UserCredsMapper';
-import { NoEntityWithIdException, VoteTypeEnum } from '@cloneoverflow/common';
+import { UserMapper } from '../adapters/entityMappers/UserMapper';
+import { UserIncludeAdapter } from '../adapters/include/UserIncludeAdapter';
+import { UserOrderByAdapter } from '../adapters/orderBy/UserOrderByAdapter';
+import { UserSelectAdapter } from '../adapters/select/UserSelectAdapter';
+import { UserWhereAdapter } from '../adapters/where/user/UserWhereAdapter';
 import { uuidToBytes } from '../utils/uuid';
+import { PrismaPaginationRepository } from './PrismaPaginationRepository';
 
 export class PrismaUserRepository implements UserRepository {
   constructor (
@@ -50,7 +50,7 @@ export class PrismaUserRepository implements UserRepository {
       },
     });
 
-    if (!user) return null;
+    if (!user) throw new BadBodyException('User with this email not found');
 
     return UserMapper.toEntity(user);
   }

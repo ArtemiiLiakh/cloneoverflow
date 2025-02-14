@@ -1,7 +1,16 @@
-import { SearchQuestionsMapperOutput } from '@application/adapters/mappers/search/SearchQuestionsMapper';
-import { SearchTagsMapperOutput } from '@application/adapters/mappers/search/SearchTagsMapper';
-import { SearchServiceFacade } from '@application/services/SearchServiceFacade';
-import { SearchQuestionsDTO, SearchQuestionsResponse, SearchTagsDTO, SearchTagsReponse } from '@cloneoverflow/common';
+import { 
+  SearchQuestionsMapperOutput, 
+  SearchTagsMapperOutput,
+} from '@application/adapters/mappers/search';
+
+import {
+  SearchQuestionsDTO,
+  SearchQuestionsResponse,
+  SearchTagsDTO,
+  SearchTagsReponse,
+} from '@cloneoverflow/common';
+
+import { SearchServiceFacade } from '@application/facades/SearchServiceFacade';
 import { WithQuery } from './types/Request';
 import { CoreResponse } from './types/Response';
 

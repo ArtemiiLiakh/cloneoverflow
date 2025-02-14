@@ -4,3 +4,4 @@ export * from './answer';
 export * from './user';
 export * from './search';
 export * from './VoteDTO';
+export * from './PaginationDTO';

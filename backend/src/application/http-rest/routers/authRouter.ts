@@ -1,7 +1,7 @@
 import { AdaptController } from '@application/adapters/AdaptController';
 import { AuthController } from '@application/controllers/AuthController';
 import { AuthUserValidatorDI } from '@application/di/security/validators/AuthUserValidatorDI';
-import { JwtTokenValidatorDI } from '@application/di/security/validators/JwtTokenValidatorDI';
+import { JwtAuthValidatorDI } from '@application/di/security/validators/JwtAuthValidatorDI';
 import { authServiceFacadeDI } from '@application/di/services/AuthServiceDI';
 import { validateRequest } from '@application/middlewares/validators/ValidateRequest';
 import {
@@ -11,6 +11,7 @@ import {
   AuthLoginDTO,
   AuthSignupDTO,
   AuthVerificationCodeDTO,
+  CheckVerificationCodeDTO,
 } from '@cloneoverflow/common';
 import express from 'express';
 
@@ -34,23 +35,22 @@ authRouter.post(
 );
 
 authRouter.get(
-  '/me',
-  JwtTokenValidatorDI.validateAccess(), 
+  '/account/me',
+  JwtAuthValidatorDI.validateAccess(), 
   AuthUserValidatorDI.validate(),
   AdaptController(authController.getMe.bind(authController)),
 );
 
 authRouter.post(
   '/refreshToken',
-  JwtTokenValidatorDI.validateRefresh(), 
+  JwtAuthValidatorDI.validateRefresh(), 
   AuthUserValidatorDI.validate(),
   AdaptController(authController.refreshToken.bind(authController)),
 );
 
 authRouter.patch(
   '/account/password',
-  JwtTokenValidatorDI.validateRefresh(), 
-  JwtTokenValidatorDI.validateAccess(),
+  JwtAuthValidatorDI.validate(), 
   AuthUserValidatorDI.validate(),
   validateRequest({
     body: AuthChangePasswordDTO,
@@ -68,8 +68,7 @@ authRouter.post(
 
 authRouter.delete(
   '/account',
-  JwtTokenValidatorDI.validateRefresh(), 
-  JwtTokenValidatorDI.validateAccess(),
+  JwtAuthValidatorDI.validate(), 
   AuthUserValidatorDI.validate(),
   validateRequest({
     body: AuthDeleteAccountDTO,
@@ -78,12 +77,19 @@ authRouter.delete(
 );  
 
 authRouter.post(
-  '/email/verificationCode',
-  JwtTokenValidatorDI.validateAccess(),
+  '/verificationCode',
   validateRequest({
     body: AuthVerificationCodeDTO,
   }),
   AdaptController(authController.sendVerificationCode.bind(authController)),
+);
+
+authRouter.get(
+  '/verificationCode',
+  validateRequest({
+    body: CheckVerificationCodeDTO,
+  }),
+  AdaptController(authController.checkVerificationCode.bind(authController)),
 );
 
 export { authRouter };

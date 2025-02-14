@@ -1,7 +1,6 @@
-import { PaginationDTO } from '@data/PaginationDTO';
+import { PaginationDTO } from '@dtos/PaginationDTO';
 import { OrderByEnum } from '@enums/OrderBy';
 import { AnswersSortByEnum } from '@enums/sorts/AnswersSortBy';
-import { validationMessage } from '@utils/validationUtils';
 import { Type } from 'class-transformer';
 import { IsEnum, IsNumber, IsOptional, ValidateNested } from 'class-validator';
 
@@ -10,11 +9,11 @@ export class AnswersGetAllDTO {
     questionId?: string;
 
   @IsOptional()
-  @IsEnum(AnswersSortByEnum, validationMessage('SortBy must be a valid enum value'))
+  @IsEnum(AnswersSortByEnum, { message: 'SortBy must be a valid enum value' })
     sortBy?: AnswersSortByEnum
 
   @IsOptional()
-  @IsEnum(OrderByEnum, validationMessage('OrderBy must be a valid enum value'))
+  @IsEnum(OrderByEnum, { message: 'OrderBy must be a valid enum value' })
     orderBy?: OrderByEnum;
 
   @IsOptional()

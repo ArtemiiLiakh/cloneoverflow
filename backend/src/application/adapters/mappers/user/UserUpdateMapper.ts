@@ -1,5 +1,5 @@
 import { UserUpdateResponse } from '@cloneoverflow/common';
-import { UserUpdateOutput } from '@core/services/user/update/dto';
+import { UserUpdateOutput } from '@core/services/user/dtos';
 
 export function UserUpdateMapperOutput (user: UserUpdateOutput): UserUpdateResponse {
   return {

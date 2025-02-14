@@ -1,5 +1,5 @@
 import { QuestionUpdateResponse } from '@cloneoverflow/common';
-import { QuestionUpdateOutput } from '@core/services/question/update/dto';
+import { QuestionUpdateOutput } from '@core/services/question/dtos';
 
 export function QuestionUpdateMapperOutput (
   question: QuestionUpdateOutput,

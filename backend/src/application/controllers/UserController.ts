@@ -1,9 +1,11 @@
-import { UserGetAnswerMapperOutput } from '@application/adapters/mappers/user/UserGetAnswersMapper';
-import { UserGetMapperOutput } from '@application/adapters/mappers/user/UserGetMapper';
-import { UserGetProfileMapperOutput } from '@application/adapters/mappers/user/UserGetProfileMapper';
-import { UserGetQuestionMapperOutput } from '@application/adapters/mappers/user/UserGetQuestionsMapper';
-import { UserUpdateMapperOutput } from '@application/adapters/mappers/user/UserUpdateMapper';
-import { UserServiceFacade } from '@application/services/UserServiceFacade';
+import {
+  UserGetAnswerMapperOutput,
+  UserGetMapperOutput,
+  UserGetProfileMapperOutput,
+  UserGetQuestionMapperOutput,
+  UserUpdateMapperOutput,
+} from '@application/adapters/mappers/user';
+
 import {
   UserGetAnswersDTO,
   UserGetAnswersResponse,
@@ -14,6 +16,8 @@ import {
   UserUpdateDTO,
   UserUpdateResponse,
 } from '@cloneoverflow/common';
+
+import { UserServiceFacade } from '@application/facades/UserServiceFacade';
 import { IAnswerGetManyUseCase } from '@core/services/answer/types';
 import { IQuestionGetManyUseCase } from '@core/services/question/types';
 import { WithAuth, WithBody, WithParams, WithQuery } from './types/Request';

@@ -1,8 +1,9 @@
-import { VerificationCodePayload } from '@application/auth/data/VerificationCodePayload';
 import { PrismaUserRepositoryDI } from '@application/di/repositories/PrismaRepositoriesDI';
 import { RedisCacheRepositoryDI } from '@application/di/repositories/RedisCacheRepositoryDI';
 import { DataHasherDI } from '@application/di/security/hashers/DataHasherDI';
+import { VerificationCodePayload } from '@application/services/auth/data';
 import { AuthVerificationCodeDTO } from '@cloneoverflow/common';
+import { randomBytes } from 'crypto';
 
 export const createVerificationCode = async (
   { email, codeType }: AuthVerificationCodeDTO,
@@ -17,7 +18,7 @@ export const createVerificationCode = async (
     },
   });
 
-  const code = 'code';
+  const code = randomBytes(4).toString('base64');
 
   await RedisCacheRepositoryDI.setObject<VerificationCodePayload>(
     `user:${codeType}:${user.entity.id}`,

@@ -1,7 +1,7 @@
 import { AdaptController } from '@application/adapters/AdaptController';
 import { AnswerController } from '@application/controllers/AnswerController';
 import { AuthUserValidatorDI } from '@application/di/security/validators/AuthUserValidatorDI';
-import { JwtTokenValidatorDI } from '@application/di/security/validators/JwtTokenValidatorDI';
+import { JwtAuthValidatorDI } from '@application/di/security/validators/JwtAuthValidatorDI';
 import { answerServiceFacadeDI } from '@application/di/services/AnswerServiceDI';
 import { validateRequest } from '@application/middlewares/validators/ValidateRequest';
 import { ValidateNumber } from '@application/middlewares/validators/data/ValidateNumber';
@@ -33,7 +33,7 @@ answerRouter.get('/:answerId',
 );
 
 answerRouter.post('/', 
-  JwtTokenValidatorDI.validateAccess(), 
+  JwtAuthValidatorDI.validateAccess(), 
   AuthUserValidatorDI.validate(),
   validateRequest({
     body: AnswerCreateDTO,
@@ -42,7 +42,7 @@ answerRouter.post('/',
 );
 
 answerRouter.patch('/:answerId', 
-  JwtTokenValidatorDI.validateAccess(), 
+  JwtAuthValidatorDI.validateAccess(), 
   AuthUserValidatorDI.validate(),
   validateRequest({
     params: {
@@ -54,7 +54,7 @@ answerRouter.patch('/:answerId',
 );
 
 answerRouter.delete('/:answerId',
-  JwtTokenValidatorDI.validateAccess(),
+  JwtAuthValidatorDI.validateAccess(),
   AuthUserValidatorDI.validate(),
   validateRequest({
     params: {
@@ -65,7 +65,7 @@ answerRouter.delete('/:answerId',
 );
 
 answerRouter.post('/:answerId/vote', 
-  JwtTokenValidatorDI.validateAccess(), 
+  JwtAuthValidatorDI.validateAccess(), 
   AuthUserValidatorDI.validate(),
   validateRequest({
     params: {
@@ -77,7 +77,7 @@ answerRouter.post('/:answerId/vote',
 );
 
 answerRouter.get('/:answerId/voter', 
-  JwtTokenValidatorDI.validateAccess(), 
+  JwtAuthValidatorDI.validateAccess(), 
   AuthUserValidatorDI.validate(),
   validateRequest({
     params: {

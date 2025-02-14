@@ -1,5 +1,9 @@
-import { AuthGetMeMapperOutput } from '@application/adapters/mappers/auth/AuthGetMeMapper';
-import { AuthLoginMapperOutput } from '@application/adapters/mappers/auth/AuthLoginMapper';
+import {
+  AuthCreateAccountMapperOutput,
+  AuthGetMeMapperOutput,
+  AuthLoginMapperOutput,
+} from '@application/adapters/mappers/auth';
+
 import {
   AuthChangePasswordDTO,
   AuthDeleteAccountDTO,
@@ -10,11 +14,12 @@ import {
   AuthSignupDTO,
   AuthSignUpResponse,
   AuthVerificationCodeDTO,
+  CheckVerificationCodeDTO,
 } from '@cloneoverflow/common';
-import { AuthServiceFacade } from '../services/AuthServiceFacade';
+
+import { AuthServiceFacade } from '../facades/AuthServiceFacade';
 import { WithAuth, WithBody } from './types/Request';
 import { CoreResponse } from './types/Response';
-import { AuthCreateAccountMapperOutput } from '@application/adapters/mappers/auth/AuthCreateAccountMapper';
 
 export class AuthController {
   constructor (
@@ -118,6 +123,16 @@ export class AuthController {
     });
 
     res.status(201);
+    res.send({ message: 'ok' });
+  }
+
+  async checkVerificationCode ({ body }: WithBody<CheckVerificationCodeDTO>, res: CoreResponse) {
+    await this.authService.checkVerificationCode({
+      email: body.email,
+      code: body.code,
+      codeType: body.codeType,
+    });
+
     res.send({ message: 'ok' });
   }
 }

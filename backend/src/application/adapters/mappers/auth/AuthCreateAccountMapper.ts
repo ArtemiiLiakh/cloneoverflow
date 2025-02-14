@@ -1,4 +1,4 @@
-import { CreateAccountOutput } from '@application/auth/services/createAccount/dto';
+import { CreateAccountOutput } from '@application/services/auth/usecases/dtos';
 import { AuthSignUpResponse } from '@cloneoverflow/common';
 
 export function AuthCreateAccountMapperOutput (user: CreateAccountOutput['user']): AuthSignUpResponse {

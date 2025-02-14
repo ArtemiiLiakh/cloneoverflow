@@ -1,7 +1,7 @@
 import { prismaDatabase } from '@application/databases/PrismaDatabase';
 import { redisDatabase } from '@application/databases/RedisDatabase';
-import config from './config';
 import { JSONUserRatingSystemDI } from '@application/di/security/ratingSystem/JSONUserRatingSystemDI';
+import config from './config';
 
 (async () => {
   await prismaDatabase.connect();

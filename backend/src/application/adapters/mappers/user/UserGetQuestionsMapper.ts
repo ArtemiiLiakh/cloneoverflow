@@ -1,5 +1,5 @@
 import { UserGetQuestionResponse } from '@cloneoverflow/common';
-import { QuestionGetManyOutput } from '@core/services/question/getMany/dto';
+import { QuestionGetManyOutput } from '@core/services/question/dtos';
 
 export function UserGetQuestionMapperOutput (questions: QuestionGetManyOutput): UserGetQuestionResponse {
   return {

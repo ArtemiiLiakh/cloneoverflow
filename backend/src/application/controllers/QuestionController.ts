@@ -1,7 +1,9 @@
-import { QuestionCreateMapperOutput } from '@application/adapters/mappers/question/QuestionCreateMapper';
-import { QuestionGetMapperOutput } from '@application/adapters/mappers/question/QuestionGetMapper';
-import { QuestionUpdateMapperOutput } from '@application/adapters/mappers/question/QuestionUpdateMapper';
-import { QuestionServiceFacade } from '@application/services/QuestionServiceFacade';
+import {
+  QuestionCreateMapperOutput,
+  QuestionGetMapperOutput,
+  QuestionUpdateMapperOutput,
+} from '@application/adapters/mappers/question';
+
 import {
   QuestionCloseDTO,
   QuestionCreateDTO,
@@ -12,6 +14,8 @@ import {
   QuestionUpdateResponse,
   VoteDTO,
 } from '@cloneoverflow/common';
+
+import { QuestionServiceFacade } from '@application/facades/QuestionServiceFacade';
 import { WithAuth, WithBody, WithParams } from './types/Request';
 import { CoreResponse } from './types/Response';
 

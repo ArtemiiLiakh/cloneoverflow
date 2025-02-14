@@ -1,5 +1,6 @@
 import {
   ChangePasswordUseCase,
+  CheckVerificationCodeUseCase,
   CreateAccountUseCase,
   DeleteAccountUseCase,
   ForgotPasswordUseCase,
@@ -7,8 +8,9 @@ import {
   LoginUseCase,
   RefreshTokenUseCase,
   SendVerificationCodeUseCase,
-} from '@application/auth/services';
-import { AuthServiceFacade } from '@application/services/AuthServiceFacade';
+} from '@application/services/auth/usecases';
+
+import { AuthServiceFacade } from '@application/facades/AuthServiceFacade';
 import { GoogleEmailProviderDI } from '../email/GoogleEmailProviderDI';
 import { PrismaUserRepositoryDI } from '../repositories/PrismaRepositoriesDI';
 import { RedisCacheRepositoryDI } from '../repositories/RedisCacheRepositoryDI';
@@ -16,6 +18,7 @@ import { DataHasherDI } from '../security/hashers/DataHasherDI';
 import { JwtEncryptorDI } from '../security/JwtEncryptorDI';
 import { VerificationCodeValidatorDI } from '../security/validators/VerificationCodeValidatorDI';
 import { userUseCasesDI } from './UserServiceDI';
+
 
 const LoginUseCaseDI = new LoginUseCase(
   PrismaUserRepositoryDI, 
@@ -65,6 +68,11 @@ const GetMeUseCaseDI = new GetMeUseCase(
   PrismaUserRepositoryDI,
 );
 
+const CheckVerificationCodeUseCaseDI = new CheckVerificationCodeUseCase(
+  VerificationCodeValidatorDI,
+  PrismaUserRepositoryDI,
+);
+
 export const authServiceFacadeDI = AuthServiceFacade.new({
   loginUseCase: LoginUseCaseDI,
   createAccountUseCase: CreateAccountUseCaseDI,
@@ -74,6 +82,7 @@ export const authServiceFacadeDI = AuthServiceFacade.new({
   changePasswordUseCase: ChangePasswordUseCaseDI,
   forgotPasswordUseCase: ForgotPasswordUseCaseDI,
   sendVerificationCodeUseCase: SendVerificationCodeUseCaseDI,
+  checkVerificationCodeUseCase: CheckVerificationCodeUseCaseDI,
 });
 
 export const authUseCasesDI = {
@@ -84,4 +93,5 @@ export const authUseCasesDI = {
   ChangePasswordUseCaseDI,
   ForgotPasswordUseCaseDI,
   SendVerificationCodeUseCaseDI,
+  CheckVerificationCodeUseCaseDI,
 };

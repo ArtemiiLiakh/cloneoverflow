@@ -1,7 +1,7 @@
 import { AdaptController } from '@application/adapters/AdaptController';
 import { UserController } from '@application/controllers/UserController';
 import { AuthUserValidatorDI } from '@application/di/security/validators/AuthUserValidatorDI';
-import { JwtTokenValidatorDI } from '@application/di/security/validators/JwtTokenValidatorDI';
+import { JwtAuthValidatorDI } from '@application/di/security/validators/JwtAuthValidatorDI';
 import { answerUseCaseDI } from '@application/di/services/AnswerServiceDI';
 import { questionUseCasesDI } from '@application/di/services/QuestionServiceDI';
 import { userServiceFacadeDI } from '@application/di/services/UserServiceDI';
@@ -43,7 +43,7 @@ userRouter.get(
 
 userRouter.patch(
   '/', 
-  JwtTokenValidatorDI.validateAccess(),
+  JwtAuthValidatorDI.validateAccess(),
   AuthUserValidatorDI.validate(),
   validateRequest({
     body: UserUpdateDTO,

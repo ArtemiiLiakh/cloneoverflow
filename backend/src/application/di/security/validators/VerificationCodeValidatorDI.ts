@@ -1,5 +1,5 @@
-import { VerificationCodeValidator } from '@application/auth/services/validators';
 import { RedisCacheRepositoryDI } from '@application/di/repositories/RedisCacheRepositoryDI';
+import { VerificationCodeValidator } from '@application/services/auth/usecases/validators';
 import { DataHasherDI } from '../hashers/DataHasherDI';
 
 export const VerificationCodeValidatorDI = new VerificationCodeValidator(
