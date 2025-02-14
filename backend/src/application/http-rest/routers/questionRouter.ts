@@ -2,7 +2,7 @@ import { AdaptController } from '@application/adapters/AdaptController';
 import { QuestionController } from '@application/controllers/QuestionController';
 import { SearchController } from '@application/controllers/SearchController';
 import { AuthUserValidatorDI } from '@application/di/security/validators/AuthUserValidatorDI';
-import { JwtTokenValidatorDI } from '@application/di/security/validators/JwtTokenValidatorDI';
+import { JwtAuthValidatorDI } from '@application/di/security/validators/JwtAuthValidatorDI';
 import { questionServiceFacadeDI } from '@application/di/services/QuestionServiceDI';
 import { searchServiceFacadeDI } from '@application/di/services/SearchServiceDI';
 import { validateRequest } from '@application/middlewares/validators/ValidateRequest';
@@ -41,7 +41,7 @@ questionRouter.get(
 
 questionRouter.post(
   '/:questionId/viewer', 
-  JwtTokenValidatorDI.validateAccess(),
+  JwtAuthValidatorDI.validateAccess(),
   AuthUserValidatorDI.validate(),
   validateRequest({
     params: {
@@ -53,7 +53,7 @@ questionRouter.post(
 
 questionRouter.get(
   '/:questionId/voter', 
-  JwtTokenValidatorDI.validateAccess(),
+  JwtAuthValidatorDI.validateAccess(),
   AuthUserValidatorDI.validate(),
   validateRequest({
     params: {
@@ -65,7 +65,7 @@ questionRouter.get(
 
 questionRouter.post(
   '/', 
-  JwtTokenValidatorDI.validateAccess(),
+  JwtAuthValidatorDI.validateAccess(),
   AuthUserValidatorDI.validate(),
   validateRequest({
     body: QuestionCreateDTO,
@@ -75,7 +75,7 @@ questionRouter.post(
 
 questionRouter.patch(
   '/:questionId',
-  JwtTokenValidatorDI.validateAccess(),
+  JwtAuthValidatorDI.validateAccess(),
   AuthUserValidatorDI.validate(),
   validateRequest({
     params: {
@@ -88,7 +88,7 @@ questionRouter.patch(
 
 questionRouter.delete(
   '/:questionId',
-  JwtTokenValidatorDI.validateAccess(),
+  JwtAuthValidatorDI.validateAccess(),
   AuthUserValidatorDI.validate(),
   validateRequest({
     params: {
@@ -100,7 +100,7 @@ questionRouter.delete(
 
 questionRouter.patch(
   '/:questionId/open',
-  JwtTokenValidatorDI.validateAccess(),
+  JwtAuthValidatorDI.validateAccess(),
   AuthUserValidatorDI.validate(),
   validateRequest({
     params: {
@@ -112,7 +112,7 @@ questionRouter.patch(
 
 questionRouter.patch(
   '/:questionId/close',
-  JwtTokenValidatorDI.validateAccess(),
+  JwtAuthValidatorDI.validateAccess(),
   AuthUserValidatorDI.validate(),
   validateRequest({
     params: {
@@ -125,7 +125,7 @@ questionRouter.patch(
 
 questionRouter.post(
   '/:questionId/vote',
-  JwtTokenValidatorDI.validateAccess(),
+  JwtAuthValidatorDI.validateAccess(),
   AuthUserValidatorDI.validate(),
   validateRequest({
     params: {

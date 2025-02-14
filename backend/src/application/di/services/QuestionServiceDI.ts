@@ -1,20 +1,24 @@
-import { QuestionServiceFacade } from '@application/services/QuestionServiceFacade';
-import { QuestionAddViewerUseCase } from '@core/services/question/addViewer/usecase';
-import { QuestionCloseUseCase } from '@core/services/question/close/usecase';
-import { QuestionCreateUseCase } from '@core/services/question/create/usecase';
-import { QuestionDeleteUseCase } from '@core/services/question/delete/usecase';
-import { QuestionGetUseCase } from '@core/services/question/get/usecase';
-import { QuestionGetManyUseCase } from '@core/services/question/getMany/usecase';
-import { QuestionOpenUseCase } from '@core/services/question/open/usecase';
-import { QuestionUpdateUseCase } from '@core/services/question/update/usecase';
-import { QuestionVoteUseCase } from '@core/services/question/vote/usecase';
+import {
+  QuestionAddViewerUseCase,
+  QuestionCloseUseCase,
+  QuestionCreateUseCase,
+  QuestionDeleteUseCase,
+  QuestionGetManyUseCase,
+  QuestionGetUseCase,
+  QuestionGetVoterUseCase,
+  QuestionOpenUseCase,
+  QuestionUpdateUseCase,
+  QuestionVoteUseCase,
+} from '@core/services/question';
+
 import {
   PrismaAnswerRepositoryDI,
   PrismaQuestionRepositoryDI,
   PrismaQuestionUserRepositoryDI,
   PrismaTransactionDI,
 } from '../repositories/PrismaRepositoriesDI';
-import { QuestionGetVoterUseCase } from '@core/services/question';
+
+import { QuestionServiceFacade } from '@application/facades/QuestionServiceFacade';
 import { UserRatingValidatorDI } from '../security/validators/UserRatingValidatorDI';
 
 const CreateUseCaseDI = new QuestionCreateUseCase(

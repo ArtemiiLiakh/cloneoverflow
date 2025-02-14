@@ -4,3 +4,4 @@ export * from './ForgotPasswordDTO';
 export * from './ChangePasswordDTO';
 export * from './DeleteDTO';
 export * from './VerificationCodeDTO';
+export * from './CheckVerificationCodeDTO';

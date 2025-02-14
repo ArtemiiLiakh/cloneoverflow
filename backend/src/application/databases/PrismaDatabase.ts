@@ -4,11 +4,13 @@ import { PrismaClient } from '@prisma/client';
 class PrismaDatabase {
   private client: PrismaClient;
 
-  async connect () {
+  constructor () {
     this.client = new PrismaClient({
       datasourceUrl: config.POSTGRES_URL,
     });
+  }
 
+  async connect () {
     await this.client.$connect();
   }
 

@@ -1,7 +1,10 @@
-import { AnswerCreateMapperOutput } from '@application/adapters/mappers/answers/AnswerCreateMapper';
-import { AnswerGetMapperOutput } from '@application/adapters/mappers/answers/AnswerGetMapper';
-import { AnswerUpdateMapperOutput } from '@application/adapters/mappers/answers/AnswerUpdateMapper';
-import { AnswerServiceFacade } from '@application/services/AnswerServiceFacade';
+import {
+  AnswerCreateMapperOutput,
+  AnswerGetManyMapper,
+  AnswerGetMapperOutput,
+  AnswerUpdateMapperOutput,
+} from '@application/adapters/mappers/answers';
+
 import {
   AnswerCreateDTO,
   AnswerCreateResponse,
@@ -13,9 +16,10 @@ import {
   AnswerUpdateResponse,
   VoteDTO,
 } from '@cloneoverflow/common';
+
+import { AnswerServiceFacade } from '@application/facades/AnswerServiceFacade';
 import { WithAuth, WithBody, WithOptionalAuth, WithParams, WithQuery } from './types/Request';
 import { CoreResponse } from './types/Response';
-import { AnswerGetManyMapper } from '@application/adapters/mappers/answers/AnswerGetManyMapper';
 
 export class AnswerController {
   constructor (

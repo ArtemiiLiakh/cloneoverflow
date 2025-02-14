@@ -1,13 +1,17 @@
-import { UserServiceFacade } from '@application/services/UserServiceFacade';
-import { UserCreateUseCase } from '@core/services/user/create/usecase';
-import { UserGetUseCase } from '@core/services/user/get/usecase';
-import { UserGetProfileUseCase } from '@core/services/user/getProfile/usecase';
-import { UserUpdateUseCase } from '@core/services/user/update/usecase';
+import { 
+  UserCreateUseCase,
+  UserGetProfileUseCase,
+  UserGetUseCase,
+  UserUpdateUseCase,
+} from '@core/services/user';
+
 import {
   PrismaAnswerRepositoryDI,
   PrismaQuestionRepositoryDI,
   PrismaUserRepositoryDI,
 } from '../repositories/PrismaRepositoriesDI';
+
+import { UserServiceFacade } from '@application/facades/UserServiceFacade';
 import { DataHasherDI } from '../security/hashers/DataHasherDI';
 
 const CreateUseCaseDI = new UserCreateUseCase(PrismaUserRepositoryDI, DataHasherDI);

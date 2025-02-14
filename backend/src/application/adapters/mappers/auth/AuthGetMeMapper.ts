@@ -1,4 +1,4 @@
-import { GetMeOutput } from '@application/auth/services/getMe/dto';
+import { GetMeOutput } from '@application/services/auth/usecases/dtos';
 import { AuthGetMeResponse } from '@cloneoverflow/common';
 
 export function AuthGetMeMapperOutput (user: GetMeOutput): AuthGetMeResponse {

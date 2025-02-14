@@ -1,4 +1,4 @@
-import { AuthPayload } from '@application/auth/data/AuthPayload';
+import { AuthPayload } from '@application/services/auth/data';
 
 export interface CoreRequest<P=unknown, Q=unknown, B=unknown, C=unknown> {
   params: P;

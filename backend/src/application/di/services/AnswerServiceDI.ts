@@ -1,17 +1,21 @@
-import { AnswerServiceFacade } from '@application/services/AnswerServiceFacade';
-import { AnswerCreateUseCase } from '@core/services/answer/create/usecase';
-import { AnswerDeleteUseCase } from '@core/services/answer/delete/usecase';
-import { AnswerGetUseCase } from '@core/services/answer/get/usecase';
-import { AnswerGetManyUseCase } from '@core/services/answer/getMany/usecase';
-import { AnswerUpdateUseCase } from '@core/services/answer/update/usecase';
-import { AnswerVoteUseCase } from '@core/services/answer/vote/usecase';
+import {
+  AnswerCreateUseCase,
+  AnswerDeleteUseCase,
+  AnswerGetManyUseCase,
+  AnswerGetUseCase,
+  AnswerGetVoterUseCase,
+  AnswerUpdateUseCase,
+  AnswerVoteUseCase,
+} from '@core/services/answer';
+
 import {
   PrismaAnswerRepositoryDI,
   PrismaAnswerUserRepositoryDI,
   PrismaQuestionRepositoryDI,
   PrismaTransactionDI,
 } from '../repositories/PrismaRepositoriesDI';
-import { AnswerGetVoterUseCase } from '@core/services/answer/getVoter/usercase';
+
+import { AnswerServiceFacade } from '@application/facades/AnswerServiceFacade';
 import { UserRatingValidatorDI } from '../security/validators/UserRatingValidatorDI';
 
 const CreateUseCaseDI = new AnswerCreateUseCase(

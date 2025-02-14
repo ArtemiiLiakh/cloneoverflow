@@ -1,8 +1,7 @@
-import { PaginationDTO } from '@data/PaginationDTO';
+import { PaginationDTO } from '@dtos/PaginationDTO';
 import { SearchQuestionFilterByEnum } from '@enums/filters';
 import { OrderByEnum } from '@enums/OrderBy';
 import { SearchQuestionSortByEnum } from '@enums/sorts';
-import { validationMessage } from '@utils/validationUtils';
 import { Type } from "class-transformer";
 import { IsEnum, IsOptional, ValidateNested } from "class-validator";
 
@@ -11,15 +10,23 @@ export class SearchQuestionsDTO {
     search?: string;
   
   @IsOptional()
-  @IsEnum(SearchQuestionFilterByEnum, validationMessage(`FilterBy must be a valid enum value: ${Object.values(SearchQuestionFilterByEnum)}`, true))
+  @IsEnum(SearchQuestionFilterByEnum, { 
+    message: `FilterBy must be a valid enum value: ${Object.values(SearchQuestionFilterByEnum)}`, 
+    each: true,
+  })
     filterBy?: SearchQuestionFilterByEnum[];
   
   @IsOptional()
-  @IsEnum(SearchQuestionSortByEnum, validationMessage(`SortBy must be a valid enum value: ${Object.values(SearchQuestionSortByEnum)}`, true))
+  @IsEnum(SearchQuestionSortByEnum, { 
+    message: `SortBy must be a valid enum value: ${Object.values(SearchQuestionSortByEnum)}`, 
+    each: true,
+  })
     sortBy?: SearchQuestionSortByEnum[];
   
   @IsOptional()
-  @IsEnum(OrderByEnum, validationMessage(`OrderBy must be a valid enum value: ${Object.values(OrderByEnum)}`))
+  @IsEnum(OrderByEnum, { 
+    message: `OrderBy must be a valid enum value: ${Object.values(OrderByEnum)}` 
+  })
     orderBy?: OrderByEnum;
   
   @IsOptional()

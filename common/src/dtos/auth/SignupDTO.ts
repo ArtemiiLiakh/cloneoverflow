@@ -1,20 +1,20 @@
-import { validationMessage } from '@utils/validationUtils';
-import { IsEmail, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, MaxLength } from 'class-validator';
 
 export class AuthSignupDTO {
-  @IsNotEmpty(validationMessage('Email is required'))
-  @IsEmail({}, validationMessage('Email must be in email format'))
+  @IsNotEmpty({ message: 'Email is required' })
+  @IsEmail({}, { message: 'Email must be in email format' })
     email: string;
   
-  @IsNotEmpty(validationMessage('Password is required'))
+  @IsNotEmpty({ message: 'Password is required' })
     password: string;
 
-  @IsNotEmpty(validationMessage('Name is required'))
+  @IsNotEmpty({ message: 'Name is required' })
     name: string;
   
-  @IsNotEmpty(validationMessage('Username is required'))
+  @IsNotEmpty({ message: 'Username is required' })
     username: string;
 
   @IsOptional()
+  @MaxLength(500, { message: 'Maximum length of description is 500 symbols' })
     about?: string;
 }

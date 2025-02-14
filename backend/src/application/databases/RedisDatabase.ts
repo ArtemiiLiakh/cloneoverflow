@@ -1,20 +1,26 @@
 import config from '@/config';
-import { RedisClientType, createClient } from 'redis';
+import { createClient, RedisClientType } from 'redis';
 
 class RedisDatabase {
   private client: RedisClientType;
 
-  async connect () {
+  constructor () {
     this.client = createClient({
       url: config.REDIS_URL,
       database: 0,
     });
-
-    await this.client.connect();
   }
 
+  async connect () {
+    await this.client.connect();
+  }
+  
   getClient () {
     return this.client;
+  }
+
+  async disconnect ()   {
+    await this.client.disconnect();
   }
 }
 

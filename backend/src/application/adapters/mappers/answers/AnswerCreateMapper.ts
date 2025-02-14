@@ -1,5 +1,5 @@
 import { AnswerCreateResponse } from '@cloneoverflow/common';
-import { AnswerCreateOutput } from '@core/services/answer/create/dto';
+import { AnswerCreateOutput } from '@core/services/answer/dtos';
 
 export function AnswerCreateMapperOutput (answer: AnswerCreateOutput): AnswerCreateResponse {
   return {

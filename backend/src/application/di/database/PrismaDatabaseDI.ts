@@ -1,3 +1,3 @@
 import { prismaDatabase } from '@application/databases/PrismaDatabase';
 
-export default prismaDatabase.getClient();
+export const PrismaDatabaseDI = prismaDatabase.getClient();

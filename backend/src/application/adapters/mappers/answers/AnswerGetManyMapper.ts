@@ -1,5 +1,5 @@
 import { AnswerGetAllResponse } from '@cloneoverflow/common';
-import { AnswerGetManyOutput } from '@core/services/answer/getMany/dto';
+import { AnswerGetManyOutput } from '@core/services/answer/dtos';
 
 export const AnswerGetManyMapper = (
   { data, pagination }: AnswerGetManyOutput,

@@ -1,5 +1,5 @@
 import { SearchQuestionsResponse } from '@cloneoverflow/common';
-import { SearchQuestionsOutput } from '@core/services/search/searchQuestions/dto';
+import { SearchQuestionsOutput } from '@core/services/search/dtos';
 
 export function SearchQuestionsMapperOutput (
   questions: SearchQuestionsOutput,

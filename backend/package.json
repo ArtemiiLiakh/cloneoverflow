@@ -8,25 +8,19 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig-build.json && tsc-alias",
-    
     "start:dev": "dotenvx run -f ./environment/.env.dev -- nodemon src/index.ts",
-    "start:prod": "dotenvx run -f ./environment/.env.prod -- node dist/index.js",
-    
+    "start:prod": "dotenvx run -f ./environment/.env.dev -- node dist/index.js",
     "db:generate:dev": "dotenvx run -f ./environment/.env.dev -- npx prisma generate",
     "db:generate:prod": "npx prisma generate",
     "db:generate:test": "dotenvx run -f ./environment/.env.test -- npx prisma generate",
-
     "db:sync:dev": "dotenvx run -f ./environment/.env.dev -- npx prisma db push",
     "db:sync:prod": "dotenvx run -f ./environment/.env.prod -- npx prisma db push --skip-generate",
     "db:sync:test": "dotenvx run -f ./environment/.env.test -- npx prisma db push --skip-generate",
-    
     "db:migrate:create": "dotenvx run -f ./environment/.env.dev -- npx prisma migrate dev --create-only",
     "db:migrate:push": "dotenvx run -f ./environment/.env.dev -- npx prisma migrate dev",
-
     "test": "dotenvx run -f ./environment/.env.test -- jest --config=jest.config.json --logHeapUsage --runInBand",
-    "test:unit": "dotenvx run -f ./environment/.env.test -- jest --config=jest.config.unit.json --logHeapUsage --runInBand",
+    "test:unit": "dotenvx run -f ./environment/.env.test -- jest --config=jest.config.unit.json --logHeapUsage --runInBand --coverage",
     "test:e2e": "dotenvx run -f ./environment/.env.test -- jest --config=jest.config.e2e.json --logHeapUsage --runInBand",
-    
     "lint": "eslint src",
     "lint:fix": "eslint src --fix"
   },

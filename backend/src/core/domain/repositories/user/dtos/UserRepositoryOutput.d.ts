@@ -7,7 +7,7 @@ export namespace UserRepositoryOutput {
   export type CreateWithCreds = void;
 
   export type GetById = User;
-  export type GetByEmail = User | null;
+  export type GetByEmail = User;
 
   export type GetCreds = {
     creds: UserCreds,

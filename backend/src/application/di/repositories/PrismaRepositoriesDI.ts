@@ -5,7 +5,7 @@ import { PrismaQuestionUserRepository } from '@infrastructure/persistance/prisma
 import { PrismaTagRepository } from '@infrastructure/persistance/prisma/repositories/PrismaTagRepository';
 import { PrismaTransactionUnit } from '@infrastructure/persistance/prisma/repositories/PrismaTransactionUnit';
 import { PrismaUserRepository } from '@infrastructure/persistance/prisma/repositories/PrismaUserRepository';
-import PrismaDatabaseDI from '../database/PrismaDatabaseDI';
+import { PrismaDatabaseDI } from '../database/PrismaDatabaseDI';
 
 export const PrismaAnswerRepositoryDI = new PrismaAnswerRepository(PrismaDatabaseDI);
 export const PrismaQuestionRepositoryDI = new PrismaQuestionRepository(PrismaDatabaseDI);

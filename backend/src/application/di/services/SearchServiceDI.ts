@@ -1,10 +1,14 @@
-import { SearchServiceFacade } from '@application/services/SearchServiceFacade';
-import { SearchQuestionsUseCase } from '@core/services/search/searchQuestions/usecase';
-import { SearchTagsUseCase } from '@core/services/search/searchTags/usecase';
-import { 
-  PrismaQuestionRepositoryDI, 
+import {
+  SearchQuestionsUseCase,
+  SearchTagsUseCase,
+} from '@core/services/search';
+
+import {
+  PrismaQuestionRepositoryDI,
   PrismaTagRepositoryDI,
 } from '../repositories/PrismaRepositoriesDI';
+
+import { SearchServiceFacade } from '@application/facades/SearchServiceFacade';
 
 const SearchQuestionsUseCaseDI = new SearchQuestionsUseCase(PrismaQuestionRepositoryDI);
 const SearchTagsUseCaseDI = new SearchTagsUseCase(PrismaTagRepositoryDI);

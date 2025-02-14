@@ -4,3 +4,4 @@ export * from './get/usecase';
 export * from './getMany/usecase';
 export * from './update/usecase';
 export * from './vote/usecase';
+export * from './getVoter/usecase';
