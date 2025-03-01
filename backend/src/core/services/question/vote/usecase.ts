@@ -1,7 +1,7 @@
 import { Exception, ForbiddenException, QuestionUserStatusEnum, VoteTypeEnum } from '@cloneoverflow/common';
 import { UserRatingActions } from '@common/enums/UserRatingActions';
-import { QuestionUser } from '@core/domain/entities/QuestionUser';
-import { QuestionRepository, QuestionUserRepository, UnitOfWork } from '@core/domain/repositories';
+import { QuestionUser } from '@core/models/QuestionUser';
+import { QuestionRepository, QuestionUserRepository, UnitOfWork } from '@core/repositories';
 import { IUserRatingValidator } from '@core/services/validators/types';
 import { QuestionVoteInput, QuestionVoteOutput } from './dto';
 import { IQuestionVoteUseCase } from './type';

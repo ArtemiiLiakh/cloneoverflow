@@ -1,7 +1,7 @@
-import { Answer } from '@core/domain/entities/Answer';
-import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
-import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
-import { Unit, UnitOfWork } from '@core/domain/repositories/UnitOfWork';
+import { Answer } from '@core/models/Answer';
+import { AnswerRepository } from '@core/repositories/answer/AnswerRepository';
+import { QuestionRepository } from '@core/repositories/question/QuestionRepository';
+import { Unit, UnitOfWork } from '@core/repositories/UnitOfWork';
 import { AnswerDeleteUseCase } from '@core/services/answer';
 
 describe('Service: test AnswerDeleteUseCase', () => {

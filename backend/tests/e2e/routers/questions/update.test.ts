@@ -1,20 +1,28 @@
-import { PrismaQuestionRepositoryDI, PrismaTagRepositoryDI, PrismaTransactionDI, PrismaUserRepositoryDI } from '@application/di/repositories/PrismaRepositoriesDI';
-import { app } from '@application/http-rest/server';
 import { QuestionUpdateDTO, QuestionUpdateResponse } from '@cloneoverflow/common';
-import { Question } from '@core/domain/entities/Question';
+import { Question } from '@core/models/Question';
+import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { QuestionUtils } from '@tests/e2e/utils/QuestionUtils';
 import { TagUtils } from '@tests/e2e/utils/TagUtils';
 import { UserUtils } from '@tests/e2e/utils/UserUtils';
 import supertest from 'supertest';
+import { App } from 'supertest/types';
 
 describe('PATCH /api/questions', () => {
   let question: Question;
   let accessToken: string;
-  const userUtils = new UserUtils(PrismaUserRepositoryDI);
-  const questionUtils = new QuestionUtils(PrismaQuestionRepositoryDI, PrismaTransactionDI);
-  const tagUtils = new TagUtils(PrismaTagRepositoryDI, PrismaTransactionDI);
-  
+  let userUtils: UserUtils;
+  let questionUtils: QuestionUtils;
+  let tagUtils: TagUtils;
+  let app: App;
+
   beforeAll(async () => {
+    const nest = await initTestApplication();
+    app = nest.getHttpServer();
+
+    userUtils = new UserUtils(nest);
+    questionUtils = new QuestionUtils(nest);
+    tagUtils = new TagUtils(nest);
+    
     const owner = await userUtils.create();
     question = await questionUtils.create({
       ownerId: owner.id,
@@ -41,9 +49,10 @@ describe('PATCH /api/questions', () => {
     expect(newQuestion.title).toEqual(updateData.title);
     expect(newQuestion.text).toEqual(updateData.text);
 
-    const updatedQuestion = await tagUtils.getByQuestion(newQuestion.id);
-    expect(updatedQuestion?.length).toEqual(1);
-    expect(updatedQuestion?.at(0)?.name).toEqual(newTag);
+    const questionTags = await tagUtils.getByQuestion(newQuestion.id);
+
+    expect(questionTags?.length).toEqual(1);
+    expect(questionTags?.at(0)?.name).toEqual(newTag);
 
     question = await questionUtils.getQuestion(question.id).then(question => question!);
     await tagUtils.delete(newTag);

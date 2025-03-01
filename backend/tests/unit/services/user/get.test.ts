@@ -1,5 +1,5 @@
-import { User } from '@core/domain/entities/User';
-import { UserRepository } from '@core/domain/repositories/user/UserRepository';
+import { User } from '@core/models/User';
+import { UserRepository } from '@core/repositories/user/UserRepository';
 import { UserGetUseCase } from '@core/services/user';
 
 describe('Service: test UserGetUseCase', () => {

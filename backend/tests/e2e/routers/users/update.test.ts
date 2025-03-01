@@ -1,18 +1,23 @@
-import { PrismaUserRepositoryDI } from '@application/di/repositories/PrismaRepositoriesDI';
-import { app } from '@application/http-rest/server';
 import { UserUpdateDTO, UserUpdateResponse } from '@cloneoverflow/common';
-import { User } from '@core/domain/entities/User';
+import { User } from '@core/models/User';
+import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { UserUtils } from '@tests/e2e/utils/UserUtils';
 import supertest from 'supertest';
+import { App } from 'supertest/types';
 
 describe('PATCH /api/users', () => {
+  let app: App;
   let user: User;
   let accessToken: string;
-  const userUtils = new UserUtils(PrismaUserRepositoryDI);
   
   beforeAll(async () => {
+    const nest = await initTestApplication();
+    app = nest.getHttpServer();
+
+    const userUtils = new UserUtils(nest);
+
     user = await userUtils.create();
-    accessToken = await userUtils.getTokens(user).then(tokens => 'accessToken='+tokens.accessToken);
+    accessToken = 'accessToken='+(await userUtils.getTokens(user)).accessToken;
   });
 
   test('Expect it updates user', async () => {

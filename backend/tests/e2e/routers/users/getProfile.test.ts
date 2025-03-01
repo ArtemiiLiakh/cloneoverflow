@@ -1,21 +1,27 @@
-import { PrismaAnswerRepositoryDI, PrismaQuestionRepositoryDI, PrismaTransactionDI, PrismaUserRepositoryDI } from '@application/di/repositories/PrismaRepositoriesDI';
-import { app } from '@application/http-rest/server';
 import { UserGetProfileResponse } from '@cloneoverflow/common';
-import { User } from '@core/domain/entities/User';
+import { User } from '@core/models/User';
+import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { AnswerUtils } from '@tests/e2e/utils/AnswerUtils';
 import { QuestionUtils } from '@tests/e2e/utils/QuestionUtils';
 import { UserUtils } from '@tests/e2e/utils/UserUtils';
 import { randomUUID } from 'crypto';
 import supertest from 'supertest';
+import { App } from 'supertest/types';
 
 describe('GET /api/users/:userId/profile', () => {
-  const userUtils = new UserUtils(PrismaUserRepositoryDI);
-  const questionUtils = new QuestionUtils(PrismaQuestionRepositoryDI, PrismaTransactionDI);
-  const answerUtils = new AnswerUtils(PrismaAnswerRepositoryDI, PrismaTransactionDI);
+  let questionUtils: QuestionUtils;
+  let answerUtils: AnswerUtils;
   let user: User;
-  
+  let app: App;
+
   beforeAll(async () => {
-    user = await userUtils.create();
+    const nest = await initTestApplication();
+
+    user = await new UserUtils(nest).create();
+    questionUtils = new QuestionUtils(nest);
+    answerUtils = new AnswerUtils(nest);
+
+    app = nest.getHttpServer();
   });
 
   test('Expect it returns user profile without questions and answers', async () => {

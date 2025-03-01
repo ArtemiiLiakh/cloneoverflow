@@ -1,18 +1,23 @@
-import { PrismaQuestionRepositoryDI, PrismaTransactionDI, PrismaUserRepositoryDI } from '@application/di/repositories/PrismaRepositoriesDI';
-import { app } from '@application/http-rest/server';
 import { AnswerCreateDTO, AnswerCreateResponse } from '@cloneoverflow/common';
+import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { QuestionUtils } from '@tests/e2e/utils/QuestionUtils';
 import { UserUtils } from '@tests/e2e/utils/UserUtils';
 import supertest from 'supertest';
+import { App } from 'supertest/types';
 
 describe('POST /api/answers', () => {
   let ownerId: string;
   let questionId: string;
   let ownerAccessToken: string;
 
+  let app: App;
+
   beforeAll(async () => {
-    const userUtils = new UserUtils(PrismaUserRepositoryDI);
-    const questionUtils = new QuestionUtils(PrismaQuestionRepositoryDI, PrismaTransactionDI);
+    const nest = await initTestApplication();
+    app = nest.getHttpServer();
+
+    const userUtils = new UserUtils(nest);
+    const questionUtils = new QuestionUtils(nest);
 
     const owner = await userUtils.create();
     const question = await questionUtils.create({ ownerId: owner.id });

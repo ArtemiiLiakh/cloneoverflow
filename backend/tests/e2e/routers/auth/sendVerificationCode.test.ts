@@ -1,14 +1,19 @@
-import { PrismaUserRepositoryDI } from '@application/di/repositories/PrismaRepositoriesDI';
-import { app } from '@application/http-rest/server';
 import { AuthVerificationCodeDTO, VerificationCodeType } from '@cloneoverflow/common';
+import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { UserUtils } from '@tests/e2e/utils/UserUtils';
 import supertest from 'supertest';
+import { App } from 'supertest/types';
 
 describe('POST /api/auth/verificationCode', () => {
   const email = 'email@gmail.com';
   
+  let app: App;
+
   beforeAll(async () => {
-    const userUtils = new UserUtils(PrismaUserRepositoryDI);
+    const nest = await initTestApplication();
+    app = nest.getHttpServer();
+
+    const userUtils = new UserUtils(nest);
     await userUtils.create({ email });
   });
 

@@ -1,10 +1,10 @@
 import config from '@/config';
-import { DataEncryptor, EncryptOptions } from '@application/interfaces/security/DataEncryptor';
-import { AuthPayload, TokenPayload, TokenType } from '../data';
+import { DataEncryptor, EncryptOptions } from '@common/encryption/DataEncryptor';
+import { ExecutorPayload, TokenPayload, TokenTypeEnum } from '../data';
 
 export const makeAccessToken = (
   dataEncryptor: DataEncryptor,
-  { userId, status }: AuthPayload,
+  { userId, status }: ExecutorPayload,
   options: EncryptOptions = {},
 ) => {
   options.expiresIn = options.expiresIn ?? config.jwt.accessToken.maxAge;
@@ -12,6 +12,6 @@ export const makeAccessToken = (
   return dataEncryptor.encrypt<TokenPayload>({
     userId,
     status,
-    type: TokenType.ACCESS,
+    type: TokenTypeEnum.ACCESS,
   }, options).then((res) => res ?? '');
 };

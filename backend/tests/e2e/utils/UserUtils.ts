@@ -1,22 +1,31 @@
-import { DataHasherDI } from '@application/di/security/hashers/DataHasherDI';
-import { EncryptOptions } from '@application/interfaces/security/DataEncryptor';
+import { DataHasherDIToken } from '@application/http-rest/nestjs/di/tokens/encryption';
+import { PrismaRepositoryDITokens } from '@application/http-rest/nestjs/di/tokens/persistence';
 import { makeAccessToken } from '@application/services/auth/utils/makeAccessToken';
 import { makeRefreshToken } from '@application/services/auth/utils/makeRequestToken';
-import { User } from '@core/domain/entities/User';
-import { UserCreds } from '@core/domain/entities/UserCreds';
-import { UserRepository } from '@core/domain/repositories';
-import { JwtEncryptorImpl } from '@infrastructure/security/JwtEncryptorImpl';
+import { EncryptOptions } from '@common/encryption/DataEncryptor';
+import { DataHasher } from '@common/encryption/DataHasher';
+import { User } from '@core/models/User';
+import { UserCreds } from '@core/models/UserCreds';
+import { UserRepository } from '@core/repositories';
+import { JwtEncryptorImpl } from '@infrastructure/encryption/JwtEncryptorImpl';
+import { INestApplication } from '@nestjs/common';
 import { randomBytes } from 'crypto';
 
 export class UserUtils {
+  private dataHasher: DataHasher;
+  private userRepository: UserRepository;
+
   constructor (
-    private userRepository: UserRepository,
-  ) {}
+    nest: INestApplication,
+  ) {
+    this.userRepository = nest.get(PrismaRepositoryDITokens.UserRepository);
+    this.dataHasher = nest.get(DataHasherDIToken);
+  }
 
   async create (user?: Partial<User> & { email?: string, password?: string }): Promise<User> {
     const creds = UserCreds.new({
       email: user?.email ?? randomBytes(4).toString('hex')+'@gmail.com',
-      password: await DataHasherDI.hash(user?.password ?? 'q12345678'),
+      password: await this.dataHasher.hash(user?.password ?? 'q12345678'),
     });
 
     const newUser = User.new({

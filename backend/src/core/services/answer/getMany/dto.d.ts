@@ -1,5 +1,5 @@
 import { AnswersSortByEnum, OrderByEnum, PaginationDTO, PaginatedData } from '@cloneoverflow/common';
-import { Answer } from '@core/domain/entities/Answer';
+import { Answer } from '@core/models/Answer';
 
 export type AnswerGetManyInput = {
   questionId?: string;

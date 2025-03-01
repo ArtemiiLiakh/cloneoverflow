@@ -1,3 +1,4 @@
+import path from 'path';
 import { cache } from './cache';
 import { google } from './google';
 import { jwt } from './jwt';
@@ -11,4 +12,7 @@ export default {
   jwt,
   google,
   cache,
+  ratingSystem: {
+    filepath: path.join(process.cwd(), 'environment', 'ratings.json'),
+  },
 };

@@ -1,11 +1,11 @@
 import { ForbiddenException, QuestionUserStatusEnum, VoteTypeEnum } from '@cloneoverflow/common';
-import { Question } from '@core/domain/entities/Question';
-import { QuestionUser } from '@core/domain/entities/QuestionUser';
-import { User } from '@core/domain/entities/User';
-import { UserRepository } from '@core/domain/repositories';
-import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
-import { QuestionUserRepository } from '@core/domain/repositories/question/QuestionUserRepository';
-import { Unit, UnitOfWork } from '@core/domain/repositories/UnitOfWork';
+import { Question } from '@core/models/Question';
+import { QuestionUser } from '@core/models/QuestionUser';
+import { User } from '@core/models/User';
+import { UserRepository } from '@core/repositories';
+import { QuestionRepository } from '@core/repositories/question/QuestionRepository';
+import { QuestionUserRepository } from '@core/repositories/question/QuestionUserRepository';
+import { Unit, UnitOfWork } from '@core/repositories/UnitOfWork';
 import { QuestionVoteUseCase } from '@core/services/question';
 import { IUserRatingValidator } from '@core/services/validators/types';
 

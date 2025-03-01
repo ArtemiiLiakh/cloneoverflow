@@ -1,10 +1,10 @@
 import { AnswerUserStatusEnum, Exception, NoEntityWithIdException } from '@cloneoverflow/common';
-import { Answer } from '@core/domain/entities/Answer';
-import { AnswerUser } from '@core/domain/entities/AnswerUser';
-import { UnitOfWork } from '@core/domain/repositories/UnitOfWork';
+import { Answer } from '@core/models/Answer';
+import { AnswerUser } from '@core/models/AnswerUser';
+import { UnitOfWork } from '@core/repositories/UnitOfWork';
 import { AnswerCreateInput, AnswerCreateOutput } from './dto';
 import { IAnswerCreateUseCase } from './type';
-import { QuestionRepository } from '@core/domain/repositories';
+import { QuestionRepository } from '@core/repositories';
 
 export class AnswerCreateUseCase implements IAnswerCreateUseCase {
   constructor (

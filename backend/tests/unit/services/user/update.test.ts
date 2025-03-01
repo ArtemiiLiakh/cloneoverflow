@@ -1,6 +1,6 @@
 import { BadBodyException } from '@cloneoverflow/common';
-import { User } from '@core/domain/entities/User';
-import { UserRepository } from '@core/domain/repositories/user/UserRepository';
+import { User } from '@core/models/User';
+import { UserRepository } from '@core/repositories/user/UserRepository';
 import { UserUpdateUseCase } from '@core/services/user';
 import { UserUpdateInput } from '@core/services/user/update/dto';
 

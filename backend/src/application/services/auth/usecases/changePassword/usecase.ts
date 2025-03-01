@@ -1,7 +1,7 @@
 import { LoginException, UnauthorizedException, VerificationCodeType } from '@cloneoverflow/common';
-import { DataHasher } from '@core/data/DataHasher';
-import { CacheRepository } from '@core/domain/repositories/cache/CacheRepository';
-import { UserRepository } from '@core/domain/repositories/user/UserRepository';
+import { DataHasher } from '@common/encryption/DataHasher';
+import { CacheRepository } from '@core/repositories/cache/CacheRepository';
+import { UserRepository } from '@core/repositories/user/UserRepository';
 import { IVerificationCodeValidator } from '../validators/types';
 import { ChangePasswordInput, ChangePasswordOutput } from './dto';
 import { IChangePasswordUseCase } from './type';

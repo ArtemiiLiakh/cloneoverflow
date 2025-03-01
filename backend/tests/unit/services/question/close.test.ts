@@ -1,10 +1,10 @@
 import { BadBodyException } from '@cloneoverflow/common';
-import { Answer } from '@core/domain/entities/Answer';
-import { Question } from '@core/domain/entities/Question';
-import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
-import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
-import { QuestionUserRepository } from '@core/domain/repositories/question/QuestionUserRepository';
-import { Unit, UnitOfWork } from '@core/domain/repositories/UnitOfWork';
+import { Answer } from '@core/models/Answer';
+import { Question } from '@core/models/Question';
+import { AnswerRepository } from '@core/repositories/answer/AnswerRepository';
+import { QuestionRepository } from '@core/repositories/question/QuestionRepository';
+import { QuestionUserRepository } from '@core/repositories/question/QuestionUserRepository';
+import { Unit, UnitOfWork } from '@core/repositories/UnitOfWork';
 import { QuestionCloseUseCase } from '@core/services/question';
 import { IUserRatingValidator } from '@core/services/validators/types';
 

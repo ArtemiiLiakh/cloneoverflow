@@ -1,6 +1,6 @@
 import { AlreadyRegisteredException } from '@cloneoverflow/common';
-import { DataHasher } from '@core/data/DataHasher';
-import { UserRepository } from '@core/domain/repositories/user/UserRepository';
+import { DataHasher } from '@common/encryption/DataHasher';
+import { UserRepository } from '@core/repositories/user/UserRepository';
 import { UserCreateUseCase } from '@core/services/user';
 import { UserCreateInput } from '@core/services/user/create/dto';
 

@@ -1,20 +1,25 @@
-import { PrismaQuestionRepositoryDI, PrismaTransactionDI, PrismaUserRepositoryDI } from '@application/di/repositories/PrismaRepositoriesDI';
-import { app } from '@application/http-rest/server';
 import { OrderByEnum, SearchQuestionFilterByEnum, SearchQuestionsDTO, SearchQuestionSortByEnum, SearchQuestionsResponse } from '@cloneoverflow/common';
-import { Question } from '@core/domain/entities';
+import { Question } from '@core/models';
+import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { QuestionUtils } from '@tests/e2e/utils/QuestionUtils';
 import { UserUtils } from '@tests/e2e/utils/UserUtils';
 import supertest from 'supertest';
+import { App } from 'supertest/types';
 
 describe('GET /api/questions/search', () => {
   let question1: Question;
   let question2: Question;
-  
-  beforeAll(async () => {
-    const userUtils = new UserUtils(PrismaUserRepositoryDI);
-    const owner = await userUtils.create();
-    const questionUtils = new QuestionUtils(PrismaQuestionRepositoryDI, PrismaTransactionDI);
+  let app: App;
 
+  beforeAll(async () => {
+    const nest = await initTestApplication();
+    app = nest.getHttpServer();
+
+    const userUtils = new UserUtils(nest);
+    const questionUtils = new QuestionUtils(nest);
+
+    const owner = await userUtils.create();
+    
     question1 = await questionUtils.create({ 
       ownerId: owner.id, 
       title: 'question 1', 
@@ -34,7 +39,7 @@ describe('GET /api/questions/search', () => {
 
   test('Expect it search questions with default options', async () => {
     const res: SearchQuestionsResponse = await supertest(app)
-      .get('/api/questions/search')
+      .get('/api/questions')
       .expect(200)
       .then(res => res.body);
 
@@ -51,7 +56,7 @@ describe('GET /api/questions/search', () => {
     };
 
     const questions: SearchQuestionsResponse = await supertest(app)
-      .get('/api/questions/search')
+      .get('/api/questions')
       .expect(200)
       .query(query)
       .then(res => res.body);
@@ -66,7 +71,7 @@ describe('GET /api/questions/search', () => {
     };
 
     const questions: SearchQuestionsResponse = await supertest(app)
-      .get('/api/questions/search')
+      .get('/api/questions')
       .expect(200)
       .query(query)
       .then(res => res.body);

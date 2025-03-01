@@ -1,4 +1,4 @@
-import { Question } from '@core/domain/entities/Question';
+import { Question } from '@core/models/Question';
 
 export type QuestionDeleteInput = {
   executorId: string,

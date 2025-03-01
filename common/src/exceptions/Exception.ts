@@ -1,6 +1,6 @@
-export class ExceptionMessage {
+export interface SerializedError {
   message: string | string[];
-  statusCode: number;
+  status: number;
 }
 
 export class Exception extends Error {
@@ -11,10 +11,10 @@ export class Exception extends Error {
     super(message);
   }
 
-  serializeError (): ExceptionMessage {
+  serializeError (): SerializedError {
     return {
       message: this.message,
-      statusCode: this.statusCode,
+      status: this.statusCode,
     };
   }
 }

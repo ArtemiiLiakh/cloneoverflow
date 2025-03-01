@@ -1,5 +1,5 @@
 import { OrderByEnum, SearchTagsSortByEnum } from '@cloneoverflow/common';
-import { TagOrderBy, TagOrderByType } from '@core/domain/repositories/tag/dtos/Params';
+import { TagOrderBy, TagOrderByType } from '@core/repositories/tag/dtos/Params';
 
 export const TagsSortBy = (
   sortBy?: SearchTagsSortByEnum | SearchTagsSortByEnum[], 

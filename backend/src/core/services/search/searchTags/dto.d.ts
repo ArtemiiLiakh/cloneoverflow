@@ -1,5 +1,5 @@
 import { SearchTagsSortByEnum, OrderByEnum, PaginationDTO, PaginatedData } from '@cloneoverflow/common';
-import { Tag } from '@core/domain/entities/Tag';
+import { Tag } from '@core/models/Tag';
 
 export type SearchTagsInput = {
   name?: string;

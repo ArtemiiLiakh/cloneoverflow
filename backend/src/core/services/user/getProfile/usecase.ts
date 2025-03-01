@@ -1,7 +1,7 @@
 import { OrderByEnum } from '@cloneoverflow/common';
-import { AnswerRepository, QuestionRepository, UserRepository } from '@core/domain/repositories';
-import { AnswerRepositoryOutput } from '@core/domain/repositories/answer/dtos/AnswerRepositoryOutput';
-import { QuestionRepositoryOutput } from '@core/domain/repositories/question/dtos/QuestionRepositoryOutput';
+import { AnswerRepository, QuestionRepository, UserRepository } from '@core/repositories';
+import { AnswerRepositoryOutput } from '@core/repositories/answer/dtos/AnswerRepositoryOutput';
+import { QuestionRepositoryOutput } from '@core/repositories/question/dtos/QuestionRepositoryOutput';
 import { UserGetProfileInput, UserGetProfileOutput } from './dto';
 import { getProfileOutputMapper } from './mapper';
 import { IUserGetProfileUseCase } from './type';

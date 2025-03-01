@@ -1,5 +1,5 @@
 import { OrderByEnum, PaginatedData, PaginationDTO, QuestionsSortByEnum } from '@cloneoverflow/common';
-import { Tag } from '@core/domain/entities/Tag';
+import { Tag } from '@core/models/Tag';
 
 export type QuestionGetManyInput = {
   search?: string;

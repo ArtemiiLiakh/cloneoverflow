@@ -1,10 +1,11 @@
-import { PrismaUserRepositoryDI } from '@application/di/repositories/PrismaRepositoriesDI';
-import { UserUtils } from '@tests/e2e/utils/UserUtils';
-import { createVerificationCode } from './utils/createVerificationCode';
 import { AuthChangePasswordDTO, VerificationCodeType } from '@cloneoverflow/common';
+import { initTestApplication } from '@tests/e2e/initTestApplication';
+import { UserUtils } from '@tests/e2e/utils/UserUtils';
 import supertest from 'supertest';
-import { app } from '@application/http-rest/server';
+import { App } from 'supertest/types';
+import { createVerificationCode } from './utils/createVerificationCode';
 import { login } from './utils/login';
+import { INestApplication } from '@nestjs/common';
 
 describe('PATCH /api/auth/password', () => {
   let userAccessToken: string;
@@ -14,8 +15,16 @@ describe('PATCH /api/auth/password', () => {
     password: 'password',
   };
 
+  let nest: INestApplication;
+  let app: App;
+  let userUtils: UserUtils;
+
   beforeAll(async () => {
-    const userUtils = new UserUtils(PrismaUserRepositoryDI);
+    nest = await initTestApplication();
+    app = nest.getHttpServer();
+
+    userUtils = new UserUtils(nest);
+    
     const user = await userUtils.create({
       email: userCreds.email,
       password: userCreds.password,
@@ -27,7 +36,7 @@ describe('PATCH /api/auth/password', () => {
   });
 
   test('Expect it updates password', async () => {
-    const code = await createVerificationCode({
+    const code = await createVerificationCode(nest, {
       email: userCreds.email,
       codeType: VerificationCodeType.ChangePassword,
     });
@@ -45,7 +54,7 @@ describe('PATCH /api/auth/password', () => {
       .send(sendData)
       .expect(200);
 
-    await login({
+    await login(app, {
       email: userCreds.email,
       password: sendData.newPassword,
     });
@@ -54,7 +63,7 @@ describe('PATCH /api/auth/password', () => {
   });
 
   test('When password was updated expect verification code is inactive', async () => {
-    const code = await createVerificationCode({
+    const code = await createVerificationCode(nest, {
       email: userCreds.email,
       codeType: VerificationCodeType.ChangePassword,
     });
@@ -83,7 +92,7 @@ describe('PATCH /api/auth/password', () => {
   });
 
   test('When user email or old password is incorrect expect it returns error 400', async () => {
-    const code = await createVerificationCode({
+    const code = await createVerificationCode(nest, {
       email: userCreds.email,
       codeType: VerificationCodeType.ChangePassword,
     }, 3);
@@ -136,7 +145,7 @@ describe('PATCH /api/auth/password', () => {
       } as AuthChangePasswordDTO)
       .expect(400);
 
-    const code = await createVerificationCode({
+    const code = await createVerificationCode(nest, {
       email: userCreds.email,
       codeType: VerificationCodeType.ChangePassword,
     }, 1);

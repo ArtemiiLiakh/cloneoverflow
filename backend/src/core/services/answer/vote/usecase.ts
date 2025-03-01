@@ -1,9 +1,9 @@
 import { AnswerUserStatusEnum, Exception, ForbiddenException, VoteTypeEnum } from '@cloneoverflow/common';
 import { UserRatingActions } from '@common/enums/UserRatingActions';
-import { AnswerUser } from '@core/domain/entities/AnswerUser';
-import { UnitOfWork } from '@core/domain/repositories';
-import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
-import { AnswerUserRepository } from '@core/domain/repositories/answer/AnswerUserRepository';
+import { AnswerUser } from '@core/models/AnswerUser';
+import { UnitOfWork } from '@core/repositories';
+import { AnswerRepository } from '@core/repositories/answer/AnswerRepository';
+import { AnswerUserRepository } from '@core/repositories/answer/AnswerUserRepository';
 import { IUserRatingValidator } from '@core/services/validators/types';
 import { AnswerVoteInput, AnswerVoteOutput } from './dto';
 import { IAnswerVoteUseCase } from './type';

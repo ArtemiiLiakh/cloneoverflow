@@ -1,5 +1,5 @@
-import { Tag } from '@core/domain/entities/Tag';
-import { User } from '@core/domain/entities/User';
+import { Tag } from '@core/models/Tag';
+import { User } from '@core/models/User';
 
 export type UserGetProfileInput = {
   userId: string

@@ -1,4 +1,4 @@
-import { TagsRepositoryOutput } from '@core/domain/repositories/tag/dtos/TagRepositoryOutput';
+import { TagsRepositoryOutput } from '@core/repositories/tag/dtos/TagRepositoryOutput';
 import { SerachTagsOutput } from './dto';
 
 export const searchTagsOutputMapper = (

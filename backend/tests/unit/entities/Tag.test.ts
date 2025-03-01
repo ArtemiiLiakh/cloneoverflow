@@ -1,4 +1,4 @@
-import { Tag } from '@core/domain/entities/Tag';
+import { Tag } from '@core/models/Tag';
 
 describe('Entity: test Tag entity', () => {
   test('Create Tag entity with default fields', () => {

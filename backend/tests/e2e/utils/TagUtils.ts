@@ -1,12 +1,19 @@
-import { Tag } from '@core/domain/entities/Tag';
-import { TagRepository, UnitOfWork } from '@core/domain/repositories';
+import { PrismaRepositoryDITokens } from '@application/http-rest/nestjs/di/tokens/persistence';
+import { Tag } from '@core/models/Tag';
+import { TagRepository, UnitOfWork } from '@core/repositories';
+import { INestApplication } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 
 export class TagUtils {
+  private tagRepository: TagRepository;
+  private unitOfWork: UnitOfWork;
+  
   constructor (
-    private tagRepository: TagRepository,
-    private unitOfWork: UnitOfWork,
-  ) {}
+    nest: INestApplication,
+  ) {
+    this.tagRepository = nest.get(PrismaRepositoryDITokens.TagRepository);
+    this.unitOfWork = nest.get(PrismaRepositoryDITokens.UnitOfWork);
+  }
 
   async create (
     payload?: { name?: string, questionId?: string },

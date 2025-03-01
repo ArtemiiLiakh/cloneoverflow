@@ -1,4 +1,4 @@
-import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
+import { AnswerRepository } from '@core/repositories/answer/AnswerRepository';
 import { AnswerGetInput, AnswerGetOutput } from './dto';
 import { getOutputMapper } from './mapper';
 import { IAnswerGetUseCase } from './type';

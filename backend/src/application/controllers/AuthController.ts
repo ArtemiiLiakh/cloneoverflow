@@ -50,7 +50,7 @@ export class AuthController {
       username: body.username,
       about: body.about ?? '',
     });
-
+    
     res.setCookie('accessToken', tokens.access_token);
     res.setCookie('refreshToken', tokens.refresh_token);
 
@@ -102,6 +102,7 @@ export class AuthController {
       newPassword: body.newPassword,
     });
 
+    res.status(200);
     res.send({ message: 'ok' });
   }
 

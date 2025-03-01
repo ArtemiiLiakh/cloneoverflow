@@ -1,4 +1,4 @@
-import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
+import { QuestionRepository } from '@core/repositories/question/QuestionRepository';
 import { QuestionDeleteInput, QuestionDeleteOutput } from './dto';
 import { IQuestionDeleteUseCase } from './type';
 import { ForbiddenException } from '@cloneoverflow/common';

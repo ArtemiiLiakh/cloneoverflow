@@ -1,5 +1,5 @@
-import { Tag } from '@core/domain/entities/Tag';
-import { TagRepository } from '@core/domain/repositories/tag/TagRepository';
+import { Tag } from '@core/models/Tag';
+import { TagRepository } from '@core/repositories/tag/TagRepository';
 import { SearchTagsUseCase } from '@core/services/search';
 import { SearchTagsInput } from '@core/services/search/searchTags/dto';
 

@@ -1,8 +1,8 @@
 import { PaginationResponse } from '@cloneoverflow/common';
-import { Answer } from '@core/domain/entities/Answer';
-import { Question } from '@core/domain/entities/Question';
-import { User } from '@core/domain/entities/User';
-import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
+import { Answer } from '@core/models/Answer';
+import { Question } from '@core/models/Question';
+import { User } from '@core/models/User';
+import { AnswerRepository } from '@core/repositories/answer/AnswerRepository';
 import { AnswerGetManyUseCase } from '@core/services/answer';
 import { AnswerGetManyInput } from '@core/services/answer/getMany/dto';
 

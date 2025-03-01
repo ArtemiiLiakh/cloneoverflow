@@ -1,4 +1,4 @@
-import { TagRepository } from '@core/domain/repositories/tag/TagRepository';
+import { TagRepository } from '@core/repositories/tag/TagRepository';
 import { TagsSortBy } from '@core/services/utils/SearchTagSortBy';
 import { SearchTagsInput, SerachTagsOutput } from './dto';
 import { searchTagsOutputMapper } from './mapper';

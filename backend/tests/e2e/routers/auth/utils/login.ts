@@ -1,8 +1,8 @@
-import { app } from '@application/http-rest/server';
 import { AuthLoginDTO, AuthLoginResponse } from '@cloneoverflow/common';
 import supertest from 'supertest';
+import { App } from 'supertest/types';
 
-export const login = async (data: AuthLoginDTO): Promise<AuthLoginResponse> => {
+export const login = async (app: App, data: AuthLoginDTO): Promise<AuthLoginResponse> => {
   const user = await supertest(app)
     .post('/api/auth/login')
     .send(data)

@@ -1,13 +1,21 @@
-import { IsEnum, IsNotEmpty } from 'class-validator';
-import { AuthPayload } from './AuthPayload';
+import { UserStatusEnum } from '@cloneoverflow/common';
+import { IsEnum, IsNotEmpty, IsUUID } from 'class-validator';
 
-export enum TokenType {
+export enum TokenTypeEnum {
   ACCESS='access',
   REFRESH='refresh'
 }
 
-export class TokenPayload extends AuthPayload {
+export class TokenPayload {
   @IsNotEmpty()
-  @IsEnum(TokenType)
-    type?: TokenType;
+  @IsUUID()
+    userId: string;
+
+  @IsNotEmpty()
+  @IsEnum(UserStatusEnum)
+    status: UserStatusEnum;
+
+  @IsNotEmpty()
+  @IsEnum(TokenTypeEnum)
+    type?: TokenTypeEnum;
 }

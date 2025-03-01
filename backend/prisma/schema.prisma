@@ -122,7 +122,7 @@ model AnswerUser {
   user            User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
   answer          Answer                @relation(fields: [answerId], references: [id], onDelete: Cascade)
   status          UserAnswerStatus      @default(OWNER)
-  voteType        VoteType?             @map("vote_type")
+  voteType        VoteType?               @map("vote_type")
 
   @@index([userId])
   @@index([answerId])

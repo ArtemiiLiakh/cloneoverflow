@@ -1,17 +1,22 @@
-import { PrismaQuestionRepositoryDI, PrismaTransactionDI, PrismaUserRepositoryDI } from '@application/di/repositories/PrismaRepositoriesDI';
-import { app } from '@application/http-rest/server';
-import { Question } from '@core/domain/entities';
+import { Question } from '@core/models';
+import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { QuestionUtils } from '@tests/e2e/utils/QuestionUtils';
 import { UserUtils } from '@tests/e2e/utils/UserUtils';
 import supertest from 'supertest';
+import { App } from 'supertest/types';
 
 describe('POST /api/questions/:questionId/viewer', () => {
   let question: Question;
   let accessToken: string;
-  const questionUtils = new QuestionUtils(PrismaQuestionRepositoryDI, PrismaTransactionDI);
+  let questionUtils: QuestionUtils;
+  let app: App;
 
   beforeAll(async () => {
-    const userUtils = new UserUtils(PrismaUserRepositoryDI);
+    const nest = await initTestApplication();
+    app = nest.getHttpServer();
+
+    const userUtils = new UserUtils(nest);
+    questionUtils = new QuestionUtils(nest);
 
     const owner = await userUtils.create();
     accessToken = 'accessToken='+(await userUtils.getTokens(owner)).accessToken;

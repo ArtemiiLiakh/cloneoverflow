@@ -1,9 +1,9 @@
 import { BadBodyException, Exception, QuestionUserStatusEnum } from '@cloneoverflow/common';
 import { UserRatingActions } from '@common/enums/UserRatingActions';
-import { QuestionUser } from '@core/domain/entities/QuestionUser';
-import { UnitOfWork } from '@core/domain/repositories';
-import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
-import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
+import { QuestionUser } from '@core/models/QuestionUser';
+import { UnitOfWork } from '@core/repositories';
+import { AnswerRepository } from '@core/repositories/answer/AnswerRepository';
+import { QuestionRepository } from '@core/repositories/question/QuestionRepository';
 import { IUserRatingValidator } from '@core/services/validators/types';
 import { QuestionCloseInput, QuestionCloseOutput } from './dto';
 import { IQuestionCloseUseCase } from './type';

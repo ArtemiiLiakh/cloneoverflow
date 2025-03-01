@@ -4,5 +4,3 @@ export type UserRatingValidatorInput = {
   userId: string,
   action: UserRatingActions,
 }
-
-export type UserRatingValidatorOutput = void;

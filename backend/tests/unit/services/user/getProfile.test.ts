@@ -1,9 +1,9 @@
-import { Answer } from '@core/domain/entities/Answer';
-import { Question } from '@core/domain/entities/Question';
-import { User } from '@core/domain/entities/User';
-import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
-import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
-import { UserRepository } from '@core/domain/repositories/user/UserRepository';
+import { Answer } from '@core/models/Answer';
+import { Question } from '@core/models/Question';
+import { User } from '@core/models/User';
+import { AnswerRepository } from '@core/repositories/answer/AnswerRepository';
+import { QuestionRepository } from '@core/repositories/question/QuestionRepository';
+import { UserRepository } from '@core/repositories/user/UserRepository';
 import { UserGetProfileUseCase } from '@core/services/user';
 
 describe('Service: test UserGetProfileUseCase', () => {

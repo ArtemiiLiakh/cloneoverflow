@@ -1,5 +1,5 @@
 import { UserStatusEnum } from '@cloneoverflow/common';
-import { User } from '@core/domain/entities/User';
+import { User } from '@core/models/User';
 
 describe('Entity: test User entity', () => {
   test('Create User entity with default fields', () => {

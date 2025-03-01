@@ -1,4 +1,4 @@
-import { QuestionRepositoryOutput } from '@core/domain/repositories/question/dtos/QuestionRepositoryOutput';
+import { QuestionRepositoryOutput } from '@core/repositories/question/dtos/QuestionRepositoryOutput';
 import { SearchQuestionsOutput } from './dto';
 
 export const searchQuestionsOutputMapper = (

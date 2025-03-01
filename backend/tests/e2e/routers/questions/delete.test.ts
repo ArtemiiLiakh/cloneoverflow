@@ -1,23 +1,36 @@
-import { PrismaAnswerRepositoryDI, PrismaQuestionRepositoryDI, PrismaTagRepositoryDI, PrismaTransactionDI, PrismaUserRepositoryDI } from '@application/di/repositories/PrismaRepositoriesDI';
-import { app } from '@application/http-rest/server';
-import { User } from '@core/domain/entities';
+import { User } from '@core/models';
+import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { AnswerUtils } from '@tests/e2e/utils/AnswerUtils';
 import { QuestionUtils } from '@tests/e2e/utils/QuestionUtils';
 import { TagUtils } from '@tests/e2e/utils/TagUtils';
 import { UserUtils } from '@tests/e2e/utils/UserUtils';
 import supertest from 'supertest';
+import { App } from 'supertest/types';
 
 describe('DELETE /api/questions/:questionId', () => {
   let owner: User;
   let accessToken: string;
-  const userUtils = new UserUtils(PrismaUserRepositoryDI);
-  const questionUtils = new QuestionUtils(PrismaQuestionRepositoryDI, PrismaTransactionDI);
-  const answerUtils = new AnswerUtils(PrismaAnswerRepositoryDI, PrismaTransactionDI);
-  const tagUtils = new TagUtils(PrismaTagRepositoryDI, PrismaTransactionDI);
+  let refreshToken: string;
+  let userUtils: UserUtils;
+  let questionUtils: QuestionUtils;
+  let answerUtils: AnswerUtils;
+  let tagUtils: TagUtils;
+  let app: App;
 
   beforeAll(async () => {
+    const nest = await initTestApplication();
+    app = nest.getHttpServer();
+
+    userUtils = new UserUtils(nest);
+    questionUtils = new QuestionUtils(nest);
+    answerUtils = new AnswerUtils(nest);
+    tagUtils = new TagUtils(nest);
+    
     owner = await userUtils.create();
-    accessToken = 'accessToken='+(await userUtils.getTokens(owner)).accessToken;
+
+    const tokens = await userUtils.getTokens(owner);
+    accessToken = 'accessToken='+tokens.accessToken;
+    refreshToken = 'refreshToken='+tokens.refreshToken;
   });
   
   test('Expect it deletes question without answer and tag', async () => {
@@ -25,7 +38,7 @@ describe('DELETE /api/questions/:questionId', () => {
 
     await supertest(app)
       .delete(`/api/questions/${question.id}`)
-      .set('Cookie', accessToken)
+      .set('Cookie', [accessToken, refreshToken])
       .expect(200);
 
     expect(await questionUtils.getQuestion(question.id)).toBeNull();
@@ -38,7 +51,7 @@ describe('DELETE /api/questions/:questionId', () => {
 
     await supertest(app)
       .delete(`/api/questions/${question.id}`)
-      .set('Cookie', accessToken)
+      .set('Cookie', [accessToken, refreshToken])
       .expect(200);
 
     expect(await questionUtils.getQuestion(question.id)).toBeNull();
@@ -51,11 +64,13 @@ describe('DELETE /api/questions/:questionId', () => {
   test('When user is not owner of question except it returns error 403', async () => {
     const question = await questionUtils.create({ ownerId: owner.id });
     const wrongUser = await userUtils.create();
-    const wrongAccessToken = (await userUtils.getTokens(wrongUser)).accessToken;
+    const tokens = await userUtils.getTokens(wrongUser);
+    const accessToken = 'accessToken='+tokens.accessToken;
+    const refreshToken = 'refreshToken='+tokens.refreshToken;
 
     await supertest(app)
       .delete(`/api/questions/${question.id}`)
-      .set('Cookie', `accessToken=${wrongAccessToken}`)
+      .set('Cookie', [accessToken, refreshToken])
       .expect(403);
 
     await userUtils.delete(wrongUser.id);
@@ -73,10 +88,10 @@ describe('DELETE /api/questions/:questionId', () => {
       .expect(401);
   });
 
-  test('When question is not exists expect it returns error 404', async () => {
+  test('When question does not exist expect it returns error 404', async () => {
     await supertest(app)
       .delete('/api/questions/0')
-      .set('Cookie', accessToken)
+      .set('Cookie', [accessToken, refreshToken])
       .expect(404);
   });
 });

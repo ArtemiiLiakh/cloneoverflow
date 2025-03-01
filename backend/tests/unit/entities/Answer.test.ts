@@ -1,4 +1,4 @@
-import { Answer } from '@core/domain/entities/Answer';
+import { Answer } from '@core/models/Answer';
 
 describe('Entity: test Answer entity', () => {
   test('Create Answer entity with default fields', () => {

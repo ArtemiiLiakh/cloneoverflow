@@ -1,4 +1,4 @@
-import { UserStatusEnum } from '@cloneoverflow/common';
+import { ExecutorPayload } from '@application/services/auth/data';
 import { Request } from 'express';
 
 export interface ExpressRequest extends Request<unknown, unknown, unknown, unknown> {
@@ -7,9 +7,6 @@ export interface ExpressRequest extends Request<unknown, unknown, unknown, unkno
     accessToken?: string | undefined;
   },
   body: {
-    _user?: {
-      userId: string,
-      status: UserStatusEnum,
-    },
+    _user?: ExecutorPayload,
   }
 }

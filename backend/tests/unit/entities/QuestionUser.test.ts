@@ -1,5 +1,5 @@
 import { QuestionUserStatusEnum, VoteTypeEnum } from '@cloneoverflow/common';
-import { QuestionUser } from '@core/domain/entities/QuestionUser';
+import { QuestionUser } from '@core/models/QuestionUser';
 
 describe('Entity: test QuestionUser entity', () => {
   test('Create QuestionUserStats entity with default fields', () => {

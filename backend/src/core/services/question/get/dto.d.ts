@@ -1,5 +1,5 @@
-import { Question } from '@core/domain/entities/Question';
-import { Tag } from '@core/domain/entities/Tag';
+import { Question } from '@core/models/Question';
+import { Tag } from '@core/models/Tag';
 
 export type QuestionGetInput = {
   questionId: string, 

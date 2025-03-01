@@ -1,10 +1,10 @@
-import { PrismaAnswerRepositoryDI, PrismaQuestionRepositoryDI, PrismaTransactionDI, PrismaUserRepositoryDI } from '@application/di/repositories/PrismaRepositoriesDI';
-import { app } from '@application/http-rest/server';
 import { VoteTypeEnum } from '@cloneoverflow/common';
+import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { AnswerUtils } from '@tests/e2e/utils/AnswerUtils';
 import { QuestionUtils } from '@tests/e2e/utils/QuestionUtils';
 import { UserUtils } from '@tests/e2e/utils/UserUtils';
 import supertest from 'supertest';
+import { App } from 'supertest/types';
 
 describe('POST /api/answers/:id/vote', () => {
   let ownerAccessToken: string;
@@ -12,11 +12,19 @@ describe('POST /api/answers/:id/vote', () => {
   let answerId: string;
   let ownerId: string;
   
-  const userUtils = new UserUtils(PrismaUserRepositoryDI);
-  const questionUtils = new QuestionUtils(PrismaQuestionRepositoryDI, PrismaTransactionDI);
-  const answerUtils = new AnswerUtils(PrismaAnswerRepositoryDI, PrismaTransactionDI);
+  let app: App;
+  let userUtils: UserUtils;
+  let questionUtils: QuestionUtils;
+  let answerUtils: AnswerUtils;
 
   beforeAll(async () => {
+    const nest = await initTestApplication();
+    app = nest.getHttpServer();
+
+    userUtils = new UserUtils(nest);
+    questionUtils = new QuestionUtils(nest);
+    answerUtils = new AnswerUtils(nest);
+    
     const owner = await userUtils.create();
     const user = await userUtils.create({ rating: 10000 });
 

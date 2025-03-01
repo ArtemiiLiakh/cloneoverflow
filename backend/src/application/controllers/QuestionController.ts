@@ -125,11 +125,11 @@ export class QuestionController {
     res.send({ message: 'ok' });
   }
 
-  async getVoter (
+  async getVote (
     { executor, params }: WithAuth & WithParams<{ questionId: string }>, 
     res: CoreResponse<QuestionGetVoterResponse>,
   ) {
-    const voter = await this.questionService.getVoter({
+    const voter = await this.questionService.getVote({
       questionId: params.questionId,
       voterId: executor.userId,
     });

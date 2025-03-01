@@ -1,4 +1,4 @@
-import { ValidatorUseCase } from '@common/services/Validator';
-import { UserRatingValidatorInput, UserRatingValidatorOutput } from './dto';
+import { Validator } from '@common/services/Validator';
+import { UserRatingValidatorInput } from './dto';
 
-export interface IUserRatingValidator extends ValidatorUseCase<UserRatingValidatorInput, UserRatingValidatorOutput> {}
+export interface IUserRatingValidator extends Validator<UserRatingValidatorInput> {}

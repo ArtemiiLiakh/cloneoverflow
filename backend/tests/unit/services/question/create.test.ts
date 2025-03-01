@@ -1,9 +1,9 @@
 import { Exception } from '@cloneoverflow/common';
-import { Tag } from '@core/domain/entities/Tag';
-import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
-import { QuestionUserRepository } from '@core/domain/repositories/question/QuestionUserRepository';
-import { TagRepository } from '@core/domain/repositories/tag/TagRepository';
-import { Unit, UnitOfWork } from '@core/domain/repositories/UnitOfWork';
+import { Tag } from '@core/models/Tag';
+import { QuestionRepository } from '@core/repositories/question/QuestionRepository';
+import { QuestionUserRepository } from '@core/repositories/question/QuestionUserRepository';
+import { TagRepository } from '@core/repositories/tag/TagRepository';
+import { Unit, UnitOfWork } from '@core/repositories/UnitOfWork';
 import { QuestionCreateUseCase } from '@core/services/question';
 import { QuestionCreateInput } from '@core/services/question/create/dto';
 

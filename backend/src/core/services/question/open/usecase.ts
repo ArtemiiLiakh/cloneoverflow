@@ -1,6 +1,6 @@
 import { BadBodyException, Exception, QuestionUserStatusEnum } from '@cloneoverflow/common';
 import { UserRatingActions } from '@common/enums/UserRatingActions';
-import { QuestionRepository, UnitOfWork } from '@core/domain/repositories';
+import { QuestionRepository, UnitOfWork } from '@core/repositories';
 import { IUserRatingValidator } from '@core/services/validators/types';
 import { QuestionOpenInput, QuestionOpenOutput } from './dto';
 import { IQuestionOpenUseCase } from './type';

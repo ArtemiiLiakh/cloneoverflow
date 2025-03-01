@@ -1,4 +1,4 @@
-import { UserRepository } from '@core/domain/repositories/user/UserRepository';
+import { UserRepository } from '@core/repositories/user/UserRepository';
 import { UserGetInput, UserGetOutput } from './dto';
 import { IUserGetUseCase } from './type';
 

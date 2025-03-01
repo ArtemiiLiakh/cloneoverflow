@@ -1,6 +1,6 @@
 import { Exception } from '@cloneoverflow/common';
 import { UserRatingActions } from '@common/enums/UserRatingActions';
-import { QuestionRepository, UnitOfWork } from '@core/domain/repositories';
+import { QuestionRepository, UnitOfWork } from '@core/repositories';
 import { IUserRatingValidator } from '@core/services/validators/types';
 import { QuestionUpdateInput, QuestionUpdateOutput } from './dto';
 import { IQuestionUpdateUseCase } from './type';
@@ -32,17 +32,16 @@ export class QuestionUpdateUseCase implements IQuestionUpdateUseCase {
         await unit.questionRepository.unrefAllTags({
           questionId,
         });
-        
+
         if (tags.length > 0) {
           const tagEntities = await unit.tagRepository.createOrFindMany({ tags });
-          
           await unit.questionRepository.refTags({
             questionId,
             tags: tagEntities,
           });
         }
       }
-  
+
       return await unit.questionRepository.update({
         questionId,
         question: {

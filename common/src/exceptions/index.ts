@@ -7,3 +7,4 @@ export * from './NoEntityWithIdException';
 export * from './UnauthorizedExceptioin';
 export * from './ValidationException';
 export * from './RetriesExpiredException';
+export * from './ExceptionMessage';

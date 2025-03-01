@@ -1,15 +1,20 @@
-import { app } from '@application/http-rest/server';
-import { User } from '@core/domain/entities/User';
+import { User } from '@core/models/User';
+import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { randomUUID } from 'crypto';
 import supertest from 'supertest';
+import { App } from 'supertest/types';
 import { UserUtils } from '../../utils/UserUtils';
-import { PrismaUserRepositoryDI } from '@application/di/repositories/PrismaRepositoriesDI';
 
 describe('GET /api/users/:userId', () => {
-  const userUtils = new UserUtils(PrismaUserRepositoryDI);
+  let app: App;
+  let userUtils: UserUtils;
   let user: User;
 
   beforeAll(async () => {
+    const nest = await initTestApplication();
+    userUtils = new UserUtils(nest);
+
+    app = nest.getHttpServer();
     user = await userUtils.create();
   });
 

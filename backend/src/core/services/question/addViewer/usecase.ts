@@ -1,6 +1,6 @@
 import { Exception, NoEntityWithIdException, QuestionUserStatusEnum } from '@cloneoverflow/common';
-import { QuestionUser } from '@core/domain/entities';
-import { QuestionRepository, QuestionUserRepository, UnitOfWork } from '@core/domain/repositories';
+import { QuestionUser } from '@core/models';
+import { QuestionRepository, QuestionUserRepository, UnitOfWork } from '@core/repositories';
 import { QuestionAddViewerInput, QuestionAddViewerOutput } from './dto';
 import { IQuestionAddViewerUseCase } from './type';
 

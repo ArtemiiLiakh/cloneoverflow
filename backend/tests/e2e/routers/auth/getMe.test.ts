@@ -1,16 +1,23 @@
-import { PrismaUserRepositoryDI } from '@application/di/repositories/PrismaRepositoriesDI';
-import { app } from '@application/http-rest/server';
 import { AuthGetMeResponse } from '@cloneoverflow/common';
-import { User } from '@core/domain/entities';
+import { User } from '@core/models';
+import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { UserUtils } from '@tests/e2e/utils/UserUtils';
 import supertest from 'supertest';
+import { App } from 'supertest/types';
 
 describe('GET /api/auth/account/me', () => {
   let user: User;
   let userAccessToken: string;
-  const userUtils = new UserUtils(PrismaUserRepositoryDI);
+  
+  let app: App;
+  let userUtils: UserUtils;
 
   beforeAll(async () => {
+    const nest = await initTestApplication();
+    app = nest.getHttpServer();
+
+    userUtils = new UserUtils(nest);
+
     user = await userUtils.create();
     userAccessToken = 'accessToken=' + (await userUtils.getTokens(user)).accessToken;
   });

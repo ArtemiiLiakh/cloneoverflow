@@ -1,6 +1,6 @@
 import { Exception, ForbiddenException } from '@cloneoverflow/common';
-import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
-import { UnitOfWork } from '@core/domain/repositories/UnitOfWork';
+import { AnswerRepository } from '@core/repositories/answer/AnswerRepository';
+import { UnitOfWork } from '@core/repositories/UnitOfWork';
 import { AnswerDeleteInput, AnswerDeleteOutput } from './dto';
 import { IAnswerDeleteUseCase } from './type';
 

@@ -1,5 +1,5 @@
 import { AnswersSortByEnum, OrderByEnum } from '@cloneoverflow/common';
-import { AnswerOrderBy, AnswerOrderByType } from '@core/domain/repositories/answer/dtos/Params';
+import { AnswerOrderBy, AnswerOrderByType } from '@core/repositories/answer/dtos/Params';
 
 export const UserAnswersSortBy = (
   sortBy?: AnswersSortByEnum | AnswersSortByEnum[], 

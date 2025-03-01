@@ -1,5 +1,5 @@
 import { BadBodyException } from '@cloneoverflow/common';
-import { UserRepository } from '@core/domain/repositories/user/UserRepository';
+import { UserRepository } from '@core/repositories/user/UserRepository';
 import { UserUpdateInput, UserUpdateOutput } from './dto';
 import { IUserUpdateUseCase } from './type';
 
@@ -17,8 +17,9 @@ export class UserUpdateUseCase implements IUserUpdateUseCase {
         throw new BadBodyException('Username already exists');
       }
     }
-  
-    return this.userRepository.update({
+
+    
+    return await this.userRepository.update({
       userId: executorId,
       user: {
         name,

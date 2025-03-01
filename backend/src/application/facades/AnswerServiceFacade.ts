@@ -3,7 +3,7 @@ import {
   IAnswerDeleteUseCase,
   IAnswerGetManyUseCase,
   IAnswerGetUseCase,
-  IAnswerGetVoterUseCase,
+  IAnswerGetVoteUseCase,
   IAnswerUpdateUseCase,
   IAnswerVoteUseCase,
 } from '@core/services/answer/types';
@@ -17,8 +17,8 @@ import {
   AnswerGetManyInput,
   AnswerGetManyOutput,
   AnswerGetOutput,
-  AnswerGetVoterInput,
-  AnswerGetVoterOutput,
+  AnswerGetVoteInput,
+  AnswerGetVoteOutput,
   AnswerUpdateInput,
   AnswerUpdateOutput,
   AnswerVoteInput,
@@ -31,9 +31,9 @@ export class AnswerServiceFacade {
     private answerUpdateUseCase: IAnswerUpdateUseCase,
     private answerDeleteUseCase: IAnswerDeleteUseCase,
     private answerGetUseCase: IAnswerGetUseCase,
-    private answerGetAllUseCase: IAnswerGetManyUseCase,
+    private answerGetManyUseCase: IAnswerGetManyUseCase,
     private answerVoteUseCase: IAnswerVoteUseCase,
-    private answerGetVoterUseCase: IAnswerGetVoterUseCase,
+    private answerGetVoteUseCase: IAnswerGetVoteUseCase,
   ) {}
 
   static new ({
@@ -41,26 +41,26 @@ export class AnswerServiceFacade {
     answerUpdateUseCase,
     answerDeleteUseCase,
     answerGetUseCase,
-    answerGetAllUseCase,
+    answerGetManyUseCase,
     answerVoteUseCase,
-    answerGetVoterUseCase,
+    answerGetVoteUseCase,
   }: {
     answerCreateUseCase: IAnswerCreateUseCase,
     answerUpdateUseCase: IAnswerUpdateUseCase,
     answerDeleteUseCase: IAnswerDeleteUseCase,
     answerGetUseCase: IAnswerGetUseCase,
-    answerGetAllUseCase: IAnswerGetManyUseCase,
+    answerGetManyUseCase: IAnswerGetManyUseCase,
     answerVoteUseCase: IAnswerVoteUseCase,
-    answerGetVoterUseCase: IAnswerGetVoterUseCase,
+    answerGetVoteUseCase: IAnswerGetVoteUseCase,
   }) {
     return new AnswerServiceFacade(
       answerCreateUseCase,
       answerUpdateUseCase,
       answerDeleteUseCase,
       answerGetUseCase,
-      answerGetAllUseCase,
+      answerGetManyUseCase,
       answerVoteUseCase,
-      answerGetVoterUseCase,
+      answerGetVoteUseCase,
     );
   }
 
@@ -80,15 +80,15 @@ export class AnswerServiceFacade {
     return this.answerGetUseCase.execute(payload);
   }
 
-  getAll (payload: AnswerGetManyInput): Promise<AnswerGetManyOutput> {
-    return this.answerGetAllUseCase.execute(payload);
+  getMany (payload: AnswerGetManyInput): Promise<AnswerGetManyOutput> {
+    return this.answerGetManyUseCase.execute(payload);
   }
 
   vote (payload: AnswerVoteInput): Promise<AnswerVoteOutput> {
     return this.answerVoteUseCase.execute(payload);
   }
 
-  getVoter (payload: AnswerGetVoterInput): Promise<AnswerGetVoterOutput> {
-    return this.answerGetVoterUseCase.execute(payload);
+  getVote (payload: AnswerGetVoteInput): Promise<AnswerGetVoteOutput> {
+    return this.answerGetVoteUseCase.execute(payload);
   }
 }

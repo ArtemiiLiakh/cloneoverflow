@@ -1,4 +1,4 @@
-import { DataEncryptor } from '@application/interfaces/security/DataEncryptor';
+import { DataEncryptor } from '@common/encryption/DataEncryptor';
 import { makeAccessToken } from '@application/services/auth/utils/makeAccessToken';
 import { makeRefreshToken } from '@application/services/auth/utils/makeRequestToken';
 import { IUserCreateUseCase } from '@core/services/user/types';

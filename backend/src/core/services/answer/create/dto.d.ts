@@ -1,4 +1,4 @@
-import { Answer } from '@core/domain/entities/Answer';
+import { Answer } from '@core/models/Answer';
 
 export type AnswerCreateInput = {
   executorId: string, 

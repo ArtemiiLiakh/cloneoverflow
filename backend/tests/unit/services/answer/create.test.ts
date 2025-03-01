@@ -1,8 +1,8 @@
 import { NoEntityWithIdException } from '@cloneoverflow/common';
-import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
-import { AnswerUserRepository } from '@core/domain/repositories/answer/AnswerUserRepository';
-import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
-import { Unit, UnitOfWork } from '@core/domain/repositories/UnitOfWork';
+import { AnswerRepository } from '@core/repositories/answer/AnswerRepository';
+import { AnswerUserRepository } from '@core/repositories/answer/AnswerUserRepository';
+import { QuestionRepository } from '@core/repositories/question/QuestionRepository';
+import { Unit, UnitOfWork } from '@core/repositories/UnitOfWork';
 import { AnswerCreateUseCase } from '@core/services/answer';
 import { AnswerCreateInput } from '@core/services/answer/create/dto';
 

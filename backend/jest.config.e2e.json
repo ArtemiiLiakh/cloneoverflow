@@ -1,7 +1,6 @@
 {
   "preset": "ts-jest",
   "testEnvironment": "node",
-  "setupFiles": ["<rootDir>/tests/e2e/setup.ts"],
   "setupFilesAfterEnv": ["<rootDir>/tests/e2e/setupEnv.ts"],
   "testMatch": ["<rootDir>/tests/e2e/**/*.test.ts"],
   "moduleNameMapper": {

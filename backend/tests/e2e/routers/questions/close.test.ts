@@ -1,20 +1,27 @@
-import { PrismaAnswerRepositoryDI, PrismaQuestionRepositoryDI, PrismaTransactionDI, PrismaUserRepositoryDI } from '@application/di/repositories/PrismaRepositoriesDI';
-import { app } from '@application/http-rest/server';
 import { QuestionCloseDTO } from '@cloneoverflow/common';
+import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { AnswerUtils } from '@tests/e2e/utils/AnswerUtils';
 import { QuestionUtils } from '@tests/e2e/utils/QuestionUtils';
 import { UserUtils } from '@tests/e2e/utils/UserUtils';
 import supertest from 'supertest';
+import { App } from 'supertest/types';
 
 describe('POST /api/questions/:questionId/close', () => {
   let accessToken: string;
   let questionId: string;
   let answerId: string;
-  const questionUtils = new QuestionUtils(PrismaQuestionRepositoryDI, PrismaTransactionDI);
-  const answerUtils = new AnswerUtils(PrismaAnswerRepositoryDI, PrismaTransactionDI);
+  let questionUtils: QuestionUtils;
+  let answerUtils: AnswerUtils;
+  let app: App;
 
   beforeAll(async () => {
-    const userUtils = new UserUtils(PrismaUserRepositoryDI);
+    const nest = await initTestApplication();
+    app = nest.getHttpServer();
+
+    const userUtils = new UserUtils(nest);
+    questionUtils = new QuestionUtils(nest);
+    answerUtils = new AnswerUtils(nest); 
+
     const owner = await userUtils.create();
     
     accessToken = 'accessToken='+(await userUtils.getTokens(owner)).accessToken;
@@ -28,10 +35,10 @@ describe('POST /api/questions/:questionId/close', () => {
     };
 
     await supertest(app)
-      .patch(`/api/questions/${questionId}/close`)
+      .post(`/api/questions/${questionId}/close`)
       .set('Cookie', accessToken)
       .send(closeData)
-      .expect(200);
+      .expect(201);
 
     const question = await questionUtils.getQuestion(questionId);
     const answer = await answerUtils.getAnswer(answerId);
@@ -42,7 +49,7 @@ describe('POST /api/questions/:questionId/close', () => {
 
   test('When question is already closed expect it returns error 400', async () => {
     await supertest(app)
-      .patch(`/api/questions/${questionId}/close`)
+      .post(`/api/questions/${questionId}/close`)
       .set('Cookie', accessToken)
       .send({ answerId })
       .expect(400);
@@ -50,13 +57,13 @@ describe('POST /api/questions/:questionId/close', () => {
 
   test('When question is not found or id is wrong expect it returns error 404 or 400', async () => {
     await supertest(app)
-      .patch('/api/questions/0/close')
+      .post('/api/questions/0/close')
       .set('Cookie', accessToken)
       .send({ answerId })
       .expect(404);
 
     await supertest(app)
-      .patch('/api/questions/questionId/close')
+      .post('/api/questions/questionId/close')
       .set('Cookie', accessToken)
       .send({ answerId })
       .expect(400);
@@ -64,12 +71,12 @@ describe('POST /api/questions/:questionId/close', () => {
 
   test('When user is unauthorized or accessToken is wrong expect it returns error 401', async () => {
     await supertest(app)
-      .patch('/api/questions/0/close')
+      .post('/api/questions/0/close')
       .set('Cookie', 'accessToken=invalidToken')
       .expect(401);
 
     await supertest(app)
-      .patch('/api/questions/questionId/close')
+      .post('/api/questions/questionId/close')
       .expect(401);
   });
 });

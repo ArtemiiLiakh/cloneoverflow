@@ -1,22 +1,29 @@
-import { PrismaUserRepositoryDI } from '@application/di/repositories/PrismaRepositoriesDI';
-import { app } from '@application/http-rest/server';
-import { User } from '@core/domain/entities';
+import { User } from '@core/models';
+import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { UserUtils } from '@tests/e2e/utils/UserUtils';
 import supertest from 'supertest';
+import { App } from 'supertest/types';
 
 describe('POST /api/auth/refreshToken', () => {
   let refreshToken: string;
   let user: User;
-  const userUtils = new UserUtils(PrismaUserRepositoryDI);
   
+  let app: App;
+  let userUtils: UserUtils;
+
   beforeAll(async () => {
+    const nest = await initTestApplication();
+    app = nest.getHttpServer();
+
+    userUtils = new UserUtils(nest);
+
     user = await userUtils.create();
     refreshToken = 'refreshToken='+(await userUtils.getTokens(user)).refreshToken;
   });
 
   test('Expect it refreshes access token', async () => {
     const res = await supertest(app)
-      .post('/api/auth/refreshToken')
+      .post('/api/auth/refresh')
       .set('Cookie', refreshToken)
       .expect(201);
     
@@ -30,11 +37,11 @@ describe('POST /api/auth/refreshToken', () => {
 
   test('When refresh token is wrong expect it returns error 401', async () => {
     await supertest(app)
-      .post('/api/auth/refreshToken')
+      .post('/api/auth/refresh')
       .expect(401);
 
     await supertest(app)
-      .post('/api/auth/refreshToken')
+      .post('/api/auth/refresh')
       .set('Cookie', 'refreshToken=wrongToken')
       .expect(401);
   });
@@ -45,7 +52,7 @@ describe('POST /api/auth/refreshToken', () => {
     })).refreshToken;
 
     await supertest(app)
-      .post('/api/auth/refreshToken')
+      .post('/api/auth/refresh')
       .set('Cookie', newRefreshToken)
       .expect(401);
   });

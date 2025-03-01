@@ -11,6 +11,7 @@
 /backend/prisma/migrations
 /backend/prisma/.client
 /backend/environment/*
+/backend/coverage
 
 /Kubernetes
 

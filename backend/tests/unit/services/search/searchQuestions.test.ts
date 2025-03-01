@@ -1,8 +1,8 @@
 import { SearchQuestionFilterByEnum } from '@cloneoverflow/common';
-import { Question } from '@core/domain/entities/Question';
-import { Tag } from '@core/domain/entities/Tag';
-import { User } from '@core/domain/entities/User';
-import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
+import { Question } from '@core/models/Question';
+import { Tag } from '@core/models/Tag';
+import { User } from '@core/models/User';
+import { QuestionRepository } from '@core/repositories/question/QuestionRepository';
 import { SearchQuestionsUseCase } from '@core/services/search';
 import { SearchQuestionsInput } from '@core/services/search/searchQuestions/dto';
 

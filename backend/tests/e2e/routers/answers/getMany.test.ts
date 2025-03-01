@@ -1,11 +1,11 @@
-import { PrismaAnswerRepositoryDI, PrismaQuestionRepositoryDI, PrismaTransactionDI, PrismaUserRepositoryDI } from '@application/di/repositories/PrismaRepositoriesDI';
-import { app } from '@application/http-rest/server';
 import { AnswerGetAllResponse, AnswersGetAllDTO, AnswersSortByEnum, OrderByEnum } from '@cloneoverflow/common';
-import { Answer } from '@core/domain/entities';
+import { Answer } from '@core/models';
+import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { AnswerUtils } from '@tests/e2e/utils/AnswerUtils';
 import { QuestionUtils } from '@tests/e2e/utils/QuestionUtils';
 import { UserUtils } from '@tests/e2e/utils/UserUtils';
 import supertest from 'supertest';
+import { App } from 'supertest/types';
 
 describe('GET /api/answers', () => {
   let answer1: Answer;
@@ -13,10 +13,15 @@ describe('GET /api/answers', () => {
   let ownerId: string;
   let questionId: string;
 
+  let app: App;
+
   beforeAll(async () => {
-    const userUtils = new UserUtils(PrismaUserRepositoryDI);
-    const questionUtils = new QuestionUtils(PrismaQuestionRepositoryDI, PrismaTransactionDI);
-    const answerUtils = new AnswerUtils(PrismaAnswerRepositoryDI, PrismaTransactionDI); 
+    const nest = await initTestApplication();
+    app = nest.getHttpServer();
+
+    const userUtils = new UserUtils(nest);
+    const questionUtils = new QuestionUtils(nest);
+    const answerUtils = new AnswerUtils(nest); 
 
     const owner = await userUtils.create();
     const question = await questionUtils.create({ ownerId: owner.id });

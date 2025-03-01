@@ -1,4 +1,4 @@
-import { QuestionRepository } from '@core/domain/repositories';
+import { QuestionRepository } from '@core/repositories';
 import { QuestionGetInput, QuestionGetOutput } from './dto';
 import { IQuestionGetUseCase } from './type';
 

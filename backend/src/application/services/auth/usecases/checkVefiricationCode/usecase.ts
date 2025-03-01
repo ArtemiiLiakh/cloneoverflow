@@ -1,4 +1,4 @@
-import { UserRepository } from '@core/domain/repositories';
+import { UserRepository } from '@core/repositories';
 import { IVerificationCodeValidator } from '../validators/types';
 import { CheckVerificationCodeInput, CheckVerificationCodeOutput } from './dto';
 import { ICheckVerificationCodeUseCase } from './type';

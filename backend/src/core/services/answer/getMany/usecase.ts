@@ -1,4 +1,4 @@
-import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
+import { AnswerRepository } from '@core/repositories/answer/AnswerRepository';
 import { UserAnswersSortBy } from '@core/services/utils/AnswersSortBy';
 import { AnswerGetManyInput, AnswerGetManyOutput } from './dto';
 import { IAnswerGetManyUseCase } from './type';

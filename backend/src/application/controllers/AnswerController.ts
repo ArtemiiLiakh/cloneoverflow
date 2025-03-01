@@ -38,11 +38,11 @@ export class AnswerController {
     res.send(AnswerGetMapperOutput(answer));
   }
 
-  async getAll (
+  async getMany (
     { query }: WithOptionalAuth & WithQuery<AnswersGetAllDTO>,
     res: CoreResponse<AnswerGetAllResponse>,
   ) {
-    const answers = await this.answerService.getAll({
+    const answers = await this.answerService.getMany({
       questionId: query.questionId,
       ownerId: query.ownerId,
       rateFrom: query.rateFrom,
@@ -105,14 +105,15 @@ export class AnswerController {
       vote: body.vote,  
     });
 
+    res.status(200);
     res.send({ message: 'ok' });
   }
 
-  async getVoter (
+  async getVote (
     { params, executor }: WithAuth & WithParams<{ answerId: string }>,
     res: CoreResponse<AnswerGetVoterResponse>,
   ) {
-    const voter = await this.answerService.getVoter({
+    const voter = await this.answerService.getVote({
       answerId: params.answerId,
       userId: executor.userId,
     });

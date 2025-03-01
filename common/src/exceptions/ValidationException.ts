@@ -1,5 +1,5 @@
 import { ValidationError } from 'class-validator';
-import { Exception, ExceptionMessage } from './Exception';
+import { Exception, SerializedError } from './Exception';
 
 export class ValidationException extends Exception {
   constructor (
@@ -26,12 +26,12 @@ export class ValidationException extends Exception {
     return message;
   }
 
-  serializeError(): ExceptionMessage {
+  serializeError(): SerializedError {
     const message = this.parseErrors(this.errors, `obj.${this.field}`);
 
     return {
       message,
-      statusCode: this.statusCode,
+      status: this.statusCode,
     }
   }
 }

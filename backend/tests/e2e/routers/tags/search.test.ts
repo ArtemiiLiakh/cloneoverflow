@@ -1,20 +1,24 @@
-import { PrismaQuestionRepositoryDI, PrismaTagRepositoryDI, PrismaTransactionDI, PrismaUserRepositoryDI } from '@application/di/repositories/PrismaRepositoriesDI';
-import { app } from '@application/http-rest/server';
 import { OrderByEnum, SearchTagsDTO, SearchTagsReponse, SearchTagsSortByEnum } from '@cloneoverflow/common';
-import { Tag } from '@core/domain/entities';
+import { Tag } from '@core/models';
+import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { QuestionUtils } from '@tests/e2e/utils/QuestionUtils';
 import { TagUtils } from '@tests/e2e/utils/TagUtils';
 import { UserUtils } from '@tests/e2e/utils/UserUtils';
 import supertest from 'supertest';
+import { App } from 'supertest/types';
 
 describe('GET /api/tags/search', () => {
   let tag1: Tag;
   let tag2: Tag;
+  let app: App;
 
   beforeAll(async () => {
-    const userUtils = new UserUtils(PrismaUserRepositoryDI);
-    const questionUtils = new QuestionUtils(PrismaQuestionRepositoryDI, PrismaTransactionDI);
-    const tagUtils = new TagUtils(PrismaTagRepositoryDI, PrismaTransactionDI);
+    const nest = await initTestApplication();
+    app = nest.getHttpServer();
+
+    const userUtils = new UserUtils(nest);
+    const questionUtils = new QuestionUtils(nest);
+    const tagUtils = new TagUtils(nest);
 
     const owner = await userUtils.create();
     const question = await questionUtils.create({ ownerId: owner.id });
@@ -25,7 +29,7 @@ describe('GET /api/tags/search', () => {
   
   test('Expect it search tags with default options', async () => {
     const res: SearchTagsReponse = await supertest(app)
-      .get('/api/tags/search')
+      .get('/api/tags')
       .expect(200)
       .then(res => res.body);
 
@@ -44,7 +48,7 @@ describe('GET /api/tags/search', () => {
     };
     
     const res: SearchTagsReponse = await supertest(app)
-      .get('/api/tags/search')
+      .get('/api/tags')
       .query(options)
       .expect(200)
       .then(res => res.body);
@@ -62,7 +66,7 @@ describe('GET /api/tags/search', () => {
     };
 
     const res: SearchTagsReponse = await supertest(app)
-      .get('/api/tags/search')
+      .get('/api/tags')
       .query(options)
       .expect(200)
       .then(res => res.body);

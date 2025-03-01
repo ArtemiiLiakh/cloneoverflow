@@ -1,8 +1,8 @@
-import { UserRepository } from '@core/domain/repositories';
-import { UserRatingValidatorInput, UserRatingValidatorOutput } from './dto';
+import { UserRepository } from '@core/repositories';
+import { UserRatingValidatorInput } from './dto';
 import { IUserRatingValidator } from './type';
 import { ForbiddenException } from '@cloneoverflow/common';
-import { UserRatingSystem } from '@core/domain/repositories/ratingSystem/UserRatingSystem';
+import { UserRatingSystem } from '@core/repositories/ratingSystem/UserRatingSystem';
 
 export class UserRatingValidator implements IUserRatingValidator {
   constructor (
@@ -12,7 +12,7 @@ export class UserRatingValidator implements IUserRatingValidator {
 
   async validate (
     { userId, action }: UserRatingValidatorInput,
-  ): Promise<UserRatingValidatorOutput> {
+  ): Promise<void> {
     const user = await this.userRepository.getPartialById({
       userId,
       select: { rating: true },

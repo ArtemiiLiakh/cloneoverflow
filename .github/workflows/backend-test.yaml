@@ -19,12 +19,17 @@ on:
   push:
     branches:
       - main
+      - clean-architecture
+      - clean-architecture-nest
     paths:
+      - '.github/workflows/backend-test.yaml'
       - 'backend/**'
+  
   pull_request: 
     branches:
       - main
       - clean-architecture
+      - clean-architecture-nest
     paths:
       - 'backend/**'
       - '.github/workflows/backend-test.yaml'

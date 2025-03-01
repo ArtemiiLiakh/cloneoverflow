@@ -1,4 +1,4 @@
-import { QuestionRepository } from '@core/domain/repositories';
+import { QuestionRepository } from '@core/repositories';
 import { SearchQuestionsFilterBy } from '@core/services/search/searchQuestions/utils/SearchQuestionFilterBy';
 import { SearchQuestionParse } from '@core/services/search/searchQuestions/utils/SearchQuestionParse';
 import { SearchQuestionsSortBy } from '@core/services/search/searchQuestions/utils/SearchQuestionSortBy';

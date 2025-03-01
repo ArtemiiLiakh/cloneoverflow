@@ -5,5 +5,3 @@ export type VerificationCodeValidatorInput = {
   code: string,
   codeType: VerificationCodeType,
 };
-
-export type VerificationCodeValidatorOutput = void;

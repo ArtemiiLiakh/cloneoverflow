@@ -1,8 +1,9 @@
-import { PrismaUserRepositoryDI } from '@application/di/repositories/PrismaRepositoriesDI';
-import { app } from '@application/http-rest/server';
 import { AuthForgotPasswordDTO, VerificationCodeType } from '@cloneoverflow/common';
+import { INestApplication } from '@nestjs/common';
+import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { UserUtils } from '@tests/e2e/utils/UserUtils';
 import supertest from 'supertest';
+import { App } from 'supertest/types';
 import { createVerificationCode } from './utils/createVerificationCode';
 import { login } from './utils/login';
 
@@ -12,8 +13,15 @@ describe('POST /api/auth/account/forgotPassword', () => {
     password: 'password',
   };
 
+  let nest: INestApplication;
+  let app: App;
+
   beforeAll(async () => {
-    const userUtils = new UserUtils(PrismaUserRepositoryDI);
+    nest = await initTestApplication();
+    app = nest.getHttpServer();
+
+    const userUtils = new UserUtils(nest);
+
     await userUtils.create({
       email: userCreds.email,
       password: userCreds.password,
@@ -21,7 +29,7 @@ describe('POST /api/auth/account/forgotPassword', () => {
   });
   
   test('Expect it updates forgotten password', async () => {
-    const code = await createVerificationCode({
+    const code = await createVerificationCode(nest, {
       email: userCreds.email,
       codeType: VerificationCodeType.ForgotPassword,
     });
@@ -39,7 +47,7 @@ describe('POST /api/auth/account/forgotPassword', () => {
       
     userCreds.password = newPassword;
     
-    await login({
+    await login(app, {
       email: userCreds.email,
       password: userCreds.password,
     });
@@ -66,7 +74,7 @@ describe('POST /api/auth/account/forgotPassword', () => {
       } as AuthForgotPasswordDTO)
       .expect(400);
 
-    const code = await createVerificationCode({
+    const code = await createVerificationCode(nest, {
       email: userCreds.email,
       codeType: VerificationCodeType.ForgotPassword,
     }, 1);

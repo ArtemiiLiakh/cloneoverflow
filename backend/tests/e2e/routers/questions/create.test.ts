@@ -1,23 +1,31 @@
-import { PrismaQuestionRepositoryDI, PrismaTagRepositoryDI, PrismaTransactionDI, PrismaUserRepositoryDI } from '@application/di/repositories/PrismaRepositoriesDI';
-import { app } from '@application/http-rest/server';
 import { QuestionCreateDTO, QuestionCreateResponse } from '@cloneoverflow/common';
-import { User } from '@core/domain/entities/User';
+import { User } from '@core/models/User';
+import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { QuestionUtils } from '@tests/e2e/utils/QuestionUtils';
 import { TagUtils } from '@tests/e2e/utils/TagUtils';
 import { UserUtils } from '@tests/e2e/utils/UserUtils';
 import supertest from 'supertest';
+import { App } from 'supertest/types';
 
 describe('POST /api/questions', () => {
   let user: User;
   let accessToken: string;
-  const userUtils = new UserUtils(PrismaUserRepositoryDI);
-  const tagUtils = new TagUtils(PrismaTagRepositoryDI, PrismaTransactionDI);
-  const questionUtils = new QuestionUtils(PrismaQuestionRepositoryDI, PrismaTransactionDI);
-  const questionTag = 'tag';
+  let questionUtils: QuestionUtils;
+  let tagUtils: TagUtils;
+  let app: App;
 
+  const questionTag = 'tag';
+  
   beforeAll(async () => {
+    const nest = await initTestApplication();
+    app = nest.getHttpServer();
+
+    const userUtils = new UserUtils(nest);
+    questionUtils = new QuestionUtils(nest);
+    tagUtils = new TagUtils(nest);
+
     user = await userUtils.create();
-    accessToken = await userUtils.getTokens(user).then(tokens => 'accessToken='+tokens.accessToken);
+    accessToken = 'accessToken='+(await userUtils.getTokens(user)).accessToken;
   });
 
   test('Expect it creates question with tags', async () => {

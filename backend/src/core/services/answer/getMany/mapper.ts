@@ -1,4 +1,4 @@
-import { AnswerRepositoryOutput } from '@core/domain/repositories/answer/dtos/AnswerRepositoryOutput';
+import { AnswerRepositoryOutput } from '@core/repositories/answer/dtos/AnswerRepositoryOutput';
 import { AnswerGetManyOutput } from './dto';
 
 export const getManyOutputMapper = (

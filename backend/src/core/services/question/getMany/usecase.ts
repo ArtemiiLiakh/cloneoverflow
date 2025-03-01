@@ -1,4 +1,4 @@
-import { QuestionRepository } from '@core/domain/repositories/question/QuestionRepository';
+import { QuestionRepository } from '@core/repositories/question/QuestionRepository';
 import { QuestionsSortBy } from '@core/services/utils/QuestionsSortBy';
 import { QuestionGetManyInput, QuestionGetManyOutput } from './dto';
 import { IQuestionGetManyUseCase } from './type';

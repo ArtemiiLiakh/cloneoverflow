@@ -1,8 +1,8 @@
 import { VerificationCodePayload } from '@application/services/auth/data';
 import { BadBodyException, RetriesExpiredException } from '@cloneoverflow/common';
-import { DataHasher } from '@core/data/DataHasher';
-import { CacheRepository } from '@core/domain/repositories';
-import { VerificationCodeValidatorInput, VerificationCodeValidatorOutput } from './dto';
+import { DataHasher } from '@common/encryption/DataHasher';
+import { CacheRepository } from '@core/repositories';
+import { VerificationCodeValidatorInput } from './dto';
 import { IVerificationCodeValidator } from './type';
 
 export class VerificationCodeValidator implements IVerificationCodeValidator {
@@ -13,7 +13,7 @@ export class VerificationCodeValidator implements IVerificationCodeValidator {
 
   async validate (
     { userId, code, codeType }: VerificationCodeValidatorInput,
-  ): Promise<VerificationCodeValidatorOutput> {
+  ): Promise<void> {
     const resolveCode = await this.cacheRepository.getObject<VerificationCodePayload>(
       `user:${codeType}:${userId}`,
     );  

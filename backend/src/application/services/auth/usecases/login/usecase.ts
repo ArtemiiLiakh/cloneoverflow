@@ -1,9 +1,9 @@
-import { DataEncryptor } from '@application/interfaces/security/DataEncryptor';
+import { DataEncryptor } from '@common/encryption/DataEncryptor';
 import { makeAccessToken } from '@application/services/auth/utils/makeAccessToken';
 import { makeRefreshToken } from '@application/services/auth/utils/makeRequestToken';
 import { LoginException } from '@cloneoverflow/common';
-import { DataHasher } from '@core/data/DataHasher';
-import { UserRepository } from '@core/domain/repositories/user/UserRepository';
+import { DataHasher } from '@common/encryption/DataHasher';
+import { UserRepository } from '@core/repositories/user/UserRepository';
 import { LoginInput, LoginOutput } from './dto';
 import { ILoginUseCase } from './type';
 

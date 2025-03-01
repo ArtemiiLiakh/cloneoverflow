@@ -1,7 +1,7 @@
 import { Exception, QuestionUserStatusEnum } from '@cloneoverflow/common';
-import { Question } from '@core/domain/entities/Question';
-import { QuestionUser } from '@core/domain/entities/QuestionUser';
-import { UnitOfWork } from '@core/domain/repositories/UnitOfWork';
+import { Question } from '@core/models/Question';
+import { QuestionUser } from '@core/models/QuestionUser';
+import { UnitOfWork } from '@core/repositories/UnitOfWork';
 import { QuestionCreateInput, QuestionCreateOutput } from './dto';
 import { IQuestionCreateUseCase } from './type';
 

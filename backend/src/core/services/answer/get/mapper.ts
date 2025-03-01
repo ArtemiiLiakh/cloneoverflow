@@ -1,4 +1,4 @@
-import { AnswerRepositoryOutput } from '@core/domain/repositories/answer/dtos/AnswerRepositoryOutput';
+import { AnswerRepositoryOutput } from '@core/repositories/answer/dtos/AnswerRepositoryOutput';
 import { AnswerGetOutput } from './dto';
 
 export const getOutputMapper = (answer: AnswerRepositoryOutput.GetAnswer): AnswerGetOutput => ({

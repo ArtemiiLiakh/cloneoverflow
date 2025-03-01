@@ -1,13 +1,20 @@
+import { PrismaRepositoryDITokens } from '@application/http-rest/nestjs/di/tokens/persistence';
 import { AnswerUserStatusEnum } from '@cloneoverflow/common';
-import { Answer } from '@core/domain/entities/Answer';
-import { AnswerUser } from '@core/domain/entities/AnswerUser';
-import { AnswerRepository, UnitOfWork } from '@core/domain/repositories';
+import { Answer } from '@core/models/Answer';
+import { AnswerUser } from '@core/models/AnswerUser';
+import { AnswerRepository, UnitOfWork } from '@core/repositories';
+import { INestApplication } from '@nestjs/common';
 
 export class AnswerUtils {
+  private answerRepository: AnswerRepository;
+  private unitOfWork: UnitOfWork;
+
   constructor (
-    private answerRepository: AnswerRepository,
-    private unitOfWork: UnitOfWork,
-  ) {}
+    nest: INestApplication,
+  ) {
+    this.answerRepository = nest.get(PrismaRepositoryDITokens.AnswerRepository);
+    this.unitOfWork = nest.get(PrismaRepositoryDITokens.UnitOfWork);
+  }
 
   async create (answer: Partial<Answer> & { ownerId: string, questionId: string }): Promise<Answer> {
     const newAnswer = Answer.new({

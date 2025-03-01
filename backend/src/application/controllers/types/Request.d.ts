@@ -1,10 +1,10 @@
-import { AuthPayload } from '@application/services/auth/data';
+import { ExecutorPayload } from '@application/services/auth/data';
 
 export interface CoreRequest<P=unknown, Q=unknown, B=unknown, C=unknown> {
-  params: P;
-  query: Q;
-  body: B;
-  cookies: C;
+  params?: P;
+  query?: Q;
+  body?: B;
+  cookies?: C;
 }
 
 export interface WithBody<B> extends CoreRequest {
@@ -24,9 +24,9 @@ export interface WithCookies<C> extends CoreRequest {
 }
 
 export interface WithAuth extends CoreRequest {
-  executor: AuthPayload,
+  executor: ExecutorPayload,
 }
 
 export interface WithOptionalAuth extends CoreRequest {
-  executor?: AuthPayload,
+  executor?: ExecutorPayload,
 }

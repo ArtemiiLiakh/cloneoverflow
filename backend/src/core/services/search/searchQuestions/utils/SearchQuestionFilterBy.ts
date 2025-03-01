@@ -1,5 +1,5 @@
 import { SearchQuestionFilterByEnum } from '@cloneoverflow/common';
-import { QuestionWhere } from '@core/domain/repositories/question/dtos/Params';
+import { QuestionWhere } from '@core/repositories/question/dtos/Params';
 
 export class QuestionSearchFilters {
   text?: string; 

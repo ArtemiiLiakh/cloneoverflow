@@ -1,6 +1,6 @@
-import { DataEncryptor } from '@application/interfaces/security/DataEncryptor';
+import { DataEncryptor } from '@common/encryption/DataEncryptor';
 import { UnauthorizedException } from '@cloneoverflow/common';
-import { UserRepository } from '@core/domain/repositories/user/UserRepository';
+import { UserRepository } from '@core/repositories/user/UserRepository';
 import { makeAccessToken } from '../../utils/makeAccessToken';
 import { RefreshTokenInput, RefreshTokenOutput } from './dto';
 import { IRefreshTokenUseCase } from './type';

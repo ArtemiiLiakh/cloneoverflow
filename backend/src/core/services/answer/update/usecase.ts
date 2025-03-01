@@ -1,5 +1,5 @@
 import { UserRatingActions } from '@common/enums/UserRatingActions';
-import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
+import { AnswerRepository } from '@core/repositories/answer/AnswerRepository';
 import { IUserRatingValidator } from '@core/services/validators/types';
 import { AnswerUpdateInput, AnswerUpdateOutput } from './dto';
 import { IAnswerUpdateUseCase } from './type';

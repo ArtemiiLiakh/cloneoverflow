@@ -1,14 +1,18 @@
-import { PrismaUserRepositoryDI } from '@application/di/repositories/PrismaRepositoriesDI';
-import { app } from '@application/http-rest/server';
 import { AuthDeleteAccountDTO, VerificationCodeType } from '@cloneoverflow/common';
+import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { UserUtils } from '@tests/e2e/utils/UserUtils';
 import supertest from 'supertest';
+import { App } from 'supertest/types';
 import { createVerificationCode } from './utils/createVerificationCode';
+import { INestApplication } from '@nestjs/common';
 
 describe('DELETE /api/auth/account', () => {
   let user1Cookies: string;
   let user2Cookies: string;
   
+  let nest: INestApplication;
+  let app: App;
+
   const user1Creds = {
     id: '',
     email: 'email1@gmail.com',
@@ -21,9 +25,14 @@ describe('DELETE /api/auth/account', () => {
     password: 'password',
   };
   
-  const userUtils = new UserUtils(PrismaUserRepositoryDI);
-
+  let userUtils: UserUtils;
+  
   beforeAll(async () => {
+    nest = await initTestApplication();
+    app = nest.getHttpServer();
+
+    userUtils = new UserUtils(nest);
+    
     const user1 = await userUtils.create({
       email: user1Creds.email,
       password: user1Creds.password,
@@ -45,7 +54,7 @@ describe('DELETE /api/auth/account', () => {
   });
 
   test('Expect it deletes user account', async () => {
-    const code = await createVerificationCode({
+    const code = await createVerificationCode(nest, {
       email: user1Creds.email,
       codeType: VerificationCodeType.DeleteAccount,
     });
@@ -76,7 +85,7 @@ describe('DELETE /api/auth/account', () => {
   });
 
   test('When user email or password is incorrect expect it returns error 400', async () => {
-    const code = await createVerificationCode({
+    const code = await createVerificationCode(nest, {
       email: user2Creds.email,
       codeType: VerificationCodeType.DeleteAccount,
     });
@@ -113,7 +122,7 @@ describe('DELETE /api/auth/account', () => {
       } as AuthDeleteAccountDTO)
       .expect(400);
 
-    const code = await createVerificationCode({
+    const code = await createVerificationCode(nest, {
       email: user2Creds.email,
       codeType: VerificationCodeType.DeleteAccount,
     }, 1);
@@ -140,7 +149,7 @@ describe('DELETE /api/auth/account', () => {
   });
 
   test('When user is unauthorized expect it returns error 401', async () => {
-    const code = await createVerificationCode({
+    const code = await createVerificationCode(nest, {
       email: user2Creds.email,
       codeType: VerificationCodeType.DeleteAccount,
     }, 1);

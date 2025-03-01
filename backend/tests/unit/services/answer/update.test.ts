@@ -1,5 +1,5 @@
-import { Answer } from '@core/domain/entities/Answer';
-import { AnswerRepository } from '@core/domain/repositories/answer/AnswerRepository';
+import { Answer } from '@core/models/Answer';
+import { AnswerRepository } from '@core/repositories/answer/AnswerRepository';
 import { AnswerUpdateUseCase } from '@core/services/answer';
 import { IUserRatingValidator } from '@core/services/validators/types';
 

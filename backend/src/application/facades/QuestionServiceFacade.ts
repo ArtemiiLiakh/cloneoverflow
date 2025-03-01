@@ -11,8 +11,8 @@ import {
   QuestionGetManyInput,
   QuestionGetManyOutput,
   QuestionGetOutput,
-  QuestionGetVoterInput,
-  QuestionGetVoterOutput,
+  QuestionGetVoteInput,
+  QuestionGetVoteOutput,
   QuestionOpenInput,
   QuestionOpenOutput,
   QuestionUpdateInput,
@@ -28,7 +28,7 @@ import {
   IQuestionDeleteUseCase,
   IQuestionGetManyUseCase,
   IQuestionGetUseCase,
-  IQuestionGetVoterUseCase,
+  IQuestionGetVoteUseCase,
   IQuestionOpenUseCase,
   IQuestionUpdateUseCase,
   IQuestionVoteUseCase,
@@ -45,7 +45,7 @@ export class QuestionServiceFacade {
     private questionOpenUseCase: IQuestionOpenUseCase,
     private questionCloseUseCase: IQuestionCloseUseCase,
     private questionAddViewerUseCase: IQuestionAddViewerUseCase,
-    private questionGetVoterUseCase: IQuestionGetVoterUseCase,
+    private questionGetVoteUseCase: IQuestionGetVoteUseCase,
   ) {}
 
   static new ({
@@ -58,7 +58,7 @@ export class QuestionServiceFacade {
     questionOpenUseCase,
     questionCloseUseCase,
     questionAddViewerUseCase,
-    questionGetVoterUseCase,
+    questionGetVoteUseCase,
   }: {
     questionCreateUseCase: IQuestionCreateUseCase,
     questionUpdateUseCase: IQuestionUpdateUseCase,
@@ -69,7 +69,7 @@ export class QuestionServiceFacade {
     questionOpenUseCase: IQuestionOpenUseCase,
     questionCloseUseCase: IQuestionCloseUseCase,
     questionAddViewerUseCase: IQuestionAddViewerUseCase,
-    questionGetVoterUseCase: IQuestionGetVoterUseCase,
+    questionGetVoteUseCase: IQuestionGetVoteUseCase,
   }) {
     return new QuestionServiceFacade(    
       questionCreateUseCase,
@@ -81,7 +81,7 @@ export class QuestionServiceFacade {
       questionOpenUseCase,
       questionCloseUseCase,
       questionAddViewerUseCase,
-      questionGetVoterUseCase,
+      questionGetVoteUseCase,
     );
   }
 
@@ -121,7 +121,7 @@ export class QuestionServiceFacade {
     return this.questionAddViewerUseCase.execute(payload);
   }
 
-  getVoter (payload: QuestionGetVoterInput): Promise<QuestionGetVoterOutput> {
-    return this.questionGetVoterUseCase.execute(payload);
+  getVote (payload: QuestionGetVoteInput): Promise<QuestionGetVoteOutput> {
+    return this.questionGetVoteUseCase.execute(payload);
   }
 }

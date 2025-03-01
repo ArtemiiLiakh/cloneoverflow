@@ -1,5 +1,5 @@
 import { UnauthorizedException } from '@cloneoverflow/common';
-import { UserRepository } from '@core/domain/repositories';
+import { UserRepository } from '@core/repositories';
 import { GetMeInput, GetMeOutput } from './dto';
 import { IGetMeUseCase } from './type';
 

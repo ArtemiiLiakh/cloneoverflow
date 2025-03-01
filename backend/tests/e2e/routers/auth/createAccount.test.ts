@@ -1,8 +1,8 @@
-import { PrismaUserRepositoryDI } from '@application/di/repositories/PrismaRepositoriesDI';
-import { app } from '@application/http-rest/server';
 import { AuthSignupDTO, AuthSignUpResponse } from '@cloneoverflow/common';
+import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { UserUtils } from '@tests/e2e/utils/UserUtils';
 import supertest from 'supertest';
+import { App } from 'supertest/types';
 import { login } from './utils/login';
 
 describe('POST /api/auth/account', () => {
@@ -11,8 +11,13 @@ describe('POST /api/auth/account', () => {
     username: 'anotherUsername',
   };
 
+  let app: App;
+
   beforeAll(async () => {
-    const userUtils = new UserUtils(PrismaUserRepositoryDI);
+    const nest = await initTestApplication();
+    app = nest.getHttpServer();
+
+    const userUtils = new UserUtils(nest);
     
     await userUtils.create({
       email: userCreds.email,
@@ -37,7 +42,7 @@ describe('POST /api/auth/account', () => {
     expect(res.name).toEqual(authData.name);
     expect(res.username).toEqual(authData.username);
   
-    await login({
+    await login(app, {
       email: authData.email,
       password: authData.password,
     });

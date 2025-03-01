@@ -1,19 +1,26 @@
-import { PrismaQuestionRepositoryDI, PrismaTransactionDI, PrismaUserRepositoryDI } from '@application/di/repositories/PrismaRepositoriesDI';
-import { app } from '@application/http-rest/server';
 import { VoteDTO, VoteTypeEnum } from '@cloneoverflow/common';
+import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { QuestionUtils } from '@tests/e2e/utils/QuestionUtils';
 import { UserUtils } from '@tests/e2e/utils/UserUtils';
 import supertest from 'supertest';
+import { App } from 'supertest/types';
 
 describe('PATCH /api/questions/:questionId/vote', () => {
   let ownerAccessToken: string;
   let userAccessToken: string;
   let ownerId: string;
   let questionId: string;
-  const userUtils = new UserUtils(PrismaUserRepositoryDI);
-  const questionUtils = new QuestionUtils(PrismaQuestionRepositoryDI, PrismaTransactionDI);
+  
+  let app: App;
+  let userUtils: UserUtils;
+  let questionUtils: QuestionUtils; 
 
   beforeAll(async () => {
+    const nest = await initTestApplication();
+    app = nest.getHttpServer();
+
+    userUtils = new UserUtils(nest);
+    questionUtils = new QuestionUtils(nest);
 
     const owner = await userUtils.create();
     const user = await userUtils.create({ rating: 10000 });
@@ -34,7 +41,7 @@ describe('PATCH /api/questions/:questionId/vote', () => {
       .post(`/api/questions/${questionId}/vote`)
       .send(voteData)
       .set('Cookie', userAccessToken)
-      .expect(200);
+      .expect(201);
 
     const owner = await userUtils.getUser(ownerId);
     const question = await questionUtils.getQuestion(questionId);
@@ -52,7 +59,7 @@ describe('PATCH /api/questions/:questionId/vote', () => {
       .post(`/api/questions/${questionId}/vote`)
       .send(voteData)
       .set('Cookie', userAccessToken)
-      .expect(200);
+      .expect(201);
 
     const owner = await userUtils.getUser(ownerId);
     const question = await questionUtils.getQuestion(questionId);
@@ -66,7 +73,7 @@ describe('PATCH /api/questions/:questionId/vote', () => {
       .post(`/api/questions/${questionId}/vote`)
       .send({ vote: VoteTypeEnum.UP })
       .set('Cookie', userAccessToken)
-      .expect(200);
+      .expect(201);
     
     await supertest(app)
       .post(`/api/questions/${questionId}/vote`)
