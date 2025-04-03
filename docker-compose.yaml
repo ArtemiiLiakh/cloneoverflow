@@ -7,20 +7,16 @@ services:
     container_name: backend
     build:
       context: .
-      dockerfile: ./backend/Dockerfile
+      dockerfile: ./docker/build/build.Dockerfile
     ports:
       - 8000:8000
-    volumes:
-      - ./.env.prod:/app/backend/.env.prod
-      - ./credentials.json:/app/backend/credentials.json
     networks:
       - database
     depends_on:
       - postgres
-      - redis
 
   postgres:
-    image: postgres:15.0
+    image: postgres:17-alpine
     container_name: cloneoverflow-backend-test-postgres
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
@@ -32,8 +28,6 @@ services:
       - 5432:5432
     volumes:
       - postgresData:/var/lib/postgresql/data
-    networks:
-      - database
 
   redis:
     image: redis/redis-stack-server:7.4.0-v0
@@ -67,8 +61,6 @@ services:
       timeout: 10s
       retries: 5
     restart: always
-    networks:
-      - database
 
   # frontend:
   #   image: artemiiliakh/cloneoverflow:frontend
@@ -84,8 +76,6 @@ services:
   #   networks:
   #     - app
   
-networks:
-  database:
 
 volumes:
   postgresData:

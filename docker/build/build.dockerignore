@@ -3,15 +3,14 @@
 # dependencies
 /**/node_modules
 /**/dist
-/**/build
 /**/.env*
-/**/.idea
-/**/coverage
+/**/tests
+/**/__tests__
+/**/Dockerfile
+/**/docker-compose.yaml
+/**/.gitignore
 
 /backend/prisma/migrations
-/backend/environment/credentials.json
-
-!/backend/environment/.env.test
-!/docker/*
+/backend/credentials.json
 
 /Kubernetes

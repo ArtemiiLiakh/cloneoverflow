@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   postgres:
-    image: postgres:15.0
+    image: postgres:17-alpine
     container_name: cloneoverflow-backend-test-postgres
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
@@ -28,7 +28,7 @@ services:
       - 6379:6379
     volumes:
       - testRedisData:/data
-      - ./config/redis.conf:/usr/local/etc/redis/redis.conf
+      - ../backend/config/redis.conf:/usr/local/etc/redis/redis.conf
     deploy:
       resources:
         limits:
@@ -54,6 +54,7 @@ services:
 
 networks:
   database:
+    name: database
 
 volumes:
   testPostgresData:

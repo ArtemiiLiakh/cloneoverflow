@@ -15,7 +15,7 @@ interface GCredentials {
 let gCreds: GCredentials;
 
 try {
-  gCreds = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'credentials.json')).toString('utf-8'));
+  gCreds = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'environment/credentials.json')).toString('utf-8'));
 } catch {
   gCreds = {
     app_email: process.env.GAPP_PASSWORD,
