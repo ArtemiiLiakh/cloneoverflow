@@ -27,15 +27,8 @@ pipeline {
         stage('Test') {
             steps {
                 sh 'docker compose -f docker/docker-compose-db.yaml up -d'
-                // sh 'docker build -t backend:test -f docker/test/test.Dockerfile .'
-                // sh 'docker run -v ./backend/environment:/app/backend/environment --network database backend:test'
-                sh '''
-                docker compose -f docker/docker-compose-db.yaml exec -T backend bash -c "
-                    cd common && npm ci && npm run build
-                    cd ../backend && npm ci && npm run db:generate
-                    npm run test:docker
-                "
-                '''
+                sh 'docker build -t backend:test -f docker/test/test.Dockerfile .'
+                sh 'docker run -v ./backend/environment:/app/backend/environment --network database backend:test'
             }
         }
     }
