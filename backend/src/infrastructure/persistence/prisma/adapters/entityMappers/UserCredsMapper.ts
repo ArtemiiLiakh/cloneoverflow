@@ -1,15 +1,14 @@
-import { UserCreds } from '@core/models/UserCreds';
+import { UserCreds } from '@core/models/user/UserCreds';
 import Prisma from '@prisma/client';
-import { bytesToUUID } from '../../utils/uuid';
 
 export class UserCredsMapper {
   static toEntity (creds: Partial<Prisma.UserCreds>): UserCreds {
     return UserCreds.new({
-      id: creds.id ? bytesToUUID(creds.id) : undefined,
+      userId: creds.id ?? '',
       email: creds.email ?? '',
       password: creds.password ?? '',
-      createdAt: creds.createdAt,
-      updatedAt: creds.updatedAt,
+      createdAt: creds.createdAt ?? new Date(),
+      updatedAt: creds.updatedAt ?? new Date(),
     });
   }
 }

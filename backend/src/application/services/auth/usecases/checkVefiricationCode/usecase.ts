@@ -13,7 +13,7 @@ export class CheckVerificationCodeUseCase implements ICheckVerificationCodeUseCa
     const user = await this.userRepository.getByEmail({ email });
 
     await this.verificationCodeValidator.validate({
-      userId: user.id,
+      userId: user.userId,
       code,
       codeType,
     });

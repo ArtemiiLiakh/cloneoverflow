@@ -15,7 +15,7 @@ export class QuestionUpdateUseCase implements IQuestionUpdateUseCase {
   async execute (
     { executorId, questionId, data: { text, title, tags } }: QuestionUpdateInput,
   ): Promise<QuestionUpdateOutput> {
-    const question = await this.questionRepository.getPartialById({
+    const question = await this.questionRepository.getById({
       questionId,
       select: { ownerId: true },
     });
@@ -27,14 +27,16 @@ export class QuestionUpdateUseCase implements IQuestionUpdateUseCase {
       });
     }
 
-    return this.unitOfWork.execute(async (unit) => {
+    return this.unitOfWork.executeFn(async (unit) => {
       if (Array.isArray(tags)) {
         await unit.questionRepository.unrefAllTags({
           questionId,
         });
 
         if (tags.length > 0) {
-          const tagEntities = await unit.tagRepository.createOrFindMany({ tags });
+          const tagEntities = await unit.tagRepository.createOrFindMany({ 
+            names: tags,  
+          });
           await unit.questionRepository.refTags({
             questionId,
             tags: tagEntities,
@@ -42,14 +44,13 @@ export class QuestionUpdateUseCase implements IQuestionUpdateUseCase {
         }
       }
 
-      return await unit.questionRepository.update({
+      return unit.questionRepository.update({
         questionId,
-        question: {
+        data: {
           title,
           text,
         },
-        returnEntity: true,
-      }).then(question => question!);
+      });
     }).catch(() => {
       throw new Exception('Question update failed');
     });

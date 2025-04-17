@@ -1,23 +1,8 @@
-import { Answer } from '@core/models/Answer';
+import { AnswerDetails } from '@core/models/answer';
 
 export type AnswerGetInput = {
   executorId?: string,
   answerId: string, 
 };
 
-export type AnswerGetOutput = {
-  entity: Answer,
-  owner?: {
-    id: string,
-    username: string,
-    name: string,
-    rating: number,
-  } | null,
-  question: {
-    id: string,
-    ownerId: string,
-    title: string,
-    rating: number,
-    isClosed: boolean,
-  },
-};
+export type AnswerGetOutput = AnswerDetails;

@@ -11,24 +11,16 @@ export const createVerificationCode = async (
   nest: INestApplication,
   { email, codeType }: AuthVerificationCodeDTO,
   retries: number = 1,
-) => {
+): Promise<string> => {
   const userRepository: UserRepository = nest.get(PrismaRepositoryDITokens.UserRepository);
   const cacheRepostiory: CacheRepository = nest.get(RedisRepositoryDITokens.CacheRepository);
   const dataHasher: DataHasher = nest.get(DataHasherDIToken);
 
-  const user = await userRepository.getPartialUser({
-    where: {
-      email,
-    },
-    select: {
-      id: true,
-    },
-  });
-
+  const user = await userRepository.getByEmail({ email });
   const code = randomBytes(4).toString('base64');
 
   await cacheRepostiory.setObject<VerificationCodePayload>(
-    `user:${codeType}:${user.entity.id}`,
+    `user:${codeType}:${user.userId}`,
     {
       code: await dataHasher.hash(code),
       retries,

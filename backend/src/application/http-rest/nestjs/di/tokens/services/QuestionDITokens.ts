@@ -4,9 +4,9 @@ import {
   QuestionCloseUseCase,
   QuestionCreateUseCase,
   QuestionDeleteUseCase,
-  QuestionGetManyUseCase,
+  QuestionGetDetailsUseCase,
   QuestionGetUseCase,
-  QuestionGetVoteUseCase,
+  QuestionGetVoterUseCase,
   QuestionOpenUseCase,
   QuestionUpdateUseCase,
   QuestionVoteUseCase,
@@ -18,11 +18,11 @@ export const QuestionUseCaseDITokens = {
   Create: Symbol(QuestionCreateUseCase.name),
   Delete: Symbol(QuestionDeleteUseCase.name),
   Get: Symbol(QuestionGetUseCase.name),
-  GetMany: Symbol(QuestionGetManyUseCase.name),
-  GetVote: Symbol(QuestionGetVoteUseCase.name),
+  GetVoter: Symbol(QuestionGetVoterUseCase.name),
   Open: Symbol(QuestionOpenUseCase.name),
   Update: Symbol(QuestionUpdateUseCase.name),
   Vote: Symbol(QuestionVoteUseCase.name),
+  GetDetails: Symbol(QuestionGetDetailsUseCase.name),
 };
 
 export const QuestionServiceDIToken = Symbol(QuestionServiceFacade.name);

@@ -1,5 +1,5 @@
 import { AnswerGetResponse } from '@cloneoverflow/common';
-import { Answer } from '@core/models';
+import { Answer } from '@core/models/answer';
 import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { AnswerUtils } from '@tests/e2e/utils/AnswerUtils';
 import { QuestionUtils } from '@tests/e2e/utils/QuestionUtils';
@@ -21,21 +21,22 @@ describe('GET /api/answers/:answerId', () => {
     const answerUtils = new AnswerUtils(nest);
 
     const owner = await userUtils.create();
-    const question = await questionUtils.create({ ownerId: owner.id });
-    answer = await answerUtils.create({ questionId: question.id, ownerId: owner.id });
+    const question = await questionUtils.create({ ownerId: owner.userId });
+
+    answer = await answerUtils.create({ ownerId: owner.userId, questionId: +question.questionId });
   });
 
   test('Expect it returns answer', async () => {
-    const answerRes: AnswerGetResponse = await supertest(app)
-      .get(`/api/answers/${answer.id}`)
+    const answerRes = await supertest(app)
+      .get(`/api/answers/${answer.answerId}`)
       .expect(200)
-      .then(res => res.body);
+      .then(res => res.body as AnswerGetResponse);
     
-    expect(answerRes.id).toEqual(answer.id);
+    expect(answerRes.id).toEqual(answer.answerId);
     expect(answerRes.owner?.id).toEqual(answer.ownerId);
-    expect(answerRes.question.id).toEqual(answer.questionId);
+    expect(answerRes.questionId).toEqual(answer.questionId);
     expect(answerRes.text).toEqual(answer.text);
-    expect(answerRes.rate).toEqual(answer.rating);
+    expect(answerRes.rating).toEqual(answer.rating);
     expect(answerRes.isSolution).toEqual(answer.isSolution);
   });
 

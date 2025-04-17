@@ -22,7 +22,7 @@ export class SearchServiceFacade {
   }: {
     searchQuestionsUseCase: ISearchQuestionsUseCase,
     searchTagsUseCase: ISearchTagsUseCase,
-  }) {
+  }): SearchServiceFacade {
     return new SearchServiceFacade(
       searchQuestionsUseCase,
       searchTagsUseCase,

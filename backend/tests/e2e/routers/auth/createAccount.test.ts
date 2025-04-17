@@ -33,11 +33,11 @@ describe('POST /api/auth/account', () => {
       name: 'name',
     } as AuthSignupDTO;
     
-    const res: AuthSignUpResponse = await supertest(app)
+    const res = await supertest(app)
       .post('/api/auth/account')
       .send(authData)
       .expect(201)
-      .then(res => res.body);
+      .then(res => res.body as AuthSignUpResponse);
 
     expect(res.name).toEqual(authData.name);
     expect(res.username).toEqual(authData.username);

@@ -1,15 +1,16 @@
-import { TagsRepositoryOutput } from './dtos/TagRepositoryOutput';
-import { TagRepositoryInput } from './dtos/TagRepositoryInput';
+import { TagRepoCreateOrFindManyInput, TagRepoCreateOrFindManyOutput } from './dtos/CreateOrFindMany';
+import { TagRepoDeleteInput, TagRepoDeleteOutput } from './dtos/Delete';
+import { TagRepoGetByNameInput, TagRepoGetByNameOuput } from './dtos/GetByName';
+import { TagRepoGetQuestionTagsInput, TagRepoGetQuestionTagsOutput } from './dtos/GetQuestionTags';
+import { TagRepoIsExistInput, TagRepoIsExistOutput } from './dtos/IsExist';
+import { TagRepoSearchInput, TagRepoSearchOutput } from './dtos/Search';
 
 export interface TagRepository {
-  getTag(payload: TagRepositoryInput.GetTag): Promise<TagsRepositoryOutput.GetTag>;
-  getMany(payload: TagRepositoryInput.GetMany): Promise<TagsRepositoryOutput.GetMany>;
-  isExist(payload: TagRepositoryInput.IsExist): Promise<TagsRepositoryOutput.IsExist>;
+  getByName(payload: TagRepoGetByNameInput): Promise<TagRepoGetByNameOuput>;
+  getQuestionTags(payload: TagRepoGetQuestionTagsInput): Promise<TagRepoGetQuestionTagsOutput>;
+  search(payload: TagRepoSearchInput): Promise<TagRepoSearchOutput>;
+  isExist(payload: TagRepoIsExistInput): Promise<TagRepoIsExistOutput>;
   
-  create(payload: TagRepositoryInput.Create): Promise<TagsRepositoryOutput.Create>;
-  createMany(payload: TagRepositoryInput.CreateMany): Promise<TagsRepositoryOutput.CreateMany>;
-  createOrFindMany(payload: TagRepositoryInput.CreateOrFindMany): Promise<TagsRepositoryOutput.CreateOrFindMany>;
-  
-  update(payload: TagRepositoryInput.Update): Promise<TagsRepositoryOutput.Update>;
-  delete(payload: TagRepositoryInput.Delete): Promise<TagsRepositoryOutput.Delete>;
+  createOrFindMany(payload: TagRepoCreateOrFindManyInput): Promise<TagRepoCreateOrFindManyOutput>;
+  delete(payload: TagRepoDeleteInput): Promise<TagRepoDeleteOutput>;
 }

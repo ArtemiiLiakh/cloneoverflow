@@ -3,7 +3,7 @@ import { AuthGetMeResponse } from '@cloneoverflow/common';
 
 export function AuthGetMeMapperOutput (user: GetMeOutput): AuthGetMeResponse {
   return {
-    id: user.id,
+    id: user.userId,
     name: user.name,
     username: user.username,
     reputation: user.rating,

@@ -1,27 +1,27 @@
-import { QuestionRepositoryOutput } from '@core/repositories/question/dtos/QuestionRepositoryOutput';
+import { QuestionRepoSearchOutput } from '@core/repositories/question/dtos/Search';
 import { SearchQuestionsOutput } from './dto';
 
 export const searchQuestionsOutputMapper = (
-  questions: QuestionRepositoryOutput.GetMany,
+  questions: QuestionRepoSearchOutput,
 ): SearchQuestionsOutput => ({
-  data: questions.data.map(question => ({
+  data: questions.data.map(({ question, owner, tags, answersAmount })  => ({
     entity: {
-      questionId: question.entity.id!,
-      ownerId: question.entity.ownerId!,
-      title: question.entity.title!,
-      rating: question.entity.rating!,
-      views: question.entity.views!,
-      isClosed: question.entity.isClosed!,
-      createdAt: question.entity.createdAt!,
+      questionId: question.questionId,
+      ownerId: question.ownerId,
+      title: question.title,
+      rating: question.rating,
+      views: question.views,
+      isClosed: question.isClosed,
+      createdAt: question.createdAt,
     },
-    owner: question.owner ? {
-      userId: question.owner.id,
-      name: question.owner.name,
-      username: question.owner.username,
-      rating: question.owner.rating,
+    owner: owner ? {
+      userId: owner.userId,
+      name: owner.name,
+      username: owner.username,
+      rating: owner.rating,
     } : null,
-    tags: question.tags ?? [],
-    answersAmount: question.counts?.answers ?? 0,
+    tags,
+    answersAmount,
   })),
   pagination: questions.pagination,
 });

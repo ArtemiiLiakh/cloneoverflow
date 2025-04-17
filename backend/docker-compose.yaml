@@ -1,4 +1,5 @@
 version: '3.7'
+name: cloneoverflow
 
 services:
   backend:
@@ -9,10 +10,11 @@ services:
       context: .
       dockerfile: ./backend/Dockerfile
     ports:
-      - 8000:8000
+      - '8000:8000'
     volumes:
-      - ./environment/.env.prod:/app/backend/config/.env.prod
-      - ./environment/credentials.json:/app/backend/config/credentials.json
+      - ./environment/.env.prod:/app/backend/environment/.env.prod
+      - ./environment/credentials.json:/app/backend/environment/credentials.json
+      - ./environment/ratings.json:/app/backend/environment/ratings.json
     command: > 
       sh -c "npm run db:sync:prod && npm run start:prod"
     networks:

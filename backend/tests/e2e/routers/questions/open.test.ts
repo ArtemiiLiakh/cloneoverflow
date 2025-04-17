@@ -24,8 +24,16 @@ describe('POST /api/questions/:questionId/open', () => {
     const owner = await userUtils.create();
     
     accessToken = 'accessToken='+(await userUtils.getTokens(owner)).accessToken;
-    questionId = (await questionUtils.create({ ownerId: owner.id, isClosed: true })).id;
-    answerId = (await answerUtils.create({ ownerId: owner.id, questionId, isSolution: true })).id;
+    questionId = (await questionUtils.create({ 
+      ownerId: owner.userId, 
+      isClosed: true,
+    })).questionId;
+
+    answerId = (await answerUtils.create({ 
+      ownerId: owner.userId, 
+      questionId: +questionId, 
+      isSolution: true,
+    })).answerId;
   });
 
   test('Expect it opens question', async () => {
@@ -41,11 +49,11 @@ describe('POST /api/questions/:questionId/open', () => {
     expect(answer?.isSolution).toEqual(false);
   });
 
-  test('When question is already opened expect it returns error 400', async () => {
+  test('When question is already opened expect it returns error 403', async () => {
     await supertest(app)
       .post(`/api/questions/${questionId}/open`)
       .set('Cookie', accessToken)
-      .expect(400);
+      .expect(403);
   });
 
   test('When question is not found or id is wrong expect it returns error 404 or 400', async () => {

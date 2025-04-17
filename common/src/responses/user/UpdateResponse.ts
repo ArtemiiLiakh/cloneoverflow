@@ -4,8 +4,7 @@ export interface UserUpdateResponse {
   id: string;
   name: string;
   username: string;
-  about: string | null;
-  reputation: number;
+  rating: number;
   status: UserStatusEnum;
   createdAt: Date;
   updatedAt: Date;

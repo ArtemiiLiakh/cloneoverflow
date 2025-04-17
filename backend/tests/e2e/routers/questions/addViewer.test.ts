@@ -1,4 +1,4 @@
-import { Question } from '@core/models';
+import { Question } from '@core/models/question';
 import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { QuestionUtils } from '@tests/e2e/utils/QuestionUtils';
 import { UserUtils } from '@tests/e2e/utils/UserUtils';
@@ -20,30 +20,29 @@ describe('POST /api/questions/:questionId/viewer', () => {
 
     const owner = await userUtils.create();
     accessToken = 'accessToken='+(await userUtils.getTokens(owner)).accessToken;
-    question = await questionUtils.create({ ownerId: owner.id });
+    question = await questionUtils.create({ ownerId: owner.userId });
   });
 
   test('Expect it creates viewer for question and increases its count', async () => {
     await supertest(app)
-      .post(`/api/questions/${question.id}/viewer`)
+      .post(`/api/questions/${question.questionId}/viewer`)
       .set('Cookie', accessToken)
       .expect(201);
 
-    const updatedQuestion = await questionUtils.getQuestion(question.id);
-
-    expect(question.views).toEqual(0);
-    expect(updatedQuestion?.views).toEqual(1);
+    const viewedQuestion = await questionUtils.getQuestion(question.questionId);
     
+    expect(question.views).toEqual(0);
+    expect(viewedQuestion?.views).toEqual(1);
   });
 
   test('When accessToken is unauthorized or accessToken is wrong expect it returns error 401', async () => {
     await supertest(app)
-      .post(`/api/questions/${question.id}/viewer`)
+      .post(`/api/questions/${question.questionId}/viewer`)
       .set('Cookie', 'accessToken=invalidToken')
       .expect(401);
 
     await supertest(app)
-      .post(`/api/questions/${question.id}/viewer`)
+      .post(`/api/questions/${question.questionId}/viewer`)
       .expect(401);
   });
 

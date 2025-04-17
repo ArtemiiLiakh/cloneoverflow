@@ -28,9 +28,9 @@ describe('DELETE /api/answers/:answerId', () => {
     
     const owner = await userUtils.create();
     const user = await userUtils.create();
-    const question = await questionUtils.create({ ownerId: owner.id });
-    const answer1 = await answerUtils.create({ ownerId: owner.id, questionId: question.id });
-    const answer2 = await answerUtils.create({ ownerId: owner.id, questionId: question.id });
+    const question = await questionUtils.create({ ownerId: owner.userId });
+    const answer1 = await answerUtils.create({ ownerId: owner.userId, questionId: +question.questionId });
+    const answer2 = await answerUtils.create({ ownerId: owner.userId, questionId: +question.questionId });
 
     const ownerTokens = await userUtils.getTokens(owner);
     ownerAccessToken = 'accessToken=' + ownerTokens.accessToken;
@@ -40,8 +40,8 @@ describe('DELETE /api/answers/:answerId', () => {
     userAccessToken = 'accessToken=' + userTokens.accessToken;
     userRefreshToken = 'refreshToken=' + userTokens.refreshToken;
 
-    answerId1 = answer1.id;
-    answerId2 = answer2.id;
+    answerId1 = answer1.answerId;
+    answerId2 = answer2.answerId;
   });
 
   test('Expect it deletes question', async () => {

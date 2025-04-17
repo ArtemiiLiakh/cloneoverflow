@@ -3,7 +3,7 @@ export interface AnswerCreateResponse {
   questionId: string;
   ownerId: string;
   text: string;
-  rate: number;
+  rating: number;
   isSolution: boolean;
   createdAt: Date;
 }

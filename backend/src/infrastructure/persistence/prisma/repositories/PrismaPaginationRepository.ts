@@ -10,8 +10,8 @@ export class PrismaPaginationRepository {
     payload: P,
     pagination: PaginationDTO | undefined,
   ): Promise<PaginatedData<R>> {
-    const page = pagination?.page ?? config.pagination.defaultPage;
-    const pageSize = pagination?.pageSize ?? config.pagination.defaultPageSize;
+    const page = pagination?.page ?? config.defaultPagination.page!;
+    const pageSize = pagination?.pageSize ?? config.defaultPagination.pageSize!;
 
     const data = await findMany({
       ...payload,

@@ -1,9 +1,9 @@
 import { RedisCacheRepository } from '@infrastructure/persistence/cache/RedisCacheRepository';
 import {
   PrismaAnswerRepository,
-  PrismaAnswerUserRepository,
+  PrismaAnswerVoterRepository,
   PrismaQuestionRepository,
-  PrismaQuestionUserRepository,
+  PrismaQuestionVoterRepository,
   PrismaTagRepository,
   PrismaTransactionUnit,
   PrismaUserRepository,
@@ -14,9 +14,9 @@ export const PrismaRepositoryDITokens = {
   QuestionRepository: Symbol(PrismaQuestionRepository.name),
   AnswerRepository: Symbol(PrismaAnswerRepository.name),
   TagRepository: Symbol(PrismaTagRepository.name),
+  QuestionVoterRepository: Symbol(PrismaQuestionVoterRepository.name),
+  AnswerVoterRepository: Symbol(PrismaAnswerVoterRepository.name),
   UnitOfWork: Symbol(PrismaTransactionUnit.name),
-  QuestionUserRepository: Symbol(PrismaQuestionUserRepository.name),
-  AnswerUserRepository: Symbol(PrismaAnswerUserRepository.name),
 };
 
 export const RedisRepositoryDITokens = {

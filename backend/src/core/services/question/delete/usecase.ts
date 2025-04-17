@@ -11,6 +11,7 @@ export class QuestionDeleteUseCase implements IQuestionDeleteUseCase {
   async execute (
     { executorId, questionId }: QuestionDeleteInput,
   ): Promise<QuestionDeleteOutput> {
+
     const question = await this.questionRepository.getById({ questionId });
 
     if (question.ownerId !== executorId) {

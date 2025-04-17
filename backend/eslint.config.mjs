@@ -1,8 +1,17 @@
 import eslint from '@eslint/js';
 import tseslint from "typescript-eslint";
 import globals from 'globals';
+import unusedImports from "eslint-plugin-unused-imports";
 
 export default tseslint.config(
+  {
+    ignores: ["tests/*"]
+  },
+  {
+    plugins: {
+      "unused-imports": unusedImports,
+    },
+  },
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   {
@@ -16,7 +25,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ["src/**/*.ts", "tests/**/*.ts"],
+    files: ["src/**/*.ts"],
     rules: {
       indent: ["error", 2],
       "block-spacing": "error",
@@ -47,12 +56,11 @@ export default tseslint.config(
         },
       ],
       "@typescript-eslint/unbound-method": "off",
-      "@typescript-eslint/require-await": "off",
-      "@typescript-eslint/return-await": "off",
-      "@typescript-eslint/no-floating-promises": "off",
+      "@typescript-eslint/return-await": "error",
+      "@typescript-eslint/no-floating-promises": "warn",
       "@typescript-eslint/interface-name-prefix": "off",
-      "@typescript-eslint/explicit-function-return-type": "off",
-      "@typescript-eslint/explicit-module-boundary-types": "off",
+      "@typescript-eslint/explicit-function-return-type": "error",
+      "@typescript-eslint/explicit-module-boundary-types": "error",
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/no-unsafe-assignment": "off",
       "@typescript-eslint/no-unsafe-argument": "warn",

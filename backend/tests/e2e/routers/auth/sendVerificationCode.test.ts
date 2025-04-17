@@ -27,14 +27,14 @@ describe('POST /api/auth/verificationCode', () => {
       .expect(201);
   });
   
-  test('When email is invalid expect it returns 400', async () => {
+  test('When email is invalid expect it returns 404 or 400', async () => {
     await supertest(app)
       .post('/api/auth/verificationCode')
       .send({
         email: 'wrongEmail@gmail.com',
         codeType: VerificationCodeType.ChangePassword,
       } as AuthVerificationCodeDTO)
-      .expect(400);
+      .expect(404);
 
     await supertest(app)
       .post('/api/auth/verificationCode')

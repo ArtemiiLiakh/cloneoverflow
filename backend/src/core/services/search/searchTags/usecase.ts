@@ -1,7 +1,7 @@
+import config from '@/config';
 import { TagRepository } from '@core/repositories/tag/TagRepository';
-import { TagsSortBy } from '@core/services/utils/SearchTagSortBy';
+import { SearchTagsSortByMapper } from '@core/services/utils/SearchTagSortByMapper';
 import { SearchTagsInput, SerachTagsOutput } from './dto';
-import { searchTagsOutputMapper } from './mapper';
 import { ISearchTagsUseCase } from './type';
 
 export class SearchTagsUseCase implements ISearchTagsUseCase {
@@ -12,19 +12,12 @@ export class SearchTagsUseCase implements ISearchTagsUseCase {
   async execute (
     { name, orderBy, sortBy, pagination }: SearchTagsInput,
   ): Promise<SerachTagsOutput> {
-    const tags = await this.tagRepository.getMany({
+    return this.tagRepository.search({
       where: {
-        name: {
-          contains: name,
-        },
+        searchText: name,
       },
-      counts: {
-        questions: true,
-      },
-      orderBy: TagsSortBy(sortBy, orderBy),
-      pagination,
+      orderBy: SearchTagsSortByMapper(sortBy, orderBy),
+      pagination: pagination ?? config.defaultPagination,
     });
-  
-    return searchTagsOutputMapper(tags);
   }
 }

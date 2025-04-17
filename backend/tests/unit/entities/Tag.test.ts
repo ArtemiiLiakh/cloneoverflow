@@ -1,23 +1,13 @@
-import { Tag } from '@core/models/Tag';
+import { Tag } from '@core/models/tag/Tag';
 
 describe('Entity: test Tag entity', () => {
-  test('Create Tag entity with default fields', () => {
+  test('Create Tag entity with fullfiled fields', () => {
     const tag = Tag.new({
+      id: 'id',
       name: 'tag',
     });
 
-    expect(tag.id).toEqual('');
+    expect(tag.id).toEqual('id');
     expect(tag.name).toEqual('tag');
-  });
-
-  test('Create Tag entity with custom fields', () => {
-    const payload: Tag = {
-      id: 'id',
-      name: 'text',
-    };
-
-    const user = Tag.new(payload);
-
-    expect(user).toEqual(payload);
   });
 });

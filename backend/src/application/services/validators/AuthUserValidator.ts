@@ -12,7 +12,7 @@ export class AuthUserValidator implements Validator<ValidatorPayload> {
     private userRepository: UserRepository,
   ) {}
 
-  async validate ({ executor }: ValidatorPayload) {
+  async validate ({ executor }: ValidatorPayload): Promise<void> {
     if (executor.status === UserStatusEnum.BLOCKED) {
       throw new ForbiddenException('Your account is blocked');
     }

@@ -1,5 +1,5 @@
 import { OrderByEnum, SearchTagsDTO, SearchTagsReponse, SearchTagsSortByEnum } from '@cloneoverflow/common';
-import { Tag } from '@core/models';
+import { Tag } from '@core/models/tag';
 import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { QuestionUtils } from '@tests/e2e/utils/QuestionUtils';
 import { TagUtils } from '@tests/e2e/utils/TagUtils';
@@ -21,15 +21,17 @@ describe('GET /api/tags/search', () => {
     const tagUtils = new TagUtils(nest);
 
     const owner = await userUtils.create();
-    const question = await questionUtils.create({ ownerId: owner.id });
+    const question = await questionUtils.create({
+      ownerId: owner.userId,
+    });
 
     tag1 = await tagUtils.create({ name: 'tag1' });
-    tag2 = await tagUtils.create({ name: 'tag2', questionId: question.id });
+    tag2 = await tagUtils.create({ name: 'tag2', questionId: question.questionId });
   });
   
   test('Expect it search tags with default options', async () => {
     const res: SearchTagsReponse = await supertest(app)
-      .get('/api/tags')
+      .get('/api/tags/search')
       .expect(200)
       .then(res => res.body);
 
@@ -48,7 +50,7 @@ describe('GET /api/tags/search', () => {
     };
     
     const res: SearchTagsReponse = await supertest(app)
-      .get('/api/tags')
+      .get('/api/tags/search')
       .query(options)
       .expect(200)
       .then(res => res.body);
@@ -66,7 +68,7 @@ describe('GET /api/tags/search', () => {
     };
 
     const res: SearchTagsReponse = await supertest(app)
-      .get('/api/tags')
+      .get('/api/tags/search')
       .query(options)
       .expect(200)
       .then(res => res.body);

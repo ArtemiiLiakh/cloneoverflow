@@ -1,4 +1,3 @@
-import { VoteTypeEnum } from '@cloneoverflow/common';
 import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { AnswerUtils } from '@tests/e2e/utils/AnswerUtils';
 import { QuestionUtils } from '@tests/e2e/utils/QuestionUtils';
@@ -28,9 +27,13 @@ describe('POST /api/answers/:id/vote', () => {
     const owner = await userUtils.create();
     const user = await userUtils.create({ rating: 10000 });
 
-    ownerId = owner.id;
-    const questionId = (await questionUtils.create({ ownerId })).id;
-    answerId = (await answerUtils.create({ ownerId, questionId })).id;
+    ownerId = owner.userId;
+    const questionId = (await questionUtils.create({ ownerId })).questionId;
+    
+    answerId = (await answerUtils.create({ 
+      ownerId, 
+      questionId: +questionId,
+    })).answerId;
 
     ownerAccessToken = 'accessToken='+(await userUtils.getTokens(owner)).accessToken;
     userAccessToken = 'accessToken='+(await userUtils.getTokens(user)).accessToken;
@@ -38,8 +41,7 @@ describe('POST /api/answers/:id/vote', () => {
 
   test('Expect it changes rating on vote', async () => {
     await supertest(app)
-      .post(`/api/answers/${answerId}/vote`)
-      .send({ vote: VoteTypeEnum.UP })
+      .post(`/api/answers/${answerId}/vote/up`)
       .set('Cookie', userAccessToken)
       .expect(200);
 
@@ -52,8 +54,7 @@ describe('POST /api/answers/:id/vote', () => {
 
   test('Expect it changes rating when user votes question with different type', async () => {
     await supertest(app)
-      .post(`/api/answers/${answerId}/vote`)
-      .send({ vote: VoteTypeEnum.DOWN })
+      .post(`/api/answers/${answerId}/vote/down`)
       .set('Cookie', userAccessToken)
       .expect(200);
 
@@ -66,22 +67,19 @@ describe('POST /api/answers/:id/vote', () => {
 
   test('When user votes the same type twice expect it returns error 400', async () => {
     await supertest(app)
-      .post(`/api/answers/${answerId}/vote`)
-      .send({ vote: VoteTypeEnum.UP })
+      .post(`/api/answers/${answerId}/vote/up`)
       .set('Cookie', userAccessToken)
       .expect(200);
 
     await supertest(app)
-      .post(`/api/answers/${answerId}/vote`)
-      .send({ vote: VoteTypeEnum.UP })
+      .post(`/api/answers/${answerId}/vote/up`)
       .set('Cookie', userAccessToken)
       .expect(403);
   });
 
   test('When owner votes expect it returns error 403', async () => {
     await supertest(app)
-      .post(`/api/answers/${answerId}/vote`)
-      .send({ vote: VoteTypeEnum.UP })
+      .post(`/api/answers/${answerId}/vote/up`)
       .set('Cookie', ownerAccessToken)
       .expect(403);
   });
@@ -89,39 +87,29 @@ describe('POST /api/answers/:id/vote', () => {
   test('When vote data is invalid expect it returns error 400', async () => {
     await supertest(app)
       .post(`/api/answers/${answerId}/vote`)
-      .send({ vote: 'invalid' })
       .set('Cookie', userAccessToken)
-      .expect(400);
-
-    await supertest(app)
-      .post(`/api/answers/${answerId}/vote`)
-      .set('Cookie', userAccessToken)
-      .expect(400);
+      .expect(404);
   });
 
   test('When user is unauthorized or access token is wrong expect it returns error 401', async () => {
     await supertest(app)
-      .post(`/api/answers/${answerId}/vote`)
-      .send({ vote: VoteTypeEnum.UP })
+      .post(`/api/answers/${answerId}/vote/up`)
       .expect(401);
 
     await supertest(app)
-      .post(`/api/answers/${answerId}/vote`)
-      .send({ vote: VoteTypeEnum.UP })
+      .post(`/api/answers/${answerId}/vote/up`)
       .set('Cookie', 'accessToken=wrong')
       .expect(401);
   });
 
   test('When answerId is not found or id is invalid expect it returns error 400', async () => {
     await supertest(app)
-      .post('/api/answers/0/vote')
-      .send({ vote: VoteTypeEnum.UP })
+      .post('/api/answers/0/vote/up')
       .set('Cookie', userAccessToken)
       .expect(404);
 
     await supertest(app)
-      .post('/api/answers/wrongId/vote')
-      .send({ vote: VoteTypeEnum.UP })
+      .post('/api/answers/wrongId/vote/up')
       .set('Cookie', userAccessToken)
       .expect(400);
   });

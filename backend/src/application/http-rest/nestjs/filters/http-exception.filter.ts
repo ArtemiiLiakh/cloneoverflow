@@ -4,12 +4,12 @@ import { Request, Response } from 'express';
 
 @Catch(Exception, NotFoundException)
 export class HttpExceptionFilter implements ExceptionFilter {
-  catch (exception: Exception | NotFoundException, host: ArgumentsHost) {
+  catch (exception: Exception | NotFoundException, host: ArgumentsHost): void {
     const req: Request = host.switchToHttp().getRequest();
     const res: Response = host.switchToHttp().getResponse();
     
     if (exception instanceof NotFoundException) {
-      return res
+      res
         .status(exception.getStatus())
         .send({
           path: req.url,
@@ -18,6 +18,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
           message: exception.message,
           timestamp: new Date().toISOString(),
         } as ExceptionMessage);
+      return;
     }
 
     const error = exception.serializeError();

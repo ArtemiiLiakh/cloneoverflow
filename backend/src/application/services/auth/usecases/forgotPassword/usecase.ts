@@ -20,16 +20,16 @@ export class ForgotPasswordUseCase implements IForgotPasswordUseCase {
     const user = await this.userRepository.getByEmail({ email });
     
     await this.codeValidator.validate({
-      userId: user.id,
+      userId: user.userId,
       code,
       codeType: VerificationCodeType.ForgotPassword,
     });
   
-    await this.cacheRepository.delete(`user:${VerificationCodeType.ForgotPassword}:${user.id}`);
+    await this.cacheRepository.delete(`user:${VerificationCodeType.ForgotPassword}:${user.userId}`);
   
     await this.userRepository.updateCreds({
-      userId: user.id,
-      creds: {
+      userId: user.userId,
+      data: {
         password: await this.dataHasher.hash(newPassword),
       },
     });

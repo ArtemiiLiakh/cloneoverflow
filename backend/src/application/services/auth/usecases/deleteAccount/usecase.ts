@@ -1,10 +1,10 @@
-import { BadBodyException, LoginException, VerificationCodeType } from '@cloneoverflow/common';
+import { LoginException, VerificationCodeType } from '@cloneoverflow/common';
 import { DataHasher } from '@common/encryption/DataHasher';
 import { CacheRepository } from '@core/repositories/cache/CacheRepository';
 import { UserRepository } from '@core/repositories/user/UserRepository';
+import { IVerificationCodeValidator } from '../validators/types';
 import { DeleteAccountInput, DeleteAccountOutput } from './dto';
 import { IDeleteAccountUseCase } from './type';
-import { IVerificationCodeValidator } from '../validators/types';
 
 export class DeleteAccountUseCase implements IDeleteAccountUseCase {
   constructor (
@@ -17,31 +17,34 @@ export class DeleteAccountUseCase implements IDeleteAccountUseCase {
   async execute (
     { executorId, code, email, password }: DeleteAccountInput,
   ): Promise<DeleteAccountOutput> {
-    const confirmUser = await this.userRepository.getCreds({
-      where: { userId: executorId },
-      withUser: true,
+    const user = await this.userRepository.getById({
+      userId: executorId,
+    });
+
+    const creds = await this.userRepository.getCreds({
+      userId: executorId,
     });
   
-    if (confirmUser?.creds.email !== email) {
-      throw new BadBodyException('Invalid user email');
+    if (creds.email !== email) {
+      throw new LoginException();
     }
 
     await this.codeValidator.validate({
-      userId: confirmUser.creds.id,
+      userId: creds.userId,
       code,
       codeType: VerificationCodeType.DeleteAccount,
     });
 
-    if (!await this.dataHasher.compareHash(password, confirmUser.creds.password)) {
+    if (!await this.dataHasher.compareHash(password, creds.password)) {
       throw new LoginException();
     }
 
-    await this.cacheRepository.delete(`user:${VerificationCodeType.DeleteAccount}:${confirmUser.creds.id}`);
+    await this.cacheRepository.delete(`user:${VerificationCodeType.DeleteAccount}:${creds.userId}`);
 
     await this.userRepository.delete({ 
       userId: executorId,
     });
   
-    return confirmUser.user!;
+    return user;
   }
 }

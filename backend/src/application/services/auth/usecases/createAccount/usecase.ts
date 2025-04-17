@@ -24,11 +24,11 @@ export class CreateAccountUseCase implements ICreateAccountUseCase {
   
     const [access_token, refresh_token] = await Promise.all([
       makeAccessToken(this.dataEncryptor, {
-        userId: user.id,
+        userId: user.userId,
         status: user.status,
       }), 
       makeRefreshToken(this.dataEncryptor, {
-        userId: user.id,
+        userId: user.userId,
         status: user.status,
       }),
     ]);

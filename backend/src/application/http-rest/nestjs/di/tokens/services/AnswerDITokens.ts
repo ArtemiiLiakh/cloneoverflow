@@ -2,9 +2,9 @@ import { AnswerServiceFacade } from '@application/facades/AnswerServiceFacade';
 import {
   AnswerCreateUseCase,
   AnswerDeleteUseCase,
-  AnswerGetManyUseCase,
+  AnswerGetByQuestionUseCase,
   AnswerGetUseCase,
-  AnswerGetVoteUseCase,
+  AnswerGetVoterUseCase,
   AnswerUpdateUseCase,
   AnswerVoteUseCase,
 } from '@core/services/answer';
@@ -13,10 +13,10 @@ export const AnswerUseCaseDITokens = {
   Create: Symbol(AnswerCreateUseCase.name),
   Delete: Symbol(AnswerDeleteUseCase.name),
   Get: Symbol(AnswerGetUseCase.name),
-  GetMany: Symbol(AnswerGetManyUseCase.name),
-  GetVote: Symbol(AnswerGetVoteUseCase.name),
+  GetVoter: Symbol(AnswerGetVoterUseCase.name),
   Update: Symbol(AnswerUpdateUseCase.name),
   Vote: Symbol(AnswerVoteUseCase.name),
+  GetByQuestion: Symbol(AnswerGetByQuestionUseCase.name),
 };
 
 export const AnswerServiceDIToken = Symbol(AnswerServiceFacade.name);

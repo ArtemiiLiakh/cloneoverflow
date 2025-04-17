@@ -1,5 +1,4 @@
 import { DataEncryptor } from '@common/encryption/DataEncryptor';
-import { UnauthorizedException } from '@cloneoverflow/common';
 import { UserRepository } from '@core/repositories/user/UserRepository';
 import { makeAccessToken } from '../../utils/makeAccessToken';
 import { RefreshTokenInput, RefreshTokenOutput } from './dto';
@@ -12,14 +11,11 @@ export class RefreshTokenUseCase implements IRefreshTokenUseCase {
   ) {}
 
   async execute ({ userId }: RefreshTokenInput): Promise<RefreshTokenOutput> {
-    const user = await this.userRepository.getById({ userId })
-      .catch(() => { 
-        throw new UnauthorizedException(); 
-      });
+    const user = await this.userRepository.getById({ userId });
 
     return {
       access_token: await makeAccessToken(this.dataEncryptor, {
-        userId: user.id,
+        userId: user.userId,
         status: user.status,
       }),
     };

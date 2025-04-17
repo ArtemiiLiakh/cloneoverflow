@@ -1,57 +1,63 @@
+import { DatabaseDITokens } from '@application/http-rest/nestjs/di/tokens/DatabaseDITokens';
 import { DataHasherDIToken } from '@application/http-rest/nestjs/di/tokens/encryption';
 import { PrismaRepositoryDITokens } from '@application/http-rest/nestjs/di/tokens/persistence';
 import { makeAccessToken } from '@application/services/auth/utils/makeAccessToken';
 import { makeRefreshToken } from '@application/services/auth/utils/makeRequestToken';
 import { EncryptOptions } from '@common/encryption/DataEncryptor';
 import { DataHasher } from '@common/encryption/DataHasher';
-import { User } from '@core/models/User';
-import { UserCreds } from '@core/models/UserCreds';
+import { AuthTokens } from '@common/types/AuthTokens';
+import { User } from '@core/models/user/User';
 import { UserRepository } from '@core/repositories';
 import { JwtEncryptorImpl } from '@infrastructure/encryption/JwtEncryptorImpl';
+import { UserMapper } from '@infrastructure/persistence/prisma/adapters/entityMappers/UserMapper';
 import { INestApplication } from '@nestjs/common';
+import { PrismaClient, User as PrismaUser } from '@prisma/client';
 import { randomBytes } from 'crypto';
 
 export class UserUtils {
   private dataHasher: DataHasher;
   private userRepository: UserRepository;
+  private prisma: PrismaClient;
 
   constructor (
     nest: INestApplication,
   ) {
+    this.prisma = nest.get(DatabaseDITokens.PrismaClient);
     this.userRepository = nest.get(PrismaRepositoryDITokens.UserRepository);
     this.dataHasher = nest.get(DataHasherDIToken);
   }
 
-  async create (user?: Partial<User> & { email?: string, password?: string }): Promise<User> {
-    const creds = UserCreds.new({
-      email: user?.email ?? randomBytes(4).toString('hex')+'@gmail.com',
-      password: await this.dataHasher.hash(user?.password ?? 'q12345678'),
+  async create (user?: Partial<PrismaUser> & { email?: string, password?: string }): Promise<User> {
+    const userCreds = await this.prisma.userCreds.create({
+      data: {
+        email: user?.email ?? randomBytes(4).toString('hex')+'@gmail.com',
+        password: await this.dataHasher.hash(user?.password ?? 'q12345678'),
+        user: {
+          create: {
+            username: user?.username ?? randomBytes(4).toString('hex'),
+            name: 'name',
+            about: 'about',
+            rating: user?.rating,
+          },
+        },
+      },
+      include: {
+        user: true,
+      },
     });
 
-    const newUser = User.new({
-      id: creds.id,
-      name: user?.name ?? 'name',
-      username: user?.username ?? randomBytes(4).toString('hex'),
-      rating: user?.rating,
-      status: user?.status,
-      createdAt: user?.createdAt,
-      updatedAt: user?.updatedAt,
-      about: user?.about,
-    });
-
-    await this.userRepository.createWithCreds({ creds, user: newUser });
-    return newUser;
+    return UserMapper.toEntity(userCreds.user!);
   }
 
   getUser (userId: string): Promise<User | undefined> {
     return this.userRepository.getById({ userId }).catch(() => undefined);
   }
 
-  async getTokens (user: User, options?: EncryptOptions) {
+  async getTokens (user: User, options?: EncryptOptions): Promise<AuthTokens> {
     const accessToken = await makeAccessToken(
       new JwtEncryptorImpl(), 
       {
-        userId: user.id,
+        userId: user.userId,
         status: user.status,
       }, 
       options,
@@ -60,7 +66,7 @@ export class UserUtils {
     const refreshToken = await makeRefreshToken(
       new JwtEncryptorImpl(), 
       {
-        userId: user.id,
+        userId: user.userId,
         status: user.status,
       }, 
       options,

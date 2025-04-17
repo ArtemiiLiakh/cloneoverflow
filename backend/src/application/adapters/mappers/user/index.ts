@@ -1,5 +1,5 @@
-export * from './UserGetAnswersMapper';
 export * from './UserGetMapper';
+export * from './UserGetOwnAnswersMapper';
+export * from './UserGetOwnQuestionsMapper';
 export * from './UserGetProfileMapper';
-export * from './UserGetQuestionsMapper';
 export * from './UserUpdateMapper';

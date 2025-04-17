@@ -1,5 +1,5 @@
 import { UserUpdateDTO, UserUpdateResponse } from '@cloneoverflow/common';
-import { User } from '@core/models/User';
+import { User } from '@core/models/user/User';
 import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { UserUtils } from '@tests/e2e/utils/UserUtils';
 import supertest from 'supertest';
@@ -34,17 +34,15 @@ describe('PATCH /api/users', () => {
       .expect(200)
       .then(res => res.body);
 
-    expect(updatedUser.id).toEqual(user.id);
+    expect(updatedUser.id).toEqual(user.userId);
     expect(updatedUser.name).toEqual(updateData.name);
     expect(updatedUser.username).toEqual(updateData.username);
-    expect(updatedUser.about).toEqual(updateData.about);
 
     user.name = updateData.name ?? user.name;
     user.username = updateData.username ?? user.username;
-    user.about = updateData.about ?? user.about;
   });
 
-  test('When username already exists expect it returns error 400', async () => {
+  test('When username already exists expect it returns error 403', async () => {
     const updateData: UserUpdateDTO = {
       username: user.username,
     };
@@ -53,7 +51,7 @@ describe('PATCH /api/users', () => {
       .patch('/api/users')
       .set('Cookie', accessToken)
       .send(updateData)
-      .expect(400);
+      .expect(403);
   });
 
   test('When user is unauthorized or accessToken is wrong expect it returns error 401', async () => {

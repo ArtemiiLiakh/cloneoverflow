@@ -4,27 +4,29 @@ export interface UserGetProfileResponse {
   id: string;
   name: string;
   username: string;
-  about: string | null;
-  reputation: number;
+  about: string;
+  rating: number;
   status: UserStatusEnum;
   createdAt: Date;
   updatedAt: Date;
-  answersAmount: number;
-  questionsAmount: number;
+  answerAmount: number;
+  questionAmount: number;
   bestAnswer: {
     id: string;
-    rate: number;
+    rating: number;
     isSolution: boolean;
     createdAt: Date;
     question: {
       id: string;
+      ownerId: string;
       title: string;
+      rating: number;
     };
   } | null;
   bestQuestion: {
     id: string;
     title: string;
-    rate: number;
+    rating: number;
     isClosed: boolean;
     tags: string[];
     answersAmount: number;

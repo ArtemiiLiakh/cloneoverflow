@@ -1,4 +1,6 @@
-export const pagination = {
-  defaultPageSize: 10,
-  defaultPage: 0,
+import { PaginationDTO } from '@cloneoverflow/common';
+
+export const defaultPagination: PaginationDTO = {
+  pageSize: 10,
+  page: 0,
 };

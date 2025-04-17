@@ -3,7 +3,7 @@ import { AuthLoginResponse } from '@cloneoverflow/common';
 
 export function AuthLoginMapperOutput (user: LoginOutput['user']): AuthLoginResponse {
   return {
-    id: user.id,
+    id: user.userId,
     name: user.name,
     username: user.username,
     reputation: user.rating,

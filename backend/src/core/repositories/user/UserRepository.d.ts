@@ -1,20 +1,29 @@
-import { UserRepositoryInput } from './dtos/UserRepositoryInput';
-import { UserRepositoryOutput } from './dtos/UserRepositoryOutput';
+import { UserRepoCreateInput, UserRepoCreateOutput } from './dtos/Create';
+import { UserRepoDeleteInput, UserRepoDeleteOutput } from './dtos/Delete';
+import { UserRepoGetByEmailInput, UserRepoGetByEmailOutput } from './dtos/GetByEmail';
+import { UserRepoGetByIdInput, UserRepoGetByIdOutput } from './dtos/GetById';
+import { UserRepoGetByUsernameInput, UserRepoGetByUsernameOutput } from './dtos/GetByUsername';
+import { UserRepoGetCredsInput, UserRepoGetCredsOutput } from './dtos/GetCreds';
+import { UserRepoGetProfileByIdInput, UserRepoGetProfileByIdOutput } from './dtos/GetProfileById';
+import { UserRepoIsExistInput, UserRepoIsExistOutput } from './dtos/isExist';
+import { UserRepoUpdateInput, UserRepoUpdateOutput } from './dtos/Update';
+import { UserRepoUpdateCredsInput, UserRepoUpdateCredsOutput } from './dtos/UpdateCreds';
+import { UserRepoincreaseRatingInput, UserRepoIncreaseRatingOutput } from './dtos/IncreaseRating';
+import { UserRepoDecreaseRatingInput, UserRepoDecreaseRatingOutput } from './dtos/DecreaseRating';
 
 export interface UserRepository {
-  getById(payload: UserRepositoryInput.GetById): Promise<UserRepositoryOutput.GetById>
-  getByEmail(payload: UserRepositoryInput.GetByEmail): Promise<UserRepositoryOutput.GetByEmail>;
-  getCreds(payload: UserRepositoryInput.GetCreds): Promise<UserRepositoryOutput.GetCreds>;
-  getUser(payload: UserRepositoryInput.GetUser): Promise<UserRepositoryOutput.GetUser>;
-  getPartialUser(payload: UserRepositoryInput.GetPartialUser): Promise<UserRepositoryOutput.GetPartialUser>; 
-  getPartialById(payload: UserRepositoryInput.GetPartialById): Promise<UserRepositoryOutput.GetPartialById>; 
-  getMany(payload: UserRepositoryInput.GetMany): Promise<UserRepositoryOutput.GetMany>;
-  isExist(payload: UserRepositoryInput.IsExist): Promise<UserRepositoryOutput.IsExist>; 
+  getById(payload: UserRepoGetByIdInput): Promise<UserRepoGetByIdOutput>
+  getByEmail(payload: UserRepoGetByEmailInput): Promise<UserRepoGetByEmailOutput>;
+  getByUsername(payload: UserRepoGetByUsernameInput): Promise<UserRepoGetByUsernameOutput>;
+  getProfile(payload: UserRepoGetProfileByIdInput): Promise<UserRepoGetProfileByIdOutput>;
+  getCreds(payload: UserRepoGetCredsInput): Promise<UserRepoGetCredsOutput>;
+  isExist(payload: UserRepoIsExistInput): Promise<UserRepoIsExistOutput>; 
   
-  createWithCreds(payload: UserRepositoryInput.CreateWithCreds): Promise<UserRepositoryOutput.CreateWithCreds>; 
-  update(payload: UserRepositoryInput.Update): Promise<UserRepositoryOutput.Update>;  
-  updateCreds(payload: UserRepositoryInput.UpdateCreds): Promise<UserRepositoryOutput.UpdateCreds>; 
-  delete(payload: UserRepositoryInput.Delete): Promise<UserRepositoryOutput.Delete>; 
+  create(payload: UserRepoCreateInput): Promise<UserRepoCreateOutput>; 
+  update(payload: UserRepoUpdateInput): Promise<UserRepoUpdateOutput>;  
+  updateCreds(payload: UserRepoUpdateCredsInput): Promise<UserRepoUpdateCredsOutput>; 
+  delete(payload: UserRepoDeleteInput): Promise<UserRepoDeleteOutput>; 
   
-  addRating(payload: UserRepositoryInput.AddRating): Promise<UserRepositoryOutput.AddRating>; 
+  increaseRating(payload: UserRepoincreaseRatingInput): Promise<UserRepoIncreaseRatingOutput>; 
+  decreaseRating(payload: UserRepoDecreaseRatingInput): Promise<UserRepoDecreaseRatingOutput>; 
 }

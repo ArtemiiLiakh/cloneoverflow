@@ -1,19 +1,17 @@
 import { UserStatusEnum } from '@cloneoverflow/common';
-import { User } from '@core/models/User';
+import { User } from '@core/models/user/User';
 import Prisma from '@prisma/client';
-import { bytesToUUID } from '../../utils/uuid';
 
 export class UserMapper {
   static toEntity (user: Partial<Prisma.User>): User {
     return User.new({
-      id: user.id ? bytesToUUID(user.id) : undefined,
+      userId: user.id ?? '',
       name: user.name ?? '',
       username: user.username ?? '',
-      rating: user.reputation,
+      rating: user.rating ?? 0,
       status: user.status as UserStatusEnum,
-      about: user.about,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
+      createdAt: user.createdAt ?? new Date(),
+      updatedAt: user.updatedAt ?? new Date(),
     });
   }
 }

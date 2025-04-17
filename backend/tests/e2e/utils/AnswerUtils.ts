@@ -1,56 +1,43 @@
+import { DatabaseDITokens } from '@application/http-rest/nestjs/di/tokens/DatabaseDITokens';
 import { PrismaRepositoryDITokens } from '@application/http-rest/nestjs/di/tokens/persistence';
-import { AnswerUserStatusEnum } from '@cloneoverflow/common';
-import { Answer } from '@core/models/Answer';
-import { AnswerUser } from '@core/models/AnswerUser';
-import { AnswerRepository, UnitOfWork } from '@core/repositories';
+import { Answer } from '@core/models/answer/Answer';
+import { AnswerRepository } from '@core/repositories';
+import { AnswerMapper } from '@infrastructure/persistence/prisma/adapters/entityMappers/AnswerMapper';
 import { INestApplication } from '@nestjs/common';
+import { Answer as PrismaAnswer, PrismaClient } from '@prisma/client';
 
 export class AnswerUtils {
   private answerRepository: AnswerRepository;
-  private unitOfWork: UnitOfWork;
+  private prisma: PrismaClient;
 
   constructor (
     nest: INestApplication,
   ) {
+    this.prisma = nest.get(DatabaseDITokens.PrismaClient);
     this.answerRepository = nest.get(PrismaRepositoryDITokens.AnswerRepository);
-    this.unitOfWork = nest.get(PrismaRepositoryDITokens.UnitOfWork);
   }
 
-  async create (answer: Partial<Answer> & { ownerId: string, questionId: string }): Promise<Answer> {
-    const newAnswer = Answer.new({
-      id: answer.id,
-      ownerId: answer.ownerId,
-      questionId: answer.questionId,
-      text: answer.text ?? '',
-      rating: answer.rating,
-      isSolution: answer.isSolution,
-      createdAt: answer.createdAt,
-      updatedAt: answer.updatedAt,
+  async create (answer: Partial<PrismaAnswer> & { ownerId: string, questionId: number }): Promise<Answer> {
+    const newAnswer = await this.prisma.answer.create({ 
+      data: {
+        ownerId: answer.ownerId,
+        questionId: answer.questionId,
+        text: answer.text ?? 'text',
+        rating: answer.rating,
+        isSolution: answer.isSolution,
+        createdAt: answer.createdAt,
+        updatedAt: answer.updatedAt,
+      },
     });
 
-    await this.unitOfWork.execute(async (unit) => {
-      newAnswer.id = await unit.answerRepository.create({ 
-        answer: newAnswer, 
-        returnId: true,
-      }).then(id => id!);
-
-      await unit.answerUserRepository.create({
-        user: AnswerUser.new({
-          userId: answer.ownerId,
-          answerId: newAnswer.id,
-          status: AnswerUserStatusEnum.OWNER,
-        }),
-      });
-    });
-
-    return newAnswer;
+    return AnswerMapper.toEntity(newAnswer);
   }
 
   async getAnswer (answerId: string): Promise<Answer | null> {
     return this.answerRepository.getById({ answerId }).catch(() => null);
   }
 
-  async delete (answerId: string) {
-    this.answerRepository.delete({ answerId });
+  delete (answerId: string): Promise<void> {
+    return this.answerRepository.delete({ answerId });
   }
 }

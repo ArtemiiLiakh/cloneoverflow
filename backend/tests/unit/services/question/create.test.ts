@@ -1,57 +1,53 @@
 import { Exception } from '@cloneoverflow/common';
-import { Tag } from '@core/models/Tag';
 import { QuestionRepository } from '@core/repositories/question/QuestionRepository';
-import { QuestionUserRepository } from '@core/repositories/question/QuestionUserRepository';
 import { TagRepository } from '@core/repositories/tag/TagRepository';
 import { Unit, UnitOfWork } from '@core/repositories/UnitOfWork';
 import { QuestionCreateUseCase } from '@core/services/question';
 import { QuestionCreateInput } from '@core/services/question/create/dto';
+import { createQuestion } from '@tests/utils/models/question';
+import { createTag } from '@tests/utils/models/tag';
 
-describe('Service: test QuestionCreateUseCase', () => {
+describe('Question service: test CreateUseCase', () => {
   test('Create question', async () => {
+    const tag = createTag();
+
     const payload: QuestionCreateInput = {
       executorId: 'user',
       data: {
         title: 'title',
         text: 'text',
-        tags: ['tags'],
+        tags: [tag.name],
       },
     };
 
-    const questionId = 'id';
-    const tagEntities = payload.data.tags!.map((tag) => Tag.new({ name: tag }));
+    const questionEntity = createQuestion();
 
     const unitMock = {
       questionRepository: {
-        create: jest.fn().mockReturnValue(Promise.resolve(questionId)),
+        create: jest.fn().mockResolvedValue(questionEntity),
         refTags: jest.fn(),
       } as Partial<QuestionRepository>,
 
-      questionUserRepository: {
-        create: jest.fn(),
-      } as Partial<QuestionUserRepository>,
-
       tagRepository: {
-        createOrFindMany: jest.fn().mockReturnValue(Promise.resolve(tagEntities)),
+        createOrFindMany: jest.fn().mockResolvedValue(tag),
       } as Partial<TagRepository>,
     } as Unit;
 
     const createUseCase = new QuestionCreateUseCase({
-      execute: (fn) => fn(unitMock),
+      executeFn: (fn) => fn(unitMock),
     } as UnitOfWork);
 
     const question = await createUseCase.execute(payload);
-    expect(question.id).toEqual(questionId);
+    expect(question).toEqual(questionEntity);
     expect(unitMock.questionRepository.create).toHaveBeenCalled();
     expect(unitMock.questionRepository.refTags).toHaveBeenCalled();
-    expect(unitMock.questionUserRepository.create).toHaveBeenCalled();
     expect(unitMock.tagRepository.createOrFindMany).toHaveBeenCalled();
   });
 
   test('Throw an error because unit of work failed', () => {
     const createUseCase = new QuestionCreateUseCase({
-      execute: () => Promise.reject(new Error()), 
-      executeAll: async () => {},
+      executeFn: () => Promise.reject(new Error()), 
+      executeSeq: async () => {},
     } as UnitOfWork); 
 
     expect(createUseCase.execute({ 

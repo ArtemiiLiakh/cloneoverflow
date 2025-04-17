@@ -1,10 +1,10 @@
-import { Exception, IsolationLevel } from '@cloneoverflow/common';
+import { IsolationLevel } from '@cloneoverflow/common';
 import { Unit, UnitOfWork } from '@core/repositories/UnitOfWork';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { PrismaAnswerRepository } from './PrismaAnswerRepository';
-import { PrismaAnswerUserRepository } from './PrismaAnswerUserRepository';
+import { PrismaAnswerVoterRepository } from './PrismaAnswerVoterRepository';
 import { PrismaQuestionRepository } from './PrismaQuestionRepository';
-import { PrismaQuestionUserRepository } from './PrismaQuestionUserRepository';
+import { PrismaQuestionVoterRepository } from './PrismaQuestionVoterRepository';
 import { PrismaTagRepository } from './PrismaTagRepository';
 import { PrismaUserRepository } from './PrismaUserRepository';
 
@@ -20,27 +20,20 @@ export class PrismaTransactionUnit implements UnitOfWork  {
     private prisma: PrismaClient,
   ) {}
 
-  execute<I> (
+  executeFn<I> (
     fn: (unit: Unit) => Promise<I>, 
     isolationLevel=IsolationLevel.ReadCommitted,
   ): Promise<I> {
-    return this.prisma.$transaction(async (context) => {
-      const prismaSession: Unit = {
+    return this.prisma.$transaction((context) => {
+      const unit: Unit = {
         userRepository: new PrismaUserRepository(context as PrismaClient),
         questionRepository: new PrismaQuestionRepository(context as PrismaClient),
-        questionUserRepository: new PrismaQuestionUserRepository(context as PrismaClient),
         answerRepository: new PrismaAnswerRepository(context as PrismaClient),
-        answerUserRepository: new PrismaAnswerUserRepository(context as PrismaClient),
         tagRepository: new PrismaTagRepository(context as PrismaClient),
+        questionVoterRepository: new PrismaQuestionVoterRepository(context as PrismaClient),
+        answerVoterRepository: new PrismaAnswerVoterRepository(context as PrismaClient),
       };
-      try {
-        return fn(prismaSession);
-      }
-      catch (err) {
-        console.log(err);
-        await context.$queryRaw`ROLLBACK`;
-        throw new Exception('Unit of work failed');
-      }
+      return fn(unit);
     }, {
       isolationLevel: isolationMapper[isolationLevel],
       maxWait: 5000,
@@ -48,32 +41,25 @@ export class PrismaTransactionUnit implements UnitOfWork  {
     });
   }
 
-  executeAll (
+  async executeSeq (
     fn: (unit: Unit) => Promise<unknown>[], 
     isolationLevel=IsolationLevel.ReadCommitted,
   ): Promise<void> {
     return this.prisma.$transaction(async (context) => {
-      const prismaSession: Unit = {
+      const unit: Unit = {
         userRepository: new PrismaUserRepository(context as PrismaClient),
         questionRepository: new PrismaQuestionRepository(context as PrismaClient),
-        questionUserRepository: new PrismaQuestionUserRepository(context as PrismaClient),
         answerRepository: new PrismaAnswerRepository(context as PrismaClient),
-        answerUserRepository: new PrismaAnswerUserRepository(context as PrismaClient),
         tagRepository: new PrismaTagRepository(context as PrismaClient),
+        questionVoterRepository: new PrismaQuestionVoterRepository(context as PrismaClient),
+        answerVoterRepository: new PrismaAnswerVoterRepository(context as PrismaClient),
       };
 
-      try {
-        await Promise.all(fn(prismaSession));
-      } 
-      catch (err) {
-        console.log(err);
-        await context.$queryRaw`ROLLBACK`;
-        throw new Exception('Unit of work failed');
-      };
+      await Promise.all(fn(unit));
     }, {
       isolationLevel: isolationMapper[isolationLevel],
       maxWait: 5000,
       timeout: 10000,
-    });
+    }); 
   }
 }

@@ -1,25 +1,19 @@
-import { BadBodyException, QuestionUserStatusEnum } from '@cloneoverflow/common';
-import { Question } from '@core/models/Question';
-import { QuestionUser } from '@core/models/QuestionUser';
+import { BadBodyException, ForbiddenException } from '@cloneoverflow/common';
+import { AnswerRepository } from '@core/repositories';
 import { QuestionRepository } from '@core/repositories/question/QuestionRepository';
-import { QuestionUserRepository } from '@core/repositories/question/QuestionUserRepository';
 import { Unit, UnitOfWork } from '@core/repositories/UnitOfWork';
 import { QuestionOpenUseCase } from '@core/services/question';
 import { IUserRatingValidator } from '@core/services/validators/types';
+import { createQuestion } from '@tests/utils/models/question';
 
-describe('Service: test QuestionOpenUseCase', () => {
+describe('Question service: test OpenUseCase', () => {
   test('Open question by owner', async () => {
-    const ownerId = 'userId';
-    
-    const questionEntity = Question.new({
-      ownerId: ownerId,
-      text: 'text',
-      title: 'title',
+    const questionEntity = createQuestion({
       isClosed: true,
     });
 
     const questionRepositoryMock = {
-      getPartialById: async () => questionEntity,
+      getById: () => Promise.resolve(questionEntity),
     } as Partial<QuestionRepository>;
 
     const unitMock = {
@@ -27,14 +21,9 @@ describe('Service: test QuestionOpenUseCase', () => {
         openQuestion: jest.fn(),
       } as Partial<QuestionRepository>,
 
-      questionUserRepository: {
-        getOne: async () => QuestionUser.new({
-          questionId: questionEntity.id,
-          userId: ownerId,
-          status: QuestionUserStatusEnum.ANSWERER,
-        }),
-        delete: jest.fn(),
-      } as Partial<QuestionUserRepository>,
+      answerRepository: {
+        clearSolution: jest.fn(),
+      } as Partial<AnswerRepository>,
     } as Unit;
     
     const userRatingValidator = {
@@ -44,31 +33,28 @@ describe('Service: test QuestionOpenUseCase', () => {
     const openUseCase = new QuestionOpenUseCase(
       userRatingValidator,
       questionRepositoryMock as QuestionRepository,
-      { execute: (fn) => fn(unitMock) } as UnitOfWork,
+      { executeSeq: (fn) => { fn(unitMock) } } as UnitOfWork,
     );
 
     await openUseCase.execute({
-      executorId: ownerId,
-      questionId: questionEntity.id,
+      executorId: questionEntity.ownerId,
+      questionId: questionEntity.questionId,
     });
 
     expect(userRatingValidator.validate).not.toHaveBeenCalled();
     expect(unitMock.questionRepository.openQuestion).toHaveBeenCalled();
-    expect(unitMock.questionUserRepository.delete).toHaveBeenCalled();
+    expect(unitMock.answerRepository.clearSolution).toHaveBeenCalled();
   });
 
   test('Open question by another user', async () => {
     const userId = 'userId';
     
-    const questionEntity = Question.new({
-      ownerId: 'ownerId',
-      text: 'text',
-      title: 'title',
+    const questionEntity = createQuestion({
       isClosed: true,
     });
 
     const questionRepositoryMock = {
-      getPartialById: async () => questionEntity,
+      getById: async () => questionEntity,
     } as Partial<QuestionRepository>;
 
     const userRatingValidator = {
@@ -79,30 +65,26 @@ describe('Service: test QuestionOpenUseCase', () => {
       userRatingValidator,
       questionRepositoryMock as QuestionRepository,
       { 
-        execute: async () => {},
-        executeAll: async () => {},
+        executeFn: async () => {},
+        executeSeq: async () => {},
       } as UnitOfWork,
     );
 
     await openUseCase.execute({
       executorId: userId,
-      questionId: questionEntity.id,
+      questionId: questionEntity.questionId,
     });
 
     expect(userRatingValidator.validate).toHaveBeenCalled();
   });
 
   test('Throw an error because question is already opened', () => {
-    const questionEntity = Question.new({
-      ownerId: 'ownerId',
-      title: 'title',
-      text: 'text',
+    const questionEntity = createQuestion({
       isClosed: false,
     });
 
     const questionRepositoryMock = {
-      getPartialById: async () => questionEntity,
-      openQuestion: async () => {},
+      getById: async () => questionEntity,
     } as Partial<QuestionRepository>;
 
     const openUseCase = new QuestionOpenUseCase(
@@ -113,7 +95,7 @@ describe('Service: test QuestionOpenUseCase', () => {
 
     expect(openUseCase.execute({
       executorId: questionEntity.ownerId,
-      questionId: questionEntity.id,
-    })).rejects.toThrow(BadBodyException);
+      questionId: questionEntity.questionId,
+    })).rejects.toThrow(ForbiddenException);
   });
 });

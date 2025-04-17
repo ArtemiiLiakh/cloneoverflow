@@ -1,23 +1,18 @@
 import { Module } from '@nestjs/common';
-import { AuthModule } from './modules/auth.module';
-import { CoreModule } from './modules/app/core.module';
-import { DatabaseModule } from './modules/database.module';
-import { GuardModule } from './modules/guard.module';
+import { ControllersModule } from './modules/controllers.module';
 import { EmailModule } from './modules/email.module';
 import { EncryptionModule } from './modules/encryption.module';
-import { PersistenceModule } from './modules/persistence.module';
-import { ValidatorModule } from './modules/validator.module';
+import { GlobalsModule } from './modules/globals.module';
+import { ServicesModule } from './modules/services.module';
 
 @Module({
   imports: [
-    DatabaseModule,
-    PersistenceModule,
     EncryptionModule,
     EmailModule,
-    ValidatorModule,
-    GuardModule,
-    AuthModule,
-    CoreModule,
+
+    GlobalsModule,
+    ServicesModule,
+    ControllersModule,
   ],
 })
 export class ApplicationModule {}

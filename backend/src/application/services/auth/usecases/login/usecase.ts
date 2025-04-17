@@ -15,32 +15,29 @@ export class LoginUseCase implements ILoginUseCase {
   ) {}
 
   async execute ({ email, password }: LoginInput): Promise<LoginOutput> {
-    const creds = await this.userRepository.getCreds({ 
-      where: { email },
-      withUser: true,
+    const creds = await this.userRepository.getCreds({ email }).catch(() => {
+      throw new LoginException();
     });
     
-    if (!creds) {
-      throw new LoginException();
-    }
+    const user = await this.userRepository.getByEmail({ email });
     
-    if (!await this.dataHasher.compareHash(password, creds.creds.password)) {
+    if (!await this.dataHasher.compareHash(password, creds.password)) {
       throw new LoginException();
     }
 
     const [access_token, refresh_token] = await Promise.all([
       makeAccessToken(this.dataEncryptor, {
-        userId: creds.user!.id,
-        status: creds.user!.status,
+        userId: user.userId,
+        status: user.status,
       }),
       makeRefreshToken(this.dataEncryptor, {
-        userId: creds.user!.id,
-        status: creds.user!.status,
+        userId: user.userId,
+        status: user.status,
       }),
     ]);
     
     return {
-      user: creds.user!,
+      user,
       tokens: {
         access_token,
         refresh_token,

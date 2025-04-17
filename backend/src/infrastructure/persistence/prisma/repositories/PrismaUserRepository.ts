@@ -1,258 +1,238 @@
-import { BadBodyException, NoEntityWithIdException, VoteTypeEnum } from '@cloneoverflow/common';
-import { UserRepository } from '@core/repositories/user/UserRepository';
-import { UserRepositoryInput } from '@core/repositories/user/dtos/UserRepositoryInput';
-import { UserRepositoryOutput } from '@core/repositories/user/dtos/UserRepositoryOutput';
-import { Prisma, PrismaClient } from '@prisma/client';
-import { UserCountsAdapter } from '../adapters/counts/UserCountsAdapter';
-import { AnswerMapper } from '../adapters/entityMappers/AnswerMapper';
-import { QuestionMapper } from '../adapters/entityMappers/QuestionMapper';
+import { NoEntityWithIdException, NotFoundException, UserStatusEnum } from '@cloneoverflow/common';
+import { UserRepository } from '@core/repositories';
+import { UserRepoCreateInput, UserRepoCreateOutput } from '@core/repositories/user/dtos/Create';
+import { UserRepoDecreaseRatingInput, UserRepoDecreaseRatingOutput } from '@core/repositories/user/dtos/DecreaseRating';
+import { UserRepoDeleteInput, UserRepoDeleteOutput } from '@core/repositories/user/dtos/Delete';
+import { UserRepoGetByEmailInput, UserRepoGetByEmailOutput } from '@core/repositories/user/dtos/GetByEmail';
+import { UserRepoGetByIdInput, UserRepoGetByIdOutput } from '@core/repositories/user/dtos/GetById';
+import { UserRepoGetByUsernameInput, UserRepoGetByUsernameOutput } from '@core/repositories/user/dtos/GetByUsername';
+import { UserRepoGetCredsInput, UserRepoGetCredsOutput } from '@core/repositories/user/dtos/GetCreds';
+import { UserRepoGetProfileByIdInput, UserRepoGetProfileByIdOutput } from '@core/repositories/user/dtos/GetProfileById';
+import { UserRepoincreaseRatingInput, UserRepoIncreaseRatingOutput } from '@core/repositories/user/dtos/IncreaseRating';
+import { UserRepoUpdateInput, UserRepoUpdateOutput } from '@core/repositories/user/dtos/Update';
+import { UserRepoUpdateCredsInput, UserRepoUpdateCredsOutput } from '@core/repositories/user/dtos/UpdateCreds';
+import { UserRepoIsExistInput, UserRepoIsExistOutput } from '@core/repositories/user/dtos/isExist';
+import { PrismaClient } from '@prisma/client';
 import { UserCredsMapper } from '../adapters/entityMappers/UserCredsMapper';
 import { UserMapper } from '../adapters/entityMappers/UserMapper';
-import { UserIncludeAdapter } from '../adapters/include/UserIncludeAdapter';
-import { UserOrderByAdapter } from '../adapters/orderBy/UserOrderByAdapter';
+import { UserProfileMapper } from '../adapters/entityMappers/UserProfileMapper';
 import { UserSelectAdapter } from '../adapters/select/UserSelectAdapter';
-import { UserWhereAdapter } from '../adapters/where/UserWhereAdapter';
-import { uuidToBytes } from '../utils/uuid';
-import { PrismaPaginationRepository } from './PrismaPaginationRepository';
 
 export class PrismaUserRepository implements UserRepository {
   constructor (
-    private prisma: PrismaClient,
+    private client: PrismaClient,
   ) {}
-
-  async isExist (where: UserRepositoryInput.IsExist): Promise<UserRepositoryOutput.IsExist> {
-    const user = await this.prisma.user.findFirst({ 
-      where: UserWhereAdapter(where),
-      select: { id: true }, 
-    });
-
-    return !!user;
-  }
-
-  async getById (
-    { userId }: UserRepositoryInput.GetById,
-  ): Promise<UserRepositoryOutput.GetById> {
-    const user = await this.prisma.user.findFirst({ 
-      where: { id: uuidToBytes(userId) },
-    });
-
-    if (!user) throw new NoEntityWithIdException('User');
-
-    return UserMapper.toEntity(user);
-  }
-
-  async getByEmail (
-    { email }: UserRepositoryInput.GetByEmail,
-  ): Promise<UserRepositoryOutput.GetByEmail> {
-    const user = await this.prisma.user.findFirst({ 
+  
+  async getByEmail ({ email, select }: UserRepoGetByEmailInput): Promise<UserRepoGetByEmailOutput> {
+    const user = await this.client.user.findFirst({
       where: {
-        userCreds: { email },
+        userCreds: {
+          email,
+        },
       },
-    });
-
-    if (!user) throw new BadBodyException('User with this email not found');
-
-    return UserMapper.toEntity(user);
-  }
-
-  async getUser ({
-    where,
-    counts,
-    include,
-  }: UserRepositoryInput.GetUser): Promise<UserRepositoryOutput.GetUser> {
-    const user = await this.prisma.user.findFirst({
-      where: UserWhereAdapter(where),
-      include: {
-        ...UserIncludeAdapter(include),
-        ...UserCountsAdapter(counts, where),
-      },
-    });
-
-    if (!user) throw new NoEntityWithIdException('User');
-
-    return {
-      entity: UserMapper.toEntity(user),
-      questions: user.questions?.map(QuestionMapper.toEntity),
-      answers: user.answers?.map(AnswerMapper.toEntity),
-      counts: user._count ? {
-        questions: user._count.questions,
-        answers: user._count.answers,
-      } : undefined,
-    };
-  }
-
-  async getPartialById (
-    { userId, select }: UserRepositoryInput.GetPartialById,
-  ): Promise<UserRepositoryOutput.GetPartialById> {
-    const user = await this.prisma.user.findFirst({
-      where: { id: uuidToBytes(userId) },
       select: UserSelectAdapter(select),
     });
 
-    if (!user) throw new NoEntityWithIdException('User');
+    if (!user) {
+      throw new NotFoundException('User with this email is not found');
+    }
 
     return UserMapper.toEntity(user);
   }
 
-  async getPartialUser ({
-    where,
-    select,
-    counts,
-    include,
-  }: UserRepositoryInput.GetPartialUser): Promise<UserRepositoryOutput.GetPartialUser> {
-    const user = await this.prisma.user.findFirst({
-      where: UserWhereAdapter(where),
-      select: {
-        ...UserSelectAdapter(select),
-        ...UserCountsAdapter(counts, where),
-        ...UserIncludeAdapter(include),
+  async getById (
+    { userId, select }: UserRepoGetByIdInput,
+  ): Promise<UserRepoGetByIdOutput> {
+    const user = await this.client.user.findFirst({
+      where: {
+        id: userId,
       },
+      select: UserSelectAdapter(select),
     });
 
-    if (!user) throw new NoEntityWithIdException('User');
+    if (!user) {
+      throw new NoEntityWithIdException('User');
+    }
 
-    return {
-      entity: UserMapper.toEntity(user),
-      questions: user.questions?.map(QuestionMapper.toEntity),
-      answers: user.answers?.map(AnswerMapper.toEntity),
-      counts: user?._count ? {
-        questions: user._count.questions,
-        answers: user._count.answers,
-      } : undefined,
-    };
+    return UserMapper.toEntity(user);
   }
 
-  async getMany ({ 
-    where, 
-    select, 
-    orderBy, 
-    counts, 
-    include,
-    pagination,
-  }: UserRepositoryInput.GetMany): Promise<UserRepositoryOutput.GetMany> {
-    const users = await PrismaPaginationRepository.paginate(
-      this.prisma.user.findMany.bind(this.prisma),
-      this.prisma.user.count.bind(this.prisma),
-      {
-        where: UserWhereAdapter(where),
-        select: {
-          ...UserSelectAdapter(select),
-          ...UserIncludeAdapter(include),
-          ...UserCountsAdapter(counts, where),
-        } as Prisma.UserSelect,
-        orderBy: UserOrderByAdapter(orderBy),
+  async getByUsername (
+    { username, select }: UserRepoGetByUsernameInput,
+  ): Promise<UserRepoGetByUsernameOutput> {
+    const user = await this.client.user.findFirst({
+      where: {
+        username,
       },
-      pagination,
-    );
+      select: UserSelectAdapter(select),
+    });
 
-    return {
-      data: users.data.map((user) => ({
-        user: UserMapper.toEntity(user),
-        questions: user.questions?.map(QuestionMapper.toEntity),
-        answers: user.answers?.map(AnswerMapper.toEntity),
-        counts: user?._count ? {
-          questions: user._count?.questions ?? 0,
-          answers: user._count?.answers ?? 0,
-        } : undefined,
-      })),
-      pagination: users.pagination,
-    };
+    if (!user) {
+      throw new NotFoundException('User with this username is not found');
+    }
+
+    return UserMapper.toEntity(user);  
   }
 
   async getCreds (
-    { where, withUser }: UserRepositoryInput.GetCreds,
-  ): Promise<UserRepositoryOutput.GetCreds> {
-    const creds = await this.prisma.userCreds.findFirst({
+    { userId, email }: UserRepoGetCredsInput,
+  ): Promise<UserRepoGetCredsOutput> {
+    const creds = await this.client.userCreds.findFirst({
       where: {
-        id: where.userId ? uuidToBytes(where.userId) : undefined,
-        email: where.email,
-      },
-      include: {
-        user: withUser ? {
-          select: {
-            id: true,
-            name: true,
-            username: true,
-            reputation: true,
-            status: true,
-            createdAt: true,
-          },
-        } : false,
+        id: userId,
+        email,
       },
     });
 
-    if (!creds) return null;
+    if (!creds) {
+      throw new NotFoundException(`User creds with this ${userId ? 'id' : 'email'} is not found`);
+    }
 
-    return {
-      creds: UserCredsMapper.toEntity(creds),
-      user: creds?.user ? UserMapper.toEntity(creds.user) : undefined,
-    };
+    return UserCredsMapper.toEntity(creds);   
   }
 
-  async createWithCreds (
-    { user, creds }: UserRepositoryInput.CreateWithCreds,
-  ): Promise<UserRepositoryOutput.CreateWithCreds> {
-    await this.prisma.userCreds.create({
-      data: {
-        id: uuidToBytes(creds.id),
-        email: creds.email,
-        password: creds.password,
-        user: {
-          create: {
-            name: user.name,
-            username: user.username,
-            about: user.about,
-            reputation: user.rating,
-            status: user.status,
+  async getProfile (
+    { userId }: UserRepoGetProfileByIdInput,
+  ): Promise<UserRepoGetProfileByIdOutput> {
+    const user = await this.client.user.findFirst({
+      where: { id: userId },
+      include: {
+        _count: {
+          select: {
+            questions: true,
+            answers: true,
           },
+        },
+        userCreds: {
+          select: {
+            email: true,
+          },
+        },
+      },
+    });
+
+    if (!user) {
+      throw new NoEntityWithIdException('User');
+    }
+
+    return UserProfileMapper.toEntity(user, {
+      email: user.userCreds.email,
+      answerAmount: user._count.questions,
+      questionAmount: user._count.answers,
+    });
+  }
+
+  async isExist (
+    { userId, email, username }: UserRepoIsExistInput,
+  ): Promise<UserRepoIsExistOutput> {
+    if (!userId && !email && !username) {
+      throw new Error('User id or email or username must be provided');
+    }
+
+    const res = await this.client.user.findFirst({
+      where: {
+        id: userId,
+        username,
+        userCreds: {
+          email,
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    return !!res;
+  }
+
+  async create (
+    { creds, user }: UserRepoCreateInput,
+  ): Promise<UserRepoCreateOutput> {
+    const newUser = await this.client.user.create({
+      data: {
+        name: user.name,
+        username: user.username,
+        about: user.about,
+        rating: 0,
+        status: UserStatusEnum.USER,
+        userCreds: {
+          create: {
+            email: creds.email,
+            password: creds.password,
+          },
+        },
+      },
+    });
+
+    return UserMapper.toEntity(newUser);
+  }
+
+  async update (
+    { userId, data }: UserRepoUpdateInput,
+  ): Promise<UserRepoUpdateOutput> {
+    const user = await this.client.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        name: data.name,
+        username: data.username,
+        about: data.about,
+      },
+    });
+
+    return UserMapper.toEntity(user);
+  }
+
+  async delete (
+    { userId }: UserRepoDeleteInput,
+  ): Promise<UserRepoDeleteOutput> {
+    await this.client.user.delete({
+      where: {
+        id: userId,
+      },
+    });
+  }
+
+  async updateCreds (
+    { userId, data }: UserRepoUpdateCredsInput,
+  ): Promise<UserRepoUpdateCredsOutput> {
+    await this.client.userCreds.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        email: data.email,
+        password: data.password,
+      },
+    });
+  }
+
+  async increaseRating (
+    { userId }: UserRepoincreaseRatingInput,
+  ): Promise<UserRepoIncreaseRatingOutput> {
+    await this.client.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        rating: {
+          increment: 1,
         },
       },
     });
   }
 
-  async update (
-    { userId, user, returnEntity }: UserRepositoryInput.Update,
-  ): Promise<UserRepositoryOutput.Update> {
-    const updatedUser = await this.prisma.user.update({
-      where: { id: uuidToBytes(userId) },
-      data: {
-        name: user.name,
-        username: user.username,
-        about: user.about,
+  async decreaseRating (
+    { userId }: UserRepoDecreaseRatingInput,
+  ): Promise<UserRepoDecreaseRatingOutput> {
+    await this.client.user.update({
+      where: {
+        id: userId,
       },
-    });
-
-    if (returnEntity) return UserMapper.toEntity(updatedUser);
-  }
-
-  async updateCreds (
-    { userId, creds }: UserRepositoryInput.UpdateCreds,
-  ): Promise<UserRepositoryOutput.UpdateCreds> {
-    await this.prisma.userCreds.update({
-      where: { id: uuidToBytes(userId) },
       data: {
-        email: creds.email,
-        password: creds.password,
-      },
-    });
-  }
-
-  async delete (
-    { userId }: UserRepositoryInput.Delete,
-  ): Promise<UserRepositoryOutput.Delete> {
-    await this.prisma.userCreds.delete({ 
-      where: { id: uuidToBytes(userId) },
-    });
-  }
-
-  async addRating (
-    { userId, voteType }: UserRepositoryInput.AddRating,
-  ): Promise<UserRepositoryOutput.AddRating> {
-    await this.prisma.user.update({
-      where: { id: uuidToBytes(userId) },
-      data: {
-        reputation: {
-          increment: voteType === VoteTypeEnum.UP ? 1 : -1,
+        rating: {
+          decrement: 1,
         },
       },
     });

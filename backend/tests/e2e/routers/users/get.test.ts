@@ -1,4 +1,4 @@
-import { User } from '@core/models/User';
+import { User } from '@core/models/user/User';
 import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { randomUUID } from 'crypto';
 import supertest from 'supertest';
@@ -20,10 +20,10 @@ describe('GET /api/users/:userId', () => {
 
   test('Expect it returns user info', async () => {
     const res = await supertest(app)
-      .get(`/api/users/${user.id}`)
+      .get(`/api/users/${user.userId}`)
       .expect(200);
 
-    expect(res.body.id).toEqual(user.id);
+    expect(res.body.id).toEqual(user.userId);
   });
 
   test('When user does not exist it returns error 404', async () => {

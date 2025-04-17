@@ -1,19 +1,21 @@
-const ArrayOrUndefinded = <T>(array: T[]) => {
+import { QuestionRepoSearchWhereProps } from '@core/repositories/question/dtos/Search';
+
+const ArrayOrUndefinded = <T>(array: T[]): T[] | undefined => {
   return array.length > 0 ? array : undefined;
 };
 
-export const SearchQuestionParse = (search?: string) => {
+export const SearchQuestionParse = (search?: string): QuestionRepoSearchWhereProps => {
   if (!search) return {};
 
-  const searchText = new RegExp(/(.*?\?)|(.*)/, 'i').exec(search)?.[0];
-  let text = searchText?.at(-1) === '?' ? searchText.slice(0, -1) : searchText;
-  text = text?.replace(/(^\s+) | (\s+$)/g, '');
+  const searchExpression = new RegExp(/(.*?\?)|(.*)/, 'i').exec(search)?.[0];
+  let searchText = searchExpression?.at(-1) === '?' ? searchExpression.slice(0, -1) : searchExpression;
+  searchText = searchText?.replace(/(^\s+) | (\s+$)/g, '');
 
   const filters = search
     .replace(searchText ?? '', '')
     .match(/([#@]\w+)|(".*")/g);
 
-  if (!filters) return { text };
+  if (!filters) return { searchText };
 
   let tags = ArrayOrUndefinded(filters.filter((filter) => filter.includes('#')));
   let authors = ArrayOrUndefinded(filters.filter((filter) => filter.includes('@')));
@@ -24,7 +26,7 @@ export const SearchQuestionParse = (search?: string) => {
   keywords = keywords?.map((keyword) => keyword.replace(/"/g, ''));
 
   return {
-    text,
+    searchText,
     tags,
     authors,
     keywords,

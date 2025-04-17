@@ -1,13 +1,12 @@
-import { Tag } from '@core/models/Tag';
+import { TagRepoSearchOutput } from '@core/repositories/tag/dtos/Search';
 import { TagRepository } from '@core/repositories/tag/TagRepository';
 import { SearchTagsUseCase } from '@core/services/search';
 import { SearchTagsInput } from '@core/services/search/searchTags/dto';
+import { createTag } from '@tests/utils/models/tag';
 
-describe('Service: test SearchTagsUseCase', () => {
+describe('Search service: test TagsUseCase', () => {
   test('Search tags', async () => {
-    const tagEntity = Tag.new({
-      name: 'text',
-    });
+    const tagEntity = createTag();
 
     const inputData = {
       name: 'text',
@@ -18,9 +17,20 @@ describe('Service: test SearchTagsUseCase', () => {
     } as SearchTagsInput;
 
     const tagRepositoryMock = {
-      getMany: jest.fn().mockReturnValue(Promise.resolve({
-        data: [{ entity: tagEntity }],
-      })),
+      search: jest.fn().mockResolvedValue({
+        data: [{ 
+          tag: tagEntity, 
+          questionAmount: 0,
+        }],
+        pagination: {
+          nextElems: 0,
+          page: 0,
+          pageSize: 0,
+          prevElems: 0,
+          totalAmount: 0,
+          totalPages: 0,
+        },
+      } as TagRepoSearchOutput),
     } as Partial<TagRepository>;
 
     const searchTagUseCase = new SearchTagsUseCase(
@@ -28,13 +38,13 @@ describe('Service: test SearchTagsUseCase', () => {
     );
 
     const { data } = await searchTagUseCase.execute(inputData);
-    expect(data.at(0)?.entity).toEqual(tagEntity);
-    expect(tagRepositoryMock.getMany).toHaveBeenCalled();
+    expect(data.at(0)?.tag).toEqual(tagEntity);
+    expect(tagRepositoryMock.search).toHaveBeenCalled();
   });
 
   test('Search tags with empty return', async () => {
     const tagRepositoryMock = {
-      getMany: async () => ({
+      search: async () => ({
         data: [],
         pagination: {
           nextElems: 0,
@@ -44,7 +54,7 @@ describe('Service: test SearchTagsUseCase', () => {
           totalAmount: 0,
           totalPages: 0,
         },
-      }),
+      } as TagRepoSearchOutput),
     } as Partial<TagRepository>;
 
     const searchTagUseCase = new SearchTagsUseCase(

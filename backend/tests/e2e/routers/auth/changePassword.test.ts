@@ -1,13 +1,13 @@
 import { AuthChangePasswordDTO, VerificationCodeType } from '@cloneoverflow/common';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { UserUtils } from '@tests/e2e/utils/UserUtils';
 import supertest from 'supertest';
 import { App } from 'supertest/types';
 import { createVerificationCode } from './utils/createVerificationCode';
 import { login } from './utils/login';
-import { INestApplication } from '@nestjs/common';
 
-describe('PATCH /api/auth/password', () => {
+describe('POST /api/auth/password', () => {
   let userAccessToken: string;
   let userRefreshToken: string;
   const userCreds = {
@@ -15,7 +15,7 @@ describe('PATCH /api/auth/password', () => {
     password: 'password',
   };
 
-  let nest: INestApplication;
+  let nest: NestExpressApplication;
   let app: App;
   let userUtils: UserUtils;
 
@@ -49,7 +49,7 @@ describe('PATCH /api/auth/password', () => {
     };
 
     await supertest(app)
-      .patch('/api/auth/account/password')
+      .post('/api/auth/account/password')
       .set('Cookie', [userAccessToken, userRefreshToken])
       .send(sendData)
       .expect(200);
@@ -69,7 +69,7 @@ describe('PATCH /api/auth/password', () => {
     });
 
     await supertest(app)
-      .patch('/api/auth/account/password')
+      .post('/api/auth/account/password')
       .set('Cookie', [userAccessToken, userRefreshToken])
       .send({
         email: userCreds.email,
@@ -80,7 +80,7 @@ describe('PATCH /api/auth/password', () => {
       .expect(200);
 
     await supertest(app)
-      .patch('/api/auth/account/password')
+      .post('/api/auth/account/password')
       .set('Cookie', [userAccessToken, userRefreshToken])
       .send({
         email: userCreds.email,
@@ -91,14 +91,14 @@ describe('PATCH /api/auth/password', () => {
       .expect(400);
   });
 
-  test('When user email or old password is incorrect expect it returns error 400', async () => {
+  test('When user email or old password is incorrect expect it returns error 401', async () => {
     const code = await createVerificationCode(nest, {
       email: userCreds.email,
       codeType: VerificationCodeType.ChangePassword,
     }, 3);
 
     await supertest(app)
-      .patch('/api/auth/account/password')
+      .post('/api/auth/account/password')
       .set('Cookie', [userAccessToken, userRefreshToken])
       .send({
         email: 'wrongEmail@gmail.com',
@@ -106,10 +106,10 @@ describe('PATCH /api/auth/password', () => {
         oldPassword: userCreds.password,
         newPassword: 'password',
       } as AuthChangePasswordDTO)
-      .expect(400);
+      .expect(401);
 
     await supertest(app)
-      .patch('/api/auth/account/password')
+      .post('/api/auth/account/password')
       .set('Cookie', [userAccessToken, userRefreshToken])
       .send({
         email: userCreds.email,
@@ -117,10 +117,10 @@ describe('PATCH /api/auth/password', () => {
         oldPassword: 'wrongPassword',
         newPassword: 'password',
       } as AuthChangePasswordDTO)
-      .expect(400);
+      .expect(401);
     
     await supertest(app)
-      .patch('/api/auth/account/password')
+      .post('/api/auth/account/password')
       .set('Cookie', [userAccessToken, userRefreshToken])
       .send({
         email: userCreds.email,
@@ -135,7 +135,7 @@ describe('PATCH /api/auth/password', () => {
 
   test('When verification code is incorrect expect it returns error 400 or 403', async () => {
     await supertest(app)
-      .patch('/api/auth/account/password')
+      .post('/api/auth/account/password')
       .set('Cookie', [userAccessToken, userRefreshToken])
       .send({
         email: userCreds.email,
@@ -151,7 +151,7 @@ describe('PATCH /api/auth/password', () => {
     }, 1);
 
     await supertest(app)
-      .patch('/api/auth/account/password')
+      .post('/api/auth/account/password')
       .set('Cookie', [userAccessToken, userRefreshToken])
       .send({
         email: userCreds.email,
@@ -162,7 +162,7 @@ describe('PATCH /api/auth/password', () => {
       .expect(400);
 
     await supertest(app)
-      .patch('/api/auth/account/password')
+      .post('/api/auth/account/password')
       .set('Cookie', [userAccessToken, userRefreshToken])
       .send({
         email: userCreds.email,
@@ -175,8 +175,8 @@ describe('PATCH /api/auth/password', () => {
 
   test('When user is unauthorized expect it returns error 401', async () => {
     await supertest(app)
-      .patch('/api/auth/account/password')
-      .set('Cookie', [userAccessToken])
+      .post('/api/auth/account/password')
+      .set('Cookie', userAccessToken)
       .send({
         email: userCreds.email,
         code: 'code',
@@ -186,8 +186,8 @@ describe('PATCH /api/auth/password', () => {
       .expect(401);
 
     await supertest(app)
-      .patch('/api/auth/account/password')
-      .set('Cookie', [userRefreshToken])
+      .post('/api/auth/account/password')
+      .set('Cookie', userRefreshToken)
       .send({
         email: userCreds.email,
         code: 'code',
@@ -197,7 +197,7 @@ describe('PATCH /api/auth/password', () => {
       .expect(401);
 
     await supertest(app)
-      .patch('/api/auth/account/password')
+      .post('/api/auth/account/password')
       .send({
         email: userCreds.email,
         code: 'code',

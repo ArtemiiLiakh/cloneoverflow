@@ -1,18 +1,17 @@
-import { Answer } from '@core/models/Answer';
+import { Answer } from '@core/models/answer/Answer';
 import Prisma from '@prisma/client';
-import { bytesToUUID } from '../../utils/uuid';
 
 export class AnswerMapper {
   static toEntity (answer: Partial<Prisma.Answer>): Answer {
     return Answer.new({
-      id: answer.id?.toString(),
-      ownerId: answer.ownerId ? bytesToUUID(answer.ownerId) : '',
+      answerId: answer.id?.toString() ?? '',
+      ownerId: answer.ownerId ?? '',
       questionId: answer.questionId?.toString() ?? '',
       text: answer.text ?? '',
-      rating: answer.rate,
-      isSolution: answer.isSolution,
-      createdAt: answer.createdAt,
-      updatedAt: answer.updatedAt,
+      rating: answer.rating ?? 0,
+      isSolution: answer.isSolution ?? false,
+      createdAt: answer.createdAt ?? new Date(),
+      updatedAt: answer.updatedAt ?? new Date(),
     });
   };
 }

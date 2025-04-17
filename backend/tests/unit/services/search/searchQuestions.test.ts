@@ -1,25 +1,17 @@
 import { SearchQuestionFilterByEnum } from '@cloneoverflow/common';
-import { Question } from '@core/models/Question';
-import { Tag } from '@core/models/Tag';
-import { User } from '@core/models/User';
+import { Tag } from '@core/models/tag/Tag';
+import { QuestionRepoSearchOutput } from '@core/repositories/question/dtos/Search';
 import { QuestionRepository } from '@core/repositories/question/QuestionRepository';
 import { SearchQuestionsUseCase } from '@core/services/search';
 import { SearchQuestionsInput } from '@core/services/search/searchQuestions/dto';
+import { createQuestion, createQuestionOwner } from '@tests/utils/models/question';
 
-describe('Service: test SearchQuestionUseCase', () => {
+describe('Search service: test QuestionUseCase', () => {
   test('Search questions', async () => {
-    const questionEntity = Question.new({
-      ownerId: 'ownerId',
-      text: 'text',
-      title: 'title',
-    });
+    const question = createQuestion();
+    const owner = createQuestionOwner();
 
-    const ownerEntity = User.new({
-      name: 'name',
-      username: 'username',
-    });
-
-    const tags = [Tag.new({ name: 'name' })];
+    const tags = [Tag.new({ id: 'id', name: 'name' })];
 
     const inputData = {
       pagination: {
@@ -31,13 +23,22 @@ describe('Service: test SearchQuestionUseCase', () => {
     } as SearchQuestionsInput;
 
     const questionRepositoryMock = {
-      getMany: jest.fn().mockReturnValue(Promise.resolve({
-        data: [{ 
-          entity: questionEntity, 
-          owner: ownerEntity,
+      search: jest.fn().mockResolvedValue({
+        data: [{
+          question,
+          owner,
           tags,
+          answersAmount: 0,
         }],
-      })),
+        pagination: {
+          nextElems: 0,
+          page: 0,
+          pageSize: 0,
+          prevElems: 0,
+          totalAmount: 0,
+          totalPages: 0,
+        },
+      } as QuestionRepoSearchOutput),
     } as Partial<QuestionRepository>;
 
     const searchQuestionUseCase = new SearchQuestionsUseCase(
@@ -45,15 +46,15 @@ describe('Service: test SearchQuestionUseCase', () => {
     );
 
     const { data } = await searchQuestionUseCase.execute(inputData);
-    expect(data.at(0)?.entity.questionId).toBe(questionEntity.id);
-    expect(data.at(0)?.owner?.userId).toBe(ownerEntity.id);
+    expect(data.at(0)?.entity.questionId).toBe(question.questionId);
+    expect(data.at(0)?.owner?.userId).toBe(owner.userId);
     expect(data.at(0)?.tags).toBe(tags);
-    expect(questionRepositoryMock.getMany).toHaveBeenCalled();
+    expect(questionRepositoryMock.search).toHaveBeenCalled();
   });
 
   test('Search questions with empty result', async () => {
     const questionRepositoryMock = {
-      getMany: async () => ({
+      search: async () => ({
         data: [],
         pagination: {
           nextElems: 0,
@@ -63,14 +64,14 @@ describe('Service: test SearchQuestionUseCase', () => {
           totalAmount: 0,
           totalPages: 0,
         },
-      }),
+      } as QuestionRepoSearchOutput),
     } as Partial<QuestionRepository>;
 
     const searchQuestionUseCase = new SearchQuestionsUseCase(
       questionRepositoryMock as QuestionRepository,
     );
 
-    const { data } =  await searchQuestionUseCase.execute({});
+    const { data } = await searchQuestionUseCase.execute({});
     expect(data.length).toEqual(0);
   });
 });

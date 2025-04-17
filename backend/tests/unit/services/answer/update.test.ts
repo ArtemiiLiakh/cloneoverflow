@@ -1,24 +1,20 @@
-import { Answer } from '@core/models/Answer';
 import { AnswerRepository } from '@core/repositories/answer/AnswerRepository';
 import { AnswerUpdateUseCase } from '@core/services/answer';
 import { IUserRatingValidator } from '@core/services/validators/types';
+import { createAnswer } from '@tests/utils/models/answer';
 
-describe('Service: test AnswerUpdateUseCase', () => {
+describe('Answer service: test UpdateUseCase', () => {
   test('Update answer', async () => {
     const text = 'new text';
-    const answerEntity = Answer.new({
-      ownerId: 'ownerId',
-      questionId: 'questionId',
-      text: 'text',
-    });
+    const answerEntity = createAnswer();
     
     const userRatingValidatorMock = { 
       validate: jest.fn(),
     } as IUserRatingValidator;
 
     const answerRepositoryMock = {
-      getPartialById: jest.fn().mockReturnValue(Promise.resolve(answerEntity)),
-      update: jest.fn().mockReturnValue(Promise.resolve(answerEntity)),
+      getById: jest.fn().mockResolvedValue(answerEntity),
+      update: jest.fn().mockResolvedValue(answerEntity),
     } as Partial<AnswerRepository>;
 
     const updateUseCase = new AnswerUpdateUseCase(
@@ -28,30 +24,25 @@ describe('Service: test AnswerUpdateUseCase', () => {
 
     const answer = await updateUseCase.execute({
       executorId: answerEntity.ownerId,
-      answerId: answerEntity.id,
+      answerId: answerEntity.answerId,
       text,
     });
 
     expect(answer).toBe(answerEntity);
     expect(userRatingValidatorMock.validate).not.toHaveBeenCalled();
-    expect(answerRepositoryMock.getPartialById).toHaveBeenCalled();
+    expect(answerRepositoryMock.getById).toHaveBeenCalled();
     expect(answerRepositoryMock.update).toHaveBeenCalled();
   });
 
   test('Expect it checks user rating if he is not answer owner', async () => {
-    const answerEntity = Answer.new({
-      id: 'answerId',
-      ownerId: 'ownerId',
-      questionId: 'questionId',
-      text: 'text',
-    });
+    const answerEntity = createAnswer();
 
     const userRatingValidatorMock = { 
       validate: jest.fn(),
     } as IUserRatingValidator;
 
     const answerRepositoryMock = {
-      getPartialById: jest.fn().mockReturnValue(Promise.resolve(answerEntity)),
+      getById: jest.fn().mockReturnValue(Promise.resolve(answerEntity)),
       update: jest.fn().mockReturnValue(Promise.resolve(answerEntity)),
     } as Partial<AnswerRepository>;
     
@@ -61,7 +52,7 @@ describe('Service: test AnswerUpdateUseCase', () => {
     );
 
     const answer = await updateUseCase.execute({
-      answerId: answerEntity.id,
+      answerId: answerEntity.answerId,
       executorId: 'executorId',
       text: 'text',
     });

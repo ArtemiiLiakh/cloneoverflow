@@ -1,4 +1,4 @@
-import { BadBodyException, Exception, QuestionUserStatusEnum } from '@cloneoverflow/common';
+import { ForbiddenException } from '@cloneoverflow/common';
 import { UserRatingActions } from '@common/enums/UserRatingActions';
 import { QuestionRepository, UnitOfWork } from '@core/repositories';
 import { IUserRatingValidator } from '@core/services/validators/types';
@@ -15,7 +15,7 @@ export class QuestionOpenUseCase implements IQuestionOpenUseCase {
   async execute (
     { executorId, questionId }: QuestionOpenInput,
   ): Promise<QuestionOpenOutput> {
-    const question = await this.questionRepository.getPartialById({ 
+    const question = await this.questionRepository.getById({ 
       questionId,
       select: {
         ownerId: true,
@@ -31,26 +31,12 @@ export class QuestionOpenUseCase implements IQuestionOpenUseCase {
     }
 
     if (!question.isClosed) {
-      throw new BadBodyException('The question is already opened');
+      throw new ForbiddenException('The question is already opened');
     }
 
-    await this.unitOfWork.execute(async (unit) => {
-      const questionAnswerer = await unit.questionUserRepository.getOne({
-        where: {
-          questionId,
-          status: QuestionUserStatusEnum.ANSWERER,
-        },
-      });
-
-      if (questionAnswerer) {
-        await unit.questionUserRepository.delete({
-          questionUserId: questionAnswerer.id,
-        });
-      }
-
-      await unit.questionRepository.openQuestion({ questionId });
-    }).catch(() => {
-      throw new Exception('Question opening failed');
-    });
+    await this.unitOfWork.executeSeq((unit) => [
+      unit.questionRepository.openQuestion({ questionId }),
+      unit.answerRepository.clearSolution({ questionId }),
+    ]);
   }
 }

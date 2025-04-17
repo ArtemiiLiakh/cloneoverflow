@@ -9,7 +9,8 @@ export class UserGetQuestionsDTO {
     search?: string;
   
   @IsOptional()
-  @IsArray({ message: 'Tags must be an array' })
+  @IsArray()
+  @Type(() => String)
     tags?: string[];
   
   @IsOptional()
@@ -25,7 +26,7 @@ export class UserGetQuestionsDTO {
     orderBy?: OrderByEnum;
   
   @IsOptional()
-  @Type(() => PaginationDTO)
   @ValidateNested()
+  @Type(() => PaginationDTO)
     pagination?: PaginationDTO;
 }

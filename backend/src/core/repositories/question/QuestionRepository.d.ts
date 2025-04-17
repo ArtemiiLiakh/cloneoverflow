@@ -1,24 +1,40 @@
-import { QuestionRepositoryOutput } from './dtos/QuestionRepositoryOutput';
-import { QuestionRepositoryInput } from './dtos/QuestionRepositoryInput';
+import { QuestionRepoAddViewerInput, QuestionRepoAddViewerOutput } from './dtos/AddViewer';
+import { QuestionRepoCloseQuestionInput, QuestionRepoCloseQuestionOutput } from './dtos/CloseQuestion';
+import { QuestionRepoCreateInput, QuestionRepoCreateOutput } from './dtos/Create';
+import { QuestionRepoDeleteInput, QuestionRepoDeleteOutput } from './dtos/Delete';
+import { QuestionRepoGetBestOwnerQuestionInput, QuestionRepoGetBestOwnerQuestionOutput } from './dtos/GetBestOwnerQuestion';
+import { QuestionRepoGetByIdInput, QuestionRepoGetByIdOutput } from './dtos/GetById';
+import { QuestionRepoGetDetailedByIdInput, QuestionRepoGetDetailedByIdOutput } from './dtos/GetDetailedById';
+import { QuestionRepoGetOwnerQuestionsInput, QuestionRepoGetOwnerQuestionsOutput } from './dtos/GetOwnerQuestions';
+import { QuestionRepoGetViewerInput, QuestionRepoGetViewerOutput } from './dtos/GetViewer';
+import { QuestionRepoIsExistsInput, QuestionRepoIsExistsOutput } from './dtos/IsExists';
+import { QuestionRepoOpenQuestionInput, QuestionRepoOpenQuestionOutput } from './dtos/OpenQuestion';
+import { QuestionRepoRefTagsInput, QuestionRepoRefTagsOutput } from './dtos/RefTags';
+import { QuesitonRepoSearchInput, QuestionRepoSearchOutput } from './dtos/Search';
+import { QuestionRepoUnrefAllTagsInput, QuestionRepoUnrefAllTagsOutput } from './dtos/UnrefAllTags';
+import { QuestionRepoUpdateInput, QuestionRepoUpdateOutput } from './dtos/Update';
+import { QuestionRepoVoteDownInput, QuestionRepoVoteDownOutput } from './dtos/VoteDown';
+import { QuestionRepoVoteUpInput, QuestionRepoVoteUpOutput } from './dtos/VoteUp';
 
 export interface QuestionRepository {
-  getById(payload: QuestionRepositoryInput.GetById): Promise<QuestionRepositoryOutput.GetById>;
-  getQuestion(payload: QuestionRepositoryInput.GetQuestion): Promise<QuestionRepositoryOutput.GetQuestion>;
-  getPartialQuestion(payload: QuestionRepositoryInput.GetPartialQuestion): Promise<QuestionRepositoryOutput.GetPartialQuestion>;
-  getPartialById(payload: QuestionRepositoryInput.GetPartialById): Promise<QuestionRepositoryOutput.GetPartialById>;
-  getMany(payload: QuestionRepositoryInput.GetMany): Promise<QuestionRepositoryOutput.GetMany>;
-  isExist(payload: QuestionRepositoryInput.IsExist): Promise<QuestionRepositoryOutput.IsExist>;
+  getById(payload: QuestionRepoGetByIdInput): Promise<QuestionRepoGetByIdOutput>;
+  getDetailedById(payload: QuestionRepoGetDetailedByIdInput): Promise<QuestionRepoGetDetailedByIdOutput>;
+  getBestOwnerQuestion(payload: QuestionRepoGetBestOwnerQuestionInput): Promise<QuestionRepoGetBestOwnerQuestionOutput>;
+  getOwnerQuestions(payload: QuestionRepoGetOwnerQuestionsInput): Promise<QuestionRepoGetOwnerQuestionsOutput>;
+  search(payload: QuesitonRepoSearchInput): Promise<QuestionRepoSearchOutput>;
+  isExist(payload: QuestionRepoIsExistsInput): Promise<QuestionRepoIsExistsOutput>;
+  getViewer(payload: QuestionRepoGetViewerInput): Promise<QuestionRepoGetViewerOutput>;
 
-  count(payload: QuestionRepositoryInput.Count): Promise<QuestionRepositoryOutput.Count>;
-  create(payload: QuestionRepositoryInput.Create): Promise<QuestionRepositoryOutput.Create>;
-  update(payload: QuestionRepositoryInput.Update): Promise<QuestionRepositoryOutput.Update>;
-  delete(payload: QuestionRepositoryInput.Delete): Promise<QuestionRepositoryOutput.Delete>;
-  
-  addViewer(payload: QuestionRepositoryInput.AddViewer): Promise<QuestionRepositoryOutput.AddViewer>;
-  addRating(payload: QuestionRepositoryInput.AddRating): Promise<QuestionRepositoryOutput.AddRating>;
-  refTags(payload: QuestionRepositoryInput.RefTags): Promise<QuestionRepositoryOutput.RefTags>;
-  unrefAllTags(payload: QuestionRepositoryInput.UnrefTags): Promise<QuestionRepositoryOutput.UnrefTags>;
+  create(payload: QuestionRepoCreateInput): Promise<QuestionRepoCreateOutput>;
+  update(payload: QuestionRepoUpdateInput): Promise<QuestionRepoUpdateOutput>;
+  delete(payload: QuestionRepoDeleteInput): Promise<QuestionRepoDeleteOutput>;
 
-  closeQuestion(payload: QuestionRepositoryInput.CloseQuestion): Promise<QuestionRepositoryOutput.CloseQuestion>;
-  openQuestion(payload: QuestionRepositoryInput.OpenQuestion): Promise<QuestionRepositoryOutput.OpenQuestion>;
+  voteUp(payload: QuestionRepoVoteUpInput): Promise<QuestionRepoVoteUpOutput>;
+  voteDown(payload: QuestionRepoVoteDownInput): Promise<QuestionRepoVoteDownOutput>;
+  addViewer(payload: QuestionRepoAddViewerInput): Promise<QuestionRepoAddViewerOutput>;
+  refTags(payload: QuestionRepoRefTagsInput): Promise<QuestionRepoRefTagsOutput>;
+  unrefAllTags(payload: QuestionRepoUnrefAllTagsInput): Promise<QuestionRepoUnrefAllTagsOutput>;
+
+  closeQuestion(payload: QuestionRepoCloseQuestionInput): Promise<QuestionRepoCloseQuestionOutput>;
+  openQuestion(payload: QuestionRepoOpenQuestionInput): Promise<QuestionRepoOpenQuestionOutput>;
 }

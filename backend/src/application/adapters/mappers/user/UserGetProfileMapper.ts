@@ -1,40 +1,44 @@
 import { UserGetProfileResponse } from '@cloneoverflow/common';
 import { UserGetProfileOutput } from '@core/services/user/dtos';
 
-export function UserGetProfileMapperOutput (profile: UserGetProfileOutput): UserGetProfileResponse {
-  const bestAnswer: UserGetProfileResponse['bestAnswer'] = profile.bestAnswer ? {
-    id: profile.bestAnswer.entity.answerId,
-    rate: profile.bestAnswer.entity.rating,
-    isSolution: profile.bestAnswer.entity.isSolution,
-    createdAt: profile.bestAnswer.entity.createdAt,
+export function UserGetProfileMapperOutput (
+  { user, bestAnswer, bestQuestion, answerAmount, questionAmount }: UserGetProfileOutput,
+): UserGetProfileResponse {
+  const answer: UserGetProfileResponse['bestAnswer'] = bestAnswer ? {
+    id: bestAnswer.entity.answerId,
+    rating: bestAnswer.entity.rating,
+    isSolution: bestAnswer.entity.isSolution,
+    createdAt: bestAnswer.entity.createdAt,
     question: {
-      id: profile.bestAnswer.question.questionId,
-      title: profile.bestAnswer.question.title,
+      id: bestAnswer.question.questionId,
+      ownerId: bestAnswer.question.ownerId,
+      title: bestAnswer.question.title,
+      rating: bestAnswer.question.rating,
     },
   } : null;
 
-  const bestQuestion: UserGetProfileResponse['bestQuestion'] = profile.bestQuestion ? {
-    id: profile.bestQuestion.entity.questionId,
-    rate: profile.bestQuestion.entity.rating,
-    title: profile.bestQuestion.entity.title,
-    isClosed: profile.bestQuestion.entity.isClosed,
-    answersAmount: profile.bestQuestion.answersAmount,
-    tags: profile.bestQuestion.tags.map(tag => tag.name),
-    createdAt: profile.bestQuestion.entity.createdAt,
+  const question: UserGetProfileResponse['bestQuestion'] = bestQuestion ? {
+    id: bestQuestion.entity.questionId,
+    rating: bestQuestion.entity.rating,
+    title: bestQuestion.entity.title,
+    isClosed: bestQuestion.entity.isClosed,
+    answersAmount: bestQuestion.answersAmount,
+    tags: bestQuestion.tags.map(tag => tag.name),
+    createdAt: bestQuestion.entity.createdAt,
   } : null;
   
   return {
-    id: profile.user.id,
-    name: profile.user.name,
-    username: profile.user.username,
-    reputation: profile.user.rating,
-    about: profile.user.about,
-    status: profile.user.status,
-    createdAt: profile.user.createdAt,
-    updatedAt: profile.user.updatedAt,
-    answersAmount: profile.answersAmount,
-    questionsAmount: profile.questionsAmount,
-    bestAnswer,
-    bestQuestion,
+    id: user.userId,
+    name: user.name,
+    username: user.username,
+    rating: user.rating,
+    about: user.about,
+    status: user.status,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+    answerAmount,
+    questionAmount,
+    bestAnswer: answer,
+    bestQuestion: question,
   };
 }

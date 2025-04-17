@@ -1,5 +1,5 @@
 import { SearchTagsSortByEnum, OrderByEnum, PaginationDTO, PaginatedData } from '@cloneoverflow/common';
-import { Tag } from '@core/models/Tag';
+import { Tag } from '@core/models/tag/Tag';
 
 export type SearchTagsInput = {
   name?: string;
@@ -9,6 +9,6 @@ export type SearchTagsInput = {
 };
 
 export type SerachTagsOutput = PaginatedData<{
-  entity: Tag,
-  questionsAmount: number;
+  tag: Tag,
+  questionAmount: number;
 }>;

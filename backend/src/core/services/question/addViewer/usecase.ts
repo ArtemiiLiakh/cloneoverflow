@@ -1,14 +1,11 @@
-import { Exception, NoEntityWithIdException, QuestionUserStatusEnum } from '@cloneoverflow/common';
-import { QuestionUser } from '@core/models';
-import { QuestionRepository, QuestionUserRepository, UnitOfWork } from '@core/repositories';
+import { NoEntityWithIdException } from '@cloneoverflow/common';
+import { QuestionRepository } from '@core/repositories';
 import { QuestionAddViewerInput, QuestionAddViewerOutput } from './dto';
 import { IQuestionAddViewerUseCase } from './type';
 
 export class QuestionAddViewerUseCase implements IQuestionAddViewerUseCase {
   constructor (
     private questionRepository: QuestionRepository,
-    private questionUserRepository: QuestionUserRepository,
-    private unitOfWork: UnitOfWork,
   ) {}
 
   async execute (
@@ -18,29 +15,16 @@ export class QuestionAddViewerUseCase implements IQuestionAddViewerUseCase {
       throw new NoEntityWithIdException('Question');
     }
 
-    const viewer = await this.questionUserRepository.getOne({
-      where: {
-        questionId,
-        userId: executorId,
-        status: QuestionUserStatusEnum.VIEWER,
-      },
+    const viewer = await this.questionRepository.getViewer({
+      questionId,
+      userId: executorId,
     });
 
     if (viewer) return;
     
-    await this.unitOfWork.executeAll((unit) => [
-      unit.questionRepository.addViewer({
-        questionId,
-      }),
-      unit.questionUserRepository.create({
-        user: QuestionUser.new({
-          questionId,
-          userId: executorId,
-          status: QuestionUserStatusEnum.VIEWER,
-        }),
-      }),
-    ]).catch(() => {
-      throw new Exception('Adding viewer failed');
+    await this.questionRepository.addViewer({
+      userId: executorId,
+      questionId,
     });
   }
 }

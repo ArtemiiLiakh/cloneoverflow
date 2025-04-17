@@ -1,6 +1,5 @@
 import {
   AnswerCreateMapperOutput,
-  AnswerGetManyMapper,
   AnswerGetMapperOutput,
   AnswerUpdateMapperOutput,
 } from '@application/adapters/mappers/answers';
@@ -8,17 +7,15 @@ import {
 import {
   AnswerCreateDTO,
   AnswerCreateResponse,
-  AnswerGetAllResponse,
   AnswerGetResponse,
   AnswerGetVoterResponse,
-  AnswersGetAllDTO,
   AnswerUpdateDTO,
   AnswerUpdateResponse,
-  VoteDTO,
+  VoteTypeEnum,
 } from '@cloneoverflow/common';
 
 import { AnswerServiceFacade } from '@application/facades/AnswerServiceFacade';
-import { WithAuth, WithBody, WithOptionalAuth, WithParams, WithQuery } from './types/Request';
+import { WithAuth, WithBody, WithOptionalAuth, WithParams } from './types/Request';
 import { CoreResponse } from './types/Response';
 
 export class AnswerController {
@@ -29,7 +26,7 @@ export class AnswerController {
   async get (
     { executor, params }: WithOptionalAuth & WithParams<{ answerId: string }>, 
     res: CoreResponse<AnswerGetResponse>,
-  ) {
+  ): Promise<void> {
     const answer = await this.answerService.get({
       executorId: executor?.userId,
       answerId: params.answerId,
@@ -38,28 +35,10 @@ export class AnswerController {
     res.send(AnswerGetMapperOutput(answer));
   }
 
-  async getMany (
-    { query }: WithOptionalAuth & WithQuery<AnswersGetAllDTO>,
-    res: CoreResponse<AnswerGetAllResponse>,
-  ) {
-    const answers = await this.answerService.getMany({
-      questionId: query.questionId,
-      ownerId: query.ownerId,
-      rateFrom: query.rateFrom,
-      rateTo: query.rateTo,
-      searchText: query.searchText,
-      sortBy: query.sortBy,
-      orderBy: query.orderBy,
-      pagination: query.pagination,
-    });
-
-    res.send(AnswerGetManyMapper(answers));
-  }
-
   async create (
     { body, executor }: WithAuth & WithBody<AnswerCreateDTO>, 
     res: CoreResponse<AnswerCreateResponse>,
-  ) {
+  ): Promise<void> {
     const answer = await this.answerService.create({
       executorId: executor.userId,
       questionId: body.questionId,
@@ -73,7 +52,7 @@ export class AnswerController {
   async update (
     { params, body, executor }: WithAuth & WithParams<{ answerId: string }> & WithBody<AnswerUpdateDTO>, 
     res: CoreResponse<AnswerUpdateResponse>,
-  ) {
+  ): Promise<void> {
     const answer = await this.answerService.update({
       executorId: executor.userId,
       answerId: params.answerId,
@@ -86,7 +65,7 @@ export class AnswerController {
   async delete (
     { params, executor }: WithAuth & WithParams<{ answerId: string }>, 
     res: CoreResponse,
-  ) {
+  ): Promise<void> {
     await this.answerService.delete({
       executorId: executor.userId,
       answerId: params.answerId,
@@ -95,35 +74,47 @@ export class AnswerController {
     res.send({ message: 'ok' });
   }
 
-  async voteAnswer (
-    { params, executor, body }: WithAuth & WithParams<{ answerId: string }> & WithBody<VoteDTO>, 
+  async voteUp (
+    { params, executor }: WithAuth & WithParams<{ answerId: string }>, 
     res: CoreResponse,
-  ) {
+  ): Promise<void> {
     await this.answerService.vote({
       executorId: executor.userId,
       answerId: params.answerId,
-      vote: body.vote,  
+      vote: VoteTypeEnum.UP,  
     });
 
     res.status(200);
     res.send({ message: 'ok' });
   }
 
-  async getVote (
+  async voteDown (
+    { params, executor }: WithAuth & WithParams<{ answerId: string }>, 
+    res: CoreResponse,
+  ): Promise<void> {
+    await this.answerService.vote({
+      executorId: executor.userId,
+      answerId: params.answerId,
+      vote: VoteTypeEnum.DOWN,  
+    });
+
+    res.status(200);
+    res.send({ message: 'ok' });
+  }
+
+  async getVoter (
     { params, executor }: WithAuth & WithParams<{ answerId: string }>,
     res: CoreResponse<AnswerGetVoterResponse>,
-  ) {
-    const voter = await this.answerService.getVote({
+  ): Promise<void> {
+    const voter = await this.answerService.getVoter({
       answerId: params.answerId,
       userId: executor.userId,
     });
 
     res.send({
-      voter: voter ? {
-        answerId: voter.answerId,
-        userId: voter.userId,
-        voteType: voter.voteType,
-      } : null,
+      answerId: voter.answerId,
+      userId: voter.userId,
+      voteType: voter.voteType,
     });
   }
 }
