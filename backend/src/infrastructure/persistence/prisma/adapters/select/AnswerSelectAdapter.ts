@@ -1,9 +1,10 @@
+import { Select } from '@common/repository/select';
 import { isObjectEmpty } from '@common/utils/objectUtils';
-import { AnswerSelectInput } from '@core/repositories/answer/dtos/Params';
+import { Answer } from '@core/models/answer';
 import { Prisma } from '@prisma/client';
 
 export const AnswerSelectAdapter = (
-  select?: AnswerSelectInput,
+  select?: Select<Answer>,
 ): Prisma.AnswerSelect => {
   if (!select || isObjectEmpty(select)) {
     return {
@@ -11,7 +12,7 @@ export const AnswerSelectAdapter = (
       ownerId: true,
       questionId: true,
       text: true,
-      rate: true,
+      rating: true,
       isSolution: true,
       createdAt: true,
       updatedAt: true,
@@ -19,10 +20,10 @@ export const AnswerSelectAdapter = (
   }
 
   return {
-    id: select.id,
+    id: select.answerId,
     ownerId: select.ownerId,
     questionId: select.questionId,
-    rate: select.rating,
+    rating: select.rating,
     text: select.text,
     isSolution: select.isSolution,
     createdAt: select.createdAt,

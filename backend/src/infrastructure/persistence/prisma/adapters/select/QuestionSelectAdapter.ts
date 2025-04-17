@@ -1,15 +1,16 @@
+import { Select } from '@common/repository/select';
 import { isObjectEmpty } from '@common/utils/objectUtils';
-import { QuestionSelectInput } from '@core/repositories/question/dtos/Params';
+import { Question } from '@core/models/question';
 import { Prisma } from '@prisma/client';
 
 export const QuestionSelectAdapter = (
-  select?: QuestionSelectInput,
+  select?: Select<Question>,
 ): Prisma.QuestionSelect => {
   if (!select || isObjectEmpty(select)) return {
     id: true,
     title: true,
     text: true,
-    rate: true,
+    rating: true,
     views: true,
     isClosed: true,
     ownerId: true,
@@ -18,10 +19,10 @@ export const QuestionSelectAdapter = (
   };
 
   return {
-    id: select.id,
+    id: select.questionId,
     title: select.title,
     text: select.text,
-    rate: select.rating,
+    rating: select.rating,
     views: select.views,
     isClosed: select.isClosed,
     ownerId: select.ownerId,

@@ -8,6 +8,6 @@ export class UserGetUseCase implements IUserGetUseCase {
   ) {}
 
   async execute ({ userId }: UserGetInput): Promise<UserGetOutput> {
-    return await this.userRepository.getById({ userId });
+    return this.userRepository.getById({ userId });
   }
 }

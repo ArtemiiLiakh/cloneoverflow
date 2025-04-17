@@ -7,26 +7,11 @@ export class QuestionGetUseCase implements IQuestionGetUseCase {
     private questionRepository: QuestionRepository,
   ) {}
 
-  async execute (
+  execute (
     { questionId }: QuestionGetInput,
   ): Promise<QuestionGetOutput> {
-    const question = await this.questionRepository.getQuestion({
-      where: { questionId },
-      include: {
-        owner: true,
-        tags: true,
-      },
+    return this.questionRepository.getById({
+      questionId,
     });
-
-    return {
-      entity: question.entity, 
-      owner: question.owner ? {
-        id: question.owner.id,
-        name: question.owner.name,
-        rating: question.owner.rating,
-        username: question.owner.username,
-      } : null,
-      tags: question.tags ?? [],
-    };
   }
 }

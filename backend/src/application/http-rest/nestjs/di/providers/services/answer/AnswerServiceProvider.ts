@@ -4,9 +4,9 @@ import { AnswerServiceDIToken, AnswerUseCaseDITokens } from '../../../tokens/ser
 import {
   IAnswerCreateUseCase,
   IAnswerDeleteUseCase,
-  IAnswerGetManyUseCase,
+  IAnswerGetByQuestionUseCase,
   IAnswerGetUseCase,
-  IAnswerGetVoteUseCase,
+  IAnswerGetVoterUseCase,
   IAnswerUpdateUseCase,
   IAnswerVoteUseCase,
 } from '@core/services/answer/types';
@@ -15,21 +15,21 @@ export const AnswerServiceProvider: Provider = {
   provide: AnswerServiceDIToken,
 
   useFactory: (
-    answerCreateUseCase: IAnswerCreateUseCase,
-    answerUpdateUseCase: IAnswerUpdateUseCase,
-    answerDeleteUseCase: IAnswerDeleteUseCase,
-    answerGetUseCase: IAnswerGetUseCase,
-    answerGetManyUseCase: IAnswerGetManyUseCase,
-    answerVoteUseCase: IAnswerVoteUseCase,
-    answerGetVoteUseCase: IAnswerGetVoteUseCase,
+    CreateUseCase: IAnswerCreateUseCase,
+    UpdateUseCase: IAnswerUpdateUseCase,
+    DeleteUseCase: IAnswerDeleteUseCase,
+    GetUseCase: IAnswerGetUseCase,
+    VoteUseCase: IAnswerVoteUseCase,
+    GetVoterUseCase: IAnswerGetVoterUseCase,
+    GetQuestionAnswersUseCase: IAnswerGetByQuestionUseCase,
   ) => AnswerServiceFacade.new({
-    answerCreateUseCase,
-    answerUpdateUseCase,
-    answerDeleteUseCase,
-    answerGetUseCase,
-    answerGetManyUseCase,
-    answerVoteUseCase,
-    answerGetVoteUseCase,
+    CreateUseCase,
+    UpdateUseCase,
+    DeleteUseCase,
+    GetUseCase,
+    VoteUseCase,
+    GetVoterUseCase,
+    GetQuestionAnswersUseCase,
   }),
 
   inject: [
@@ -37,8 +37,8 @@ export const AnswerServiceProvider: Provider = {
     AnswerUseCaseDITokens.Update,
     AnswerUseCaseDITokens.Delete,
     AnswerUseCaseDITokens.Get,
-    AnswerUseCaseDITokens.GetMany,
     AnswerUseCaseDITokens.Vote,
-    AnswerUseCaseDITokens.GetVote,
+    AnswerUseCaseDITokens.GetVoter,
+    AnswerUseCaseDITokens.GetByQuestion,
   ],
 };

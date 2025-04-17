@@ -29,14 +29,14 @@ on:
     branches:
       - main
       - clean-architecture
-      - clean-architecture-nest
+      - clean-architecture-nestjs
     paths:
       - 'backend/**'
       - '.github/workflows/backend-test.yaml'
 
 jobs:
   build: 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     environment:
       name: test
     strategy:
@@ -58,8 +58,8 @@ jobs:
         run: npm run build
       - name: Run docker build
         run: docker build --file=Dockerfile ../
-  deploy:
-    runs-on: ubuntu-20.04
+  test:
+    runs-on: ubuntu-22.04
     environment:
       name: test
     strategy:

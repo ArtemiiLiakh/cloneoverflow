@@ -37,11 +37,11 @@ export class AuthServiceFacade {
     private createAccountUseCase: ICreateAccountUseCase,
     private getMeUseCase: IGetMeUseCase,
     private deleteAccountUseCase: IDeleteAccountUseCase,
-    private refreshTokenUseCase: IRefreshTokenUseCase,
     private changePasswordUseCase: IChangePasswordUseCase,
     private forgotPasswordUseCase: IForgotPasswordUseCase,
-    private sendVerificationCodeUseCase: ISendVerificationCodeUseCase,
     private checkVerificationCodeUseCase: ICheckVerificationCodeUseCase,
+    private refreshTokenUseCase: IRefreshTokenUseCase,
+    private sendVerificationCodeUseCase: ISendVerificationCodeUseCase,
   ) {}
 
   static new ({
@@ -64,17 +64,17 @@ export class AuthServiceFacade {
     forgotPasswordUseCase: IForgotPasswordUseCase,
     sendVerificationCodeUseCase: ISendVerificationCodeUseCase,
     checkVerificationCodeUseCase: ICheckVerificationCodeUseCase,
-  }) {
+  }): AuthServiceFacade {
     return new AuthServiceFacade(
       loginUseCase,
       createAccountUseCase,
       getMeUseCase,
       deleteAccountUseCase,
-      refreshTokenUseCase,
       changePasswordUseCase,
       forgotPasswordUseCase,
-      sendVerificationCodeUseCase,
       checkVerificationCodeUseCase,
+      refreshTokenUseCase,
+      sendVerificationCodeUseCase,
     );
   }
 

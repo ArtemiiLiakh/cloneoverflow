@@ -20,10 +20,10 @@ describe('POST /api/answers', () => {
     const questionUtils = new QuestionUtils(nest);
 
     const owner = await userUtils.create();
-    const question = await questionUtils.create({ ownerId: owner.id });
+    const question = await questionUtils.create({ ownerId: owner.userId });
     
-    ownerId = owner.id;
-    questionId = question.id;
+    ownerId = owner.userId;
+    questionId = question.questionId;
     ownerAccessToken = 'accessToken='+(await userUtils.getTokens(owner)).accessToken;
   });
 
@@ -33,18 +33,18 @@ describe('POST /api/answers', () => {
       text: 'answer',
     };
 
-    const answer: AnswerCreateResponse = await supertest(app)
+    const answer = await supertest(app)
       .post('/api/answers')
       .set('Cookie', ownerAccessToken)
       .send(createData)
       .expect(201)
-      .then(res => res.body);
+      .then(res => res.body as AnswerCreateResponse);
 
     expect(answer.ownerId).toEqual(ownerId);
     expect(answer.questionId).toEqual(questionId);
     expect(answer.text).toEqual(createData.text);
     expect(answer.isSolution).toBeFalsy();
-    expect(answer.rate).toEqual(0);
+    expect(answer.rating).toEqual(0);
   });
 
   test('When question does not exists or create data is wrong expect it returns error 404 or 400', async () => {

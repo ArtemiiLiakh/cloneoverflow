@@ -1,4 +1,4 @@
-import { User } from '@core/models';
+import { User } from '@core/models/user';
 import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { UserUtils } from '@tests/e2e/utils/UserUtils';
 import supertest from 'supertest';

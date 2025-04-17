@@ -1,6 +1,5 @@
 import { AnswerRepository } from '@core/repositories/answer/AnswerRepository';
 import { AnswerGetInput, AnswerGetOutput } from './dto';
-import { getOutputMapper } from './mapper';
 import { IAnswerGetUseCase } from './type';
 
 export class AnswerGetUseCase implements IAnswerGetUseCase {
@@ -8,17 +7,12 @@ export class AnswerGetUseCase implements IAnswerGetUseCase {
     private answerRepository: AnswerRepository,
   ) {}
 
-  async execute (
-    { answerId }: AnswerGetInput,
+  execute (
+    { answerId, executorId }: AnswerGetInput,
   ): Promise<AnswerGetOutput> {
-    const answer = await this.answerRepository.getAnswer({
-      where: { answerId },
-      include: {
-        owner: true,
-        question: true,
-      },
+    return this.answerRepository.getDetailedById({
+      answerId,
+      voterId: executorId,
     });
-  
-    return getOutputMapper(answer);
   }
 }

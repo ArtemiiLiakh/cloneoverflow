@@ -1,57 +1,44 @@
+import { DatabaseDITokens } from '@application/http-rest/nestjs/di/tokens/DatabaseDITokens';
 import { PrismaRepositoryDITokens } from '@application/http-rest/nestjs/di/tokens/persistence';
-import { QuestionUserStatusEnum } from '@cloneoverflow/common';
-import { Question } from '@core/models/Question';
-import { QuestionUser } from '@core/models/QuestionUser';
-import { QuestionRepository, UnitOfWork } from '@core/repositories';
+import { Question } from '@core/models/question';
+import { QuestionRepository } from '@core/repositories';
+import { QuestionMapper } from '@infrastructure/persistence/prisma/adapters/entityMappers/QuestionMapper';
 import { INestApplication } from '@nestjs/common';
+import { PrismaClient, Question as PrismaQuestion } from '@prisma/client';
 
 export class QuestionUtils {
   private questionRepository: QuestionRepository;
-  private unitOfWork: UnitOfWork;
+  private prisma: PrismaClient;
 
   constructor (
     nest: INestApplication,
   ) {
+    this.prisma = nest.get(DatabaseDITokens.PrismaClient);
     this.questionRepository = nest.get(PrismaRepositoryDITokens.QuestionRepository);
-    this.unitOfWork = nest.get(PrismaRepositoryDITokens.UnitOfWork);
   }
 
-  async create (question: Partial<Question> & { ownerId: string }): Promise<Question> {
-    const newQuestion = Question.new({
-      id: question?.id,
-      ownerId: question.ownerId,
-      title: question?.title ?? 'title',
-      text: question?.text ?? 'text',
-      isClosed: question?.isClosed,
-      rating: question?.rating,
-      views: question?.views,
-      createdAt: question?.createdAt,
-      updatedAt: question?.updatedAt,
+  async create (question: Partial<PrismaQuestion> & { ownerId: string }): Promise<Question> {
+    const newQuestion = await this.prisma.question.create({ 
+      data: {
+        title: question.title ?? 'title',
+        text: question.text,
+        ownerId: question.ownerId,
+        rating: question.rating,
+        views: question.views,
+        isClosed: question.isClosed,
+        createdAt: question.createdAt,
+        updatedAt: question.updatedAt,
+      },
     });
 
-    await this.unitOfWork.execute(async (unit) => {
-      newQuestion.id = await unit.questionRepository.create({ 
-        question: newQuestion, 
-        returnId: true,
-      }).then(id => id!);
-
-      await unit.questionUserRepository.create({ 
-        user: QuestionUser.new({
-          userId: newQuestion.ownerId,
-          questionId: newQuestion.id,
-          status: QuestionUserStatusEnum.OWNER,
-        }),
-      });
-    });
-
-    return newQuestion;
+    return QuestionMapper.toEntity(newQuestion);
   }
 
   getQuestion (questionId: string): Promise<Question | null> {
     return this.questionRepository.getById({ questionId }).catch(() => null);
   }
 
-  async delete (questionId: string): Promise<void> {
-    await this.questionRepository.delete({ questionId });
+  delete (questionId: string): Promise<void> {
+    return this.questionRepository.delete({ questionId });
   }
 }

@@ -1,5 +1,6 @@
 import { QuestionGetResponse } from '@cloneoverflow/common';
-import { Question, Tag } from '@core/models';
+import { Question } from '@core/models/question';
+import { Tag } from '@core/models/tag';
 import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { QuestionUtils } from '@tests/e2e/utils/QuestionUtils';
 import { TagUtils } from '@tests/e2e/utils/TagUtils';
@@ -21,13 +22,18 @@ describe('GET /api/questions/:questionId', () => {
     const tagUtils = new TagUtils(nest);
     
     const owner = await userUtils.create();
-    question = await questionUtils.create({ ownerId: owner.id });
-    tag = await tagUtils.create({ questionId: question.id });
+    question = await questionUtils.create({ 
+      ownerId: owner.userId,
+    });
+    
+    tag = await tagUtils.create({ 
+      questionId: question.questionId,
+    });
   });
 
   test('Expect it returns question with tags', async () => {
     const questionResult: QuestionGetResponse = await supertest(app)
-      .get(`/api/questions/${question.id}`)
+      .get(`/api/questions/${question.questionId}`)
       .expect(200)
       .then(res => res.body);
 
@@ -35,7 +41,7 @@ describe('GET /api/questions/:questionId', () => {
     expect(questionResult.owner?.id);
     expect(questionResult.title).toEqual(question.title);
     expect(questionResult.text).toEqual(question.text);
-    expect(questionResult.rate).toEqual(question.rating);
+    expect(questionResult.rating).toEqual(question.rating);
     expect(questionResult.views).toEqual(question.views);
     expect(questionResult.isClosed).toEqual(question.isClosed);
     expect(questionResult.tags?.length).toEqual(1);

@@ -14,12 +14,12 @@ datasource db {
 }
 
 model UserCreds {
-  id            Bytes         @id @db.ByteA
-  email         String        @unique @db.VarChar(200)
-  password      String        @db.VarChar(200)
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @default(now()) @updatedAt
-  user          User?
+  id        String   @id @db.Uuid @default(uuid())
+  email     String   @unique @db.VarChar(200)
+  password  String   @db.VarChar(200)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  user      User?
 
   @@index([email])
   @@map("users_creds")
@@ -29,110 +29,115 @@ enum UserStatus {
   USER
   BLOCKED
   ADMIN
+  DELETED
 }
 
 model User {
-  id              Bytes             @id @db.ByteA
-  name            String            @db.VarChar(100)
-  username        String            @unique
-  reputation      Int               @default(0)
-  about           String            @db.Text
-  status          UserStatus        @default(USER)
-  userCreds       UserCreds         @relation(fields: [id], references: [id], onDelete: Cascade)
+  id        String     @id @db.Uuid
+  name      String     @db.VarChar(100)
+  username  String     @unique
+  rating    Int        @default(0)
+  about     String     @db.Text
+  status    UserStatus @default(USER)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @default(now()) @updatedAt
+
+  userCreds       UserCreds        @relation(fields: [id], references: [id], onDelete: Cascade)
   questions       Question[]
   answers         Answer[]
-  answerUsers     AnswerUser[]
-  questionUsers   QuestionUser[]
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @default(now()) @updatedAt
+  answersVoter    AnswerVoter[]
+  questionsViewer QuestionViewer[]
+  questionsVoter  QuestionVoter[]
 
   @@index([username])
   @@map("user")
 }
 
 model Question {
-  id                Int                @id @default(autoincrement())
-  ownerId           Bytes?             @db.ByteA @map("owner_id")
-  title             String             @db.VarChar(255)
-  text              String             @db.Text @default("")
-  rate              Int                @default(0)
-  views             Int                @default(0)
-  isClosed          Boolean            @default(false)
-  owner             User?              @relation(fields: [ownerId], references: [id], onDelete: SetNull)
-  questionUsers     QuestionUser[]       
-  answers           Answer[]
-  tags              Tag[]
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @default(now()) @updatedAt
+  id        Int      @id @default(autoincrement())
+  ownerId   String?  @db.Uuid @map("owner_id")
+  title     String   @db.VarChar(255)
+  text      String   @db.Text @default("")
+  rating    Int      @default(0)
+  views     Int      @default(0)
+  isClosed  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  owner   User?            @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+  viewers QuestionViewer[]
+  voters  QuestionVoter[]
+  answers Answer[]
+  tags    Tag[]
 
   @@map("questions")
 }
 
 model Answer {
-  id              Int             @id @default(autoincrement())
-  questionId      Int             @map("question_id")
-  ownerId         Bytes?          @db.ByteA @map("owner_id")
-  answerUsers     AnswerUser[]   
-  question        Question        @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  owner           User?           @relation(fields: [ownerId], references: [id], onDelete: SetNull)
-  text            String          @db.Text
-  rate            Int             @default(0)
-  isSolution      Boolean         @default(false)
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @default(now()) @updatedAt
+  id         Int      @id @default(autoincrement())
+  questionId Int      @map("question_id")
+  ownerId    String?  @db.Uuid @map("owner_id")
+  text       String   @db.Text
+  rating     Int      @default(0)
+  isSolution Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+
+  voters   AnswerVoter[]
+  question Question      @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  owner    User?         @relation(fields: [ownerId], references: [id], onDelete: SetNull)
 
   @@map("answers")
-}
-
-enum UserQuestionStatus {
-  VIEWER
-  OWNER
-  ANSWERER
-  VOTER
 }
 
 enum VoteType {
   UP
   DOWN
+  EMPTY
 }
 
-model QuestionUser {
-  id                Int                   @id @default(autoincrement())
-  userId            Bytes                 @db.ByteA @map("user_id") 
-  questionId        Int                   @map("question_id")
-  user              User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  question          Question              @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  status            UserQuestionStatus    @default(OWNER)
-  voteType          VoteType?             @map("vote_type")
+model QuestionViewer {
+  id         Int      @id @default(autoincrement())
+  userId     String   @db.Uuid @map("user_id")
+  questionId Int      @map("question_id")
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([questionId])
-  @@map("question_user_stats")
+  @@map("question_viewers")
 }
 
-enum UserAnswerStatus {
-  OWNER
-  VOTER
+model QuestionVoter {
+  id         Int       @id @default(autoincrement())
+  userId     String    @db.Uuid @map("user_id")
+  questionId Int       @map("question_id")
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question   Question  @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  voteType   VoteType? @map("vote_type")
+
+  @@index([userId])
+  @@index([questionId])
+  @@map("question_voters")
 }
 
-model AnswerUser {
-  id              Int                   @id @default(autoincrement())
-  userId          Bytes                 @db.ByteA @map("user_id")
-  answerId        Int                   @map("answer_id")
-  user            User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  answer          Answer                @relation(fields: [answerId], references: [id], onDelete: Cascade)
-  status          UserAnswerStatus      @default(OWNER)
-  voteType        VoteType?               @map("vote_type")
+model AnswerVoter {
+  id       Int       @id @default(autoincrement())
+  userId   String    @db.Uuid @map("user_id")
+  answerId Int       @map("answer_id")
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  answer   Answer    @relation(fields: [answerId], references: [id], onDelete: Cascade)
+  voteType VoteType? @map("vote_type")
 
   @@index([userId])
   @@index([answerId])
-  @@map("answer_user_stats")
+  @@map("answer_voters")
 }
 
 model Tag {
-  id          Int               @id @default(autoincrement())
-  name        String            @unique @db.VarChar(100)
-  questions   Question[]
+  id        Int        @id @default(autoincrement())
+  name      String     @unique @db.VarChar(100)
+  questions Question[]
 
   @@index([name])
   @@map("tags")

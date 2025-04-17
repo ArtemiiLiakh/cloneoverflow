@@ -8,3 +8,4 @@ export * from './UnauthorizedExceptioin';
 export * from './ValidationException';
 export * from './RetriesExpiredException';
 export * from './ExceptionMessage';
+export * from './NotFoundException';

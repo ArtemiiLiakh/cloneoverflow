@@ -22,7 +22,7 @@ export class SearchController {
   async searchQuestions (
     { query }: WithQuery<SearchQuestionsDTO>, 
     res: CoreResponse<SearchQuestionsResponse>,
-  ) {
+  ): Promise<void> {
     const questions = await this.searchService.searchQuestions({
       search: query.search,
       filterBy: query.filterBy,
@@ -36,7 +36,7 @@ export class SearchController {
   async searchTags (
     { query }: WithQuery<SearchTagsDTO>, 
     res: CoreResponse<SearchTagsReponse>,
-  ) {
+  ): Promise<void> {
     const tags = await this.searchService.searchTags({
       name: query.name,
       orderBy: query.orderBy,

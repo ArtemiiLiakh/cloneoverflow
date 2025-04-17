@@ -1,8 +1,16 @@
 import { AuthController } from '@application/controllers/AuthController';
 import { CoreResponse } from '@application/controllers/types/Response';
 import { ExecutorPayload, TokenTypeEnum } from '@application/services/auth/data';
-import { AuthChangePasswordDTO, AuthDeleteAccountDTO, AuthForgotPasswordDTO, AuthLoginDTO, AuthSignupDTO, AuthVerificationCodeDTO, CheckVerificationCodeDTO } from '@cloneoverflow/common';
-import { Body, Controller, Delete, Get, Inject, Patch, Post } from '@nestjs/common';
+import {
+  AuthChangePasswordDTO,
+  AuthDeleteAccountDTO,
+  AuthForgotPasswordDTO,
+  AuthLoginDTO,
+  AuthSignupDTO,
+  AuthVerificationCodeDTO,
+  CheckVerificationCodeDTO,
+} from '@cloneoverflow/common';
+import { Body, Controller, Delete, Get, Inject, Post } from '@nestjs/common';
 import { Auth } from '../decorators/auth.decorator';
 import { Executor } from '../decorators/executor.decorator';
 import { CoreRes } from '../decorators/response.decorator';
@@ -18,7 +26,7 @@ export class NestAuthController {
   login (
     @Body() body: AuthLoginDTO, 
     @CoreRes() res: CoreResponse,
-  ) {
+  ): Promise<void> {
     return this.authController.login({ body }, res);
   }
 
@@ -26,7 +34,7 @@ export class NestAuthController {
   createAccount (
     @Body() body: AuthSignupDTO, 
     @CoreRes() res: CoreResponse,
-  ) {
+  ): Promise<void> {
     return this.authController.createAccount({ body }, res);
   }
 
@@ -36,7 +44,7 @@ export class NestAuthController {
     @Executor() executor: ExecutorPayload, 
     @Body() body: AuthDeleteAccountDTO, 
     @CoreRes() res: CoreResponse,
-  ) {
+  ): Promise<void> {
     return this.authController.deleteAccount({ 
       executor,
       body,
@@ -48,7 +56,7 @@ export class NestAuthController {
   me (
     @Executor() executor: ExecutorPayload, 
     @CoreRes() res: CoreResponse,
-  ) {
+  ): Promise<void> {
     return this.authController.getMe({ executor }, res);
   }
 
@@ -57,17 +65,17 @@ export class NestAuthController {
   refreshToken (
     @Executor() executor: ExecutorPayload, 
     @CoreRes() res: CoreResponse,
-  ) {
+  ): Promise<void> {
     return this.authController.refreshToken({ executor }, res);
   }
 
   @Auth()
-  @Patch('/account/password')
+  @Post('/account/password')
   changePassword (
     @Executor() executor: ExecutorPayload,
     @Body() body: AuthChangePasswordDTO, 
     @CoreRes() res: CoreResponse,
-  ) {
+  ): Promise<void> {
     return this.authController.changePassword({ executor, body }, res);
   }
 
@@ -75,7 +83,7 @@ export class NestAuthController {
   forgotPassword (
     @Body() body: AuthForgotPasswordDTO, 
     @CoreRes() res: CoreResponse,
-  ) {
+  ): Promise<void> {
     return this.authController.forgotPassword({ body }, res);
   }
 
@@ -83,7 +91,7 @@ export class NestAuthController {
   sendVerificationCode (
     @Body() body: AuthVerificationCodeDTO, 
     @CoreRes() res: CoreResponse,
-  ) {
+  ): Promise<void> {
     return this.authController.sendVerificationCode({ body }, res);
   }
 
@@ -91,7 +99,7 @@ export class NestAuthController {
   checkVerificationCode (
     @Body() body: CheckVerificationCodeDTO, 
     @CoreRes() res: CoreResponse,
-  ) {
+  ): Promise<void> {
     return this.authController.checkVerificationCode({ body }, res);
   }
 }

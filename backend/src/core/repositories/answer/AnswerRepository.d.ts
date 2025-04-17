@@ -1,18 +1,31 @@
-import { AnswerRepositoryInput } from './dtos/AnswerRepositoryInput';
-import { AnswerRepositoryOutput } from './dtos/AnswerRepositoryOutput';
+import { AnswerRepoClearSolutionsInput, AnswerRepoClearSolutionsOutput } from './dtos/ClearSolutions';
+import { AnswerRepoCreateInput, AnswerRepoCreateOutput } from './dtos/Create';
+import { AnswerRepoDeleteInput, AnswerRepoDeleteOutput } from './dtos/Delete';
+import { AnswerRepoGetBestOwnerAnswerInput, AnswerRepoGetBestOwnerAnswerOutput } from './dtos/GetBestOwnerAnswer';
+import { AnswerRepoGetByIdInput, AnswerRepoGetByIdOutput } from './dtos/GetById';
+import { AnswerRepoGetDetailedByIdInput, AnswerRepoGetDetailedByIdOutput } from './dtos/GetDetailedById';
+import { AnswerRepoGetOwnerAnswersInput, AnswerRepoGetOwnerAnswersOutput } from './dtos/GetOwnerAnswers';
+import { AnswerRepoGetQuestionAnswersInput, AnswerRepoGetQuestionAnswersOutput } from './dtos/GetQuestionAnswers';
+import { AnswerRepoIsExistInput, AnswerRepoIsExistOutput } from './dtos/IsExist';
+import { AnswerRepoSetAsSolutionInput, AnswerRepoSetAsSolutionOutput } from './dtos/SetAsSolution';
+import { AnswerRepoUpdateInput, AnswerRepoUpdateOutput } from './dtos/Update';
+import { AnswerRepoVoteDownInput, AnswerRepoVoteDownOutput } from './dtos/VoteDown';
+import { AnswerRepoVoteUpInput, AnswerRepoVoteUpOutput } from './dtos/VoteUp';
 
 export interface AnswerRepository {
-  getById(payload: AnswerRepositoryInput.GetById): Promise<AnswerRepositoryOutput.GetById>;
-  getAnswer(payload: AnswerRepositoryInput.GetAnswer): Promise<AnswerRepositoryOutput.GetAnswer>;
-  getPartialById(payload: AnswerRepositoryInput.GetPartialById): Promise<AnswerRepositoryOutput.GetPartialById>;
-  getPartialAnswer(payload: AnswerRepositoryInput.GetPartialAnswer): Promise<AnswerRepositoryOutput.GetPartialAnswer>;
-  getMany(payload: AnswerRepositoryInput.GetMany): Promise<AnswerRepositoryOutput.GetMany>;
-  isExist(payload: AnswerRepositoryInput.IsExist): Promise<AnswerRepositoryOutput.IsExist>;
+  getById(payload: AnswerRepoGetByIdInput): Promise<AnswerRepoGetByIdOutput>;
+  getDetailedById(payload: AnswerRepoGetDetailedByIdInput): Promise<AnswerRepoGetDetailedByIdOutput>;
+  getBestOwnerAnswer(payload: AnswerRepoGetBestOwnerAnswerInput): Promise<AnswerRepoGetBestOwnerAnswerOutput>;
+  getByQuestionId(payload: AnswerRepoGetQuestionAnswersInput): Promise<AnswerRepoGetQuestionAnswersOutput>;
+  getOwnerAnswers(payload: AnswerRepoGetOwnerAnswersInput): Promise<AnswerRepoGetOwnerAnswersOutput>;
+  isExist(payload: AnswerRepoIsExistInput): Promise<AnswerRepoIsExistOutput>;
 
-  count(payload: AnswerRepositoryInput.Count): Promise<AnswerRepositoryOutput.Count>;
-  create(payload: AnswerRepositoryInput.Create): Promise<AnswerRepositoryOutput.Create>;
-  update(payload: AnswerRepositoryInput.Update): Promise<AnswerRepositoryOutput.Update>;
-  delete(payload: AnswerRepositoryInput.Delete): Promise<AnswerRepositoryOutput.Delete>;
+  create(payload: AnswerRepoCreateInput): Promise<AnswerRepoCreateOutput>;
+  update(payload: AnswerRepoUpdateInput): Promise<AnswerRepoUpdateOutput>;
+  delete(payload: AnswerRepoDeleteInput): Promise<AnswerRepoDeleteOutput>;
   
-  addRating(payload: AnswerRepositoryInput.AddRating): Promise<AnswerRepositoryOutput.AddRating>;
+  setAsSolution(payload: AnswerRepoSetAsSolutionInput): Promise<AnswerRepoSetAsSolutionOutput>;
+  clearSolution(payload: AnswerRepoClearSolutionsInput): Promise<AnswerRepoClearSolutionsOutput>;
+  voteUp(payload: AnswerRepoVoteUpInput): Promise<AnswerRepoVoteUpOutput>;
+  voteDown(payload: AnswerRepoVoteDownInput): Promise<AnswerRepoVoteDownOutput>;
 }

@@ -1,41 +1,41 @@
-import { Tag } from '@core/models/Tag';
-import { User } from '@core/models/User';
+import { UserStatusEnum } from '@cloneoverflow/common';
+import { Nullable } from '@common/utils/classTypes';
+import { Answer } from '@core/models/answer';
+import { Question } from '@core/models/question';
+import { Tag } from '@core/models/tag/Tag';
 
 export type UserGetProfileInput = {
   userId: string
 };
 
 export type UserGetProfileOutput = {
-  user: User, 
-  bestQuestion: {
-    entity: {
-      questionId: string,
-      ownerId: string,
-      title: string,
-      rating: number,
-      views: number,
-      isClosed: boolean,
-      createdAt: Date,
-    },
+  user: {
+    userId: string,
+    email: string,
+    name: string,
+    username: string,
+    rating: number,
+    status: UserStatusEnum,
+    about: string,
+    createdAt: Date,
+    updatedAt: Date,
+  }, 
+  questionAmount: number,
+  answerAmount: number,
+  
+  bestQuestion: Nullable<{
+    entity: Question,
     tags: Tag[],
     answersAmount: number,
-  } | null,
-  bestAnswer: {
-    entity: {
-      answerId: string,
-      ownerId: string,
-      questionId: string,
-      rating: number,
-      isSolution: boolean,
-      createdAt: Date,
-    },
+  }>,
+  
+  bestAnswer: Nullable<{
+    entity: Answer,
     question: {
       questionId: string,
       ownerId: string,
       title: string,
       rating: number,
-    }
-  } | null,
-  questionsAmount: number;
-  answersAmount: number;
+    },
+  }>,
 };

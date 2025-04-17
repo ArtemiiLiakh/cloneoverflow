@@ -25,8 +25,15 @@ describe('POST /api/questions/:questionId/close', () => {
     const owner = await userUtils.create();
     
     accessToken = 'accessToken='+(await userUtils.getTokens(owner)).accessToken;
-    questionId = (await questionUtils.create({ ownerId: owner.id })).id;
-    answerId = (await answerUtils.create({ ownerId: owner.id, questionId })).id;
+    
+    questionId = (await questionUtils.create({ 
+      ownerId: owner.userId,
+    })).questionId;
+
+    answerId = (await answerUtils.create({ 
+      ownerId: owner.userId, 
+      questionId: +questionId,
+    })).answerId;
   });
 
   test('Expect it opens and closes question', async () => {

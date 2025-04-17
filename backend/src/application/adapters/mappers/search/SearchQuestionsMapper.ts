@@ -8,7 +8,7 @@ export function SearchQuestionsMapperOutput (
     questions: questions.data.map(question => ({
       id: question.entity.questionId,
       title: question.entity.title,
-      rate: question.entity.rating,
+      rating: question.entity.rating,
       views: question.entity.views,
       isClosed: question.entity.isClosed,
       createdAt: question.entity.createdAt,
@@ -16,7 +16,7 @@ export function SearchQuestionsMapperOutput (
       owner: question.owner ? {
         id: question.owner.userId,
         name: question.owner.name,
-        reputation: question.owner.rating,
+        rating: question.owner.rating,
         username: question.owner.username,
       } : null,
       tags: question.tags.map(tag => tag.name),

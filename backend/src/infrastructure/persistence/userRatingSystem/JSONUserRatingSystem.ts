@@ -26,7 +26,7 @@ export class JSONUserRatingSystem implements UserRatingSystem {
     private filepath: string,
   ) {}
 
-  async readFile () {
+  async readFile (): Promise<void> {
     this.ratingSchema = JSON.parse(
       await fs.readFile(this.filepath, {
         encoding: 'utf-8',
@@ -34,7 +34,7 @@ export class JSONUserRatingSystem implements UserRatingSystem {
     ) as JSONRatingSchema;
   }
 
-  async getMinRating (action: UserRatingActions): Promise<number> {
+  getMinRating (action: UserRatingActions): Promise<number> {
     const shemaMapper: Record<UserRatingActions, number> = {
       [UserRatingActions.QuestionClose]: this.ratingSchema.question.close,
       [UserRatingActions.QuestionDelete]: this.ratingSchema.question.delete,
@@ -49,6 +49,6 @@ export class JSONUserRatingSystem implements UserRatingSystem {
       [UserRatingActions.AnswerVoteUp]: this.ratingSchema.answer.voteUp,
     };
 
-    return shemaMapper[action];
+    return Promise.resolve(shemaMapper[action]);
   }
 }

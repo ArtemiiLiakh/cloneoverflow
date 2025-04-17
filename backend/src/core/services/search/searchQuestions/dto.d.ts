@@ -5,12 +5,13 @@ import {
   PaginationDTO, 
   PaginatedData,
 } from '@cloneoverflow/common';
-import { Tag } from '@core/models/Tag';
+import { Nullable } from '@common/utils/classTypes';
+import { Tag } from '@core/models/tag/Tag';
 
 export type SearchQuestionsInput = {
   search?: string;
-  filterBy?: SearchQuestionFilterByEnum | SearchQuestionFilterByEnum[];
-  sortBy?: SearchQuestionSortByEnum | SearchQuestionSortByEnum[];
+  filterBy?: SearchQuestionFilterByEnum;
+  sortBy?: SearchQuestionSortByEnum;
   orderBy?: OrderByEnum;
   pagination?: PaginationDTO;
 };
@@ -25,12 +26,12 @@ export type SearchQuestionsOutput = PaginatedData<{
     isClosed: boolean,
     createdAt: Date,
   },
-  owner: {
+  owner: Nullable<{
     userId: string,
     name: string,
     username: string,
     rating: number,
-  } | null,
+  }>,
   tags: Tag[],
   answersAmount: number,
 }>;

@@ -1,4 +1,4 @@
-import { Answer } from '@core/models/Answer';
+import { Answer } from '@core/models/answer/Answer';
 
 export type AnswerDeleteInput = {
   executorId: string

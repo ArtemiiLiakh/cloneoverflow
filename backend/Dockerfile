@@ -1,59 +1,60 @@
 # ====================== BUILD ====================== 
-FROM node:17-alpine as build
+FROM node:20-alpine3.20 AS build
 
 WORKDIR /app
 COPY ./package.json /app/package.json
 COPY ./package-lock.json /app/package-lock.json
 
 COPY ./common/package.json /app/common/package.json
-RUN npm ci --workspace=common
-
 COPY ./backend/package.json /app/backend/package.json
-RUN npm ci --workspace=backend
+
+RUN npm ci --workspace=common --ignore-scripts && \
+    npm ci --workspace=backend --ignore-scripts
 
 WORKDIR /app/common
 COPY ./common /app/common
 RUN npm run build
 
 WORKDIR /app/backend
-
 COPY ./backend/prisma/schema.prisma /app/backend/prisma/schema.prisma
 RUN npm run db:generate:prod
 
 COPY ./backend /app/backend
 RUN npm run build
 
-# ====================== Install prod packages ====================== 
-FROM node:17-alpine as package
+# ====================== Install prod packages ======================
+FROM node:20-alpine3.20 AS package
 WORKDIR /app
-COPY ./package.json /app/package.json 
+COPY ./package.json /app/package.json
 COPY ./package-lock.json /app/package-lock.json
 
 COPY ./common/package.json /app/common/package.json
-RUN npm ci --workspace=common --only=production
-
 COPY ./backend/package.json /app/backend/package.json
-RUN npm ci --workspace=backend --only=production
+
+RUN npm ci --workspace=common --omit=dev --ignore-scripts && \
+    npm ci --workspace=backend --omit=dev --ignore-scripts
+
+WORKDIR /app/backend
+COPY ./backend/prisma/schema.prisma /app/backend/prisma/schema.prisma
+RUN npm run db:generate:prod
 
 # ====================== RUN ====================== 
-FROM node:17-alpine as production
-
-USER node
+FROM node:20-alpine3.20 AS production
 
 WORKDIR /app
 
-COPY ./package.json /app/package.json 
-COPY --from=package --chown=node:node /app/node_modules /app/node_modules
+COPY ./package.json /app/package.json
+COPY ./package-lock.json /app/package-lock.json
 
 COPY ./common/package.json /app/common/package.json
 COPY ./backend/package.json /app/backend/package.json
 
-COPY --from=build --chown=node:node /app/common/dist /app/common/dist
-COPY --from=build --chown=node:node /app/backend/dist /app/backend/dist
-COPY ./backend/prisma/schema.prisma /app/backend/prisma/schema.prisma
+COPY --from=package /app/node_modules /app/node_modules
+COPY --from=build /app/common/dist /app/common/dist
+COPY --from=build /app/backend/dist /app/backend/dist
 
 WORKDIR /app/backend
-RUN npm run db:generate:prod
+COPY ./backend/prisma/schema.prisma /app/backend/prisma/schema.prisma
 
 EXPOSE 8000
 

@@ -19,7 +19,7 @@ export class AnswerDeleteUseCase implements IAnswerDeleteUseCase {
       throw new ForbiddenException('You can delete only your answers');
     }
   
-    await this.unitOfWork.execute(async (unit) => {
+    await this.unitOfWork.executeFn(async (unit) => {
       if (answer.isSolution) {
         await unit.questionRepository.openQuestion({
           questionId: answer.questionId,

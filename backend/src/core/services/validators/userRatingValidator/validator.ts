@@ -13,14 +13,14 @@ export class UserRatingValidator implements IUserRatingValidator {
   async validate (
     { userId, action }: UserRatingValidatorInput,
   ): Promise<void> {
-    const user = await this.userRepository.getPartialById({
+    const user = await this.userRepository.getById({
       userId,
       select: { rating: true },
     });
 
     const minRating = await this.userRatingSystem.getMinRating(action);
 
-    if (user.rating! < minRating) {
+    if (user.rating < minRating) {
       throw new ForbiddenException('Your rating is not high enough to perform this action');
     }
   }

@@ -3,11 +3,11 @@ import { AnswerCreateOutput } from '@core/services/answer/dtos';
 
 export function AnswerCreateMapperOutput (answer: AnswerCreateOutput): AnswerCreateResponse {
   return {
-    id: answer.id,
+    id: answer.answerId,
     ownerId: answer.ownerId,
     questionId: answer.questionId,
     text: answer.text,
-    rate: answer.rating,
+    rating: answer.rating,
     isSolution: answer.isSolution,
     createdAt: answer.createdAt,
   };

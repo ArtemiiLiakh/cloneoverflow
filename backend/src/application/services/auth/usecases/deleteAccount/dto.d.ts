@@ -1,4 +1,4 @@
-import { User } from '@core/models/User';
+import { User } from '@core/models/user/User';
 
 export type DeleteAccountInput = {
   executorId: string, 

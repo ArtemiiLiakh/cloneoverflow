@@ -1,9 +1,5 @@
-import { OrderByEnum } from '@cloneoverflow/common';
 import { AnswerRepository, QuestionRepository, UserRepository } from '@core/repositories';
-import { AnswerRepositoryOutput } from '@core/repositories/answer/dtos/AnswerRepositoryOutput';
-import { QuestionRepositoryOutput } from '@core/repositories/question/dtos/QuestionRepositoryOutput';
 import { UserGetProfileInput, UserGetProfileOutput } from './dto';
-import { getProfileOutputMapper } from './mapper';
 import { IUserGetProfileUseCase } from './type';
 
 export class UserGetProfileUseCase implements IUserGetProfileUseCase {
@@ -14,66 +10,32 @@ export class UserGetProfileUseCase implements IUserGetProfileUseCase {
   ) {}
  
   async execute ({ userId }: UserGetProfileInput): Promise<UserGetProfileOutput> {
-    const user = await this.userRepository.getUser({
-      where: { userId },
-      counts: {
-        answers: true,
-        questions: true,
-      },
-    });
+    const profile = await this.userRepository.getProfile({ userId });
 
-    let bestAnswer: AnswerRepositoryOutput.GetPartialAnswer | null = null;
-    if (await this.answerRepository.isExist({ ownerId: userId })) {
-      bestAnswer = await this.answerRepository.getPartialAnswer({
-        where: { ownerId: userId },
-        select: {
-          id: true,
-          ownerId: true,
-          questionId: true,
-          rating: true,
-          isSolution: true,
-          createdAt: true,
-        },
-        include: {
-          question: true,
-        },
-        orderBy: [ 
-          { rating: OrderByEnum.DESC },
-          { isSolution: OrderByEnum.DESC },
-        ],
-      });
-    }
+    const bestAnswer = await this.answerRepository.getBestOwnerAnswer({
+      ownerId: userId,
+    });
     
-    let bestQuestion: QuestionRepositoryOutput.GetPartialQuestion | null = null;
-    if (await this.questionRepository.isExist({ ownerId: userId })) {
-      bestQuestion = await this.questionRepository.getPartialQuestion({
-        where: { ownerId: userId },
-        select: {
-          id: true,
-          ownerId: true,
-          title: true,
-          rating: true,
-          views: true,
-          isClosed: true,
-          createdAt: true,
-        },
-        include: {
-          tags: true,
-        },
-        counts: {
-          answers: true,
-        },
-        orderBy: [
-          { rating: OrderByEnum.DESC }, 
-          { answersAmount: OrderByEnum.DESC },
-        ],
-      });
-    }
+    const bestQuestion = await this.questionRepository.getBestOwnerQuestion({
+      ownerId: userId,
+    });
   
-    return getProfileOutputMapper({
-      user,
+    return {
+      user: {
+        userId: profile.userId,
+        email: profile.email,
+        username: profile.username,
+        name: profile.name,
+        rating: profile.rating,
+        status: profile.status,
+        about: profile.about,
+        createdAt: profile.createdAt,
+        updatedAt: profile.updatedAt,
+      },
+      answerAmount: profile.answerAmount,
+      questionAmount: profile.questionAmount,
       bestQuestion,
       bestAnswer,
-    });
+    };  
   }
 }

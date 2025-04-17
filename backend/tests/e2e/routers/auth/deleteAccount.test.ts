@@ -1,16 +1,16 @@
 import { AuthDeleteAccountDTO, VerificationCodeType } from '@cloneoverflow/common';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { UserUtils } from '@tests/e2e/utils/UserUtils';
 import supertest from 'supertest';
 import { App } from 'supertest/types';
 import { createVerificationCode } from './utils/createVerificationCode';
-import { INestApplication } from '@nestjs/common';
 
 describe('DELETE /api/auth/account', () => {
   let user1Cookies: string;
   let user2Cookies: string;
   
-  let nest: INestApplication;
+  let nest: NestExpressApplication;
   let app: App;
 
   const user1Creds = {
@@ -43,8 +43,8 @@ describe('DELETE /api/auth/account', () => {
       password: user2Creds.password,
     });
   
-    user1Creds.id = user1.id;
-    user2Creds.id = user2.id;
+    user1Creds.id = user1.userId;
+    user2Creds.id = user2.userId;
 
     const user1Tokens = await userUtils.getTokens(user1);
     const user2Tokens = await userUtils.getTokens(user2);
@@ -84,7 +84,7 @@ describe('DELETE /api/auth/account', () => {
       .expect(401);
   });
 
-  test('When user email or password is incorrect expect it returns error 400', async () => {
+  test('When user email or password is incorrect expect it returns error 401', async () => {
     const code = await createVerificationCode(nest, {
       email: user2Creds.email,
       codeType: VerificationCodeType.DeleteAccount,
@@ -98,7 +98,7 @@ describe('DELETE /api/auth/account', () => {
         email: user2Creds.email,
         password: 'wrongPassword',
       } as AuthDeleteAccountDTO)
-      .expect(400);
+      .expect(401);
 
     await supertest(app)
       .delete('/api/auth/account')
@@ -108,10 +108,10 @@ describe('DELETE /api/auth/account', () => {
         email: 'wrongEmail@gmail.com',
         password: user2Creds.password,
       } as AuthDeleteAccountDTO)
-      .expect(400);
+      .expect(401);
   });
 
-  test('When verification code is invalid expect it returns 400 or 403', async () => {
+  test('When verification code is invalid expect it returns 401', async () => {
     await supertest(app)
       .delete('/api/auth/account')
       .set('Cookie', user2Cookies)

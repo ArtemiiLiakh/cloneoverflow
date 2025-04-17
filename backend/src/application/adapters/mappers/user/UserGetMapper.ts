@@ -3,12 +3,11 @@ import { UserGetOutput } from '@core/services/user/dtos';
 
 export function UserGetMapperOutput (user: UserGetOutput): UserGetResponse {
   return {
-    id: user.id,
+    id: user.userId,
     name: user.name,
     username: user.username,
-    reputation: user.rating,
+    rating: user.rating,
     status: user.status,
-    about: user.about,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
   };

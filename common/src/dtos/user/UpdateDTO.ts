@@ -3,13 +3,13 @@ import { IsOptional, IsString } from "class-validator";
 export class UserUpdateDTO {
   @IsOptional()
   @IsString()
-  name?: string;
+    name?: string;
   
   @IsOptional()
   @IsString()
-  username?: string;
+    username?: string;
   
   @IsOptional()
   @IsString()
-  about?: string;
+    about?: string;
 }

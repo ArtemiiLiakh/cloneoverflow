@@ -1,5 +1,5 @@
 import { AuthForgotPasswordDTO, VerificationCodeType } from '@cloneoverflow/common';
-import { INestApplication } from '@nestjs/common';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { UserUtils } from '@tests/e2e/utils/UserUtils';
 import supertest from 'supertest';
@@ -13,7 +13,7 @@ describe('POST /api/auth/account/forgotPassword', () => {
     password: 'password',
   };
 
-  let nest: INestApplication;
+  let nest: NestExpressApplication;
   let app: App;
 
   beforeAll(async () => {
@@ -53,7 +53,7 @@ describe('POST /api/auth/account/forgotPassword', () => {
     });
   });
 
-  test('When user email is incorrect expect it returns error 400', async () => {
+  test('When user with email is not found expect it returns error 404', async () => {
     await supertest(app)
       .post('/api/auth/account/forgotPassword')
       .send({
@@ -61,7 +61,7 @@ describe('POST /api/auth/account/forgotPassword', () => {
         email: 'wrongEmail@gmail.com',
         newPassword: 'password',
       } as AuthForgotPasswordDTO)
-      .expect(400);
+      .expect(404);
   });
 
   test('When verification code is incorrect expect it returns error 400 or 403', async () => {

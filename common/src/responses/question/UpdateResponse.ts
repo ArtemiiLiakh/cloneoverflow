@@ -1,8 +1,9 @@
 export interface QuestionUpdateResponse {
   id: string;
+  ownerId: string;
   title: string;
   text: string;
-  rate: number;
+  rating: number;
   views: number;
   isClosed: boolean;
   createdAt: Date;

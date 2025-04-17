@@ -1,5 +1,5 @@
 import { QuestionCreateDTO, QuestionCreateResponse } from '@cloneoverflow/common';
-import { User } from '@core/models/User';
+import { User } from '@core/models/user/User';
 import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { QuestionUtils } from '@tests/e2e/utils/QuestionUtils';
 import { TagUtils } from '@tests/e2e/utils/TagUtils';

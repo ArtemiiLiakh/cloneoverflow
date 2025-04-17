@@ -1,20 +1,14 @@
 import { ForbiddenException } from '@cloneoverflow/common';
-import { Question } from '@core/models/Question';
 import { QuestionRepository } from '@core/repositories/question/QuestionRepository';
 import { QuestionDeleteUseCase } from '@core/services/question';
+import { createQuestion } from '@tests/utils/models/question';
 
-describe('Service: test QuestionDeleteUseCase', () => {
+describe('Question service: test DeleteUseCase', () => {
   test('Delete question', async () => {
-    const userId = 'userId';
-
-    const questionEntity = Question.new({
-      ownerId: userId,
-      text: 'text',
-      title: 'title',
-    });
+    const questionEntity = createQuestion();
 
     const questionRepositoryMock = {
-      getById: jest.fn().mockReturnValue(Promise.resolve(questionEntity)),
+      getById: jest.fn().mockResolvedValue(questionEntity),
       delete: jest.fn(),
     } as Partial<QuestionRepository>;
 
@@ -23,8 +17,8 @@ describe('Service: test QuestionDeleteUseCase', () => {
     );
 
     const question = await deleteUseCase.execute({ 
-      executorId: userId,
-      questionId: questionEntity.id,
+      executorId: questionEntity.ownerId,
+      questionId: questionEntity.questionId,
     });
 
     expect(question).toBe(questionEntity);
@@ -35,11 +29,7 @@ describe('Service: test QuestionDeleteUseCase', () => {
   test('Throw an error because user is not owner of question', () => {
     const wrongUserId = 'userId';
 
-    const question = Question.new({
-      ownerId: 'ownerId',
-      text: 'text',
-      title: 'title',
-    });
+    const question = createQuestion();
 
     const questionRepositoryMock = {
       getById: async () => question,
@@ -51,7 +41,7 @@ describe('Service: test QuestionDeleteUseCase', () => {
 
     expect(deleteUseCase.execute({ 
       executorId: wrongUserId,
-      questionId: question.id,
+      questionId: question.questionId,
     })).rejects.toThrow(ForbiddenException);
   });
 });

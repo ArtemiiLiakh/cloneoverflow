@@ -3,12 +3,11 @@ import { UserUpdateOutput } from '@core/services/user/dtos';
 
 export function UserUpdateMapperOutput (user: UserUpdateOutput): UserUpdateResponse {
   return {
-    id: user.id,
+    id: user.userId,
     name: user.name,
     username: user.username,
-    reputation: user.rating,
+    rating: user.rating,
     status: user.status,
-    about: user.about,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
   };

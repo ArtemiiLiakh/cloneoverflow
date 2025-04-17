@@ -1,24 +1,23 @@
 import { QuestionGetResponse } from '@cloneoverflow/common';
-import { QuestionGetOutput } from '@core/services/question/dtos';
+import { QuestionGetDetailsOutput } from '@core/services/question/dtos';
 
-export function QuestionGetMapperOutput (
-  question: QuestionGetOutput,
-): QuestionGetResponse {
+export const QuestionGetDetailsMapper = (question: QuestionGetDetailsOutput): QuestionGetResponse => {
   return {
-    id: question.entity.id,
-    title: question.entity.title,
-    text: question.entity.text,
-    rate: question.entity.rating,
-    isClosed: question.entity.isClosed,
-    views: question.entity.views,
-    createdAt: question.entity.createdAt,
-    updatedAt: question.entity.updatedAt,
-    tags: question.tags?.map(tag => tag.name),
+    id: question.questionId,
+    title: question.title,
+    text: question.text,
+    rating: question.rating,
+    views: question.views,
+    isClosed: question.isClosed,
+    createdAt: question.createdAt,
+    updatedAt: question.updatedAt,
+    myVoteType: question.voter ? question.voter.voteType : null,
     owner: question.owner ? {
-      id: question.owner.id,
+      id: question.owner.userId,
       name: question.owner.name,
       username: question.owner.username,
-      reputation: question.owner.rating,
+      rating: question.owner.rating,
     } : null,
+    tags: question.tags.map(tag => tag.name),
   };
-}
+};

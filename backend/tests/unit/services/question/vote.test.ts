@@ -1,109 +1,75 @@
-import { ForbiddenException, QuestionUserStatusEnum, VoteTypeEnum } from '@cloneoverflow/common';
-import { Question } from '@core/models/Question';
-import { QuestionUser } from '@core/models/QuestionUser';
-import { User } from '@core/models/User';
-import { UserRepository } from '@core/repositories';
+import { ForbiddenException, VoteTypeEnum } from '@cloneoverflow/common';
+import { QuestionVoterRepository, UserRepository } from '@core/repositories';
 import { QuestionRepository } from '@core/repositories/question/QuestionRepository';
-import { QuestionUserRepository } from '@core/repositories/question/QuestionUserRepository';
 import { Unit, UnitOfWork } from '@core/repositories/UnitOfWork';
 import { QuestionVoteUseCase } from '@core/services/question';
 import { IUserRatingValidator } from '@core/services/validators/types';
+import { createQuestion, createQuestionVoter } from '@tests/utils/models/question';
 
-describe('Service: test QuestionVoteUseCase', () => {
+describe('Question service: test VoteUseCase', () => {
   test('Vote question for the first time', async () => {
     const userId = 'userId';
     const vote = VoteTypeEnum.UP;
 
-    const owner = User.new({
-      name: 'name',
-      username: 'username',
-    });
-
-    const questionEntity = Question.new({
-      ownerId: owner.id,
-      text: 'text',
-      title: 'title',
-    });
+    const question = createQuestion();
 
     const userRatingValidatorMock = {
       validate: jest.fn(),
     } as IUserRatingValidator;
 
     const questionRepositoryMock = {
-      getPartialById: jest.fn().mockReturnValue(Promise.resolve(questionEntity)),
+      getById: jest.fn().mockResolvedValue(question),
     } as Partial<QuestionRepository>;
-
-    const questionUserRepositoryMock = {
-      getOne: jest.fn().mockReturnValue(Promise.resolve(null)),
-    } as Partial<QuestionUserRepository>;
 
     const unitMock = {
       questionRepository: {
-        addRating: jest.fn(),
+        voteUp: jest.fn(),
       } as Partial<QuestionRepository>,
 
-      questionUserRepository: {
+      questionVoterRepository: {
+        get: jest.fn().mockResolvedValue(null),
         create: jest.fn(),
-      } as Partial<QuestionUserRepository>,
+      } as Partial<QuestionVoterRepository>,
 
       userRepository: {
-        addRating: jest.fn(),
+        increaseRating: jest.fn(),
       } as Partial<UserRepository>,
     } as Unit;
 
     const voteUseCase = new QuestionVoteUseCase(
       userRatingValidatorMock,
       questionRepositoryMock as QuestionRepository,
-      questionUserRepositoryMock as QuestionUserRepository,
       {
-        execute: (fn) => fn(unitMock),
-        executeAll: async () => {},
+        executeFn: (fn) => fn(unitMock),
       } as UnitOfWork,
     );
 
     await voteUseCase.execute({
       executorId: userId,
-      questionId: questionEntity.id,
+      questionId: question.questionId,
       vote,
     });
 
     expect(userRatingValidatorMock.validate).toHaveBeenCalled();
-    expect(questionRepositoryMock.getPartialById).toHaveBeenCalled();
-    expect(questionUserRepositoryMock.getOne).toHaveBeenCalled();
-    expect(unitMock.questionUserRepository.create).toHaveBeenCalled();
-    expect(unitMock.questionRepository.addRating).toHaveBeenCalled();
-    expect(unitMock.userRepository.addRating).toHaveBeenCalled();
+    expect(questionRepositoryMock.getById).toHaveBeenCalled();
+    expect(unitMock.questionRepository.voteUp).toHaveBeenCalled();
+    expect(unitMock.questionVoterRepository.get).toHaveBeenCalled();
+    expect(unitMock.questionVoterRepository.create).toHaveBeenCalled();
+    expect(unitMock.userRepository.increaseRating).toHaveBeenCalled();
   });
 
   test('Vote question for the second time', async () => {
     const userId = 'userId';
     const vote = VoteTypeEnum.DOWN;
 
-    const owner = User.new({
-      name: 'name',
-      username: 'username',
-    });
-
-    const questionEntity = Question.new({
-      ownerId: owner.id,
-      text: 'text',
-      title: 'title',
-    });
-
-    const questionVoterEntity = QuestionUser.new({
-      userId,
-      questionId: questionEntity.id,
-      status: QuestionUserStatusEnum.VOTER,
-      voteType: VoteTypeEnum.UP,
+    const questionEntity = createQuestion();
+    const questionVoterEntity = createQuestionVoter({
+      voteType: VoteTypeEnum.UP
     });
 
     const questionRepositoryMock = {
-      getPartialById: jest.fn().mockReturnValue(Promise.resolve(questionEntity)),
+      getById: jest.fn().mockResolvedValue(questionEntity),
     } as Partial<QuestionRepository>;
-
-    const questionUserRepositoryMock = {
-      getOne: jest.fn().mockReturnValue(Promise.resolve(questionVoterEntity)),
-    } as Partial<QuestionUserRepository>;
 
     const userRatingValidatorMock = {
       validate: jest.fn(),
@@ -111,110 +77,95 @@ describe('Service: test QuestionVoteUseCase', () => {
 
     const unitMock = {
       questionRepository: {
-        addRating: jest.fn(),
+        voteDown: jest.fn(),
       } as Partial<QuestionRepository>,
       
-      questionUserRepository: {
+      questionVoterRepository: {
+        get: async () => questionVoterEntity,
         update: jest.fn(),
-      } as Partial<QuestionUserRepository>,
+      } as Partial<QuestionVoterRepository>,
 
       userRepository: {
-        addRating: jest.fn(),
+        decreaseRating: jest.fn(),
       } as Partial<UserRepository>,
     } as Unit;
 
     const voteUseCase = new QuestionVoteUseCase(
       userRatingValidatorMock,
       questionRepositoryMock as QuestionRepository,
-      questionUserRepositoryMock as QuestionUserRepository,
       {
-        execute: (fn) => fn(unitMock),
-        executeAll: async () => {},
+        executeFn: (fn) => fn(unitMock),
       } as UnitOfWork,
     );
 
     await voteUseCase.execute({
       executorId: userId,
-      questionId: questionEntity.id,
+      questionId: questionEntity.questionId,
       vote,
     });
 
     expect(userRatingValidatorMock.validate).toHaveBeenCalled();
-    expect(questionRepositoryMock.getPartialById).toHaveBeenCalled();
-    expect(questionUserRepositoryMock.getOne).toHaveBeenCalled();
+    expect(questionRepositoryMock.getById).toHaveBeenCalled();
 
-    expect(unitMock.questionUserRepository.update).toHaveBeenCalled();
-    expect(unitMock.userRepository.addRating).toHaveBeenCalled();
-    expect(unitMock.questionRepository.addRating).toHaveBeenCalled();
+    expect(unitMock.questionVoterRepository.update).toHaveBeenCalled();
+    expect(unitMock.questionRepository.voteDown).toHaveBeenCalled();
+    expect(unitMock.userRepository.decreaseRating).toHaveBeenCalled();
   });
 
   test('Throw an error because question was voted UP twice', () => {
     const userId = 'userId';
     const vote = VoteTypeEnum.UP;
 
-    const questionEntity = Question.new({
-      ownerId: 'ownerId',
-      text: 'text',
-      title: 'title',
-    });
-
-    const questionVoterEntity = QuestionUser.new({
-      userId,
-      questionId: questionEntity.id,
-      status: QuestionUserStatusEnum.VOTER,
-      voteType: VoteTypeEnum.UP,
+    const questionEntity = createQuestion();
+    const questionVoterEntity = createQuestionVoter({
+      voteType: vote,
     });
 
     const questionRepositoryMock = {
-      getPartialById: async () => questionEntity,
+      getById: async () => questionEntity,
     } as Partial<QuestionRepository>;
 
-    const questionUserRepositoryMock = {
-      getOne: async () => questionVoterEntity,
-    } as Partial<QuestionUserRepository>;
+    const unit = {
+      questionVoterRepository: {
+        get: async () => questionVoterEntity
+      } as Partial<QuestionVoterRepository>,
+    } as Unit;
 
     const voteUseCase = new QuestionVoteUseCase(
       { validate: async () => {} },
       questionRepositoryMock as QuestionRepository,
-      questionUserRepositoryMock as QuestionUserRepository,
-      {} as UnitOfWork,
+      { executeFn: (fn) => fn(unit) } as UnitOfWork,
     );
 
     expect(voteUseCase.execute({
       executorId: userId,
-      questionId: questionEntity.id,
+      questionId: questionEntity.questionId,
       vote,
     })).rejects.toThrow(ForbiddenException);
   });
 
   test('Throw an error if owner votes his own question', async () => {
-    const userId = 'userId';
     const vote = VoteTypeEnum.UP;
 
-    const questionEntity = Question.new({
-      ownerId: userId,
-      text: 'text',
-      title: 'title',
-    });
+    const questionEntity = createQuestion();
 
     const userRatingValidatorMock = {
       validate: jest.fn(),
     } as IUserRatingValidator;
 
     const questionRepositoryMock = {
-      getPartialById: async () => questionEntity,
+      getById: async () => questionEntity,
     } as Partial<QuestionRepository>;
 
     const voteUseCase = new QuestionVoteUseCase(
       userRatingValidatorMock,
       questionRepositoryMock as QuestionRepository,
-      {} as QuestionUserRepository,
       {} as UnitOfWork,
     );
 
     await expect(voteUseCase.execute({
-      executorId: userId,
-      questionId: questionEntity.id,
+      executorId: questionEntity.ownerId,
+      questionId: questionEntity.questionId,
       vote,
     })).rejects.toThrow(ForbiddenException);
 

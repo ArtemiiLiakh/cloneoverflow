@@ -24,29 +24,29 @@ describe('POST /api/auth/login', () => {
       password: userCreds.password,
     });
 
-    userCreds.id = user.id;
+    userCreds.id = user.userId;
   });
 
   test('Expect it logins successfully', async () => {
-    const user: AuthLoginResponse = await supertest(app)
+    const user = await supertest(app)
       .post('/api/auth/login')
       .send({
         email: userCreds.email,
         password: userCreds.password,
       } as AuthLoginDTO)
-      .then(res => res.body);
+      .then(res => res.body as AuthLoginResponse);
 
     expect(user.id).toEqual(userCreds.id);
   });
 
-  test('When email or password is wrong expect it returns error 400', async () => {
+  test('When email or password is wrong expect it returns error 401', async () => {
     await supertest(app)
       .post('/api/auth/login')
       .send({
         email: 'wrongEmail@gmail.com',
         password: 'password',
       })
-      .expect(400);
+      .expect(401);
 
     await supertest(app)
       .post('/api/auth/login')
@@ -54,6 +54,6 @@ describe('POST /api/auth/login', () => {
         email: userCreds.email,
         password: 'wrongPassword',
       })
-      .expect(400);
+      .expect(401);
   });
 });

@@ -9,9 +9,7 @@ export const AnswerGetUseCaseProvider: Provider = {
   
   useFactory: (
     answerRepository: AnswerRepository,
-  ) => new AnswerGetUseCase(
-    answerRepository,
-  ),
+  ) => new AnswerGetUseCase(answerRepository),
 
   inject: [
     PrismaRepositoryDITokens.AnswerRepository,

@@ -6,16 +6,18 @@ interface GCredentials {
   app_email: string,
 }
 
-let google: GCredentials;
+let creds: GCredentials;
 
 try {
-  google = JSON.parse(readFileSync(path.join(process.cwd(), 'environment', 'credentials.json')).toString('utf-8'));
+  creds = JSON.parse(readFileSync(path.join(process.cwd(), 'environment', 'credentials.json')).toString('utf-8'));
 }
 catch {
-  google = {
+  creds = {
     app_email: process.env.GAPP_EMAIL,
     app_password: process.env.GAPP_PASSWORD,
   } as GCredentials;
 }
+
+const google = creds;
 
 export { google };

@@ -29,7 +29,7 @@ export class AuthController {
   async login (
     req: WithBody<AuthLoginDTO>, 
     res: CoreResponse<AuthLoginResponse>,
-  ) {
+  ): Promise<void> {
     const { user, tokens } = await this.authService.login(req.body);
 
     res.setCookie('accessToken', tokens.access_token);
@@ -42,7 +42,7 @@ export class AuthController {
   async createAccount (
     { body }: WithBody<AuthSignupDTO>, 
     res: CoreResponse<AuthSignUpResponse>,
-  ) {
+  ): Promise<void> {
     const { user, tokens } = await this.authService.createAccount({
       email: body.email,
       password: body.password,
@@ -61,7 +61,7 @@ export class AuthController {
   async getMe (
     { executor }: WithAuth, 
     res: CoreResponse<AuthGetMeResponse>,
-  ) {
+  ): Promise<void> {
     const user = await this.authService.getMe({
       executorId: executor.userId,
     }); 
@@ -69,7 +69,7 @@ export class AuthController {
     res.send(AuthGetMeMapperOutput(user));
   }
 
-  async refreshToken ({ executor }: WithAuth, res: CoreResponse) {
+  async refreshToken ({ executor }: WithAuth, res: CoreResponse): Promise<void> {
     const { access_token } = await this.authService.refreshToken({
       userId: executor.userId,
     });
@@ -83,7 +83,7 @@ export class AuthController {
   async changePassword (
     { body, executor: user }: WithAuth & WithBody<AuthChangePasswordDTO>, 
     res: CoreResponse,
-  ) {
+  ): Promise<void> {
     await this.authService.changePassword({
       executorId: user.userId,
       code: body.code,
@@ -92,10 +92,11 @@ export class AuthController {
       oldPassword: body.oldPassword,
     });
 
+    res.status(200);
     res.send({ message: 'ok' });
   }
 
-  async forgotPassword ({ body }: WithBody<AuthForgotPasswordDTO>, res: CoreResponse) {
+  async forgotPassword ({ body }: WithBody<AuthForgotPasswordDTO>, res: CoreResponse): Promise<void> {
     await this.authService.forgotPassword({ 
       email: body.email, 
       code: body.code, 
@@ -106,7 +107,7 @@ export class AuthController {
     res.send({ message: 'ok' });
   }
 
-  async deleteAccount ({ body, executor }: WithAuth & WithBody<AuthDeleteAccountDTO>, res: CoreResponse) {
+  async deleteAccount ({ body, executor }: WithAuth & WithBody<AuthDeleteAccountDTO>, res: CoreResponse): Promise<void> {
     const userRes = await this.authService.deleteAccount({
       executorId: executor.userId, 
       code: body.code,
@@ -117,7 +118,7 @@ export class AuthController {
     res.send(userRes);
   }
 
-  async sendVerificationCode ({ body }: WithBody<AuthVerificationCodeDTO>, res: CoreResponse) {
+  async sendVerificationCode ({ body }: WithBody<AuthVerificationCodeDTO>, res: CoreResponse): Promise<void> {
     await this.authService.sendVerificationCode({
       email: body.email,
       codeType: body.codeType,
@@ -127,7 +128,7 @@ export class AuthController {
     res.send({ message: 'ok' });
   }
 
-  async checkVerificationCode ({ body }: WithBody<CheckVerificationCodeDTO>, res: CoreResponse) {
+  async checkVerificationCode ({ body }: WithBody<CheckVerificationCodeDTO>, res: CoreResponse): Promise<void> {
     await this.authService.checkVerificationCode({
       email: body.email,
       code: body.code,

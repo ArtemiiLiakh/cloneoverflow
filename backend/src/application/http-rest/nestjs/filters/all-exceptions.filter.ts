@@ -7,7 +7,7 @@ import { Request, Response } from 'express';
 export class AllExceptionFilter implements ExceptionFilter {
   constructor (private httpAdapterHost: HttpAdapterHost) {}
 
-  catch (exception: Error, host: ArgumentsHost) {
+  catch (exception: Error, host: ArgumentsHost): void {
     const req: Request = host.switchToHttp().getRequest();
     const res: Response = host.switchToHttp().getResponse();
 
@@ -22,8 +22,7 @@ export class AllExceptionFilter implements ExceptionFilter {
     };
 
     if (status >= 500) {
-      console.log('exception');
-      console.log(exception);
+      console.error(exception);
     }
 
     this.httpAdapterHost.httpAdapter.reply(res, body, status);

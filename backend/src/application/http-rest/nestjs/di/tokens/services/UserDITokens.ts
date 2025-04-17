@@ -1,6 +1,8 @@
 import { UserServiceFacade } from '@application/facades/UserServiceFacade';
 import {
   UserCreateUseCase,
+  UserGetOwnAnswersUseCase,
+  UserGetOwnQuestionsUseCase,
   UserGetProfileUseCase,
   UserGetUseCase,
   UserUpdateUseCase,
@@ -11,6 +13,8 @@ export const UserUseCaseDITokens = {
   Get: Symbol(UserGetUseCase.name), 
   GetProfile: Symbol(UserGetProfileUseCase.name), 
   Update: Symbol(UserUpdateUseCase.name), 
+  GetOwnAnswers: Symbol(UserGetOwnAnswersUseCase.name),
+  GetOwnQuestions: Symbol(UserGetOwnQuestionsUseCase.name),
 };
 
 export const UserServiceDIToken = Symbol(UserServiceFacade.name);

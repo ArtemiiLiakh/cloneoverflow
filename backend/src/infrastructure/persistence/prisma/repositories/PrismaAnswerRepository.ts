@@ -1,176 +1,285 @@
-import { NoEntityWithIdException, VoteTypeEnum } from '@cloneoverflow/common';
+import { NoEntityWithIdException, OrderByEnum } from '@cloneoverflow/common';
 import { AnswerRepository } from '@core/repositories/answer/AnswerRepository';
-import { AnswerRepositoryInput } from '@core/repositories/answer/dtos/AnswerRepositoryInput';
-import { AnswerRepositoryOutput } from '@core/repositories/answer/dtos/AnswerRepositoryOutput';
+import { AnswerRepoClearSolutionsInput, AnswerRepoClearSolutionsOutput } from '@core/repositories/answer/dtos/ClearSolutions';
+import { AnswerRepoCreateInput, AnswerRepoCreateOutput } from '@core/repositories/answer/dtos/Create';
+import { AnswerRepoDeleteInput, AnswerRepoDeleteOutput } from '@core/repositories/answer/dtos/Delete';
+import { AnswerRepoGetBestOwnerAnswerInput, AnswerRepoGetBestOwnerAnswerOutput } from '@core/repositories/answer/dtos/GetBestOwnerAnswer';
+import { AnswerRepoGetByIdInput, AnswerRepoGetByIdOutput } from '@core/repositories/answer/dtos/GetById';
+import { AnswerRepoGetDetailedByIdInput, AnswerRepoGetDetailedByIdOutput } from '@core/repositories/answer/dtos/GetDetailedById';
+import { AnswerRepoGetOwnerAnswersInput, AnswerRepoGetOwnerAnswersOutput } from '@core/repositories/answer/dtos/GetOwnerAnswers';
+import { AnswerRepoGetQuestionAnswersInput, AnswerRepoGetQuestionAnswersOutput } from '@core/repositories/answer/dtos/GetQuestionAnswers';
+import { AnswerRepoIsExistInput, AnswerRepoIsExistOutput } from '@core/repositories/answer/dtos/IsExist';
+import { AnswerRepoSetAsSolutionInput, AnswerRepoSetAsSolutionOutput } from '@core/repositories/answer/dtos/SetAsSolution';
+import { AnswerRepoUpdateInput, AnswerRepoUpdateOutput } from '@core/repositories/answer/dtos/Update';
+import { AnswerRepoVoteDownInput, AnswerRepoVoteDownOutput } from '@core/repositories/answer/dtos/VoteDown';
+import { AnswerRepoVoteUpInput, AnswerRepoVoteUpOutput } from '@core/repositories/answer/dtos/VoteUp';
 import { PrismaClient } from '@prisma/client';
+import { AnswerDetailsMapper } from '../adapters/entityMappers/AnswerDetailsMapper';
 import { AnswerMapper } from '../adapters/entityMappers/AnswerMapper';
-import { QuestionMapper } from '../adapters/entityMappers/QuestionMapper';
-import { UserMapper } from '../adapters/entityMappers/UserMapper';
-import { AnswerIncludeAdapter } from '../adapters/include/AnswerIncludeAdapter';
-import { AnswerOrderByAdapter } from '../adapters/orderBy/AnswerOrderByAdapter';
 import { AnswerSelectAdapter } from '../adapters/select/AnswerSelectAdapter';
-import { AnswerWhereAdapter } from '../adapters/where/AnswerWhereAdapter';
-import { uuidToBytes } from '../utils/uuid';
 import { PrismaPaginationRepository } from './PrismaPaginationRepository';
 
 export class PrismaAnswerRepository implements AnswerRepository {
   constructor (
-    private prisma: PrismaClient,
+    private client: PrismaClient,
   ) {}
 
-  async isExist (where: AnswerRepositoryInput.IsExist): Promise<AnswerRepositoryOutput.IsExist> {
-    const answer = await this.prisma.answer.findFirst({
-      where: AnswerWhereAdapter(where),
-      select: { id: true },
-    });
-
-    return !!answer;
-  }
-
   async getById (
-    { answerId }: AnswerRepositoryInput.GetById,
-  ): Promise<AnswerRepositoryOutput.GetById> {
-    const answer = await this.prisma.answer.findFirst({ 
-      where: { id: +answerId },
-    });
-    
-    if (!answer) throw new NoEntityWithIdException('Answer');
+    { answerId, select }: AnswerRepoGetByIdInput,
+  ): Promise<AnswerRepoGetByIdOutput> {
+    const answer = await this.client.answer.findFirst({
+      where: {
+        id: +answerId,
+      },
+      select: AnswerSelectAdapter(select),
+    }); 
+
+    if (!answer) {
+      throw new NoEntityWithIdException('Answer');
+    }
+
     return AnswerMapper.toEntity(answer);
   }
 
-  async getAnswer (
-    { where, orderBy, include }: AnswerRepositoryInput.GetAnswer,
-  ): Promise<AnswerRepositoryOutput.GetAnswer> {
-    const answer = await this.prisma.answer.findFirst({
-      where: AnswerWhereAdapter(where),
-      orderBy: AnswerOrderByAdapter(orderBy),
-      include: AnswerIncludeAdapter(include),
+  async getDetailedById (
+    { answerId, voterId }: AnswerRepoGetDetailedByIdInput,
+  ): Promise<AnswerRepoGetDetailedByIdOutput> {
+    const answer = await this.client.answer.findFirst({
+      where: { 
+        id: +answerId,
+      },
+      include: {
+        owner: true,
+        voters: {
+          where: { 
+            userId: voterId,
+            answerId: answerId ? +answerId : undefined,
+          },
+        },
+      },
     });
 
-    if (!answer) throw new NoEntityWithIdException('Answer');
-    return {
-      entity: AnswerMapper.toEntity(answer),
-      owner: answer.owner ? UserMapper.toEntity(answer.owner) : undefined,
-      question: answer.question ? QuestionMapper.toEntity(answer.question) : undefined,
-    };
+    if (!answer) {
+      throw new NoEntityWithIdException('Answer');
+    }
+
+    return AnswerDetailsMapper.toEntity(answer, answer?.owner, answer?.voters[0]);
   }
 
-  async getPartialAnswer (
-    { where, select, orderBy, include }: AnswerRepositoryInput.GetPartialAnswer,
-  ): Promise<AnswerRepositoryOutput.GetPartialAnswer> {
-    const answer = await this.prisma.answer.findFirst({
-      where: AnswerWhereAdapter(where),
+  async getBestOwnerAnswer (
+    { ownerId, select }: AnswerRepoGetBestOwnerAnswerInput,
+  ): Promise<AnswerRepoGetBestOwnerAnswerOutput> {
+    const answer = await this.client.answer.findFirst({
+      where: {
+        ownerId,
+      },
+      orderBy: [
+        { rating: OrderByEnum.DESC },
+        { isSolution: OrderByEnum.DESC },
+      ],
       select: {
         ...AnswerSelectAdapter(select),
-        ...AnswerIncludeAdapter(include),
+        question: {
+          select: {
+            id: true,
+            ownerId: true,
+            title: true,
+            rating: true,
+          },
+        },
       },
-      orderBy: AnswerOrderByAdapter(orderBy),
     });
 
-    if (!answer) throw new NoEntityWithIdException('Answer');
+    if (!answer) {
+      return null;
+    }
+
     return {
       entity: AnswerMapper.toEntity(answer),
-      owner: answer.owner ? UserMapper.toEntity(answer.owner) : undefined,
-      question: answer.question ? QuestionMapper.toEntity(answer.question) : undefined,
+      question: {
+        questionId: answer.question.id.toString(),
+        ownerId: answer.question.ownerId ?? '',
+        title: answer.question.title,
+        rating: answer.question.rating,
+      },
     };
   }
 
-  async getPartialById (
-    { answerId, select }: AnswerRepositoryInput.GetPartialById,
-  ): Promise<AnswerRepositoryOutput.GetPartialById> {
-    const answer = await this.prisma.answer.findFirst({
-      where: { id: +answerId },
-      select: AnswerSelectAdapter(select),
-    });
-
-    if (!answer) throw new NoEntityWithIdException('Answer');
-    return AnswerMapper.toEntity(answer);
-  }
-
-  async getMany (
-    { where, select, orderBy, include, pagination }: AnswerRepositoryInput.GetMany,
-  ): Promise<AnswerRepositoryOutput.GetMany> {
+  async getOwnerAnswers (
+    { ownerId, searchText, orderBy, pagination }: AnswerRepoGetOwnerAnswersInput,
+  ): Promise<AnswerRepoGetOwnerAnswersOutput> {
     const answers = await PrismaPaginationRepository.paginate(
-      this.prisma.answer.findMany.bind(this.prisma),
-      this.prisma.answer.count.bind(this.prisma),
+      this.client.answer.findMany.bind(this.client),
+      this.client.answer.count.bind(this.client),
       {
-        where: AnswerWhereAdapter(where),
-        orderBy: AnswerOrderByAdapter(orderBy),
-        select: {
-          ...AnswerSelectAdapter(select),
-          ...AnswerIncludeAdapter(include),
+        where: {
+          ownerId,
+          text: {
+            contains: searchText,
+          },
+        },
+        orderBy: {
+          rating: orderBy?.rate,
+          createdAt: orderBy?.date,
+          isSolution: orderBy?.solution,
+        },
+        include: {
+          question: true,
         },
       },
       pagination,
     );
 
     return {
-      data: answers.data.map((answer) => ({
-        entity: AnswerMapper.toEntity(answer),
-        owner: answer.owner ? UserMapper.toEntity(answer.owner) : undefined,
-        question: answer.question ? QuestionMapper.toEntity(answer.question) : undefined,
+      data: answers.data.map(answer => ({
+        answer: AnswerMapper.toEntity(answer),
+        question: {
+          id: answer.question.id.toString(),
+          title: answer.question.title,
+          rating: answer.question.rating,
+        },
       })),
       pagination: answers.pagination,
     };
   }
 
-  count (
-    { where }: AnswerRepositoryInput.Count,
-  ): Promise<AnswerRepositoryOutput.Count> {
-    return this.prisma.answer.count({
-      where: AnswerWhereAdapter(where),
+  async getByQuestionId (
+    { questionId, voterId, orderBy, pagination }: AnswerRepoGetQuestionAnswersInput,
+  ): Promise<AnswerRepoGetQuestionAnswersOutput> {
+    const answers = await PrismaPaginationRepository.paginate(
+      this.client.answer.findMany.bind(this.client),
+      this.client.answer.count.bind(this.client),
+      {
+        where: {
+          questionId: +questionId,
+        },
+        orderBy: {
+          rating: orderBy?.rate,
+          date: orderBy?.date,
+          isSolution: orderBy?.solution,
+        },
+        include: {
+          owner: true,
+          voters: {
+            where: { userId: voterId },
+          },
+        },
+      },
+      pagination,
+    );
+
+    return {
+      data: answers.data.map((answer) => AnswerDetailsMapper.toEntity(answer, answer.owner, answer.voters[0])),
+      pagination: answers.pagination,
+    };
+  }
+  
+  async isExist (
+    { answerId }: AnswerRepoIsExistInput,
+  ): Promise<AnswerRepoIsExistOutput> {
+    const res = await this.client.answer.findFirst({
+      where: {
+        id: +answerId,
+      },
+      select: {
+        id: true,
+      },
     });
+
+    return !!res;
   }
 
   async create (
-    { answer, returnId: returnId }: AnswerRepositoryInput.Create,
-  ): Promise<AnswerRepositoryOutput.Create> {
-    const answerId = await this.prisma.answer.create({
+    { ownerId, questionId, text }: AnswerRepoCreateInput,
+  ): Promise<AnswerRepoCreateOutput> {
+    const newAnswer = await this.client.answer.create({
       data: {
-        ownerId: uuidToBytes(answer.ownerId),
-        questionId: +answer.questionId,
-        text: answer.text,
-        rate: answer.rating,
-        isSolution: answer.isSolution,
-        createdAt: answer.createdAt,
-        updatedAt: answer.updatedAt,
+        questionId: +questionId,
+        ownerId,
+        text,
       },
-      select: returnId ? { id: true } : undefined,
     });
 
-    if (returnId) return answerId.id.toString();
+    return AnswerMapper.toEntity(newAnswer);
   }
 
   async update (
-    { answerId, answer, returnEntity }: AnswerRepositoryInput.Update,
-  ): Promise<AnswerRepositoryOutput.Update> {
-    const updatedAnswer = await this.prisma.answer.update({
-      where: { id: +answerId },
+    { answerId, data }: AnswerRepoUpdateInput,
+  ): Promise<AnswerRepoUpdateOutput> {
+    const answer = await this.client.answer.update({
+      where: {
+        id: +answerId,
+      },
       data: {
-        text: answer.text,
+        text: data.text,
       },
     });
 
-    if (returnEntity) return AnswerMapper.toEntity(updatedAnswer);
+    return AnswerMapper.toEntity(answer);
   }
 
   async delete (
-    { answerId }: AnswerRepositoryInput.Delete,
-  ): Promise<AnswerRepositoryOutput.Delete> {
-    await this.prisma.answer.delete({
-      where: { id: +answerId },
+    { answerId }: AnswerRepoDeleteInput,
+  ): Promise<AnswerRepoDeleteOutput> {
+    await this.client.answer.delete({
+      where: {
+        id: +answerId,
+      },
     });
   }
 
-  async addRating ({ 
-    answerId,
-    voteType,
-  }: AnswerRepositoryInput.AddRating): Promise<AnswerRepositoryOutput.AddRating> {
-    await this.prisma.answer.update({
-      where: { id: +answerId },
+  async setAsSolution (
+    { answerId }: AnswerRepoSetAsSolutionInput,
+  ): Promise<AnswerRepoSetAsSolutionOutput> {
+    await this.client.answer.update({
+      where: {
+        id: +answerId,
+      },
       data: {
-        rate: {
-          increment: voteType === VoteTypeEnum.UP ? 1 : -1,
+        isSolution: true,
+      },
+    });
+  }
+
+  async clearSolution (
+    { questionId }: AnswerRepoClearSolutionsInput,
+  ): Promise<AnswerRepoClearSolutionsOutput> {
+    await this.client.answer.updateMany({
+      where: {
+        questionId: +questionId,
+        isSolution: true,
+      },
+      data: {
+        isSolution: false,
+      },
+    });
+  }
+
+  async voteUp (
+    { answerId }: AnswerRepoVoteUpInput,
+  ): Promise<AnswerRepoVoteUpOutput> {
+    await this.client.answer.update({
+      where: {
+        id: +answerId,
+      },
+      data: {
+        rating: {
+          increment: 1,
+        },
+      },
+    });
+  }
+
+  async voteDown (
+    { answerId }: AnswerRepoVoteDownInput,
+  ): Promise<AnswerRepoVoteDownOutput> {
+    await this.client.answer.update({
+      where: {
+        id: +answerId,
+      },
+      data: {
+        rating: {
+          decrement: 1,
         },
       },
     });

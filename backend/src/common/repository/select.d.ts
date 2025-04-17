@@ -1,5 +1,3 @@
-export type SelectInput<T> = {
+export type Select<T> = {
   [K in keyof T]?: boolean
 };
-
-export type SelectOutput<T> = Partial<T>;

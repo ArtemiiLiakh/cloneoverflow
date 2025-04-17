@@ -13,7 +13,7 @@ export class AnswerUpdateUseCase implements IAnswerUpdateUseCase {
   async execute (
     { executorId, answerId, text }: AnswerUpdateInput,
   ): Promise<AnswerUpdateOutput> {
-    const answer = await this.answerRepository.getPartialById({
+    const answer = await this.answerRepository.getById({
       answerId,
       select: { ownerId: true },
     });
@@ -25,12 +25,11 @@ export class AnswerUpdateUseCase implements IAnswerUpdateUseCase {
       });
     }
 
-    return await this.answerRepository.update({ 
+    return this.answerRepository.update({ 
       answerId, 
-      answer: {
+      data: {
         text,
       },
-      returnEntity: true,
-    }).then(answer => answer!);
+    });
   }
 }

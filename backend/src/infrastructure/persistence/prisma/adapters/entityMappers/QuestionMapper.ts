@@ -1,19 +1,18 @@
-import { Question } from '@core/models/Question';
+import { Question } from '@core/models/question/Question';
 import Prisma from '@prisma/client';
-import { bytesToUUID } from '../../utils/uuid';
 
 export class QuestionMapper  {
   static toEntity (question: Partial<Prisma.Question>): Question {
     return Question.new({
-      id: question.id?.toString(),
-      ownerId: question.ownerId ? bytesToUUID(question.ownerId) : '',
+      questionId: question.id ? question.id.toString() : '',
+      ownerId: question.ownerId ? question.ownerId : '',
       text: question.text ?? '',
       title: question.title ?? '',
-      rating: question.rate,
-      views: question.views,
-      isClosed: question.isClosed,
-      createdAt: question.createdAt,
-      updatedAt: question.updatedAt,
+      rating: question.rating ?? 0,
+      views: question.views ?? 0,
+      isClosed: question.isClosed ?? false,
+      createdAt: question.createdAt ?? new Date(),
+      updatedAt: question.updatedAt ?? new Date(),
     });
   }
 }

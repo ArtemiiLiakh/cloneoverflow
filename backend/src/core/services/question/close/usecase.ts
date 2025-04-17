@@ -1,6 +1,5 @@
-import { BadBodyException, Exception, QuestionUserStatusEnum } from '@cloneoverflow/common';
+import { BadBodyException } from '@cloneoverflow/common';
 import { UserRatingActions } from '@common/enums/UserRatingActions';
-import { QuestionUser } from '@core/models/QuestionUser';
 import { UnitOfWork } from '@core/repositories';
 import { AnswerRepository } from '@core/repositories/answer/AnswerRepository';
 import { QuestionRepository } from '@core/repositories/question/QuestionRepository';
@@ -19,13 +18,8 @@ export class QuestionCloseUseCase implements IQuestionCloseUseCase {
   async execute (
     { executorId, questionId, answerId }: QuestionCloseInput,
   ): Promise<QuestionCloseOutput> {
-    const question = await this.questionRepository.getPartialById({ 
+    const question = await this.questionRepository.getById({ 
       questionId,
-      select: {
-        id: true,
-        ownerId: true,
-        isClosed: true,
-      },
     });
 
     if (question.ownerId !== executorId) {
@@ -39,30 +33,22 @@ export class QuestionCloseUseCase implements IQuestionCloseUseCase {
       throw new BadBodyException('The question is already closed');
     }
     
-    const answer = await this.answerRepository.getPartialById({ 
+    const answer = await this.answerRepository.getById({ 
       answerId,
       select: { questionId: true },
     });
     
-    if (answer.questionId !== question.id) {
+    if (answer.questionId !== question.questionId) {
       throw new BadBodyException('Wrong answer id');
     }
 
-    await this.unitOfWork.executeAll((unit) => [
+    await this.unitOfWork.executeSeq((unit) => [
       unit.questionRepository.closeQuestion({
         questionId,
+      }),
+      unit.answerRepository.setAsSolution({
         answerId,
       }),
-
-      unit.questionUserRepository.create({
-        user: QuestionUser.new({
-          questionId,
-          userId: executorId,
-          status: QuestionUserStatusEnum.ANSWERER,
-        }),
-      }),
-    ]).catch(() => {
-      throw new Exception('Closing quetion failed');
-    });
+    ]);
   }
 }

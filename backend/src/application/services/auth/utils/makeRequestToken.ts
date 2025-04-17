@@ -6,7 +6,7 @@ export const makeRefreshToken = (
   dataEncryptor: DataEncryptor,
   { userId, status }: ExecutorPayload,
   options: EncryptOptions = {},
-) => {
+): Promise<string> => {
   options.expiresIn = options.expiresIn ?? config.jwt.refreshToken.maxAge;
 
   return dataEncryptor.encrypt<TokenPayload>({

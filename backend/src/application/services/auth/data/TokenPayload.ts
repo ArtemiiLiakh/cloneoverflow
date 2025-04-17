@@ -17,5 +17,5 @@ export class TokenPayload {
 
   @IsNotEmpty()
   @IsEnum(TokenTypeEnum)
-    type?: TokenTypeEnum;
+    type: TokenTypeEnum;
 }

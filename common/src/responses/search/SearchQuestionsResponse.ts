@@ -3,7 +3,7 @@ import { PaginationResponse } from '@data/PaginationResponse';
 export interface MappedSearchQuestionResponse {
   id: string;
   title: string;
-  rate: number;
+  rating: number;
   views: number;
   isClosed: boolean;
   tags: string[];
@@ -12,7 +12,7 @@ export interface MappedSearchQuestionResponse {
     id: string;
     name: string;
     username: string;
-    reputation: number;
+    rating: number;
   } | null;
   answersAmount: number;
 }

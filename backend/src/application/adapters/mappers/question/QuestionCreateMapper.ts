@@ -5,10 +5,11 @@ export function QuestionCreateMapperOutput (
   question: QuestionCreateOutput,
 ): QuestionCreateResponse {
   return {
-    id: question.id,
+    id: question.questionId,
+    ownerId: question.ownerId,
     title: question.title,
     text: question.text,
-    rate: question.rating,
+    rating: question.rating,
     views: question.views,
     isClosed: question.isClosed,
     updatedAt: question.updatedAt,

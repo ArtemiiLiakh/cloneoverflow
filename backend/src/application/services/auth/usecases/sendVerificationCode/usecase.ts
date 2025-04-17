@@ -26,11 +26,18 @@ export class SendVerificationCodeUseCase implements ISendVerificationCodeUseCase
       throw new BadBodyException('Invalid user email');
     }
 
-    const code = await this.generateCode(`user:${codeType}:${user.id}`);
-    this.emailService.sendEmail(email, `Your password verification code: ${code}`);
+    const code = await this.generateCode(`user:${codeType}:${user.userId}`);
+    this.emailService.sendEmail(email, `Your password verification code: ${code}`)
+      .catch((e) => {
+        console.error('Email error:', e);
+      });
   }
 
-  private async generateCode (key: string, length = 6, retries = config.cache.CODE_RETRIES) {
+  private async generateCode (
+    key: string, 
+    length = 6, 
+    retries = config.cache.CODE_RETRIES,
+  ): Promise<string> {
     let code = '';
 
     for (let i = 0; i <= (length ?? 6); i++) {

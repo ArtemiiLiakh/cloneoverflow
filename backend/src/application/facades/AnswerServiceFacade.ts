@@ -1,9 +1,9 @@
 import {
   IAnswerCreateUseCase,
   IAnswerDeleteUseCase,
-  IAnswerGetManyUseCase,
+  IAnswerGetByQuestionUseCase,
   IAnswerGetUseCase,
-  IAnswerGetVoteUseCase,
+  IAnswerGetVoterUseCase,
   IAnswerUpdateUseCase,
   IAnswerVoteUseCase,
 } from '@core/services/answer/types';
@@ -14,11 +14,11 @@ import {
   AnswerDeleteInput,
   AnswerDeleteOutput,
   AnswerGetInput,
-  AnswerGetManyInput,
-  AnswerGetManyOutput,
   AnswerGetOutput,
-  AnswerGetVoteInput,
-  AnswerGetVoteOutput,
+  AnswerGetByQuestionInput,
+  AnswerGetByQuestionOutput,
+  AnswerGetVoterInput,
+  AnswerGetVoterOutput,
   AnswerUpdateInput,
   AnswerUpdateOutput,
   AnswerVoteInput,
@@ -27,68 +27,68 @@ import {
 
 export class AnswerServiceFacade {
   constructor (
-    private answerCreateUseCase: IAnswerCreateUseCase,
-    private answerUpdateUseCase: IAnswerUpdateUseCase,
-    private answerDeleteUseCase: IAnswerDeleteUseCase,
-    private answerGetUseCase: IAnswerGetUseCase,
-    private answerGetManyUseCase: IAnswerGetManyUseCase,
-    private answerVoteUseCase: IAnswerVoteUseCase,
-    private answerGetVoteUseCase: IAnswerGetVoteUseCase,
+    private CreateUseCase: IAnswerCreateUseCase,
+    private UpdateUseCase: IAnswerUpdateUseCase,
+    private DeleteUseCase: IAnswerDeleteUseCase,
+    private GetUseCase: IAnswerGetUseCase,
+    private GetVoterUseCase: IAnswerGetVoterUseCase,
+    private VoteUseCase: IAnswerVoteUseCase,
+    private GetQuestionAnswersUseCase: IAnswerGetByQuestionUseCase,
   ) {}
 
   static new ({
-    answerCreateUseCase,
-    answerUpdateUseCase,
-    answerDeleteUseCase,
-    answerGetUseCase,
-    answerGetManyUseCase,
-    answerVoteUseCase,
-    answerGetVoteUseCase,
+    CreateUseCase,
+    UpdateUseCase,
+    DeleteUseCase,
+    GetUseCase,
+    GetVoterUseCase,
+    VoteUseCase,
+    GetQuestionAnswersUseCase,
   }: {
-    answerCreateUseCase: IAnswerCreateUseCase,
-    answerUpdateUseCase: IAnswerUpdateUseCase,
-    answerDeleteUseCase: IAnswerDeleteUseCase,
-    answerGetUseCase: IAnswerGetUseCase,
-    answerGetManyUseCase: IAnswerGetManyUseCase,
-    answerVoteUseCase: IAnswerVoteUseCase,
-    answerGetVoteUseCase: IAnswerGetVoteUseCase,
-  }) {
+    CreateUseCase: IAnswerCreateUseCase,
+    UpdateUseCase: IAnswerUpdateUseCase,
+    DeleteUseCase: IAnswerDeleteUseCase,
+    GetUseCase: IAnswerGetUseCase,
+    GetVoterUseCase: IAnswerGetVoterUseCase,
+    VoteUseCase: IAnswerVoteUseCase,
+    GetQuestionAnswersUseCase: IAnswerGetByQuestionUseCase,
+  }): AnswerServiceFacade {
     return new AnswerServiceFacade(
-      answerCreateUseCase,
-      answerUpdateUseCase,
-      answerDeleteUseCase,
-      answerGetUseCase,
-      answerGetManyUseCase,
-      answerVoteUseCase,
-      answerGetVoteUseCase,
+      CreateUseCase,
+      UpdateUseCase,
+      DeleteUseCase,
+      GetUseCase,
+      GetVoterUseCase,
+      VoteUseCase,
+      GetQuestionAnswersUseCase,
     );
   }
 
   create (payload: AnswerCreateInput): Promise<AnswerCreateOutput> {
-    return this.answerCreateUseCase.execute(payload);
-  }
-
-  update (payload: AnswerUpdateInput): Promise<AnswerUpdateOutput> {
-    return this.answerUpdateUseCase.execute(payload);
+    return this.CreateUseCase.execute(payload);
   }
 
   delete (payload: AnswerDeleteInput): Promise<AnswerDeleteOutput> {
-    return this.answerDeleteUseCase.execute(payload);
+    return this.DeleteUseCase.execute(payload);
   }
-
+  
   get (payload: AnswerGetInput): Promise<AnswerGetOutput> {
-    return this.answerGetUseCase.execute(payload);
+    return this.GetUseCase.execute(payload);
   }
 
-  getMany (payload: AnswerGetManyInput): Promise<AnswerGetManyOutput> {
-    return this.answerGetManyUseCase.execute(payload);
+  getVoter (payload: AnswerGetVoterInput): Promise<AnswerGetVoterOutput> {
+    return this.GetVoterUseCase.execute(payload);
+  }
+
+  update (payload: AnswerUpdateInput): Promise<AnswerUpdateOutput> {
+    return this.UpdateUseCase.execute(payload);
   }
 
   vote (payload: AnswerVoteInput): Promise<AnswerVoteOutput> {
-    return this.answerVoteUseCase.execute(payload);
+    return this.VoteUseCase.execute(payload);
   }
 
-  getVote (payload: AnswerGetVoteInput): Promise<AnswerGetVoteOutput> {
-    return this.answerGetVoteUseCase.execute(payload);
+  getByQuestion (payload: AnswerGetByQuestionInput): Promise<AnswerGetByQuestionOutput> {
+    return this.GetQuestionAnswersUseCase.execute(payload);
   }
 }

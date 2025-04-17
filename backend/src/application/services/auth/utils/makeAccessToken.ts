@@ -6,7 +6,7 @@ export const makeAccessToken = (
   dataEncryptor: DataEncryptor,
   { userId, status }: ExecutorPayload,
   options: EncryptOptions = {},
-) => {
+): Promise<string> => {
   options.expiresIn = options.expiresIn ?? config.jwt.accessToken.maxAge;
 
   return dataEncryptor.encrypt<TokenPayload>({

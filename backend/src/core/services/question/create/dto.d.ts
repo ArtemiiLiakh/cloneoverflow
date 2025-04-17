@@ -1,4 +1,4 @@
-import { Question } from '@core/models/Question';
+import { Question } from '@core/models/question/Question';
 
 export type QuestionCreateInput = {
   executorId: string, 

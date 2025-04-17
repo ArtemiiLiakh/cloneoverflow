@@ -3,6 +3,10 @@ import {
   UserCreateOutput,
   UserGetInput,
   UserGetOutput,
+  UserGetOwnAnswersInput,
+  UserGetOwnAnswersOutput,
+  UserGetOwnQuestionsInput,
+  UserGetOwnQuestionsOutput,
   UserGetProfileInput,
   UserGetProfileOutput,
   UserUpdateInput,
@@ -11,6 +15,8 @@ import {
 
 import {
   IUserCreateUseCase,
+  IUserGetOwnAnswersUseCase,
+  IUserGetOwnQuestionsUseCase,
   IUserGetProfileUseCase,
   IUserGetUseCase,
   IUserUpdateUseCase,
@@ -18,44 +24,60 @@ import {
 
 export class UserServiceFacade {
   constructor (
-    private userCreateUseCase: IUserCreateUseCase,
-    private userGetUseCase: IUserGetUseCase,
-    private userGetProfileUseCase: IUserGetProfileUseCase,
-    private userUpdateUseCase: IUserUpdateUseCase,
+    private CreateUseCase: IUserCreateUseCase,
+    private GetUseCase: IUserGetUseCase,
+    private GetOwnAnswers: IUserGetOwnAnswersUseCase,
+    private GetOwnQuestions: IUserGetOwnQuestionsUseCase,
+    private GetProfileUseCase: IUserGetProfileUseCase,
+    private UpdateUseCase: IUserUpdateUseCase,
   ) {}
 
   static new ({
-    userCreateUseCase,
-    userGetUseCase,
-    userGetProfileUseCase,
-    userUpdateUseCase,
+    CreateUseCase,
+    GetUseCase,
+    GetOwnAnswers,
+    GetOwnQuestions,
+    GetProfileUseCase,
+    UpdateUseCase,
   }: {
-    userCreateUseCase: IUserCreateUseCase,
-    userGetUseCase: IUserGetUseCase,
-    userGetProfileUseCase: IUserGetProfileUseCase,
-    userUpdateUseCase: IUserUpdateUseCase,
-  }) {
+    CreateUseCase: IUserCreateUseCase,
+    GetUseCase: IUserGetUseCase,
+    GetOwnAnswers: IUserGetOwnAnswersUseCase,
+    GetOwnQuestions: IUserGetOwnQuestionsUseCase,
+    GetProfileUseCase: IUserGetProfileUseCase,
+    UpdateUseCase: IUserUpdateUseCase,
+  }): UserServiceFacade {
     return new UserServiceFacade(
-      userCreateUseCase,
-      userGetUseCase,
-      userGetProfileUseCase,
-      userUpdateUseCase,
+      CreateUseCase,
+      GetUseCase,
+      GetOwnAnswers,
+      GetOwnQuestions,
+      GetProfileUseCase,
+      UpdateUseCase,
     );
   }
 
   create (payload: UserCreateInput): Promise<UserCreateOutput> {
-    return this.userCreateUseCase.execute(payload);
+    return this.CreateUseCase.execute(payload);
   }
 
   get (payload: UserGetInput): Promise<UserGetOutput> {
-    return this.userGetUseCase.execute(payload);
+    return this.GetUseCase.execute(payload);
+  }
+
+  getOwnAnswers (payload: UserGetOwnAnswersInput): Promise<UserGetOwnAnswersOutput> {
+    return this.GetOwnAnswers.execute(payload);
+  }
+
+  getOwnQuestions (payload: UserGetOwnQuestionsInput): Promise<UserGetOwnQuestionsOutput> {
+    return this.GetOwnQuestions.execute(payload);
   }
 
   getProfile (payload: UserGetProfileInput): Promise<UserGetProfileOutput> {
-    return this.userGetProfileUseCase.execute(payload);
+    return this.GetProfileUseCase.execute(payload);
   }
 
   update (payload: UserUpdateInput): Promise<UserUpdateOutput> {
-    return this.userUpdateUseCase.execute(payload);
+    return this.UpdateUseCase.execute(payload);
   }
 }

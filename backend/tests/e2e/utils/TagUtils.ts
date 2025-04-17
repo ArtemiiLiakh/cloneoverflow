@@ -1,61 +1,52 @@
 import { PrismaRepositoryDITokens } from '@application/http-rest/nestjs/di/tokens/persistence';
-import { Tag } from '@core/models/Tag';
-import { TagRepository, UnitOfWork } from '@core/repositories';
+import { Tag } from '@core/models/tag/Tag';
+import { QuestionRepository, TagRepository, UnitOfWork } from '@core/repositories';
 import { INestApplication } from '@nestjs/common';
-import { randomUUID } from 'crypto';
+import { randomBytes } from 'crypto';
 
 export class TagUtils {
   private tagRepository: TagRepository;
+  private questionRepository: QuestionRepository;
   private unitOfWork: UnitOfWork;
   
   constructor (
     nest: INestApplication,
   ) {
     this.tagRepository = nest.get(PrismaRepositoryDITokens.TagRepository);
+    this.questionRepository = nest.get(PrismaRepositoryDITokens.QuestionRepository);
     this.unitOfWork = nest.get(PrismaRepositoryDITokens.UnitOfWork);
   }
 
   async create (
     payload?: { name?: string, questionId?: string },
   ): Promise<Tag> {
-    const newTag = Tag.new({
-      name: payload?.name ?? randomUUID(),
-    });
-
-    await this.unitOfWork.execute(async (unit) => {
-      newTag.id = await unit.tagRepository.create({ tag: newTag, returnId: true }).then(id => id!);
-
+    return this.unitOfWork.executeFn(async (unit) => {
+      const tag = (await unit.tagRepository.createOrFindMany({ 
+        names: [payload?.name ?? randomBytes(4).toString('hex')],
+      }))[0];
+      
       if (payload?.questionId) {
         await unit.questionRepository.refTags({
           questionId: payload.questionId,
-          tags: [newTag],
+          tags: [tag],
         });
       }
+      
+      return tag;
     });
-
-    return newTag;
   }
 
   getTag (name: string): Promise<Tag> {
-    return this.tagRepository.getTag({ where: { name: name } });
+    return this.tagRepository.getByName({ name });
   }
 
   getByQuestion (questionId: string): Promise<Tag[]> {
-    return this.tagRepository.getMany({
-      where: {
-        questions: {
-          questionId,
-        },
-      },
-    }).then(tags => {
-      return tags.data.map(tag => Tag.new({
-        id: tag.entity.id!,
-        name: tag.entity.name!,
-      }));
+    return this.tagRepository.getQuestionTags({
+      questionId,
     });
   }
 
-  async delete (name: string) {
-    await this.tagRepository.delete({ name });
+  delete (name: string): Promise<void> {
+    return this.tagRepository.delete({ name });
   }
 }

@@ -3,23 +3,19 @@ import { AnswerGetOutput } from '@core/services/answer/dtos';
 
 export function AnswerGetMapperOutput (answer: AnswerGetOutput): AnswerGetResponse {
   return {
-    id: answer.entity.id,
-    text: answer.entity.text,
-    rate: answer.entity.rating,
-    isSolution: answer.entity.isSolution,
-    createdAt: answer.entity.createdAt,
-    updatedAt: answer.entity.updatedAt,
+    id: answer.answerId,
+    questionId: answer.questionId,
+    text: answer.text,
+    rating: answer.rating,
+    isSolution: answer.isSolution,
+    createdAt: answer.createdAt,
+    updatedAt: answer.updatedAt,
     owner: answer.owner ? {
-      id: answer.owner.id,
+      id: answer.owner.userId,
       name: answer.owner.name,
-      reputation: answer.owner.rating,
+      rating: answer.owner.rating,
       username: answer.owner.username,
     } : null,
-    question: {
-      id: answer.question.id,
-      title: answer.question.title,
-      rate: answer.question.rating,
-      isClosed: answer.question.isClosed,
-    },
+    myVoteType: answer.voter ? answer.voter.voteType : null,
   };
 }

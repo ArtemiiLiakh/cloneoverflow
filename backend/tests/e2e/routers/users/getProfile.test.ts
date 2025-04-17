@@ -1,5 +1,5 @@
 import { UserGetProfileResponse } from '@cloneoverflow/common';
-import { User } from '@core/models/User';
+import { User } from '@core/models/user/User';
 import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { AnswerUtils } from '@tests/e2e/utils/AnswerUtils';
 import { QuestionUtils } from '@tests/e2e/utils/QuestionUtils';
@@ -26,35 +26,35 @@ describe('GET /api/users/:userId/profile', () => {
 
   test('Expect it returns user profile without questions and answers', async () => {
     const profile: UserGetProfileResponse = await supertest(app)
-      .get(`/api/users/${user.id}/profile`)
+      .get(`/api/users/${user.userId}/profile`)
       .expect(200)
       .then((res) => res.body);
 
-    expect(profile.id).toEqual(user.id);
+    expect(profile.id).toEqual(user.userId);
     expect(profile.bestQuestion).toBeNull();
     expect(profile.bestAnswer).toBeNull();
   });
 
   test('Expect it returns user profile with questions and answers', async () => {
     const question = await questionUtils.create({
-      ownerId: user.id,
+      ownerId: user.userId,
     });
 
     const answer = await answerUtils.create({
-      questionId: question.id,
-      ownerId: user.id,
+      ownerId: user.userId,
+      questionId: +question.questionId,
     });
 
     const profile: UserGetProfileResponse = await supertest(app)
-      .get(`/api/users/${user.id}/profile`)
+      .get(`/api/users/${user.userId}/profile`)
       .expect(200)
       .then((res) => res.body);
 
-    expect(profile.id).toEqual(user.id);
-    expect(profile.bestQuestion?.id).toEqual(question.id);
-    expect(profile.bestAnswer?.id).toEqual(answer.id);
+    expect(profile.id).toEqual(user.userId);
+    expect(profile.bestQuestion?.id).toEqual(question.questionId);
+    expect(profile.bestAnswer?.id).toEqual(answer.answerId);
 
-    await questionUtils.delete(question.id);
+    await questionUtils.delete(question.questionId);
   });
 
   test('When user does not exist expect it returns error 404', async () => {

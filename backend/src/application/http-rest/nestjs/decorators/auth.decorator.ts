@@ -5,11 +5,13 @@ import { JwtGuard } from '../guards/jwt.guard';
 
 interface AuthPayload {
   tokenType?: TokenTypeEnum,
+  optinoal?: boolean;
 }
 
-export const Auth = (payload?: AuthPayload) => {
+export const Auth = (payload?: AuthPayload): MethodDecorator => {
   return applyDecorators(
     SetMetadata('tokenType', payload?.tokenType),
+    SetMetadata('optional', payload?.optinoal),
     UseGuards(JwtGuard, AuthGuard),
   );
 };

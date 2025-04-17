@@ -1,6 +1,8 @@
 import { UserServiceFacade } from '@application/facades/UserServiceFacade';
 import {
   IUserCreateUseCase,
+  IUserGetOwnAnswersUseCase,
+  IUserGetOwnQuestionsUseCase,
   IUserGetProfileUseCase,
   IUserGetUseCase,
   IUserUpdateUseCase,
@@ -12,15 +14,19 @@ export const UserServiceProvider: Provider = {
   provide: UserServiceDIToken,
   
   useFactory: (
-    userCreateUseCase: IUserCreateUseCase,
-    userGetProfileUseCase: IUserGetProfileUseCase,
-    userGetUseCase: IUserGetUseCase,
-    userUpdateUseCase: IUserUpdateUseCase,
+    CreateUseCase: IUserCreateUseCase,
+    GetProfileUseCase: IUserGetProfileUseCase,
+    GetUseCase: IUserGetUseCase,
+    UpdateUseCase: IUserUpdateUseCase,
+    GetOwnAnswers: IUserGetOwnAnswersUseCase,
+    GetOwnQuestions: IUserGetOwnQuestionsUseCase,
   ) => UserServiceFacade.new({
-    userCreateUseCase,
-    userGetProfileUseCase,
-    userGetUseCase,
-    userUpdateUseCase,
+    CreateUseCase,
+    GetProfileUseCase,
+    GetUseCase,
+    UpdateUseCase,
+    GetOwnAnswers,
+    GetOwnQuestions,
   }),
 
   inject: [
@@ -28,5 +34,7 @@ export const UserServiceProvider: Provider = {
     UserUseCaseDITokens.GetProfile, 
     UserUseCaseDITokens.Get, 
     UserUseCaseDITokens.Update,
+    UserUseCaseDITokens.GetOwnAnswers,
+    UserUseCaseDITokens.GetOwnQuestions,
   ],
 };

@@ -1,4 +1,4 @@
-import { redisDatabase } from '@application/databases/RedisDatabase';
+import { redisDatabase } from '@infrastructure/databases/RedisDatabase';
 import { Provider } from '@nestjs/common';
 import { DatabaseDITokens } from '../../tokens/DatabaseDITokens';
 

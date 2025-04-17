@@ -1,4 +1,4 @@
-import { prismaDatabase } from '@application/databases/PrismaDatabase';
+import { prismaDatabase } from '@infrastructure/databases/PrismaDatabase';
 import { Provider } from '@nestjs/common';
 import { DatabaseDITokens } from '../../tokens/DatabaseDITokens';
 

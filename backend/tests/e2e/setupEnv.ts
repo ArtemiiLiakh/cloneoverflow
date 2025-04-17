@@ -1,24 +1,27 @@
-import { prismaDatabase } from '@application/databases/PrismaDatabase';
-import { redisDatabase } from '@application/databases/RedisDatabase';
+import { prismaDatabase } from '@infrastructure/databases/PrismaDatabase';
+import { redisDatabase } from '@infrastructure/databases/RedisDatabase';
+import { clearDatabase } from '@tests/utils/clearDatabase';
 
 beforeAll(async () => {
-  await redisDatabase.connect();
-  await prismaDatabase.connect();
-
   const prisma = prismaDatabase.getClient();
   const redis = redisDatabase.getClient();
-
-  await prisma.tag.deleteMany();
-  await prisma.question.deleteMany();
-  await prisma.userCreds.deleteMany();
-  await redis.FLUSHALL();
-
-  await redisDatabase.disconnect();
-  await prismaDatabase.disconnect();
-
+  
+  await Promise.all([
+    redisDatabase.connect(),
+    prismaDatabase.connect(),
+  ]); 
+  
+  await clearDatabase(prisma, redis);
+  
+  await Promise.all([
+    redisDatabase.disconnect(),
+    prismaDatabase.disconnect(),
+  ]); 
 });
 
 afterAll(async () => {
-  await redisDatabase.disconnect();
-  await prismaDatabase.disconnect();
+  await Promise.all([
+    redisDatabase.disconnect().catch(() => {}),
+    prismaDatabase.disconnect().catch(() => {}),
+  ]);
 });

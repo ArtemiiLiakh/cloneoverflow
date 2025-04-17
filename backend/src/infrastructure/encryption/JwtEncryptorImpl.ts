@@ -34,11 +34,11 @@ const jwtVerifyAsync = promisify(
 );
 
 export class JwtEncryptorImpl implements DataEncryptor {
-  encrypt<P extends object> (value: P, options?: EncryptOptions) {
+  encrypt<P extends object> (value: P, options?: EncryptOptions): Promise<string | null> {
     return jwtSignAsync(value, options).then((res) => res ?? null);
   }
 
-  decrypt<P> (token: string) {
+  decrypt<P> (token: string): Promise<P | null> {
     return jwtVerifyAsync(token).then((res) => res as P ?? null);
   }
 }

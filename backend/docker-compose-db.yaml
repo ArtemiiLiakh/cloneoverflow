@@ -1,4 +1,6 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json
 version: '3.7'
+name: 'cloneoverflow'
 
 services:
   postgres:
@@ -13,7 +15,7 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - testPostgresData:/var/lib/postgresql/data
+      - postgresData:/var/lib/postgresql/data
       - ./environment/postgres/postgresql.conf:/etc/postgres/postgresql.conf
     command: postgres -c config_file=/etc/postgres/postgresql.conf
     networks:
@@ -29,7 +31,7 @@ services:
     ports:
       - 6379:6379
     volumes:
-      - testRedisData:/data
+      - redisData:/data
       - ./environment/redis/redis.conf:/usr/local/etc/redis/redis.conf
       - ./environment/redis/users.acl:/usr/local/etc/redis/users.acl
     deploy:
@@ -55,5 +57,5 @@ networks:
   database:
 
 volumes:
-  testPostgresData:
-  testRedisData:
+  postgresData:
+  redisData:

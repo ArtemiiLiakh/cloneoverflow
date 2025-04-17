@@ -1,5 +1,5 @@
 import { AuthGetMeResponse } from '@cloneoverflow/common';
-import { User } from '@core/models';
+import { User } from '@core/models/user';
 import { initTestApplication } from '@tests/e2e/initTestApplication';
 import { UserUtils } from '@tests/e2e/utils/UserUtils';
 import supertest from 'supertest';
@@ -23,13 +23,13 @@ describe('GET /api/auth/account/me', () => {
   });
 
   test('Expect it returns information about registered user', async () => {
-    const res: AuthGetMeResponse = await supertest(app)
+    const res = await supertest(app)
       .get('/api/auth/account/me')
       .set('Cookie', userAccessToken)
       .expect(200)
-      .then(res => res.body);
+      .then(res => res.body as AuthGetMeResponse);
 
-    expect(res.id).toEqual(user.id);
+    expect(res.id).toEqual(user.userId);
   });
 
   test('When user does not authorized expect it returns error 401', async () => {
@@ -44,7 +44,7 @@ describe('GET /api/auth/account/me', () => {
       .set('Cookie', 'accessToken=invalid')
       .expect(401);
 
-    await userUtils.delete(user.id);
+    await userUtils.delete(user.userId);
 
     await supertest(app)
       .get('/api/auth/account/me')

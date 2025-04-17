@@ -1,12 +1,11 @@
 import { NoEntityWithIdException } from '@cloneoverflow/common';
 import { AnswerRepository } from '@core/repositories/answer/AnswerRepository';
-import { AnswerUserRepository } from '@core/repositories/answer/AnswerUserRepository';
 import { QuestionRepository } from '@core/repositories/question/QuestionRepository';
-import { Unit, UnitOfWork } from '@core/repositories/UnitOfWork';
 import { AnswerCreateUseCase } from '@core/services/answer';
 import { AnswerCreateInput } from '@core/services/answer/create/dto';
+import { createAnswer } from '@tests/utils/models/answer';
 
-describe('Service: test AnswerCreateUseCase', () => {
+describe('Answer service: test CreateUseCase', () => {
   test('Create answer', async () => {
     const inputData = {
       executorId: 'executorId',
@@ -14,37 +13,27 @@ describe('Service: test AnswerCreateUseCase', () => {
       text: 'text',
     } as AnswerCreateInput;
 
-    const answerId = 'id';
+    const newAnswer = createAnswer();
 
     const questionRepositoryMock = {
-      isExist: jest.fn().mockReturnValue(Promise.resolve(true)),
+      isExist: jest.fn().mockResolvedValue(true),
     } as Partial<QuestionRepository>;
 
-    const unitMock = {
-      answerRepository: {
-        create: jest.fn().mockReturnValue(Promise.resolve(answerId)),
-      } as Partial<AnswerRepository>,
-
-      answerUserRepository: {
-        create: jest.fn(),
-      } as Partial<AnswerUserRepository>,
-    } as Unit;
+    const answerRepositoryMock =  {
+      create: jest.fn().mockResolvedValue(newAnswer),
+    } as Partial<AnswerRepository>;
 
     const createUseCase = new AnswerCreateUseCase(
       questionRepositoryMock as QuestionRepository,
-      { execute: async (fn) => fn(unitMock) } as UnitOfWork,
+      answerRepositoryMock as AnswerRepository,
     );
 
     const answer = await createUseCase.execute(inputData);
 
     expect(questionRepositoryMock.isExist).toHaveBeenCalled();
-    expect(unitMock.answerRepository.create).toHaveBeenCalled();
-    expect(unitMock.answerUserRepository.create).toHaveBeenCalled();
+    expect(answerRepositoryMock.create).toHaveBeenCalled();
 
-    expect(answer.id).toBe(answerId);
-    expect(answer.questionId).toBe(inputData.questionId);
-    expect(answer.ownerId).toBe(inputData.executorId);
-    expect(answer.text).toBe(inputData.text);
+    expect(answer).toBe(newAnswer);
   });
 
   test('Throw and error because question does not exist', async () => {
@@ -60,29 +49,9 @@ describe('Service: test AnswerCreateUseCase', () => {
 
     const createUseCase = new AnswerCreateUseCase(
       questionRepositoryMock as QuestionRepository,
-      {} as UnitOfWork, 
+      {} as AnswerRepository, 
     );
 
     expect(createUseCase.execute(inputData)).rejects.toThrow(NoEntityWithIdException);
-  });
-
-  test('Throw an error because unit of work failed', () => {
-    const questionRepositoryMock = {
-      validateById: async () => {},
-    } as Partial<QuestionRepository>;
-
-    const createUseCase = new AnswerCreateUseCase(
-      questionRepositoryMock as QuestionRepository,
-      { 
-        execute: () => Promise.reject(new Error()),
-        executeAll: async () => {}, 
-      } as UnitOfWork, 
-    ); 
-
-    expect(createUseCase.execute({ 
-      executorId: 'user',
-      questionId: 'questionId',
-      text: 'text',
-    })).rejects.toThrow();
   });
 });

@@ -22,10 +22,13 @@ describe('PATCH /api/answers/:answerId', () => {
     const answerUtils = new AnswerUtils(nest);
 
     const owner = await userUtils.create();
-    const question = await questionUtils.create({ ownerId: owner.id });
-    const answer = await answerUtils.create({ ownerId: owner.id, questionId: question.id });
+    const question = await questionUtils.create({ ownerId: owner.userId });
+    const answer = await answerUtils.create({ 
+      ownerId: owner.userId, 
+      questionId: +question.questionId,
+    });
 
-    answerId = answer.id;
+    answerId = answer.answerId;
     ownerAccessToken = 'accessToken='+(await userUtils.getTokens(owner)).accessToken;
   });
   
@@ -34,12 +37,12 @@ describe('PATCH /api/answers/:answerId', () => {
       text: 'Updated text',
     };
 
-    const updatedAnswer: AnswerUpdateResponse = await supertest(app)
+    const updatedAnswer = await supertest(app)
       .patch(`/api/answers/${answerId}`)
       .send(updateData)
       .set('Cookie', ownerAccessToken)
       .expect(200)
-      .then(res => res.body);
+      .then(res => res.body as AnswerUpdateResponse);
 
     expect(updatedAnswer.id).toBe(answerId);
     expect(updatedAnswer.text).toBe(updateData.text);

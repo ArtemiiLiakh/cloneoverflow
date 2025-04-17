@@ -1,4 +1,4 @@
-import { LoginException, UnauthorizedException, VerificationCodeType } from '@cloneoverflow/common';
+import { LoginException, VerificationCodeType } from '@cloneoverflow/common';
 import { DataHasher } from '@common/encryption/DataHasher';
 import { CacheRepository } from '@core/repositories/cache/CacheRepository';
 import { UserRepository } from '@core/repositories/user/UserRepository';
@@ -17,13 +17,9 @@ export class ChangePasswordUseCase implements IChangePasswordUseCase {
   async execute (
     { code, executorId, email, oldPassword, newPassword }: ChangePasswordInput,
   ): Promise<ChangePasswordOutput> {
-    const creds = await this.userRepository.getCreds({
-      where: { userId: executorId },
-    }).then(res => res?.creds);
-
-    if (!creds) {
-      throw new UnauthorizedException();
-    }
+    const creds = await this.userRepository.getCreds({ email }).catch(() => {
+      throw new LoginException();
+    });
 
     await this.codeValidator.validate({
       userId: executorId,
@@ -31,7 +27,7 @@ export class ChangePasswordUseCase implements IChangePasswordUseCase {
       codeType: VerificationCodeType.ChangePassword,
     });
 
-    if (creds.email !== email || !await this.dataHasher.compareHash(oldPassword, creds.password)) {
+    if (!await this.dataHasher.compareHash(oldPassword, creds.password)) {
       throw new LoginException();
     }
     
@@ -39,7 +35,7 @@ export class ChangePasswordUseCase implements IChangePasswordUseCase {
 
     await this.userRepository.updateCreds({
       userId: executorId,
-      creds: {
+      data: {
         password: await this.dataHasher.hash(newPassword),
       },
     });

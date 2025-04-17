@@ -1,126 +1,142 @@
-import { NoEntityWithIdException } from '@cloneoverflow/common';
-import { TagRepositoryInput } from '@core/repositories/tag/dtos/TagRepositoryInput';
-import { TagsRepositoryOutput } from '@core/repositories/tag/dtos/TagRepositoryOutput';
+import { NotFoundException } from '@cloneoverflow/common';
+import { TagRepoCreateOrFindManyInput, TagRepoCreateOrFindManyOutput } from '@core/repositories/tag/dtos/CreateOrFindMany';
+import { TagRepoDeleteInput, TagRepoDeleteOutput } from '@core/repositories/tag/dtos/Delete';
+import { TagRepoGetByNameInput, TagRepoGetByNameOuput } from '@core/repositories/tag/dtos/GetByName';
+import { TagRepoGetQuestionTagsInput, TagRepoGetQuestionTagsOutput } from '@core/repositories/tag/dtos/GetQuestionTags';
+import { TagRepoIsExistInput, TagRepoIsExistOutput } from '@core/repositories/tag/dtos/IsExist';
+import { TagRepoSearchInput, TagRepoSearchOutput } from '@core/repositories/tag/dtos/Search';
 import { TagRepository } from '@core/repositories/tag/TagRepository';
 import { PrismaClient } from '@prisma/client';
-import { TagCountsAdapter } from '../adapters/counts/TagCountsAdapter';
 import { TagMapper } from '../adapters/entityMappers/TagMapper';
-import { TagOrderByAdapter } from '../adapters/orderBy/TagsOrderByAdapter';
-import { TagWhereAdapter } from '../adapters/where/TagWhereAdapter';
 import { PrismaPaginationRepository } from './PrismaPaginationRepository';
 
 export class PrismaTagRepository implements TagRepository {
   constructor (
-    private prisma: PrismaClient,
+    private client: PrismaClient,
   ) {}
 
-  async isExist (where: TagRepositoryInput.IsExist): Promise<TagsRepositoryOutput.IsExist> {
-    const tag = await this.prisma.tag.findFirst({
-      where: TagWhereAdapter(where),
-      select: { id: true },
+  async getByName (
+    { name }: TagRepoGetByNameInput,
+  ): Promise<TagRepoGetByNameOuput> {
+    const tag = await this.client.tag.findFirst({
+      where: {
+        name,
+      },
     });
 
-    return !!tag;
+    if (!tag) {
+      throw new NotFoundException('Tag with this name is not found');
+    }
+
+    return TagMapper.toEntity(tag);
   }
 
-  async getTag (
-    { where, counts, orderBy }: TagRepositoryInput.GetTag,
-  ): Promise<TagsRepositoryOutput.GetTag> {
-    const tag = await this.prisma.tag.findFirst({
-      where: TagWhereAdapter(where),
-      include: TagCountsAdapter(counts, where),
-      orderBy: TagOrderByAdapter(orderBy),
+  async getQuestionTags (
+    { questionId }: TagRepoGetQuestionTagsInput,
+  ): Promise<TagRepoGetQuestionTagsOutput> {
+    const tags = await this.client.tag.findMany({
+      where: {
+        questions: {
+          some: {
+            id: +questionId,
+          },
+        },
+      },
     });
 
-    if (!tag) throw new NoEntityWithIdException('Tag');
-
-    return TagMapper.toEntity(tag); 
+    return tags.map(TagMapper.toEntity);
   }
-  
-  async getMany (
-    { where, counts, orderBy, pagination }: TagRepositoryInput.GetMany,
-  ): Promise<TagsRepositoryOutput.GetMany> {
+
+  async isExist (
+    { tagId, name }: TagRepoIsExistInput,
+  ): Promise<TagRepoIsExistOutput> {
+    if (!tagId && !name) {
+      throw new Error('Tag id or name is required');
+    }
+    
+    const res = await this.client.tag.findFirst({
+      where: {
+        id: tagId ? +tagId : undefined,
+        name,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    return !!res;
+  }
+
+  async search (
+    { where, orderBy, pagination }: TagRepoSearchInput,
+  ): Promise<TagRepoSearchOutput> {
     const tags = await PrismaPaginationRepository.paginate(
-      this.prisma.tag.findMany.bind(this.prisma),
-      this.prisma.tag.count.bind(this.prisma),
+      this.client.tag.findMany.bind(this.client),
+      this.client.tag.count.bind(this.client),
       {
-        where: TagWhereAdapter(where),
-        include: TagCountsAdapter(counts, where),
-        orderBy: TagOrderByAdapter(orderBy),
+        where: {
+          name: {
+            contains: where.searchText,
+          },
+        },
+        include: {
+          _count: {
+            select: {
+              questions: true,
+            },
+          },
+        },
+        orderBy: {
+          name: orderBy?.name,
+          questions: orderBy?.popular ? {
+            _count: orderBy?.popular,
+          } : undefined,
+        },
       },
       pagination,
     );
 
     return {
       data: tags.data.map((tag) => ({
-        entity: TagMapper.toEntity(tag),
-        counts: tag._count ? {
-          questions: tag._count.questions,
-        } : undefined,
+        tag: TagMapper.toEntity(tag),
+        questionAmount: tag._count.questions,
       })),
       pagination: tags.pagination,
     };
   }
   
-  async create (
-    { tag, returnId: returnId }: TagRepositoryInput.Create,
-  ): Promise<TagsRepositoryOutput.Create> {
-    const tagId = await this.prisma.tag.create({
-      data: { name: tag.name },
-      select: returnId ? { id: true } : undefined,
-    });
-
-    if (returnId) return tagId.id.toString();
-  }
-  
-  async createMany (
-    { tags }: TagRepositoryInput.CreateMany,
-  ): Promise<TagsRepositoryOutput.CreateMany> {
-    await this.prisma.tag.createMany({
-      data: tags.map(tag => ({ name: tag.name })),
-      skipDuplicates: true,
-    });
-  }
-  
   async createOrFindMany (
-    { tags }: TagRepositoryInput.CreateOrFindMany,
-  ): Promise<TagsRepositoryOutput.CreateOrFindMany> {
-    
-    await this.prisma.tag.createMany({
-      data: tags.map(name => ({ name })),
-      skipDuplicates: true,
-    });
-
-    const tagEntities = await this.prisma.tag.findMany({
+    { names }: TagRepoCreateOrFindManyInput,
+  ): Promise<TagRepoCreateOrFindManyOutput> {
+    const existingTags = await this.client.tag.findMany({
       where: {
         name: {
-          in: tags,
+          in: names,
         },
       },
     });
 
-    return tagEntities.map(TagMapper.toEntity);
-  }
-  
-  async update (
-    { tagId, name, returnEntity }: TagRepositoryInput.Update,
-  ): Promise<TagsRepositoryOutput.Update> {
-    const tag = await this.prisma.tag.update({
-      where: { id: +tagId },
-      data: { name },
+    const newNames = names.filter(
+      (name) => existingTags.findIndex(
+        (tag) => tag.name === name,
+      ) === -1,
+    );
+
+    const newTags = await this.client.tag.createManyAndReturn({
+      data: newNames.map((name) => ({ name })),
     });
 
-    if (returnEntity) return TagMapper.toEntity(tag);
+    return [...existingTags, ...newTags].map(TagMapper.toEntity);
   }
-  
+
   async delete (
-    { tagId, name }: TagRepositoryInput.Delete,
-  ): Promise<TagsRepositoryOutput.Delete> {
-    await this.prisma.tag.delete({ 
-      where: { 
+    { tagId, name }: TagRepoDeleteInput,
+  ): Promise<TagRepoDeleteOutput> {
+    await this.client.tag.delete({
+      where: {
         id: tagId ? +tagId : undefined,
         name,
-      }, 
+      },
     });
   }
 }
