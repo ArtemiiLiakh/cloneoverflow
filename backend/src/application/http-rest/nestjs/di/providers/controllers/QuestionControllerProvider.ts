@@ -1,15 +1,15 @@
 import { QuestionController } from '@application/controllers/QuestionController';
-import { QuestionServiceFacade } from '@application/facades/QuestionServiceFacade';
+import { AnswerServiceFacade } from '@application/service-facades/AnswerServiceFacade';
+import { QuestionServiceFacade } from '@application/service-facades/QuestionServiceFacade';
 import { Provider } from '@nestjs/common';
 import { ControllerDITokens } from '../../tokens/ControllerDITokens';
-import { AnswerUseCaseDITokens, QuestionServiceDIToken } from '../../tokens/services';
-import { IAnswerGetByQuestionUseCase } from '@core/services/answer/types';
+import { AnswerServiceDIToken, QuestionServiceDIToken } from '../../tokens/services';
 
 export const QuestionControllerProvider: Provider = {
   provide: ControllerDITokens.QuestionController,
   useFactory: (
     questionService: QuestionServiceFacade, 
-    getQuestionAnswersUseCase: IAnswerGetByQuestionUseCase,
-  ) => new QuestionController(questionService, getQuestionAnswersUseCase),
-  inject: [QuestionServiceDIToken, AnswerUseCaseDITokens.GetByQuestion],
+    answerService: AnswerServiceFacade,
+  ) => new QuestionController(questionService, answerService),
+  inject: [QuestionServiceDIToken, AnswerServiceDIToken],
 };

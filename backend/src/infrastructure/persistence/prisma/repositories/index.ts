@@ -6,3 +6,4 @@ export * from './PrismaQuestionVoterRepository';
 export * from './PrismaTagRepository';
 export * from './PrismaTransactionUnit';
 export * from './PrismaUserRepository';
+export * from './PrismaFavoriteQuestionRepository';

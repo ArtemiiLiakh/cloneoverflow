@@ -20,6 +20,8 @@ import {
   QuestionVoteInput,
   QuestionVoteOutput,
 } from '@core/services/question/dtos';
+import { QuestionToggleFavoriteInput, QuestionToggleFavoriteOutput } from '@core/services/question/toggleFavorite/dto';
+import { IQuestionToggleFavoriteUseCase } from '@core/services/question/toggleFavorite/type';
 
 import {
   IQuestionAddViewerUseCase,
@@ -46,6 +48,7 @@ export class QuestionServiceFacade {
     private OpenUseCase: IQuestionOpenUseCase,
     private UpdateUseCase: IQuestionUpdateUseCase,
     private VoteUseCase: IQuestionVoteUseCase,
+    private ToggleFavoriteUseCase: IQuestionToggleFavoriteUseCase,
   ) {}
 
   static new ({
@@ -59,6 +62,7 @@ export class QuestionServiceFacade {
     OpenUseCase,
     UpdateUseCase,
     VoteUseCase,
+    ToggleFavoriteUseCase,
   }: {
     AddViewerUseCase: IQuestionAddViewerUseCase,
     CloseUseCase: IQuestionCloseUseCase,
@@ -70,6 +74,7 @@ export class QuestionServiceFacade {
     OpenUseCase: IQuestionOpenUseCase,
     UpdateUseCase: IQuestionUpdateUseCase,
     VoteUseCase: IQuestionVoteUseCase,
+    ToggleFavoriteUseCase: IQuestionToggleFavoriteUseCase,
   }): QuestionServiceFacade {
     return new QuestionServiceFacade(    
       AddViewerUseCase,
@@ -82,6 +87,7 @@ export class QuestionServiceFacade {
       OpenUseCase,
       UpdateUseCase,
       VoteUseCase,
+      ToggleFavoriteUseCase,
     );
   }
 
@@ -123,5 +129,9 @@ export class QuestionServiceFacade {
 
   vote (payload: QuestionVoteInput): Promise<QuestionVoteOutput> {
     return this.VoteUseCase.execute(payload);
+  }
+
+  toggleFavorite (payload: QuestionToggleFavoriteInput): Promise<QuestionToggleFavoriteOutput> {
+    return this.ToggleFavoriteUseCase.execute(payload);
   }
 }

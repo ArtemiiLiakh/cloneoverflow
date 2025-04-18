@@ -178,4 +178,30 @@ export class NestQuestionController {
       body,
     }, res);
   }
+
+  @Auth({ tokenType: TokenTypeEnum.ACCESS })
+  @Post('/:questionId/favorite')
+  makeFavorite (
+    @Executor() executor: ExecutorPayload,
+    @Param('questionId', NumberPipe) questionId: string,
+    @CoreRes() res: CoreResponse,
+  ): Promise<void> {
+    return this.questionController.makeFavorite({
+      executor,
+      params: { questionId },
+    }, res);
+  }
+
+  @Auth({ tokenType: TokenTypeEnum.ACCESS })
+  @Delete('/:questionId/favorite')
+  removeFavorite (
+    @Executor() executor: ExecutorPayload,
+    @Param('questionId', NumberPipe) questionId: string,
+    @CoreRes() res: CoreResponse,
+  ): Promise<void> {
+    return this.questionController.removeFavorite({
+      executor,
+      params: { questionId },
+    }, res);
+  }
 }

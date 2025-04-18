@@ -1,4 +1,4 @@
-import { AnswerServiceFacade } from '@application/facades/AnswerServiceFacade';
+import { AnswerServiceFacade } from '@application/service-facades/AnswerServiceFacade';
 import { Provider } from '@nestjs/common';
 import { AnswerServiceDIToken, AnswerUseCaseDITokens } from '../../../tokens/services';
 import {

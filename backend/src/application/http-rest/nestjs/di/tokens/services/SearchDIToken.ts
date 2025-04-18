@@ -1,4 +1,4 @@
-import { SearchServiceFacade } from '@application/facades/SearchServiceFacade';
+import { SearchServiceFacade } from '@application/service-facades/SearchServiceFacade';
 import { SearchQuestionsUseCase, SearchTagsUseCase } from '@core/services/search';
 
 export const SearchUseCaseDITokens = {

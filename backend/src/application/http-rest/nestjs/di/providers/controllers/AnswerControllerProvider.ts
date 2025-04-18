@@ -1,5 +1,5 @@
 import { AnswerController } from '@application/controllers/AnswerController';
-import { AnswerServiceFacade } from '@application/facades/AnswerServiceFacade';
+import { AnswerServiceFacade } from '@application/service-facades/AnswerServiceFacade';
 import { Provider } from '@nestjs/common';
 import { ControllerDITokens } from '../../tokens/ControllerDITokens';
 import { AnswerServiceDIToken } from '../../tokens/services';

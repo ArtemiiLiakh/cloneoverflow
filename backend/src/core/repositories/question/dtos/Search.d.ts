@@ -5,25 +5,28 @@ import { Tag } from '@core/models/tag';
 import { SearchQuestionOrderByProps } from './props/SearchQuestionOrderByProps';
 import { Nullable } from '@common/utils/classTypes';
 
-export type QuestionRepoSearchWhereProps = {
-  searchText?: string,
-  authors?: string[],
-  tags?: string[],
-  keywords?: string[],
-  rating?: {
+export type QuestionRepoSearchWhereProps = Partial<{
+  searchText: string,
+  authors: string[],
+  tags: string[],
+  keywords: string[],
+  rating: {
     ls?: number,
     gt?: number,
   },
-  views?: {
+  views: {
     ls?: number,
     gt?: number,
   },
-  isClosed?: boolean,
-  createdAt?: {
+  favorite: {
+    userId: string, 
+  },
+  isClosed: boolean,
+  createdAt: {
     ls?: Date,
     gt?: Date,
   },
-}
+}>
 
 export type QuestionRepoSearchOutputProps = {
   question: Question,

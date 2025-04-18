@@ -14,7 +14,7 @@ import {
   VoteTypeEnum,
 } from '@cloneoverflow/common';
 
-import { AnswerServiceFacade } from '@application/facades/AnswerServiceFacade';
+import { AnswerServiceFacade } from '@application/service-facades/AnswerServiceFacade';
 import { WithAuth, WithBody, WithOptionalAuth, WithParams } from './types/Request';
 import { CoreResponse } from './types/Response';
 

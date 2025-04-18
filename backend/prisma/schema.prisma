@@ -33,42 +33,44 @@ enum UserStatus {
 }
 
 model User {
-  id        String     @id @db.Uuid
-  name      String     @db.VarChar(100)
-  username  String     @unique
-  rating    Int        @default(0)
-  about     String     @db.Text
-  status    UserStatus @default(USER)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @default(now()) @updatedAt
+  id                    String     @id @db.Uuid
+  name                  String     @db.VarChar(100)
+  username              String     @unique
+  rating                Int        @default(0)
+  about                 String     @db.Text
+  status                UserStatus @default(USER)
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime   @default(now()) @updatedAt
 
-  userCreds       UserCreds        @relation(fields: [id], references: [id], onDelete: Cascade)
-  questions       Question[]
-  answers         Answer[]
-  answersVoter    AnswerVoter[]
-  questionsViewer QuestionViewer[]
-  questionsVoter  QuestionVoter[]
+  userCreds             UserCreds        @relation(fields: [id], references: [id], onDelete: Cascade)
+  questions             Question[]
+  answers               Answer[]
+  answersVoter          AnswerVoter[]
+  questionsViewer       QuestionViewer[]
+  questionsVoter        QuestionVoter[]
+  favoriteQuestions     FavoriteQuestions[]
 
   @@index([username])
   @@map("user")
 }
 
 model Question {
-  id        Int      @id @default(autoincrement())
-  ownerId   String?  @db.Uuid @map("owner_id")
-  title     String   @db.VarChar(255)
-  text      String   @db.Text @default("")
-  rating    Int      @default(0)
-  views     Int      @default(0)
-  isClosed  Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  id          Int                 @id @default(autoincrement())
+  ownerId     String?             @db.Uuid @map("owner_id")
+  title       String              @db.VarChar(255)
+  text        String              @db.Text @default("")
+  rating      Int                 @default(0)
+  views       Int                 @default(0)
+  isClosed    Boolean             @default(false)
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @default(now()) @updatedAt
 
-  owner   User?            @relation(fields: [ownerId], references: [id], onDelete: SetNull)
-  viewers QuestionViewer[]
-  voters  QuestionVoter[]
-  answers Answer[]
-  tags    Tag[]
+  owner       User?               @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+  viewers     QuestionViewer[]
+  voters      QuestionVoter[]
+  answers     Answer[]
+  tags        Tag[]
+  favorites   FavoriteQuestions[]
 
   @@map("questions")
 }
@@ -141,4 +143,15 @@ model Tag {
 
   @@index([name])
   @@map("tags")
+}
+
+model FavoriteQuestions {
+  userId        String      @db.Uuid @map("user_id")
+  questionId    Int         @map("question_id")
+
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question      Question    @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@id([userId, questionId])
+  @@map("favorite_questions")
 }

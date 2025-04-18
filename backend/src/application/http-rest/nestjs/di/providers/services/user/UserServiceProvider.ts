@@ -1,4 +1,4 @@
-import { UserServiceFacade } from '@application/facades/UserServiceFacade';
+import { UserServiceFacade } from '@application/service-facades/UserServiceFacade';
 import {
   IUserCreateUseCase,
   IUserGetOwnAnswersUseCase,

@@ -18,7 +18,7 @@ import { QuestionRepoUpdateInput, QuestionRepoUpdateOutput } from '@core/reposit
 import { QuestionRepoVoteDownInput, QuestionRepoVoteDownOutput } from '@core/repositories/question/dtos/VoteDown';
 import { QuestionRepoVoteUpInput, QuestionRepoVoteUpOutput } from '@core/repositories/question/dtos/VoteUp';
 import { QuestionRepository } from '@core/repositories/question/QuestionRepository';
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { QuestionDetailsMapper } from '../adapters/entityMappers/QuestionDetailsMapper';
 import { QuestionMapper } from '../adapters/entityMappers/QuestionMapper';
 import { QuestionOwnerMapper } from '../adapters/entityMappers/QuestionOwnerMapper';
@@ -204,6 +204,7 @@ export class PrismaQuestionRepository implements QuestionRepository {
             gt: where.createdAt?.gt,
           } : undefined,
           isClosed: where.isClosed,
+
           owner: where.authors ? {
             name: { in: where.authors },
           } : undefined,
@@ -212,7 +213,12 @@ export class PrismaQuestionRepository implements QuestionRepository {
               name: { in: where.tags },
             },
           } : undefined,
-        },
+          favorites: where.favorite ? {
+            some: {
+              userId: where.favorite.userId,
+            },
+          } : undefined,
+        } as Prisma.QuestionWhereInput,
         orderBy: {
           rating: orderBy?.rate,
           views: orderBy?.views,

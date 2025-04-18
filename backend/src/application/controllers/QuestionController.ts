@@ -18,15 +18,15 @@ import {
 } from '@cloneoverflow/common';
 
 import { AnswerGetQuestionAnswerMapper } from '@application/adapters/mappers/answers/AnswerGetQuestionAnswersMapper';
-import { QuestionServiceFacade } from '@application/facades/QuestionServiceFacade';
-import { IAnswerGetByQuestionUseCase } from '@core/services/answer/types';
+import { AnswerServiceFacade } from '@application/service-facades/AnswerServiceFacade';
+import { QuestionServiceFacade } from '@application/service-facades/QuestionServiceFacade';
 import { WithAuth, WithBody, WithOptionalAuth, WithParams, WithQuery } from './types/Request';
 import { CoreResponse } from './types/Response';
 
 export class QuestionController {
   constructor (
     private questionService: QuestionServiceFacade,
-    private getByQuestionUseCase: IAnswerGetByQuestionUseCase,
+    private answerService: AnswerServiceFacade,
   ) {}
 
   async get (
@@ -48,7 +48,7 @@ export class QuestionController {
   }: WithOptionalAuth & WithParams<{ questionId: string }> & WithQuery<AnswerGetQuestionAnswersDTO>,
   res: CoreResponse<AnswerGetQuestionAnswersResponse>,
   ): Promise<void> {
-    const answers = await this.getByQuestionUseCase.execute({
+    const answers = await this.answerService.getByQuestion({
       questionId: params.questionId,
       voterId: executor?.userId,
       sortBy: query.sortBy,
@@ -176,5 +176,32 @@ export class QuestionController {
       questionId: voter.questionId,
       voteType: voter.voteType,
     });
+  }
+
+  async makeFavorite (
+    { executor, params }: WithAuth & WithParams<{ questionId: string }>,
+    res: CoreResponse,
+  ): Promise<void> {
+    await this.questionService.toggleFavorite({
+      executorId: executor.userId,
+      questionId: params.questionId,
+      action: 'add',
+    });
+
+    res.status(201);
+    res.send({ message: 'ok' });
+  }
+
+  async removeFavorite (
+    { executor, params }: WithAuth & WithParams<{ questionId: string }>,
+    res: CoreResponse,
+  ): Promise<void> {
+    await this.questionService.toggleFavorite({
+      executorId: executor.userId,
+      questionId: params.questionId,
+      action: 'delete',
+    });
+
+    res.send({ message: 'ok' });
   }
 }

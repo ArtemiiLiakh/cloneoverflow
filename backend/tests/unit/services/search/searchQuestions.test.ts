@@ -1,4 +1,4 @@
-import { SearchQuestionFilterByEnum } from '@cloneoverflow/common';
+import { SearchQuestionFilterByEnum, UnauthorizedException } from '@cloneoverflow/common';
 import { Tag } from '@core/models/tag/Tag';
 import { QuestionRepoSearchOutput } from '@core/repositories/question/dtos/Search';
 import { QuestionRepository } from '@core/repositories/question/QuestionRepository';
@@ -73,5 +73,28 @@ describe('Search service: test QuestionUseCase', () => {
 
     const { data } = await searchQuestionUseCase.execute({});
     expect(data.length).toEqual(0);
+  });
+
+  test('Throws an error if user is not specified with favorite questions filter', async () => {
+    const question = createQuestion();
+
+    const inputData = {
+      filterBy: SearchQuestionFilterByEnum.FAVORITE,
+    } as SearchQuestionsInput;
+
+    const questionRepositoryMock = {
+      search: jest.fn().mockResolvedValue({
+        data: [{
+          question,
+        }],
+      } as QuestionRepoSearchOutput),
+    } as Partial<QuestionRepository>;
+
+    const searchQuestionUseCase = new SearchQuestionsUseCase(
+      questionRepositoryMock as QuestionRepository,
+    );
+
+    expect(searchQuestionUseCase.execute(inputData))
+      .rejects.toThrow(UnauthorizedException);
   });
 });

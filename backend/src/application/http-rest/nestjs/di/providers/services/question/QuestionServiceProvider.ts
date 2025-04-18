@@ -1,9 +1,8 @@
-import { Provider } from '@nestjs/common';
-import { QuestionServiceDIToken, QuestionUseCaseDITokens } from '../../../tokens/services';
-import { QuestionServiceFacade } from '@application/facades/QuestionServiceFacade';
-import { 
-  IQuestionAddViewerUseCase, 
-  IQuestionCloseUseCase, 
+import { QuestionServiceFacade } from '@application/service-facades/QuestionServiceFacade';
+import { IQuestionToggleFavoriteUseCase } from '@core/services/question/toggleFavorite/type';
+import {
+  IQuestionAddViewerUseCase,
+  IQuestionCloseUseCase,
   IQuestionCreateUseCase,
   IQuestionDeleteUseCase,
   IQuestionGetDetailsUseCase,
@@ -13,6 +12,8 @@ import {
   IQuestionUpdateUseCase,
   IQuestionVoteUseCase,
 } from '@core/services/question/types';
+import { Provider } from '@nestjs/common';
+import { QuestionServiceDIToken, QuestionUseCaseDITokens } from '../../../tokens/services';
 
 export const QuestionServiceProvider: Provider = {
   provide: QuestionServiceDIToken,
@@ -28,6 +29,7 @@ export const QuestionServiceProvider: Provider = {
     UpdateUseCase: IQuestionUpdateUseCase,
     VoteUseCase: IQuestionVoteUseCase,
     GetDetailsUseCase: IQuestionGetDetailsUseCase,
+    ToggleFavoriteUseCase: IQuestionToggleFavoriteUseCase,
   ) => QuestionServiceFacade.new({
     AddViewerUseCase,
     CloseUseCase,
@@ -39,6 +41,7 @@ export const QuestionServiceProvider: Provider = {
     UpdateUseCase,
     VoteUseCase,
     GetDetailsUseCase,
+    ToggleFavoriteUseCase,
   }),
   
   inject: [
@@ -52,5 +55,6 @@ export const QuestionServiceProvider: Provider = {
     QuestionUseCaseDITokens.Update,
     QuestionUseCaseDITokens.Vote,
     QuestionUseCaseDITokens.GetDetails,
+    QuestionUseCaseDITokens.ToggleFavorite,
   ],
 };

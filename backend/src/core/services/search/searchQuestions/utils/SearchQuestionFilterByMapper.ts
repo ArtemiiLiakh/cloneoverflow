@@ -3,6 +3,7 @@ import { QuestionRepoSearchWhereProps } from '@core/repositories/question/dtos/S
 
 export const SearchQuestionFilterMapper = (
   filterBy: SearchQuestionFilterByEnum,
+  userId?: string,
 ): QuestionRepoSearchWhereProps => {
   const filterMapper: Record<SearchQuestionFilterByEnum, QuestionRepoSearchWhereProps> = {
     active: {
@@ -19,6 +20,11 @@ export const SearchQuestionFilterMapper = (
     weekly: {
       createdAt: {
         gt: new Date(Date.now()-7*24*60*60*1000),
+      },
+    },
+    favorite: {
+      favorite: {
+        userId: userId!,
       },
     },
   };
