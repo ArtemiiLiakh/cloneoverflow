@@ -1,5 +1,5 @@
 import config from '@/config';
-import { SearchQuestionSortByEnum } from '@cloneoverflow/common';
+import { SearchQuestionFilterByEnum, SearchQuestionSortByEnum, UnauthorizedException } from '@cloneoverflow/common';
 import { QuestionRepository } from '@core/repositories';
 import { SearchQuestionOrderByMapper } from '../../utils/SearchQuestionOrderByMapper';
 import { SearchQuestionsInput, SearchQuestionsOutput } from './dto';
@@ -14,10 +14,15 @@ export class SearchQuestionsUseCase implements ISearchQuestionsUseCase {
   ) {}
 
   async execute (
-    { filterBy, search, sortBy, orderBy, pagination }: SearchQuestionsInput,
+    { executorId, filterBy, search, sortBy, orderBy, pagination }: SearchQuestionsInput,
   ): Promise<SearchQuestionsOutput> {
     const textFilter = SearchQuestionParse(search);
-    const filter = filterBy ? SearchQuestionFilterMapper(filterBy) : {};
+    
+    if (filterBy === SearchQuestionFilterByEnum.FAVORITE && !executorId) {
+      throw new UnauthorizedException('Filter by favorite is available for authorized user');;
+    }
+
+    const filter = filterBy ? SearchQuestionFilterMapper(filterBy, executorId) : {};
 
     const questions = await this.questionRepository.search({
       where: {

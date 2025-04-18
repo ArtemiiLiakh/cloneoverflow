@@ -17,7 +17,7 @@ import {
   CheckVerificationCodeDTO,
 } from '@cloneoverflow/common';
 
-import { AuthServiceFacade } from '../facades/AuthServiceFacade';
+import { AuthServiceFacade } from '../service-facades/AuthServiceFacade';
 import { WithAuth, WithBody } from './types/Request';
 import { CoreResponse } from './types/Response';
 

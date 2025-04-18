@@ -2,7 +2,7 @@ import { PrismaQuestionVoterRepository } from '@infrastructure/persistence/prism
 import { Provider } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { DatabaseDITokens } from '../../../tokens/DatabaseDITokens';
-import { PrismaRepositoryDITokens } from '../../../tokens/persistence/RepositoryDITokens';
+import { PrismaRepositoryDITokens } from '../../../tokens/persistence';
 
 export const PrismaQuestionVoterRepositoryProvider: Provider = {
   provide: PrismaRepositoryDITokens.QuestionVoterRepository,

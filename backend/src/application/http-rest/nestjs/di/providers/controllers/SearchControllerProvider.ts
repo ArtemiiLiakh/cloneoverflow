@@ -1,5 +1,5 @@
 import { SearchController } from '@application/controllers/SearchController';
-import { SearchServiceFacade } from '@application/facades/SearchServiceFacade';
+import { SearchServiceFacade } from '@application/service-facades/SearchServiceFacade';
 import { Provider } from '@nestjs/common';
 import { ControllerDITokens } from '../../tokens/ControllerDITokens';
 import { SearchServiceDIToken } from '../../tokens/services';

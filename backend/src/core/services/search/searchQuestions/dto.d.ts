@@ -9,6 +9,7 @@ import { Nullable } from '@common/utils/classTypes';
 import { Tag } from '@core/models/tag/Tag';
 
 export type SearchQuestionsInput = {
+  executorId?: string,
   search?: string;
   filterBy?: SearchQuestionFilterByEnum;
   sortBy?: SearchQuestionSortByEnum;

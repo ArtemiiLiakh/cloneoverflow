@@ -1,4 +1,4 @@
-import { QuestionServiceFacade } from '@application/facades/QuestionServiceFacade';
+import { QuestionServiceFacade } from '@application/service-facades/QuestionServiceFacade';
 import {
   QuestionAddViewerUseCase,
   QuestionCloseUseCase,
@@ -11,6 +11,7 @@ import {
   QuestionUpdateUseCase,
   QuestionVoteUseCase,
 } from '@core/services/question';
+import { QuestionToggleFavoriteUseCase } from '@core/services/question/toggleFavorite/usecase';
 
 export const QuestionUseCaseDITokens = {
   AddViewer: Symbol(QuestionAddViewerUseCase.name),
@@ -23,6 +24,7 @@ export const QuestionUseCaseDITokens = {
   Update: Symbol(QuestionUpdateUseCase.name),
   Vote: Symbol(QuestionVoteUseCase.name),
   GetDetails: Symbol(QuestionGetDetailsUseCase.name),
+  ToggleFavorite: Symbol(QuestionToggleFavoriteUseCase.name),
 };
 
 export const QuestionServiceDIToken = Symbol(QuestionServiceFacade.name);

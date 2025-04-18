@@ -17,7 +17,7 @@ import {
   UserUpdateResponse,
 } from '@cloneoverflow/common';
 
-import { UserServiceFacade } from '@application/facades/UserServiceFacade';
+import { UserServiceFacade } from '@application/service-facades/UserServiceFacade';
 import { WithAuth, WithBody, WithParams, WithQuery } from './types/Request';
 import { CoreResponse } from './types/Response';
 

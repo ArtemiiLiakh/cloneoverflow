@@ -6,3 +6,4 @@ export * from './UnitOfWork';
 export * from './user/UserRepository';
 export * from './answer/answerVoter/AnswerVoterRepository';
 export * from './question/questionVoter/QuestionVoterRepository';
+export * from './question/favoriteQuestion/FavoriteQuestionRepository';

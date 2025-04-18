@@ -1,5 +1,5 @@
-import { 
-  SearchQuestionsMapperOutput, 
+import {
+  SearchQuestionsMapperOutput,
   SearchTagsMapperOutput,
 } from '@application/adapters/mappers/search';
 
@@ -10,8 +10,8 @@ import {
   SearchTagsReponse,
 } from '@cloneoverflow/common';
 
-import { SearchServiceFacade } from '@application/facades/SearchServiceFacade';
-import { WithQuery } from './types/Request';
+import { SearchServiceFacade } from '@application/service-facades/SearchServiceFacade';
+import { WithOptionalAuth, WithQuery } from './types/Request';
 import { CoreResponse } from './types/Response';
 
 export class SearchController {
@@ -20,10 +20,11 @@ export class SearchController {
   ) {}
 
   async searchQuestions (
-    { query }: WithQuery<SearchQuestionsDTO>, 
+    { executor, query }: WithOptionalAuth & WithQuery<SearchQuestionsDTO>, 
     res: CoreResponse<SearchQuestionsResponse>,
   ): Promise<void> {
     const questions = await this.searchService.searchQuestions({
+      executorId: executor?.userId,
       search: query.search,
       filterBy: query.filterBy,
       orderBy: query.orderBy,

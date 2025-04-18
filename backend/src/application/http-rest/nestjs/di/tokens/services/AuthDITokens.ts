@@ -1,4 +1,4 @@
-import { AuthServiceFacade } from '@application/facades/AuthServiceFacade';
+import { AuthServiceFacade } from '@application/service-facades/AuthServiceFacade';
 import {
   ChangePasswordUseCase,
   CheckVerificationCodeUseCase,

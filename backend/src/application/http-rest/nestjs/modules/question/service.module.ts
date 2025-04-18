@@ -12,6 +12,7 @@ import {
   QuestionUpdateUseCaseProvider,
   QuestionVoteUseCaseProvider,
 } from '../../di/providers/services/question/usecases';
+import { QuestionToggleFavoriteUseCaseProvider } from '../../di/providers/services/question/usecases/ToggleFavoriteProvider';
 
 @Module({
   providers: [
@@ -25,6 +26,7 @@ import {
     QuestionUpdateUseCaseProvider,
     QuestionVoteUseCaseProvider,
     QuestionGetDetailsProvider,
+    QuestionToggleFavoriteUseCaseProvider,
     
     QuestionServiceProvider,
   ],
@@ -40,6 +42,7 @@ import {
     QuestionUpdateUseCaseProvider,
     QuestionVoteUseCaseProvider,
     QuestionGetDetailsProvider,
+    QuestionToggleFavoriteUseCaseProvider,
 
     QuestionServiceProvider,
   ],

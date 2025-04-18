@@ -9,7 +9,7 @@ beforeAll(async () => {
   await Promise.all([
     redisDatabase.connect(),
     prismaDatabase.connect(),
-  ]); 
+  ]).catch(() => {}); 
   
   await clearDatabase(prisma, redis);
   
@@ -21,7 +21,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await Promise.all([
-    redisDatabase.disconnect().catch(() => {}),
-    prismaDatabase.disconnect().catch(() => {}),
-  ]);
+    redisDatabase.disconnect(),
+    prismaDatabase.disconnect(),
+  ]).catch(() => {});
 });

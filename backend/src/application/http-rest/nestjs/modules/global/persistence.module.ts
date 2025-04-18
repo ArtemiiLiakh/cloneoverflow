@@ -2,15 +2,16 @@ import { Global, Module } from '@nestjs/common';
 import { JSONUserRatingSystemProvider } from '../../di/providers/persistence/JSONUserRatingSystemProvider';
 import {
   PrismaAnswerRepositoryProvider,
+  PrismaAnswerVoterRepositoryProvider,
+  PrismaFavoriteQuestionRepositoryProvider,
   PrismaQuestionRepositoryProvider,
+  PrismaQuestionVoterRepositoryProvider,
   PrismaTagRepositoryProvider,
   PrismaTransactionRepositoryProvider,
   PrismaUserRepositoryProvider,
 } from '../../di/providers/persistence/prisma';
 import { RedisCacheRepositoryProvider } from '../../di/providers/persistence/redis';
 import { DatabaseModule } from './database.module';
-import { PrismaAnswerVoterRepositoryProvider } from '../../di/providers/persistence/prisma/AnswerVoterRepositoryProvider';
-import { PrismaQuestionVoterRepositoryProvider } from '../../di/providers/persistence/prisma/QuestionVoterRepositoryProvider';
 
 @Global()
 @Module({
@@ -22,6 +23,7 @@ import { PrismaQuestionVoterRepositoryProvider } from '../../di/providers/persis
     PrismaUserRepositoryProvider,
     PrismaAnswerVoterRepositoryProvider,
     PrismaQuestionVoterRepositoryProvider,
+    PrismaFavoriteQuestionRepositoryProvider,
 
     RedisCacheRepositoryProvider,
     JSONUserRatingSystemProvider,
@@ -34,6 +36,7 @@ import { PrismaQuestionVoterRepositoryProvider } from '../../di/providers/persis
     PrismaUserRepositoryProvider,
     PrismaAnswerVoterRepositoryProvider,
     PrismaQuestionVoterRepositoryProvider,
+    PrismaFavoriteQuestionRepositoryProvider,
 
     RedisCacheRepositoryProvider,
     JSONUserRatingSystemProvider,

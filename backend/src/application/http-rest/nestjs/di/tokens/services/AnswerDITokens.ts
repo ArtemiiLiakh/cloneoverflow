@@ -1,4 +1,4 @@
-import { AnswerServiceFacade } from '@application/facades/AnswerServiceFacade';
+import { AnswerServiceFacade } from '@application/service-facades/AnswerServiceFacade';
 import {
   AnswerCreateUseCase,
   AnswerDeleteUseCase,
