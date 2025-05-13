@@ -11,15 +11,7 @@ export class User {
     public updatedAt: Date,
   ) {}
 
-  static new ({
-    userId,
-    name,
-    username,
-    rating,
-    status,
-    createdAt,
-    updatedAt,
-  }: {
+  static new (properties: {
     userId: string,
     name: string,
     username: string,
@@ -29,13 +21,13 @@ export class User {
     updatedAt: Date,
   }): User {
     return new User(
-      userId,
-      name, 
-      username,
-      rating,
-      status,
-      createdAt,
-      updatedAt,
+      properties.userId,
+      properties.name, 
+      properties.username,
+      properties.rating,
+      properties.status,
+      properties.createdAt,
+      properties.updatedAt,
     );
   }
 }

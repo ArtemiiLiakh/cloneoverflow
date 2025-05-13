@@ -10,16 +10,7 @@ export class Answer {
     public updatedAt: Date,
   ) {}
 
-  static new ({
-    answerId,
-    ownerId,
-    questionId,
-    text,
-    rating,
-    isSolution,
-    createdAt,
-    updatedAt,
-  }: {
+  static new (properties: {
     answerId: string,
     ownerId: string,
     questionId: string,
@@ -30,14 +21,14 @@ export class Answer {
     updatedAt: Date,
   }): Answer {
     return new Answer(
-      answerId,
-      ownerId,
-      questionId,
-      text,
-      rating,
-      isSolution,
-      createdAt,
-      updatedAt,
+      properties.answerId,
+      properties.ownerId,
+      properties.questionId,
+      properties.text,
+      properties.rating,
+      properties.isSolution,
+      properties.createdAt,
+      properties.updatedAt,
     );
   }
 }

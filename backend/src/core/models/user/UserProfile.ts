@@ -15,19 +15,7 @@ export class UserProfile {
     public answerAmount: number,
   ) {}
 
-  static new ({
-    userId,
-    email,
-    name,
-    username,
-    about,
-    rating,
-    status,
-    createdAt,
-    updatedAt,
-    questionAmount,
-    answerAmount,
-  }: {
+  static new (properties: {
     userId: string,
     email: string,
     name: string,
@@ -41,17 +29,17 @@ export class UserProfile {
     answerAmount: number,
   }): UserProfile {
     return new UserProfile(
-      userId,
-      email,
-      name, 
-      username,
-      about,
-      rating,
-      status,
-      createdAt,
-      updatedAt,
-      questionAmount,
-      answerAmount,
+      properties.userId,
+      properties.email,
+      properties.name, 
+      properties.username,
+      properties.about,
+      properties.rating,
+      properties.status,
+      properties.createdAt,
+      properties.updatedAt,
+      properties.questionAmount,
+      properties.answerAmount,
     );
   }
 }

@@ -10,14 +10,7 @@ export class AnswerOwner {
     public status: UserStatusEnum,
   ) {}
   
-  static new ({
-    userId,
-    answerId,
-    name,
-    username,
-    rating,
-    status,
-  }: {
+  static new (properties: {
     userId: string,
     answerId: string,
     name: string,
@@ -26,12 +19,12 @@ export class AnswerOwner {
     status: UserStatusEnum,
   }): AnswerOwner {
     return new AnswerOwner(
-      userId,
-      answerId,
-      name,
-      username,
-      rating,
-      status,
+      properties.userId,
+      properties.answerId,
+      properties.name,
+      properties.username,
+      properties.rating,
+      properties.status,
     );
   }
 }

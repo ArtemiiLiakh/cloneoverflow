@@ -10,6 +10,7 @@
     "build": "nest build -p tsconfig.build.json",
     "start:dev": "dotenvx run -f ./environment/.env.dev -- nest start -c ./nest-cli.json --watch",
     "start:prod": "dotenvx run -f ./environment/.env.prod -- node dist/index.js",
+    
     "db:generate:dev": "dotenvx run -f ./environment/.env.dev -- npx prisma generate",
     "db:generate:prod": "dotenvx run -f ./environment/.env.prod -- npx prisma generate",
     "db:generate:test": "dotenvx run -f ./environment/.env.test -- npx prisma generate",
@@ -18,6 +19,7 @@
     "db:sync:test": "dotenvx run -f ./environment/.env.test -- npx prisma db push --skip-generate",
     "db:migrate:create": "dotenvx run -f ./environment/.env.dev -- npx prisma migrate dev --create-only",
     "db:migrate:push": "dotenvx run -f ./environment/.env.dev -- npx prisma migrate dev",
+    
     "test": "dotenvx run -f ./environment/.env.test -- jest --config=jest.config.json --logHeapUsage --runInBand",
     "test:coverage": "npm run test -- --coverage",
     "test:seed": "dotenvx run -f ./environment/.env.test npm run -- ts-node tests/seeds/seed.ts",

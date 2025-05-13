@@ -16,18 +16,7 @@ export class AnswerDetails {
     public voter: Nullable<AnswerVoter>,
   ) {}
 
-  static new ({
-    answerId,
-    ownerId,
-    questionId,
-    text,
-    rating,
-    isSolution,
-    createdAt,
-    updatedAt,
-    owner,
-    voter,
-  }: {
+  static new (properties: {
     answerId: string,
     ownerId: string,
     questionId: string,
@@ -40,16 +29,16 @@ export class AnswerDetails {
     voter: Nullable<AnswerVoter>,
   }): AnswerDetails {
     return new AnswerDetails(
-      answerId,
-      ownerId,
-      questionId,
-      text,
-      rating,
-      isSolution,
-      createdAt,
-      updatedAt,
-      owner,
-      voter,
+      properties.answerId,
+      properties.ownerId,
+      properties.questionId,
+      properties.text,
+      properties.rating,
+      properties.isSolution,
+      properties.createdAt,
+      properties.updatedAt,
+      properties.owner,
+      properties.voter,
     );
   }
 }

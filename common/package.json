@@ -2,14 +2,14 @@
   "name": "@cloneoverflow/common",
   "version": "1.0.25",
   "description": "",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/build/index.js",
+  "types": "./dist/types/index.d.ts",
   "files": [
     "dist/**/*"
   ],
   "scripts": {
     "clean": "del-cli ./dist/*",
-    "build": "npm run clean && tsc && tsc-alias"
+    "build": "npm run clean && tsc -p tsconfig.build.json && tsc -p tsconfig.types.json && tsc-alias -p tsconfig.build.json && tsc-alias -p tsconfig.types.json"
   },
   "keywords": [],
   "author": "",

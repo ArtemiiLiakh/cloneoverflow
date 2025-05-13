@@ -19,20 +19,7 @@ export class QuestionDetails {
     public voter: Nullable<QuestionVoter>,
   ) {}
 
-  static new ({
-    questionId,
-    ownerId,
-    title,
-    text,
-    rating,
-    views,
-    isClosed,
-    createdAt,
-    updatedAt,
-    owner,
-    tags,
-    voter,
-  }: {
+  static new (properties: {
     questionId: string,
     ownerId: string,
     title: string,
@@ -47,18 +34,18 @@ export class QuestionDetails {
     tags: Tag[],
   }): QuestionDetails {
     return new QuestionDetails(
-      questionId,
-      ownerId,
-      title,
-      text,
-      rating,
-      views,
-      isClosed,
-      createdAt,
-      updatedAt,
-      owner,
-      tags,
-      voter,
+      properties.questionId,
+      properties.ownerId,
+      properties.title,
+      properties.text,
+      properties.rating,
+      properties.views,
+      properties.isClosed,
+      properties.createdAt,
+      properties.updatedAt,
+      properties.owner,
+      properties.tags,
+      properties.voter,
     );
   }
 }

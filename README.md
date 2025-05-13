@@ -66,14 +66,93 @@ In application we provide frameworks, DI mechanisms, connection to databases, co
 
 #### Architecture
 Monolit. In fact that could be refactored to any architecture because business logic is independent from it. 
-I hope that I implement the project with SOA and microservice architecture soon :)
+I hope that I implement the project with microservice architecture soon :)
 
 #### Framework
-[Express](https://expressjs.com/). It will be provided by [Nest.js](https://nestjs.com) soon. 
+There are two implementations of the project using Express.js and NestJS:
+- Implementation with Express.js: https://github.com/ArtemiiLiakh/cloneoverflow/tree/clean-architecture
+- Implementation with NestJS is current
 
 #### Dependency Injection
-Dependency injection was provided without any packages. 
-I just created instances of every repository, use cases, controller and injected to each other.
+Dependency injection was provided by using built-in NestJS module systems. It uses providers and provider tokens to find and create instances.
+
+## How to run
+### Locally
+
+Clone the repository:
+```sh
+git clone https://github.com/ArtemiiLiakh/cloneoverflow.git
+```
+
+Install dependencies:
+```sh
+cd cloneoverflow/common
+npm ci
+cd ../backend
+npm ci
+```
+
+Create environment files:
+- Create .env and fill the fields from .env.example (`SONAR_TOKEN` optional)
+- In `environment` folder create .env.dev or .env.prod file from .env.example (`SEED_EMAIL` is for tests and optional)
+- Optionally you can create `credentials.json` and fill it with google app email and password. See [this](https://support.google.com/accounts/answer/185833?hl=en) how to make it.
+
+
+Run databases with Docker compose:
+```sh
+docker compose -f docker-compose-db.yaml up -d
+```
+
+Build common package:
+```sh
+cd common
+npm run build
+```
+
+Initialize Postgres database
+```sh
+# Run this if you created .env.dev 
+npm run db:generate:dev
+npm run db:sync:dev
+
+# Run this if you created .env.prod
+npm run db:generate:prod
+npm run db:sync:prod
+```
+
+Run backend application:
+```sh
+cd backend
+
+# Run this if you created .env.dev 
+npm run start:dev
+
+# Run this if you created .env.prod
+npm run build
+npm run start:prod
+```
+
+### With Docker
+Build docker image:
+```sh
+docker build -t cloneoverflow:backend --file=./backend/Dockerfile .
+```
+
+Create environment files:
+- Create .env and fill the fields from .env.example (`SONAR_TOKEN` optional)
+- In `environment` folder create .env.dev or .env.prod file from .env.example (`SEED_EMAIL` is for tests and optional)
+- Optionally you can create `credentials.json` and fill it with google app email and password. See [this](https://support.google.com/accounts/answer/185833?hl=en) how to make it.
+
+Run docker compose file:
+```sh
+cd backend
+docker compose up
+```
+
+### How to use it
+To get all endpoints you can use this [Postman collection](https://winter-trinity-553944.postman.co/workspace/CloneOverflow-workspace~a78f53ae-50f2-4ab0-a1ac-02565d590766/collection/25951487-7b48bd6a-cffb-495e-b960-13e1694c3bcb?action=share&creator=25951487&active-environment=25951487-032bdc1f-8d06-4537-a267-53bcc8d9bf75). 
+
+Front end application for now cannot be run because it was not updated.
 
 ---
 

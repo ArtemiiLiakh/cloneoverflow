@@ -8,22 +8,17 @@ export class AnswerVoter {
     public voteType: VoteTypeEnum,
   ) {}
   
-  static new ({
-    id,
-    userId,
-    answerId,
-    voteType,
-  }: {
+  static new (properties: {
     id: string,
     userId: string,
     answerId: string,
     voteType: VoteTypeEnum,
   }): AnswerVoter {
     return new AnswerVoter(
-      id, 
-      userId, 
-      answerId,
-      voteType,
+      properties.id, 
+      properties.userId, 
+      properties.answerId,
+      properties.voteType,
     );
   }
 }

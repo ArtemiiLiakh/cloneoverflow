@@ -5,15 +5,15 @@ export class QuestionViewer {
     public questionId: string,
   ) {}
   
-  static new ({
-    id,
-    userId,
-    questionId,
-  }: {
+  static new (properties: {
     id: string,
     userId: string,
     questionId: string,
   }): QuestionViewer {
-    return new QuestionViewer(id, userId, questionId);
+    return new QuestionViewer(
+      properties.id, 
+      properties.userId, 
+      properties.questionId,
+    );
   }
 }

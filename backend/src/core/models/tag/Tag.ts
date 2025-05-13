@@ -4,16 +4,13 @@ export class Tag {
     public name: string,
   ) {}
 
-  static new ({
-    id,
-    name,
-  }: {
+  static new (properties: {
     id: string,
     name: string,
   }): Tag {
     return new Tag(
-      id,
-      name,
+      properties.id,
+      properties.name,
     );
   }
 }

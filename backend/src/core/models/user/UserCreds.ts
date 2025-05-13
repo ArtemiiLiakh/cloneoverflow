@@ -7,13 +7,7 @@ export class UserCreds {
     public updatedAt: Date,
   ) {}
 
-  static new ({
-    userId,
-    email,
-    password,
-    createdAt,
-    updatedAt,
-  }: {
+  static new (properties: {
     userId: string,
     email: string,
     password: string,
@@ -21,11 +15,11 @@ export class UserCreds {
     updatedAt: Date,
   }): UserCreds {
     return new UserCreds(
-      userId,
-      email, 
-      password,
-      createdAt,
-      updatedAt,
+      properties.userId,
+      properties.email, 
+      properties.password,
+      properties.createdAt,
+      properties.updatedAt,
     );
   }
 }

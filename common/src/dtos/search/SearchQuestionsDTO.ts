@@ -3,7 +3,7 @@ import { SearchQuestionFilterByEnum } from '@enums/filters';
 import { OrderByEnum } from '@enums/OrderBy';
 import { SearchQuestionSortByEnum } from '@enums/sorts';
 import { Type } from 'class-transformer';
-import { IsEnum, IsInstance, IsOptional, ValidateNested } from "class-validator";
+import { IsEnum, IsOptional, ValidateNested } from "class-validator";
 
 export class SearchQuestionsDTO {
   @IsOptional()

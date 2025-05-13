@@ -11,17 +11,7 @@ export class Question {
     public updatedAt: Date,
   ) {}
 
-  static new ({
-    questionId,
-    ownerId,
-    title,
-    text,
-    rating,
-    views,
-    isClosed,
-    createdAt,
-    updatedAt,
-  }: {
+  static new (properties: {
     questionId: string,
     ownerId: string,
     title: string,
@@ -33,15 +23,15 @@ export class Question {
     updatedAt: Date,
   }): Question {
     return new Question(
-      questionId,
-      ownerId,
-      title,
-      text,
-      rating,
-      views,
-      isClosed,
-      createdAt,
-      updatedAt,
+      properties.questionId,
+      properties.ownerId,
+      properties.title,
+      properties.text,
+      properties.rating,
+      properties.views,
+      properties.isClosed,
+      properties.createdAt,
+      properties.updatedAt,
     );
   } 
 }
