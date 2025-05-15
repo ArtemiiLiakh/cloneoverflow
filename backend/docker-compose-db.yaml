@@ -1,0 +1,59 @@
+version: '3.7'
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: cloneoverflow-backend-postgres
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    restart: always
+    ports:
+      - 5432:5432
+    volumes:
+      - testPostgresData:/var/lib/postgresql/data
+      - ./environment/postgres/postgresql.conf:/etc/postgres/postgresql.conf
+    command: postgres -c config_file=/etc/postgres/postgresql.conf
+    networks:
+      - database
+
+  redis:
+    image: redis/redis-stack-server:7.4.0-v0
+    container_name: cloneoverflow-backend-redis
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_USER=${REDIS_USER}
+      - REDIS_USER_PASSWORD=${REDIS_USER_PASSWORD}
+    ports:
+      - 6379:6379
+    volumes:
+      - testRedisData:/data
+      - ./environment/redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./environment/redis/users.acl:/usr/local/etc/redis/users.acl
+    deploy:
+      resources:
+        limits:
+          cpus: 0.5
+          memory: '512M'
+        reservations:
+          cpus: 0.25
+          memory: '256M'
+    command: >
+      sh -c 'redis-stack-server /usr/local/etc/redis/redis.conf --aclfile /usr/local/etc/redis/users.acl'
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "$REDIS_PASSWORD", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: always
+    networks:
+      - database
+
+networks:
+  database:
+
+volumes:
+  testPostgresData:
+  testRedisData:

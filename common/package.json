@@ -9,9 +9,7 @@
   ],
   "scripts": {
     "clean": "del-cli ./dist/*",
-    "build": "npm run clean && tsc",
-    "package": "npm run build && cd ../backend && npm install @cloneoverflow/common && cd ../frontend && npm install @cloneoverflow/common",
-    "pub": "npm run build && npm version patch && npm publish"
+    "build": "npm run clean && tsc && tsc-alias"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +17,7 @@
   "devDependencies": {
     "del-cli": "^5.1.0",
     "reflect-metadata": "^0.2.1",
+    "tsc-alias": "^1.8.10",
     "typescript": "^5.4.3"
   },
   "dependencies": {

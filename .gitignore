@@ -9,6 +9,14 @@
 /**/package-lock.json
 
 /backend/prisma/migrations
-/backend/credentials.json
+/backend/prisma/.client
+/backend/environment/*
 
 /Kubernetes
+
+!/backend/environment/.env.example
+!/backend/environment/credentials.example.json
+!/backend/environment/redis
+!/backend/environment/postgres
+!/backend/environment/ratings.json
+

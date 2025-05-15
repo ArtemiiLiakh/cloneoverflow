@@ -1,18 +1,16 @@
-import app from "@/app";
-import config from "@/config";
-import { PrismaDatabase } from "@/databases/prisma";
-import { RedisDatabase } from "@/databases/redis";
-import { GoogleService } from "@/google/google.service";
-
-const startupConnection = async () => {
-  new PrismaDatabase();
-  new GoogleService(); 
-  await new RedisDatabase().connect(config.REDIS_URL);
-};
+import { prismaDatabase } from '@application/databases/PrismaDatabase';
+import { redisDatabase } from '@application/databases/RedisDatabase';
+import { JSONUserRatingSystemDI } from '@application/di/security/ratingSystem/JSONUserRatingSystemDI';
+import config from './config';
 
 (async () => {
-  await startupConnection();
-  app.listen(config.SERVER_PORT, async () => {
+  await prismaDatabase.connect();
+  await redisDatabase.connect();
+  await JSONUserRatingSystemDI.readFile();
+  
+  const { app } = await import('@/application/http-rest/server');
+
+  app.listen(config.SERVER_PORT, () => {
     console.log('Started on http://127.0.0.1:8000');
   });
 })();

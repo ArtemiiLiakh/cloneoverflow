@@ -1,9 +1,29 @@
 version: '3.7'
 
 services:
+  backend:
+    image: cloneoverflow:backend
+    pull_policy: never
+    container_name: backend
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    ports:
+      - 8000:8000
+    volumes:
+      - ./environment/.env.prod:/app/backend/config/.env.prod
+      - ./environment/credentials.json:/app/backend/config/credentials.json
+    command: > 
+      sh -c "npm run db:sync:prod && npm run start:prod"
+    networks:
+      - database
+    depends_on:
+      - postgres
+      - redis
+
   postgres:
-    image: postgres:15.0
-    container_name: cloneoverflow-backend-test-postgres
+    image: postgres:17-alpine
+    container_name: cloneoverflow-backend-postgres
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -19,7 +39,7 @@ services:
 
   redis:
     image: redis/redis-stack-server:7.4.0-v0
-    container_name: cloneoverflow-backend-test-redis
+    container_name: cloneoverflow-backend-redis
     environment:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - REDIS_USER=${REDIS_USER}
@@ -28,7 +48,8 @@ services:
       - 6379:6379
     volumes:
       - testRedisData:/data
-      - ./config/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./environment/redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./environment/redis/users.acl:/usr/local/etc/redis/users.acl
     deploy:
       resources:
         limits:
@@ -38,11 +59,7 @@ services:
           cpus: 0.25
           memory: '256M'
     command: >
-      sh -c '
-        echo "user default on nopass -@all" >> /usr/local/etc/redis/users.acl &&
-        echo "user ${REDIS_USER} on >${REDIS_USER_PASSWORD} ~* +@all" >> /usr/local/etc/redis/users.acl &&
-        redis-stack-server /usr/local/etc/redis/redis.conf --aclfile /usr/local/etc/redis/users.acl
-      '
+      sh -c 'redis-stack-server /usr/local/etc/redis/redis.conf --aclfile /usr/local/etc/redis/users.acl'
     healthcheck:
       test: ["CMD", "redis-cli", "-a", "$REDIS_PASSWORD", "ping"]
       interval: 30s

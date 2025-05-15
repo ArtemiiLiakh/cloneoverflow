@@ -1,0 +1,1 @@
+export type Constructor<P> = new (...args) => P;

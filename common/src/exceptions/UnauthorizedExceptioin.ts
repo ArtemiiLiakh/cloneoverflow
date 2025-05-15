@@ -1,6 +1,7 @@
 import { Exception } from './Exception'
 
 export class UnauthorizedException extends Exception {
-  message = 'Unauthorized';
-  statusCode = 401;
+  constructor (message = 'Unauthorized') {
+    super(message, 401);
+  }
 }

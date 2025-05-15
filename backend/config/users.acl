@@ -1,2 +1,0 @@
-user default on nopass -@all
-user ${REDIS_USER} on >${REDIS_USER_PASSWORD} ~* +@all

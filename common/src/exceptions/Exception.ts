@@ -1,13 +1,21 @@
-import { SerializedError } from '../types/SerializedError';
+export class ExceptionMessage {
+  message: string | string[];
+  statusCode: number;
+}
 
-export abstract class Exception extends Error {
-  abstract message: any;
-  abstract statusCode: number;
+export class Exception extends Error {
+  constructor (
+    public message = 'Error',
+    public statusCode = 500, 
+  ) {
+    super(message);
+  }
 
-  serializeError (): SerializedError {
+  serializeError (): ExceptionMessage {
     return {
       message: this.message,
       statusCode: this.statusCode,
     };
   }
 }
+

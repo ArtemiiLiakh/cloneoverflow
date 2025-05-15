@@ -24,12 +24,14 @@ on:
   pull_request: 
     branches:
       - main
+      - clean-architecture
     paths:
       - 'backend/**'
+      - '.github/workflows/backend-test.yaml'
 
 jobs:
   build: 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     environment:
       name: test
     strategy:
@@ -46,11 +48,13 @@ jobs:
       - name: Setup backend
         run: npm ci
       - name: Generate prisma models
-        run: npm run test:db:generate
+        run: npm run db:generate:test
       - name: Run build
         run: npm run build
+      - name: Run docker build
+        run: docker build --file=Dockerfile ../
   deploy:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     environment:
       name: test
     strategy:
@@ -66,7 +70,9 @@ jobs:
         run: cd ../common && npm ci && npm run build
       - name: Setup backend
         run: npm ci
-      - name: Generate prisma models
-        run: npm run test:db:generate
+      - name: Run docker compose
+        run: docker compose -f docker-compose-db.yaml up -d && sleep 5s
+      - name: Initialize database
+        run: npm run db:sync:test && npm run db:generate:test
       - name: Run backend tests
-        run: npm run test:docker
+        run: npm run test && docker compose down
