@@ -1,5 +1,5 @@
 import { UserStatusEnum } from '@cloneoverflow/common';
-import { UserProfile } from '@core/models/user/UserProfile';
+import { UserProfile } from '@core/user/UserProfile';
 import Prisma from '@prisma/client';
 
 interface UserProfileDetails {

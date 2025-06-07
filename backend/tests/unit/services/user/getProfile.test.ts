@@ -1,7 +1,7 @@
-import { AnswerRepository } from '@core/repositories/answer/AnswerRepository';
-import { QuestionRepository } from '@core/repositories/question/QuestionRepository';
-import { UserRepository } from '@core/repositories/user/UserRepository';
-import { UserGetProfileUseCase } from '@core/services/user';
+import { AnswerRepository } from '@core/answer/repository/AnswerRepository';
+import { QuestionRepository } from '@core/question/repository/QuestionRepository';
+import { UserRepository } from '@core/user/repository/UserRepository';
+import { UserGetProfileUseCase } from '@application/user/usecases';
 import { createAnswer } from '@tests/utils/models/answer';
 import { createQuestion } from '@tests/utils/models/question';
 import { createTag } from '@tests/utils/models/tag';
@@ -10,7 +10,7 @@ import { createUserProfile } from '@tests/utils/models/user';
 describe('User service: test GetProfileUseCase', () => {
   test('Get user profile', async () => {
     const profile = createUserProfile();
-    const question =createQuestion();
+    const question = createQuestion();
     const answer = createAnswer();
     const tag = createTag();
 

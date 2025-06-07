@@ -1,4 +1,4 @@
-import { CacheRepository, CacheSetOptions } from '@core/repositories/cache/CacheRepository';
+import { CacheRepository, CacheSetOptions } from '@application/cache/CacheRepository';
 import { RedisClientType, RedisFunctions, RedisModules, RedisScripts, SetOptions } from 'redis';
 
 export class RedisCacheRepository<

@@ -1,12 +1,12 @@
 import config from '@/config';
-import { DatabaseDITokens } from '@application/http-rest/nestjs/di/tokens/DatabaseDITokens';
-import { AnswerUseCaseDITokens, AuthUseCaseDITokens, QuestionUseCaseDITokens } from '@application/http-rest/nestjs/di/tokens/services';
-import { ICreateAccountUseCase } from '@application/services/auth/usecases/types';
+import { DatabaseDITokens } from '@web/di/tokens/DatabaseDITokens';
+import { AnswerUseCaseDITokens, AuthUseCaseDITokens, QuestionUseCaseDITokens } from '@web/di/tokens/services';
+import { ICreateAccountUseCase } from '@application/auth/usecases/types';
 import { VoteTypeEnum } from '@cloneoverflow/common';
-import { IAnswerVoteUseCase } from '@core/services/answer/types';
-import { IQuestionAddViewerUseCase, IQuestionVoteUseCase } from '@core/services/question/types';
+import { IAnswerVoteUseCase } from '@application/answer/usecases/types';
+import { IQuestionAddViewerUseCase, IQuestionVoteUseCase } from '@application/question/usecases/types';
 import { PrismaClient } from '@prisma/client';
-import { initTestApplication } from '@tests/e2e/initTestApplication';
+import { initTestApplication } from '@tests/integration/initTestApplication';
 import { clearDatabase } from '@tests/utils/clearDatabase';
 import { randomInt } from 'crypto';
 import { RedisClientType } from 'redis';

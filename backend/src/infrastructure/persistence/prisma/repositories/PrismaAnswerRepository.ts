@@ -1,18 +1,19 @@
-import { NoEntityWithIdException, OrderByEnum } from '@cloneoverflow/common';
-import { AnswerRepository } from '@core/repositories/answer/AnswerRepository';
-import { AnswerRepoClearSolutionsInput, AnswerRepoClearSolutionsOutput } from '@core/repositories/answer/dtos/ClearSolutions';
-import { AnswerRepoCreateInput, AnswerRepoCreateOutput } from '@core/repositories/answer/dtos/Create';
-import { AnswerRepoDeleteInput, AnswerRepoDeleteOutput } from '@core/repositories/answer/dtos/Delete';
-import { AnswerRepoGetBestOwnerAnswerInput, AnswerRepoGetBestOwnerAnswerOutput } from '@core/repositories/answer/dtos/GetBestOwnerAnswer';
-import { AnswerRepoGetByIdInput, AnswerRepoGetByIdOutput } from '@core/repositories/answer/dtos/GetById';
-import { AnswerRepoGetDetailedByIdInput, AnswerRepoGetDetailedByIdOutput } from '@core/repositories/answer/dtos/GetDetailedById';
-import { AnswerRepoGetOwnerAnswersInput, AnswerRepoGetOwnerAnswersOutput } from '@core/repositories/answer/dtos/GetOwnerAnswers';
-import { AnswerRepoGetQuestionAnswersInput, AnswerRepoGetQuestionAnswersOutput } from '@core/repositories/answer/dtos/GetQuestionAnswers';
-import { AnswerRepoIsExistInput, AnswerRepoIsExistOutput } from '@core/repositories/answer/dtos/IsExist';
-import { AnswerRepoSetAsSolutionInput, AnswerRepoSetAsSolutionOutput } from '@core/repositories/answer/dtos/SetAsSolution';
-import { AnswerRepoUpdateInput, AnswerRepoUpdateOutput } from '@core/repositories/answer/dtos/Update';
-import { AnswerRepoVoteDownInput, AnswerRepoVoteDownOutput } from '@core/repositories/answer/dtos/VoteDown';
-import { AnswerRepoVoteUpInput, AnswerRepoVoteUpOutput } from '@core/repositories/answer/dtos/VoteUp';
+import { OrderByEnum } from '@cloneoverflow/common';
+import { AnswerIdInvalid } from '@core/answer/exceptions/AnswerIdInvalid';
+import { AnswerRepository } from '@core/answer/repository/AnswerRepository';
+import { AnswerRepoClearSolutionsInput, AnswerRepoClearSolutionsOutput } from '@core/answer/repository/dtos/ClearSolutions';
+import { AnswerRepoCreateInput, AnswerRepoCreateOutput } from '@core/answer/repository/dtos/Create';
+import { AnswerRepoDeleteInput, AnswerRepoDeleteOutput } from '@core/answer/repository/dtos/Delete';
+import { AnswerRepoGetBestOwnerAnswerInput, AnswerRepoGetBestOwnerAnswerOutput } from '@core/answer/repository/dtos/GetBestOwnerAnswer';
+import { AnswerRepoGetByIdInput, AnswerRepoGetByIdOutput } from '@core/answer/repository/dtos/GetById';
+import { AnswerRepoGetDetailedByIdInput, AnswerRepoGetDetailedByIdOutput } from '@core/answer/repository/dtos/GetDetailedById';
+import { AnswerRepoGetOwnerAnswersInput, AnswerRepoGetOwnerAnswersOutput } from '@core/answer/repository/dtos/GetOwnerAnswers';
+import { AnswerRepoGetQuestionAnswersInput, AnswerRepoGetQuestionAnswersOutput } from '@core/answer/repository/dtos/GetQuestionAnswers';
+import { AnswerRepoIsExistInput, AnswerRepoIsExistOutput } from '@core/answer/repository/dtos/IsExist';
+import { AnswerRepoSetAsSolutionInput, AnswerRepoSetAsSolutionOutput } from '@core/answer/repository/dtos/SetAsSolution';
+import { AnswerRepoUpdateInput, AnswerRepoUpdateOutput } from '@core/answer/repository/dtos/Update';
+import { AnswerRepoVoteDownInput, AnswerRepoVoteDownOutput } from '@core/answer/repository/dtos/VoteDown';
+import { AnswerRepoVoteUpInput, AnswerRepoVoteUpOutput } from '@core/answer/repository/dtos/VoteUp';
 import { PrismaClient } from '@prisma/client';
 import { AnswerDetailsMapper } from '../adapters/entityMappers/AnswerDetailsMapper';
 import { AnswerMapper } from '../adapters/entityMappers/AnswerMapper';
@@ -35,7 +36,7 @@ export class PrismaAnswerRepository implements AnswerRepository {
     }); 
 
     if (!answer) {
-      throw new NoEntityWithIdException('Answer');
+      throw new AnswerIdInvalid();
     }
 
     return AnswerMapper.toEntity(answer);
@@ -60,7 +61,7 @@ export class PrismaAnswerRepository implements AnswerRepository {
     });
 
     if (!answer) {
-      throw new NoEntityWithIdException('Answer');
+      throw new AnswerIdInvalid();
     }
 
     return AnswerDetailsMapper.toEntity(answer, answer?.owner, answer?.voters[0]);
@@ -155,7 +156,7 @@ export class PrismaAnswerRepository implements AnswerRepository {
         },
         orderBy: {
           rating: orderBy?.rate,
-          date: orderBy?.date,
+          createdAt: orderBy?.date,
           isSolution: orderBy?.solution,
         },
         include: {

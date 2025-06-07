@@ -1,5 +1,5 @@
 import { UserRatingActions } from '@common/enums/UserRatingActions';
-import { UserRatingSystem } from '@core/repositories/ratingSystem/UserRatingSystem';
+import { UserRatingSystem } from '@application/ratingSystem/UserRatingSystem';
 import fs from 'fs/promises';
 
 interface JSONRatingSchema {

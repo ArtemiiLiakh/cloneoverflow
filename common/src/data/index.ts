@@ -1,2 +1,1 @@
-export * from './PaginatedData';
-export * from './PaginationResponse';
+export * from './Pagination';

@@ -1,4 +1,4 @@
-import { Tag } from '@core/models/tag/Tag';
+import { Tag } from '@core/tag/Tag';
 
 describe('Entity: test Tag entity', () => {
   test('Create Tag entity with fullfiled fields', () => {

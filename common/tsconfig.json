@@ -5,7 +5,7 @@
     /* Projects */
 
     /* Language and Environment */
-    "target": "es2016",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
+    "target": "esnext",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
     "experimentalDecorators": true,                   /* Enable experimental support for legacy experimental decorators. */
     "emitDecoratorMetadata": true,                    /* Emit design-type metadata for decorated declarations in source files. */
 
@@ -13,12 +13,10 @@
     "module": "commonjs",                                /* Specify what module code is generated. */
     "baseUrl": "./src",                                  /* Specify the base directory to resolve non-relative module names. */
     "paths": {
+        "@api/*": ["./api/*"],
         "@data/*": ["./data/*"],
-        "@dtos/*": ["./dtos/*"],
         "@enums/*": ["./enums/*"],
         "@exceptions/*": ["./exceptions/*"],
-        "@responses/*": ["./responses/*"],
-        "@utils/*": ["./utils/*"],
         "@/*": ["./*"]
     },                                      /* Specify a set of entries that re-map imports to additional lookup locations. */
     "noEmit": true,                                   /* Disable emitting files from a compilation. */

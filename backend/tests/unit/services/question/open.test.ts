@@ -1,9 +1,10 @@
-import { BadBodyException, ForbiddenException } from '@cloneoverflow/common';
-import { AnswerRepository } from '@core/repositories';
-import { QuestionRepository } from '@core/repositories/question/QuestionRepository';
-import { Unit, UnitOfWork } from '@core/repositories/UnitOfWork';
-import { QuestionOpenUseCase } from '@core/services/question';
-import { IUserRatingValidator } from '@core/services/validators/types';
+import { QuestionOpenUseCase } from '@application/question/usecases';
+import { IUserRatingValidator } from '@application/validators/types';
+import { Unit, UnitOfWork } from '@common/repository/UnitOfWork';
+import { AnswerRepository } from '@core/answer/repository/AnswerRepository';
+import { QuestionAlreadyOpened } from '@core/question/exceptions';
+import { CannotOpenOthersQuestion } from '@core/question/exceptions/CannotOpenOthersQuestion';
+import { QuestionRepository } from '@core/question/repository/QuestionRepository';
 import { createQuestion } from '@tests/utils/models/question';
 
 describe('Question service: test OpenUseCase', () => {
@@ -26,12 +27,7 @@ describe('Question service: test OpenUseCase', () => {
       } as Partial<AnswerRepository>,
     } as Unit;
     
-    const userRatingValidator = {
-      validate: jest.fn(),
-    } as IUserRatingValidator;
-
     const openUseCase = new QuestionOpenUseCase(
-      userRatingValidator,
       questionRepositoryMock as QuestionRepository,
       { executeSeq: (fn) => { fn(unitMock) } } as UnitOfWork,
     );
@@ -41,7 +37,6 @@ describe('Question service: test OpenUseCase', () => {
       questionId: questionEntity.questionId,
     });
 
-    expect(userRatingValidator.validate).not.toHaveBeenCalled();
     expect(unitMock.questionRepository.openQuestion).toHaveBeenCalled();
     expect(unitMock.answerRepository.clearSolution).toHaveBeenCalled();
   });
@@ -57,12 +52,7 @@ describe('Question service: test OpenUseCase', () => {
       getById: async () => questionEntity,
     } as Partial<QuestionRepository>;
 
-    const userRatingValidator = {
-      validate: jest.fn(),
-    } as IUserRatingValidator;
-
     const openUseCase = new QuestionOpenUseCase(
-      userRatingValidator,
       questionRepositoryMock as QuestionRepository,
       { 
         executeFn: async () => {},
@@ -70,12 +60,10 @@ describe('Question service: test OpenUseCase', () => {
       } as UnitOfWork,
     );
 
-    await openUseCase.execute({
+    expect(openUseCase.execute({
       executorId: userId,
       questionId: questionEntity.questionId,
-    });
-
-    expect(userRatingValidator.validate).toHaveBeenCalled();
+    })).rejects.toThrow(CannotOpenOthersQuestion);
   });
 
   test('Throw an error because question is already opened', () => {
@@ -88,7 +76,6 @@ describe('Question service: test OpenUseCase', () => {
     } as Partial<QuestionRepository>;
 
     const openUseCase = new QuestionOpenUseCase(
-      {} as IUserRatingValidator,
       questionRepositoryMock as QuestionRepository,
       {} as UnitOfWork,
     );
@@ -96,6 +83,6 @@ describe('Question service: test OpenUseCase', () => {
     expect(openUseCase.execute({
       executorId: questionEntity.ownerId,
       questionId: questionEntity.questionId,
-    })).rejects.toThrow(ForbiddenException);
+    })).rejects.toThrow(QuestionAlreadyOpened);
   });
 });

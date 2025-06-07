@@ -1,23 +1,24 @@
-import { NoEntityWithIdException, OrderByEnum } from '@cloneoverflow/common';
-import { QuestionViewer } from '@core/models/question/QuestionViewer';
-import { QuestionRepoAddViewerInput, QuestionRepoAddViewerOutput } from '@core/repositories/question/dtos/AddViewer';
-import { QuestionRepoCloseQuestionInput, QuestionRepoCloseQuestionOutput } from '@core/repositories/question/dtos/CloseQuestion';
-import { QuestionRepoCreateInput, QuestionRepoCreateOutput } from '@core/repositories/question/dtos/Create';
-import { QuestionRepoDeleteInput, QuestionRepoDeleteOutput } from '@core/repositories/question/dtos/Delete';
-import { QuestionRepoGetBestOwnerQuestionInput, QuestionRepoGetBestOwnerQuestionOutput } from '@core/repositories/question/dtos/GetBestOwnerQuestion';
-import { QuestionRepoGetByIdInput, QuestionRepoGetByIdOutput } from '@core/repositories/question/dtos/GetById';
-import { QuestionRepoGetDetailedByIdInput, QuestionRepoGetDetailedByIdOutput } from '@core/repositories/question/dtos/GetDetailedById';
-import { QuestionRepoGetOwnerQuestionsInput, QuestionRepoGetOwnerQuestionsOutput } from '@core/repositories/question/dtos/GetOwnerQuestions';
-import { QuestionRepoGetViewerInput, QuestionRepoGetViewerOutput } from '@core/repositories/question/dtos/GetViewer';
-import { QuestionRepoIsExistsInput, QuestionRepoIsExistsOutput } from '@core/repositories/question/dtos/IsExists';
-import { QuestionRepoOpenQuestionInput, QuestionRepoOpenQuestionOutput } from '@core/repositories/question/dtos/OpenQuestion';
-import { QuestionRepoRefTagsInput, QuestionRepoRefTagsOutput } from '@core/repositories/question/dtos/RefTags';
-import { QuesitonRepoSearchInput, QuestionRepoSearchOutput } from '@core/repositories/question/dtos/Search';
-import { QuestionRepoUnrefAllTagsInput, QuestionRepoUnrefAllTagsOutput } from '@core/repositories/question/dtos/UnrefAllTags';
-import { QuestionRepoUpdateInput, QuestionRepoUpdateOutput } from '@core/repositories/question/dtos/Update';
-import { QuestionRepoVoteDownInput, QuestionRepoVoteDownOutput } from '@core/repositories/question/dtos/VoteDown';
-import { QuestionRepoVoteUpInput, QuestionRepoVoteUpOutput } from '@core/repositories/question/dtos/VoteUp';
-import { QuestionRepository } from '@core/repositories/question/QuestionRepository';
+import { OrderByEnum } from '@cloneoverflow/common';
+import { QuestionIdInvalid } from '@core/question/exceptions/QuestionIdInvalid';
+import { QuestionViewer } from '@core/question/QuestionViewer';
+import { QuestionRepoAddViewerInput, QuestionRepoAddViewerOutput } from '@core/question/repository/dtos/AddViewer';
+import { QuestionRepoCloseQuestionInput, QuestionRepoCloseQuestionOutput } from '@core/question/repository/dtos/CloseQuestion';
+import { QuestionRepoCreateInput, QuestionRepoCreateOutput } from '@core/question/repository/dtos/Create';
+import { QuestionRepoDeleteInput, QuestionRepoDeleteOutput } from '@core/question/repository/dtos/Delete';
+import { QuestionRepoGetBestOwnerQuestionInput, QuestionRepoGetBestOwnerQuestionOutput } from '@core/question/repository/dtos/GetBestOwnerQuestion';
+import { QuestionRepoGetByIdInput, QuestionRepoGetByIdOutput } from '@core/question/repository/dtos/GetById';
+import { QuestionRepoGetDetailedByIdInput, QuestionRepoGetDetailedByIdOutput } from '@core/question/repository/dtos/GetDetailedById';
+import { QuestionRepoGetOwnerQuestionsInput, QuestionRepoGetOwnerQuestionsOutput } from '@core/question/repository/dtos/GetOwnerQuestions';
+import { QuestionRepoGetViewerInput, QuestionRepoGetViewerOutput } from '@core/question/repository/dtos/GetViewer';
+import { QuestionRepoIsExistsInput, QuestionRepoIsExistsOutput } from '@core/question/repository/dtos/IsExists';
+import { QuestionRepoOpenQuestionInput, QuestionRepoOpenQuestionOutput } from '@core/question/repository/dtos/OpenQuestion';
+import { QuestionRepoRefTagsInput, QuestionRepoRefTagsOutput } from '@core/question/repository/dtos/RefTags';
+import { QuesitonRepoSearchInput, QuestionRepoSearchOutput } from '@core/question/repository/dtos/Search';
+import { QuestionRepoUnrefAllTagsInput, QuestionRepoUnrefAllTagsOutput } from '@core/question/repository/dtos/UnrefAllTags';
+import { QuestionRepoUpdateInput, QuestionRepoUpdateOutput } from '@core/question/repository/dtos/Update';
+import { QuestionRepoVoteDownInput, QuestionRepoVoteDownOutput } from '@core/question/repository/dtos/VoteDown';
+import { QuestionRepoVoteUpInput, QuestionRepoVoteUpOutput } from '@core/question/repository/dtos/VoteUp';
+import { QuestionRepository } from '@core/question/repository/QuestionRepository';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { QuestionDetailsMapper } from '../adapters/entityMappers/QuestionDetailsMapper';
 import { QuestionMapper } from '../adapters/entityMappers/QuestionMapper';
@@ -42,7 +43,7 @@ export class PrismaQuestionRepository implements QuestionRepository {
     });
 
     if (!question) {
-      throw new NoEntityWithIdException('Question');
+      throw new QuestionIdInvalid();
     }
 
     return QuestionMapper.toEntity(question);
@@ -98,7 +99,7 @@ export class PrismaQuestionRepository implements QuestionRepository {
     });
 
     if (!question) {
-      throw new NoEntityWithIdException('Question');
+      throw new QuestionIdInvalid();
     }
 
     return QuestionDetailsMapper.toEntity(
@@ -205,9 +206,14 @@ export class PrismaQuestionRepository implements QuestionRepository {
           } : undefined,
           isClosed: where.isClosed,
 
-          owner: where.authors ? {
-            name: { in: where.authors },
-          } : undefined,
+          owner: {
+            OR: where.authors?.map((author) => ({
+              OR: [
+                { name: { contains: author } },
+                { username: { contains: author } },
+              ],
+            })),
+          },
           tags: where.tags ? {
             some: {
               name: { in: where.tags },

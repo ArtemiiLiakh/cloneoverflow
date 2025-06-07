@@ -1,9 +1,9 @@
-import { Exception } from '@cloneoverflow/common';
-import { QuestionRepository } from '@core/repositories/question/QuestionRepository';
-import { TagRepository } from '@core/repositories/tag/TagRepository';
-import { Unit, UnitOfWork } from '@core/repositories/UnitOfWork';
-import { QuestionCreateUseCase } from '@core/services/question';
-import { QuestionCreateInput } from '@core/services/question/create/dto';
+import { QuestionCreateUseCase } from '@application/question/usecases';
+import { QuestionCreateInput } from '@application/question/usecases/create/dto';
+import { ServerError } from '@cloneoverflow/common';
+import { Unit, UnitOfWork } from '@common/repository/UnitOfWork';
+import { QuestionRepository } from '@core/question/repository/QuestionRepository';
+import { TagRepository } from '@core/tag/repository/TagRepository';
 import { createQuestion } from '@tests/utils/models/question';
 import { createTag } from '@tests/utils/models/tag';
 
@@ -56,6 +56,6 @@ describe('Question service: test CreateUseCase', () => {
         title: 'title',
         text: 'text',
       },
-    })).rejects.toThrow(Exception);
+    })).rejects.toThrow(ServerError);
   });
 });

@@ -4,6 +4,9 @@
   "description": "Nothing special just a copy of https://stackoverflow.com/",
   "keywords": [],
   "author": "",
+  "scripts": {
+    "build:backend": "docker build -t cloneoverflow:backend --file=./backend/Dockerfile ."
+  },
   "license": "ISC",
   "workspaces": [
     "backend",

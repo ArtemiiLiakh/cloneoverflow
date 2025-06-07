@@ -1,5 +1,5 @@
 import { UserStatusEnum } from '@cloneoverflow/common';
-import { User } from '@core/models/user/User';
+import { User } from '@core/user/User';
 
 describe('Entity: test User entity', () => {
   test('Create User entity with fullfiled fields', () => {

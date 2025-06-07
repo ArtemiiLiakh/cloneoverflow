@@ -1,5 +1,5 @@
 import { UserStatusEnum, VoteTypeEnum } from '@cloneoverflow/common';
-import { Answer, AnswerDetails, AnswerOwner, AnswerVoter } from '@core/models/answer';
+import { Answer, AnswerDetails, AnswerOwner, AnswerVoter } from '@core/answer';
 
 export const createAnswer = (params?: Partial<Answer>): Answer => {
   return Answer.new({

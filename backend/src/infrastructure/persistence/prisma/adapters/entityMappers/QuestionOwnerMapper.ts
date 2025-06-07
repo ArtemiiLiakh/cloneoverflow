@@ -1,5 +1,5 @@
 import { UserStatusEnum } from '@cloneoverflow/common';
-import { QuestionOwner } from '@core/models/question/QuestionOwner';
+import { QuestionOwner } from '@core/question/QuestionOwner';
 import Prisma from '@prisma/client';
 
 export const QuestionOwnerMapper = (questionId: string, owner: Prisma.User): QuestionOwner => {

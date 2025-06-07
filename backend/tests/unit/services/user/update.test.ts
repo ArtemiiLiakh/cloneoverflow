@@ -1,7 +1,7 @@
-import { BadBodyException, ForbiddenException } from '@cloneoverflow/common';
-import { UserRepository } from '@core/repositories/user/UserRepository';
-import { UserUpdateUseCase } from '@core/services/user';
-import { UserUpdateInput } from '@core/services/user/update/dto';
+import { UserUpdateUseCase } from '@application/user/usecases';
+import { UserUpdateInput } from '@application/user/usecases/update/dto';
+import { UserRepository } from '@core/user/repository/UserRepository';
+import { UsernameAlreadyExists } from '@core/user/exceptions';
 import { createUser } from '@tests/utils/models/user';
 
 describe('User service: test GetUseCase', () => {
@@ -33,7 +33,7 @@ describe('User service: test GetUseCase', () => {
     expect(userRepositoryMock.update).toHaveBeenCalled();
   });
 
-  test('Throw an error because username is already exist and it belongs to another user', () => {
+  test('Throw an error because username already exists and it belongs to another user', () => {
     const user = createUser();
 
     const payload: UserUpdateInput = {
@@ -52,7 +52,7 @@ describe('User service: test GetUseCase', () => {
     const updateUseCase = new UserUpdateUseCase(
       userRepositoryMock as UserRepository,
     );
-    expect(updateUseCase.execute(payload)).rejects.toThrow(ForbiddenException);
+    expect(updateUseCase.execute(payload)).rejects.toThrow(UsernameAlreadyExists);
     expect(userRepositoryMock.isExist).toHaveBeenCalled();
   });
 });

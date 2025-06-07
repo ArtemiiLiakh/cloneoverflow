@@ -1,5 +1,5 @@
 import { VoteTypeEnum } from '@cloneoverflow/common';
-import { QuestionVoter } from '@core/models/question';
+import { QuestionVoter } from '@core/question';
 
 describe('Entity: test QuestionVoter entity', () => {
   test('Create QuestionVoter entity with fullfiled fields', () => {

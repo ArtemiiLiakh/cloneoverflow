@@ -1,10 +1,19 @@
-import { TagRepoSearchOutput } from '@core/repositories/tag/dtos/Search';
-import { TagRepository } from '@core/repositories/tag/TagRepository';
-import { SearchTagsUseCase } from '@core/services/search';
-import { SearchTagsInput } from '@core/services/search/searchTags/dto';
+import { SearchTagsUseCase } from '@application/search/usercases';
+import { SearchTagsInput } from '@application/search/usercases/dtos';
+import { PaginationInfo } from '@cloneoverflow/common';
+import { TagRepoSearchOutput } from '@core/tag/repository/dtos/Search';
+import { TagRepository } from '@core/tag/repository/TagRepository';
 import { createTag } from '@tests/utils/models/tag';
 
 describe('Search service: test TagsUseCase', () => {
+  const paginationInfo: PaginationInfo = {
+    page: 0,
+    pageSize: 0,
+    totalAmount: 0,
+    totalPages: 0,
+    hasNext: false,
+  };
+  
   test('Search tags', async () => {
     const tagEntity = createTag();
 
@@ -22,14 +31,7 @@ describe('Search service: test TagsUseCase', () => {
           tag: tagEntity, 
           questionAmount: 0,
         }],
-        pagination: {
-          nextElems: 0,
-          page: 0,
-          pageSize: 0,
-          prevElems: 0,
-          totalAmount: 0,
-          totalPages: 0,
-        },
+        pagination: paginationInfo,
       } as TagRepoSearchOutput),
     } as Partial<TagRepository>;
 
@@ -46,14 +48,7 @@ describe('Search service: test TagsUseCase', () => {
     const tagRepositoryMock = {
       search: async () => ({
         data: [],
-        pagination: {
-          nextElems: 0,
-          page: 0,
-          pageSize: 0,
-          prevElems: 0,
-          totalAmount: 0,
-          totalPages: 0,
-        },
+        pagination: paginationInfo,
       } as TagRepoSearchOutput),
     } as Partial<TagRepository>;
 
@@ -64,12 +59,11 @@ describe('Search service: test TagsUseCase', () => {
     const { data, pagination } = await searchTagUseCase.execute({});
     expect(data.length).toEqual(0);
     expect(pagination).toEqual({
-      nextElems: 0,
       page: 0,
       pageSize: 0,
-      prevElems: 0,
       totalAmount: 0,
       totalPages: 0,
+      hasNext: false,
     });
   });
 });

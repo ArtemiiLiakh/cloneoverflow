@@ -1,11 +1,11 @@
-import { NotFoundException } from '@cloneoverflow/common';
-import { TagRepoCreateOrFindManyInput, TagRepoCreateOrFindManyOutput } from '@core/repositories/tag/dtos/CreateOrFindMany';
-import { TagRepoDeleteInput, TagRepoDeleteOutput } from '@core/repositories/tag/dtos/Delete';
-import { TagRepoGetByNameInput, TagRepoGetByNameOuput } from '@core/repositories/tag/dtos/GetByName';
-import { TagRepoGetQuestionTagsInput, TagRepoGetQuestionTagsOutput } from '@core/repositories/tag/dtos/GetQuestionTags';
-import { TagRepoIsExistInput, TagRepoIsExistOutput } from '@core/repositories/tag/dtos/IsExist';
-import { TagRepoSearchInput, TagRepoSearchOutput } from '@core/repositories/tag/dtos/Search';
-import { TagRepository } from '@core/repositories/tag/TagRepository';
+import { TagNotFound } from '@core/tag/exceptions/TagNotFound';
+import { TagRepoCreateOrFindManyInput, TagRepoCreateOrFindManyOutput } from '@core/tag/repository/dtos/CreateOrFindMany';
+import { TagRepoDeleteInput, TagRepoDeleteOutput } from '@core/tag/repository/dtos/Delete';
+import { TagRepoGetByNameInput, TagRepoGetByNameOuput } from '@core/tag/repository/dtos/GetByName';
+import { TagRepoGetQuestionTagsInput, TagRepoGetQuestionTagsOutput } from '@core/tag/repository/dtos/GetQuestionTags';
+import { TagRepoIsExistInput, TagRepoIsExistOutput } from '@core/tag/repository/dtos/IsExist';
+import { TagRepoSearchInput, TagRepoSearchOutput } from '@core/tag/repository/dtos/Search';
+import { TagRepository } from '@core/tag/repository/TagRepository';
 import { PrismaClient } from '@prisma/client';
 import { TagMapper } from '../adapters/entityMappers/TagMapper';
 import { PrismaPaginationRepository } from './PrismaPaginationRepository';
@@ -25,7 +25,7 @@ export class PrismaTagRepository implements TagRepository {
     });
 
     if (!tag) {
-      throw new NotFoundException('Tag with this name is not found');
+      throw new TagNotFound();
     }
 
     return TagMapper.toEntity(tag);
@@ -50,10 +50,6 @@ export class PrismaTagRepository implements TagRepository {
   async isExist (
     { tagId, name }: TagRepoIsExistInput,
   ): Promise<TagRepoIsExistOutput> {
-    if (!tagId && !name) {
-      throw new Error('Tag id or name is required');
-    }
-    
     const res = await this.client.tag.findFirst({
       where: {
         id: tagId ? +tagId : undefined,

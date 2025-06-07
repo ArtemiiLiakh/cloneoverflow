@@ -1,5 +1,5 @@
 import { UserStatusEnum } from '@cloneoverflow/common';
-import { QuestionOwner } from '@core/models/question';
+import { QuestionOwner } from '@core/question';
 
 describe('Entity: test QuestionOwner entity', () => {
   test('Create QuestionOwner entity with fullfiled fields', () => {

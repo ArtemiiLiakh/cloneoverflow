@@ -1,6 +1,6 @@
 import { Select } from '@common/repository/select';
 import { isObjectEmpty } from '@common/utils/objectUtils';
-import { User } from '@core/models/user';
+import { User } from '@core/user';
 import { Prisma } from '@prisma/client';
 
 export const UserSelectAdapter = (

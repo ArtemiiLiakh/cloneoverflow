@@ -1,4 +1,4 @@
-import { Question } from '@core/models/question/Question';
+import { Question } from '@core/question/Question';
 import Prisma from '@prisma/client';
 
 export class QuestionMapper  {

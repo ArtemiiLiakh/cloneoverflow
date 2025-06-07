@@ -1,5 +1,6 @@
 import config from '@/config';
-import { PaginationDTO, PaginatedData } from '@cloneoverflow/common';
+import { PaginationOptions } from '@cloneoverflow/common';
+import { PaginatedData } from '@common/repository/pagination';
 
 type WhereParam = { where: object };
 
@@ -8,28 +9,24 @@ export class PrismaPaginationRepository {
     findMany: (args: P) => Promise<R[]>,
     count: (args: WhereParam) => Promise<number>,
     payload: P,
-    pagination: PaginationDTO | undefined,
+    pagination: PaginationOptions | undefined,
   ): Promise<PaginatedData<R>> {
+    
     const page = pagination?.page ?? config.defaultPagination.page!;
     const pageSize = pagination?.pageSize ?? config.defaultPagination.pageSize!;
-
+    
     const data = await findMany({
       ...payload,
       take: pageSize,
-      skip: page * pageSize,
+      skip: (page-1) * pageSize,
     });
 
     const totalAmount = await count({
       where: (payload as WhereParam).where,
     });
-    const totalPages = totalAmount <= pageSize ? 0 : Math.floor(totalAmount / pageSize);
+    const totalPages = Math.ceil(totalAmount / pageSize);
+    const hasNext = totalPages > page;
 
-    const prevElems = page ? pageSize : 0;
-    let nextElems = totalAmount - (page + 1) * pageSize;
-
-    nextElems = data.length < pageSize ? 0 : nextElems;
-    nextElems = Math.min(nextElems, pageSize);
-    
     return {
       data,
       pagination: {
@@ -37,8 +34,7 @@ export class PrismaPaginationRepository {
         pageSize,
         totalPages,
         totalAmount,
-        nextElems: page >= totalPages ? 0 : nextElems,
-        prevElems: page <= 0 ? 0 : prevElems,
+        hasNext,
       },
     };
   }

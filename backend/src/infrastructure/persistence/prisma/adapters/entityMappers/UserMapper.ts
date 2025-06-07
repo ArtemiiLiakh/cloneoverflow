@@ -1,5 +1,5 @@
 import { UserStatusEnum } from '@cloneoverflow/common';
-import { User } from '@core/models/user/User';
+import { User } from '@core/user/User';
 import Prisma from '@prisma/client';
 
 export class UserMapper {

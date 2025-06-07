@@ -1,5 +1,5 @@
 import { UserStatusEnum, VoteTypeEnum } from '@cloneoverflow/common';
-import { Question, QuestionDetails, QuestionOwner, QuestionViewer, QuestionVoter } from '@core/models/question';
+import { Question, QuestionDetails, QuestionOwner, QuestionViewer, QuestionVoter } from '@core/question';
 
 export const createQuestion = (params?: Partial<Question>): Question => {
   return Question.new({

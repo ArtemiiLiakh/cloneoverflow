@@ -1,6 +1,6 @@
-import { AnswerRepository } from '@core/repositories/answer/AnswerRepository';
-import { AnswerUpdateUseCase } from '@core/services/answer';
-import { IUserRatingValidator } from '@core/services/validators/types';
+import { AnswerRepository } from '@core/answer/repository/AnswerRepository';
+import { AnswerUpdateUseCase } from '@application/answer/usecases';
+import { IUserRatingValidator } from '@application/validators/types';
 import { createAnswer } from '@tests/utils/models/answer';
 
 describe('Answer service: test UpdateUseCase', () => {

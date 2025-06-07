@@ -1,4 +1,4 @@
-import { Tag } from '@core/models/tag/Tag';
+import { Tag } from '@core/tag/Tag';
 import Prisma from '@prisma/client';
 
 export class TagMapper {

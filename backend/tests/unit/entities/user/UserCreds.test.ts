@@ -1,4 +1,4 @@
-import { UserCreds } from '@core/models/user';
+import { UserCreds } from '@core/user';
 
 describe('Entity: test UserCreds entity', () => {
   test('Create UserCreds entity with fullfiled fields', () => {

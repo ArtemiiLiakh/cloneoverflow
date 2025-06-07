@@ -1,6 +1,6 @@
-import { NoEntityWithIdException } from '@cloneoverflow/common';
-import { QuestionRepository } from '@core/repositories/question/QuestionRepository';
-import { QuestionAddViewerUseCase } from '@core/services/question';
+import { QuestionAddViewerUseCase } from '@application/question/usecases';
+import { QuestionIdInvalid, QuestionViewerAlreadyExists } from '@core/question/exceptions';
+import { QuestionRepository } from '@core/question/repository/QuestionRepository';
 import { createQuesitonViewer, createQuestion } from '@tests/utils/models/question';
 
 describe('Question service: test AddViewerUseCase', () => {
@@ -45,15 +45,15 @@ describe('Question service: test AddViewerUseCase', () => {
       questionRepositoryMock as QuestionRepository,
     );
 
-    await addViwerUseCase.execute({
+    expect(addViwerUseCase.execute({
       executorId: viewer.userId,
       questionId: viewer.questionId,
-    });
+    })).rejects.toThrow(QuestionViewerAlreadyExists);
 
     expect(questionRepositoryMock.addViewer).not.toHaveBeenCalled();
   });
 
-  test('When question does not exist expect it throws an error', () => {
+  test('Throw an error question does not exist expect', () => {
     const questionRepositoryMock = {
       isExist: jest.fn().mockResolvedValue(false),
     } as Partial<QuestionRepository>;
@@ -62,9 +62,9 @@ describe('Question service: test AddViewerUseCase', () => {
       questionRepositoryMock as QuestionRepository,
     );
 
-    void expect(addViwerUseCase.execute({
+    expect(addViwerUseCase.execute({
       executorId: 'executorId',
       questionId: 'questionId',
-    })).rejects.toThrow(NoEntityWithIdException);
+    })).rejects.toThrow(QuestionIdInvalid);
   });
 });
