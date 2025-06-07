@@ -1,8 +1,8 @@
 import { UserStatusEnum, VoteTypeEnum } from '@cloneoverflow/common';
 import { Nullable } from '@common/utils/classTypes';
-import { QuestionDetails } from '@core/models/question/QuestionDetails';
-import { QuestionOwner } from '@core/models/question/QuestionOwner';
-import { QuestionVoter } from '@core/models/question/QuestionVoter';
+import { QuestionDetails } from '@core/question/QuestionDetails';
+import { QuestionOwner } from '@core/question/QuestionOwner';
+import { QuestionVoter } from '@core/question/QuestionVoter';
 import Prisma from '@prisma/client';
 import { TagMapper } from './TagMapper';
 

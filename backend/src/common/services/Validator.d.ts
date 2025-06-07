@@ -1,7 +1,3 @@
-export interface Validator<ValidatorInput> {
-  validate(payload: ValidatorInput): void | Promise<void>;
-}
-
-export interface ValidatorUseCase<ValidatorInput, ValidatorOutput> {
+export interface Validator<ValidatorInput, ValidatorOutput=void> {
   validate(payload: ValidatorInput): ValidatorOutput | Promise<ValidatorOutput>;
 }

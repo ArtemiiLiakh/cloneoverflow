@@ -1,5 +1,5 @@
 import { UserStatusEnum } from '@cloneoverflow/common';
-import { User, UserCreds, UserProfile } from '@core/models/user';
+import { User, UserCreds, UserProfile } from '@core/user';
 
 export const createUser = (params?: Partial<User>): User => {
   return User.new({

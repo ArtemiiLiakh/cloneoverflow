@@ -1,8 +1,8 @@
 import { UserStatusEnum, VoteTypeEnum } from '@cloneoverflow/common';
 import { Nullable } from '@common/utils/classTypes';
-import { AnswerDetails } from '@core/models/answer/AnswerDetails';
-import { AnswerOwner } from '@core/models/answer/AnswerOwner';
-import { AnswerVoter } from '@core/models/answer/AnswerVoter';
+import { AnswerDetails } from '@core/answer/AnswerDetails';
+import { AnswerOwner } from '@core/answer/AnswerOwner';
+import { AnswerVoter } from '@core/answer/AnswerVoter';
 import Prisma from '@prisma/client';
 
 export class AnswerDetailsMapper {

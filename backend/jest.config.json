@@ -1,7 +1,7 @@
 {
   "preset": "ts-jest",
   "testEnvironment": "node",
-  "setupFilesAfterEnv": ["<rootDir>/tests/e2e/setupEnv.ts"],
+  "setupFilesAfterEnv": ["<rootDir>/tests/integration/setupEnv.ts"],
   "testMatch": ["<rootDir>/tests/**/*.test.ts"],
   "moduleNameMapper": {
     "@/(.*)$": "<rootDir>/src/$1",
@@ -9,6 +9,7 @@
     "@infrastructure/(.*)$": "<rootDir>/src/infrastructure/$1",
     "@application/(.*)$": "<rootDir>/src/application/$1",
     "@common/(.*)$": "<rootDir>/src/common/$1",
+    "@web/(.*)$": "<rootDir>/src/web/$1",
     "@tests/(.*)$": "<rootDir>/tests/$1"
   }
 }

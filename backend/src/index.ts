@@ -1,6 +1,5 @@
-import 'tsconfig-paths/register';
 import config from './config';
-import { initApplication } from '@application/http-rest/nestjs';
+import { initApplication } from '@web/index';
 
 (async (): Promise<void> => {
   const app = await initApplication();

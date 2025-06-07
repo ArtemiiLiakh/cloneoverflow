@@ -1,17 +1,21 @@
-import { NoEntityWithIdException, NotFoundException, UserStatusEnum } from '@cloneoverflow/common';
-import { UserRepository } from '@core/repositories';
-import { UserRepoCreateInput, UserRepoCreateOutput } from '@core/repositories/user/dtos/Create';
-import { UserRepoDecreaseRatingInput, UserRepoDecreaseRatingOutput } from '@core/repositories/user/dtos/DecreaseRating';
-import { UserRepoDeleteInput, UserRepoDeleteOutput } from '@core/repositories/user/dtos/Delete';
-import { UserRepoGetByEmailInput, UserRepoGetByEmailOutput } from '@core/repositories/user/dtos/GetByEmail';
-import { UserRepoGetByIdInput, UserRepoGetByIdOutput } from '@core/repositories/user/dtos/GetById';
-import { UserRepoGetByUsernameInput, UserRepoGetByUsernameOutput } from '@core/repositories/user/dtos/GetByUsername';
-import { UserRepoGetCredsInput, UserRepoGetCredsOutput } from '@core/repositories/user/dtos/GetCreds';
-import { UserRepoGetProfileByIdInput, UserRepoGetProfileByIdOutput } from '@core/repositories/user/dtos/GetProfileById';
-import { UserRepoincreaseRatingInput, UserRepoIncreaseRatingOutput } from '@core/repositories/user/dtos/IncreaseRating';
-import { UserRepoUpdateInput, UserRepoUpdateOutput } from '@core/repositories/user/dtos/Update';
-import { UserRepoUpdateCredsInput, UserRepoUpdateCredsOutput } from '@core/repositories/user/dtos/UpdateCreds';
-import { UserRepoIsExistInput, UserRepoIsExistOutput } from '@core/repositories/user/dtos/isExist';
+import { UserStatusEnum } from '@cloneoverflow/common';
+import { UserCredentialsNotFound } from '@core/user/exceptions/UserCredentialsNotFound';
+import { UserIdInvalid } from '@core/user/exceptions/UserIdInvalid';
+import { UserWithEmailNotFound } from '@core/user/exceptions/UserWithEmailNotFound';
+import { UserWithUsernameNotFound } from '@core/user/exceptions/UserWithUsernameNotFound';
+import { UserRepository } from '@core/user/repository/UserRepository';
+import { UserRepoCreateInput, UserRepoCreateOutput } from '@core/user/repository/dtos/Create';
+import { UserRepoDecreaseRatingInput, UserRepoDecreaseRatingOutput } from '@core/user/repository/dtos/DecreaseRating';
+import { UserRepoDeleteInput, UserRepoDeleteOutput } from '@core/user/repository/dtos/Delete';
+import { UserRepoGetByEmailInput, UserRepoGetByEmailOutput } from '@core/user/repository/dtos/GetByEmail';
+import { UserRepoGetByIdInput, UserRepoGetByIdOutput } from '@core/user/repository/dtos/GetById';
+import { UserRepoGetByUsernameInput, UserRepoGetByUsernameOutput } from '@core/user/repository/dtos/GetByUsername';
+import { UserRepoGetCredsInput, UserRepoGetCredsOutput } from '@core/user/repository/dtos/GetCreds';
+import { UserRepoGetProfileByIdInput, UserRepoGetProfileByIdOutput } from '@core/user/repository/dtos/GetProfileById';
+import { UserRepoincreaseRatingInput, UserRepoIncreaseRatingOutput } from '@core/user/repository/dtos/IncreaseRating';
+import { UserRepoUpdateInput, UserRepoUpdateOutput } from '@core/user/repository/dtos/Update';
+import { UserRepoUpdateCredsInput, UserRepoUpdateCredsOutput } from '@core/user/repository/dtos/UpdateCreds';
+import { UserRepoIsExistInput, UserRepoIsExistOutput } from '@core/user/repository/dtos/isExist';
 import { PrismaClient } from '@prisma/client';
 import { UserCredsMapper } from '../adapters/entityMappers/UserCredsMapper';
 import { UserMapper } from '../adapters/entityMappers/UserMapper';
@@ -34,7 +38,7 @@ export class PrismaUserRepository implements UserRepository {
     });
 
     if (!user) {
-      throw new NotFoundException('User with this email is not found');
+      throw new UserWithEmailNotFound();
     }
 
     return UserMapper.toEntity(user);
@@ -51,7 +55,7 @@ export class PrismaUserRepository implements UserRepository {
     });
 
     if (!user) {
-      throw new NoEntityWithIdException('User');
+      throw new UserIdInvalid();
     }
 
     return UserMapper.toEntity(user);
@@ -68,7 +72,7 @@ export class PrismaUserRepository implements UserRepository {
     });
 
     if (!user) {
-      throw new NotFoundException('User with this username is not found');
+      throw new UserWithUsernameNotFound();
     }
 
     return UserMapper.toEntity(user);  
@@ -85,7 +89,7 @@ export class PrismaUserRepository implements UserRepository {
     });
 
     if (!creds) {
-      throw new NotFoundException(`User creds with this ${userId ? 'id' : 'email'} is not found`);
+      throw new UserCredentialsNotFound();
     }
 
     return UserCredsMapper.toEntity(creds);   
@@ -112,7 +116,7 @@ export class PrismaUserRepository implements UserRepository {
     });
 
     if (!user) {
-      throw new NoEntityWithIdException('User');
+      throw new UserIdInvalid();
     }
 
     return UserProfileMapper.toEntity(user, {
@@ -125,10 +129,6 @@ export class PrismaUserRepository implements UserRepository {
   async isExist (
     { userId, email, username }: UserRepoIsExistInput,
   ): Promise<UserRepoIsExistOutput> {
-    if (!userId && !email && !username) {
-      throw new Error('User id or email or username must be provided');
-    }
-
     const res = await this.client.user.findFirst({
       where: {
         id: userId,

@@ -1,4 +1,4 @@
-import { Question } from '@core/models/question';
+import { Question } from '@core/question';
 
 describe('Entity: test Question entity', () => {
   test('Create Question entity with fullfiled fields', () => {

@@ -1,6 +1,6 @@
 import { Select } from '@common/repository/select';
 import { isObjectEmpty } from '@common/utils/objectUtils';
-import { Answer } from '@core/models/answer';
+import { Answer } from '@core/answer';
 import { Prisma } from '@prisma/client';
 
 export const AnswerSelectAdapter = (

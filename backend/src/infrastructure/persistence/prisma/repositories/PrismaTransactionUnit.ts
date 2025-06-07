@@ -1,5 +1,5 @@
 import { IsolationLevel } from '@cloneoverflow/common';
-import { Unit, UnitOfWork } from '@core/repositories/UnitOfWork';
+import { Unit, UnitOfWork } from '@common/repository/UnitOfWork';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { PrismaAnswerRepository } from './PrismaAnswerRepository';
 import { PrismaAnswerVoterRepository } from './PrismaAnswerVoterRepository';

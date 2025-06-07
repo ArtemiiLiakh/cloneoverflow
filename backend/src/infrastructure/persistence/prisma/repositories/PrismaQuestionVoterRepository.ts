@@ -1,9 +1,9 @@
 import { VoteTypeEnum } from '@cloneoverflow/common';
-import { QuestionVoter } from '@core/models/question';
-import { QuestionVoterRepository } from '@core/repositories';
-import { QuestionVoterRepoCreateInput, QuestionVoterRepoCreateOutput } from '@core/repositories/question/questionVoter/dtos/Create';
-import { QuestionVoterRepoGetInput, QuestionVoterRepoGetOutput } from '@core/repositories/question/questionVoter/dtos/Get';
-import { QuestionVoterRepoUpdateInput, QuestionVoterRepoUpdateOutput } from '@core/repositories/question/questionVoter/dtos/Update';
+import { QuestionVoter } from '@core/question';
+import { QuestionVoterRepoCreateInput, QuestionVoterRepoCreateOutput } from '@core/question/repository/dtos/questionVoter/Create';
+import { QuestionVoterRepoGetInput, QuestionVoterRepoGetOutput } from '@core/question/repository/dtos/questionVoter/Get';
+import { QuestionVoterRepoUpdateInput, QuestionVoterRepoUpdateOutput } from '@core/question/repository/dtos/questionVoter/Update';
+import { QuestionVoterRepository } from '@core/question/repository/QuestionVoterRepository';
 import { PrismaClient } from '@prisma/client';
 
 export class PrismaQuestionVoterRepository implements QuestionVoterRepository {

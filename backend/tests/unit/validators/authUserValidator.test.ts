@@ -1,7 +1,7 @@
-import { ExecutorPayload } from '@application/services/auth/data';
-import { AuthUserValidator } from '@application/services/validators';
-import { ForbiddenException, UnauthorizedException, UserStatusEnum } from '@cloneoverflow/common';
-import { UserRepository } from '@core/repositories';
+import { AccountBlockedException, UserUnauthorized } from '@application/auth/exceptions';
+import { AuthUserValidator } from '@application/validators';
+import { UserStatusEnum } from '@cloneoverflow/common';
+import { UserRepository } from '@core/user/repository/UserRepository';
 
 describe('Validator: test AuthUserValidator', () => {
   test('Expect the validation is passed when user exists', async () => {
@@ -12,7 +12,8 @@ describe('Validator: test AuthUserValidator', () => {
     const authUserValidator = new AuthUserValidator(userRepository as UserRepository);
     
     await expect(authUserValidator.validate({
-      executor: {} as ExecutorPayload,
+      userId: 'userId',
+      status: UserStatusEnum.USER,
     })).resolves.toBeUndefined();
 
     expect(userRepository.isExist).toHaveBeenCalled();
@@ -25,14 +26,10 @@ describe('Validator: test AuthUserValidator', () => {
 
     const authUserValidator = new AuthUserValidator(userRepository as UserRepository);
     
-    const executor: ExecutorPayload = {
-      userId: '',
-      status: UserStatusEnum.BLOCKED,
-    };
-
     await expect(authUserValidator.validate({ 
-      executor,
-    })).rejects.toThrow(ForbiddenException);
+      userId: 'userId',
+      status: UserStatusEnum.BLOCKED
+    })).rejects.toThrow(AccountBlockedException);
 
     expect(userRepository.isExist).not.toHaveBeenCalled();
   });
@@ -44,16 +41,12 @@ describe('Validator: test AuthUserValidator', () => {
 
     const authUserValidator = new AuthUserValidator(userRepository as UserRepository);
     
-    const user: ExecutorPayload = {
-      userId: '',
-      status: UserStatusEnum.USER,
-    };
-    
     await expect(
       authUserValidator.validate({
-        executor: user,
+        userId: '',
+        status: UserStatusEnum.USER,
       }),
-    ).rejects.toThrow(UnauthorizedException);
+    ).rejects.toThrow(UserUnauthorized);
 
     expect(userRepository.isExist).toHaveBeenCalled();
   });

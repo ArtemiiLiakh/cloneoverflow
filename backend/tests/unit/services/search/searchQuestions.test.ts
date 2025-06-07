@@ -1,9 +1,9 @@
+import { SearchQuestionsUseCase } from '@application/search/usercases';
+import { SearchQuestionsInput } from '@application/search/usercases/dtos';
 import { SearchQuestionFilterByEnum, UnauthorizedException } from '@cloneoverflow/common';
-import { Tag } from '@core/models/tag/Tag';
-import { QuestionRepoSearchOutput } from '@core/repositories/question/dtos/Search';
-import { QuestionRepository } from '@core/repositories/question/QuestionRepository';
-import { SearchQuestionsUseCase } from '@core/services/search';
-import { SearchQuestionsInput } from '@core/services/search/searchQuestions/dto';
+import { QuestionRepoSearchOutput } from '@core/question/repository/dtos/Search';
+import { QuestionRepository } from '@core/question/repository/QuestionRepository';
+import { Tag } from '@core/tag/Tag';
 import { createQuestion, createQuestionOwner } from '@tests/utils/models/question';
 
 describe('Search service: test QuestionUseCase', () => {
@@ -31,12 +31,11 @@ describe('Search service: test QuestionUseCase', () => {
           answersAmount: 0,
         }],
         pagination: {
-          nextElems: 0,
           page: 0,
           pageSize: 0,
-          prevElems: 0,
           totalAmount: 0,
           totalPages: 0,
+          hasNext: false,
         },
       } as QuestionRepoSearchOutput),
     } as Partial<QuestionRepository>;
@@ -57,12 +56,11 @@ describe('Search service: test QuestionUseCase', () => {
       search: async () => ({
         data: [],
         pagination: {
-          nextElems: 0,
           page: 0,
           pageSize: 0,
-          prevElems: 0,
           totalAmount: 0,
           totalPages: 0,
+          hasNext: false,
         },
       } as QuestionRepoSearchOutput),
     } as Partial<QuestionRepository>;

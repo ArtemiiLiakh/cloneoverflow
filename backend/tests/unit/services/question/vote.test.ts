@@ -1,10 +1,12 @@
-import { ForbiddenException, VoteTypeEnum } from '@cloneoverflow/common';
-import { QuestionVoterRepository, UserRepository } from '@core/repositories';
-import { QuestionRepository } from '@core/repositories/question/QuestionRepository';
-import { Unit, UnitOfWork } from '@core/repositories/UnitOfWork';
-import { QuestionVoteUseCase } from '@core/services/question';
-import { IUserRatingValidator } from '@core/services/validators/types';
+import { QuestionVoteUseCase } from '@application/question/usecases';
+import { IUserRatingValidator } from '@application/validators/types';
+import { VoteTypeEnum } from '@cloneoverflow/common';
+import { CannotVoteOwnQuestion, CannotVoteQuestionTwice } from '@core/question/exceptions';
+import { QuestionRepository } from '@core/question/repository/QuestionRepository';
+import { Unit, UnitOfWork } from '@common/repository/UnitOfWork';
 import { createQuestion, createQuestionVoter } from '@tests/utils/models/question';
+import { QuestionVoterRepository } from '@core/question/repository/QuestionVoterRepository';
+import { UserRepository } from '@core/user/repository/UserRepository';
 
 describe('Question service: test VoteUseCase', () => {
   test('Vote question for the first time', async () => {
@@ -141,7 +143,7 @@ describe('Question service: test VoteUseCase', () => {
       executorId: userId,
       questionId: questionEntity.questionId,
       vote,
-    })).rejects.toThrow(ForbiddenException);
+    })).rejects.toThrow(CannotVoteQuestionTwice);
   });
 
   test('Throw an error if owner votes his own question', async () => {
@@ -167,7 +169,7 @@ describe('Question service: test VoteUseCase', () => {
       executorId: questionEntity.ownerId,
       questionId: questionEntity.questionId,
       vote,
-    })).rejects.toThrow(ForbiddenException);
+    })).rejects.toThrow(CannotVoteOwnQuestion);
 
     expect(userRatingValidatorMock.validate).not.toHaveBeenCalled();
   });

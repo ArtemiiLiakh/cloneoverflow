@@ -1,4 +1,4 @@
-import { QuestionViewer } from '@core/models/question';
+import { QuestionViewer } from '@core/question';
 
 describe('Entity: test QuestionViewer entity', () => {
   test('Create QuestionViewer entity with fullfiled fields', () => {

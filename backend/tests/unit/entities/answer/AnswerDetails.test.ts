@@ -1,5 +1,5 @@
 import { UserStatusEnum, VoteTypeEnum } from '@cloneoverflow/common';
-import { AnswerDetails } from '@core/models/answer';
+import { AnswerDetails } from '@core/answer';
 
 describe('Entity: test AnswerDetails entity', () => {
   test('Create AnswerDetails entity with fullfiled fields', () => {

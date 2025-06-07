@@ -1,9 +1,11 @@
-import { BadBodyException } from '@cloneoverflow/common';
-import { AnswerRepository } from '@core/repositories/answer/AnswerRepository';
-import { QuestionRepository } from '@core/repositories/question/QuestionRepository';
-import { Unit, UnitOfWork } from '@core/repositories/UnitOfWork';
-import { QuestionCloseUseCase } from '@core/services/question';
-import { IUserRatingValidator } from '@core/services/validators/types';
+import { QuestionCloseUseCase } from '@application/question/usecases';
+import { IUserRatingValidator } from '@application/validators/types';
+import { Unit, UnitOfWork } from '@common/repository/UnitOfWork';
+import { AnswerNotBelongToQuestion } from '@core/answer/exceptions';
+import { AnswerRepository } from '@core/answer/repository/AnswerRepository';
+import { QuestionAlreadyClosed } from '@core/question/exceptions';
+import { CannotCloseOthersQuestion } from '@core/question/exceptions/CannotCloseOthersQuestion';
+import { QuestionRepository } from '@core/question/repository/QuestionRepository';
 import { createAnswer } from '@tests/utils/models/answer';
 import { createQuestion } from '@tests/utils/models/question';
 
@@ -34,7 +36,6 @@ describe('Question service: test CloseUseCase', () => {
     } as Unit;
 
     const closeUseCase = new QuestionCloseUseCase(
-      userRatingValidatorMock,
       questionRepositoryMock as QuestionRepository,
       answerRepositoryMock as AnswerRepository,
       { executeSeq: async (fn) => { fn(unitMock); } } as UnitOfWork,
@@ -46,14 +47,13 @@ describe('Question service: test CloseUseCase', () => {
       answerId: answer.answerId,
     });
 
-    expect(userRatingValidatorMock.validate).not.toHaveBeenCalled();
     expect(questionRepositoryMock.getById).toHaveBeenCalled();
     expect(answerRepositoryMock.getById).toHaveBeenCalled();
     expect(unitMock.questionRepository.closeQuestion).toHaveBeenCalled();
     expect(unitMock.answerRepository.setAsSolution).toHaveBeenCalled();
   });
 
-  test('Close question with another user', async () => {
+  test('Throw an error if user close other\'s question', async () => {
     const userId = 'userId';
 
     const question = createQuestion();
@@ -83,21 +83,16 @@ describe('Question service: test CloseUseCase', () => {
     } as Unit;
 
     const closeUseCase = new QuestionCloseUseCase(
-      userRatingValidatorMock,
       questionRepositoryMock as QuestionRepository,
       answerRepositoryMock as AnswerRepository,
       { executeSeq: async (fn) => { fn(unitMock) } } as UnitOfWork,
     );
 
-    await closeUseCase.execute({
+    expect(closeUseCase.execute({
       executorId: userId,
       questionId: question.questionId,
       answerId: answer.answerId,
-    });
-
-    expect(userRatingValidatorMock.validate).toHaveBeenCalled();
-    expect(questionRepositoryMock.getById).toHaveBeenCalled();
-    expect(answerRepositoryMock.getById).toHaveBeenCalled();
+    })).rejects.toThrow(CannotCloseOthersQuestion);
   });
 
   test('Throw an error because question is already closed', () => {
@@ -118,7 +113,6 @@ describe('Question service: test CloseUseCase', () => {
 
 
     const closeUseCase = new QuestionCloseUseCase(
-      {} as IUserRatingValidator,
       questionRepositoryMock as QuestionRepository,
       answerRepositoryMock as AnswerRepository,
       {} as UnitOfWork,
@@ -128,7 +122,7 @@ describe('Question service: test CloseUseCase', () => {
       executorId: question.ownerId,
       questionId: question.questionId,
       answerId: answer.answerId,
-    })).rejects.toThrow(BadBodyException);
+    })).rejects.toThrow(QuestionAlreadyClosed);
   });
 
   test('Throw an error because answer does not belong to question', () => {
@@ -146,7 +140,6 @@ describe('Question service: test CloseUseCase', () => {
     } as Partial<AnswerRepository>;
 
     const closeUseCase = new QuestionCloseUseCase(
-      {} as IUserRatingValidator,
       questionRepositoryMock as QuestionRepository,
       answerRepositoryMock as AnswerRepository,
       {} as UnitOfWork,
@@ -156,6 +149,6 @@ describe('Question service: test CloseUseCase', () => {
       executorId: question.ownerId,
       questionId: question.questionId,
       answerId: answer.answerId,
-    })).rejects.toThrow(BadBodyException);
+    })).rejects.toThrow(AnswerNotBelongToQuestion);
   });
 });

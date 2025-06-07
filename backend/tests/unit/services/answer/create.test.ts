@@ -1,8 +1,8 @@
-import { NoEntityWithIdException } from '@cloneoverflow/common';
-import { AnswerRepository } from '@core/repositories/answer/AnswerRepository';
-import { QuestionRepository } from '@core/repositories/question/QuestionRepository';
-import { AnswerCreateUseCase } from '@core/services/answer';
-import { AnswerCreateInput } from '@core/services/answer/create/dto';
+import { AnswerCreateUseCase } from '@application/answer/usecases';
+import { AnswerCreateInput } from '@application/answer/usecases/create/dto';
+import { QuestionIdInvalid } from '@core/question/exceptions';
+import { AnswerRepository } from '@core/answer/repository/AnswerRepository';
+import { QuestionRepository } from '@core/question/repository/QuestionRepository';
 import { createAnswer } from '@tests/utils/models/answer';
 
 describe('Answer service: test CreateUseCase', () => {
@@ -52,6 +52,6 @@ describe('Answer service: test CreateUseCase', () => {
       {} as AnswerRepository, 
     );
 
-    expect(createUseCase.execute(inputData)).rejects.toThrow(NoEntityWithIdException);
+    expect(createUseCase.execute(inputData)).rejects.toThrow(QuestionIdInvalid);
   });
 });

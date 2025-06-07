@@ -1,7 +1,7 @@
-import { FavoriteQuestionRepository } from '@core/repositories';
-import { QuestionRepoIsFavoriteInput, QuestionRepoIsFavoriteOutput } from '@core/repositories/question/favoriteQuestion/dtos/IsFavorite';
-import { QuestionRepoMakeFavoriteInput, QuestionRepoMakeFavoriteOutput } from '@core/repositories/question/favoriteQuestion/dtos/MakeFavorite';
-import { QuestionRepoRemoveFavoriteInput, QuestionRepoRemoveFavoriteOutput } from '@core/repositories/question/favoriteQuestion/dtos/RemoveFavorite';
+import { QuestionRepoIsFavoriteInput, QuestionRepoIsFavoriteOutput } from '@core/question/repository/dtos/favoriteQuestion/IsFavorite';
+import { QuestionRepoMakeFavoriteInput, QuestionRepoMakeFavoriteOutput } from '@core/question/repository/dtos/favoriteQuestion/MakeFavorite';
+import { QuestionRepoRemoveFavoriteInput, QuestionRepoRemoveFavoriteOutput } from '@core/question/repository/dtos/favoriteQuestion/RemoveFavorite';
+import { FavoriteQuestionRepository } from '@core/question/repository/FavoriteQuestionRepository';
 import { PrismaClient } from '@prisma/client';
 
 export class PrismaFavoriteQuestionRepository implements FavoriteQuestionRepository {

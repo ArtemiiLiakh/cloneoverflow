@@ -1,18 +1,17 @@
-import { AnswersSortByEnum, OrderByEnum, PaginationResponse } from '@cloneoverflow/common';
-import { AnswerRepository } from '@core/repositories/answer/AnswerRepository';
-import { AnswerRepoGetQuestionAnswersOutput } from '@core/repositories/answer/dtos/GetQuestionAnswers';
-import { AnswerGetByQuestionUseCase } from '@core/services/answer';
-import { AnswerGetByQuestionInput } from '@core/services/answer/dtos';
+import { AnswersSortByEnum, OrderByEnum, PaginationInfo } from '@cloneoverflow/common';
+import { AnswerRepository } from '@core/answer/repository/AnswerRepository';
+import { AnswerRepoGetQuestionAnswersOutput } from '@core/answer/repository/dtos/GetQuestionAnswers';
+import { AnswerGetByQuestionUseCase } from '@application/answer/usecases';
+import { AnswerGetByQuestionInput } from '@application/answer/usecases/dtos';
 import { createAnswerDetails } from '@tests/utils/models/answer';
 
 describe('Answer service: test GetQuestionAnswersUseCase', () => {
-  const paginationOutput: PaginationResponse = {
-    nextElems: 0,
+  const paginationOutput: PaginationInfo = {
     page: 0,
     pageSize: 0,
-    prevElems: 0,
     totalAmount: 0,
     totalPages: 0,
+    hasNext: false,
   };
   
   test('Get list of question answers', async () => {

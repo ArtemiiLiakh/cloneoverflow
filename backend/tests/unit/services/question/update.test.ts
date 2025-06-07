@@ -1,10 +1,10 @@
-import { Exception } from '@cloneoverflow/common';
-import { QuestionRepository } from '@core/repositories/question/QuestionRepository';
-import { TagRepository } from '@core/repositories/tag/TagRepository';
-import { Unit, UnitOfWork } from '@core/repositories/UnitOfWork';
-import { QuestionUpdateUseCase } from '@core/services/question';
-import { QuestionUpdateInput } from '@core/services/question/update/dto';
-import { IUserRatingValidator } from '@core/services/validators/types';
+import { QuestionUpdateUseCase } from '@application/question/usecases';
+import { QuestionUpdateInput } from '@application/question/usecases/update/dto';
+import { IUserRatingValidator } from '@application/validators/types';
+import { ServerError } from '@cloneoverflow/common';
+import { Unit, UnitOfWork } from '@common/repository/UnitOfWork';
+import { QuestionRepository } from '@core/question/repository/QuestionRepository';
+import { TagRepository } from '@core/tag/repository/TagRepository';
 import { createQuestion } from '@tests/utils/models/question';
 import { createTag } from '@tests/utils/models/tag';
 
@@ -155,6 +155,6 @@ describe('Question service: test UpdateUseCase', () => {
       executorId: question.ownerId,
       questionId: question.questionId,
       data: updateData,
-    })).rejects.toThrow(Exception);
+    })).rejects.toThrow(ServerError);
   });
 });

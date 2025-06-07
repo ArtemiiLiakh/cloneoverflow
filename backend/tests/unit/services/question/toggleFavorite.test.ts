@@ -1,6 +1,8 @@
+import { QuestionToggleFavoriteUseCase } from '@application/question/usecases/toggleFavorite/usecase';
 import { ForbiddenException, NoEntityWithIdException } from '@cloneoverflow/common';
-import { FavoriteQuestionRepository, QuestionRepository } from '@core/repositories';
-import { QuestionToggleFavoriteUseCase } from '@core/services/question/toggleFavorite/usecase';
+import { QuestionAlreadyFavorite } from '@core/question/exceptions';
+import { FavoriteQuestionRepository } from '@core/question/repository/FavoriteQuestionRepository';
+import { QuestionRepository } from '@core/question/repository/QuestionRepository';
 
 describe('Question service: toggle favorite question', () => {
   test('Expect it adds question to favorite', async () => {
@@ -74,7 +76,7 @@ describe('Question service: toggle favorite question', () => {
       action: 'add',
       executorId: 'executorId',
       questionId: 'questionId',
-    })).rejects.toThrow(ForbiddenException);
+    })).rejects.toThrow(QuestionAlreadyFavorite);
 
     expect(questionRepositoryMock.isExist).toHaveBeenCalled();
     expect(favoriteRepositoryMock.isFavorite).toHaveBeenCalled();

@@ -1,7 +1,8 @@
 import { ForbiddenException } from '@cloneoverflow/common';
-import { QuestionRepository } from '@core/repositories/question/QuestionRepository';
-import { QuestionDeleteUseCase } from '@core/services/question';
+import { QuestionRepository } from '@core/question/repository/QuestionRepository';
+import { QuestionDeleteUseCase } from '@application/question/usecases';
 import { createQuestion } from '@tests/utils/models/question';
+import { CannotDeleteOthersQuestion } from '@core/question/exceptions';
 
 describe('Question service: test DeleteUseCase', () => {
   test('Delete question', async () => {
@@ -42,6 +43,6 @@ describe('Question service: test DeleteUseCase', () => {
     expect(deleteUseCase.execute({ 
       executorId: wrongUserId,
       questionId: question.questionId,
-    })).rejects.toThrow(ForbiddenException);
+    })).rejects.toThrow(CannotDeleteOthersQuestion);
   });
 });

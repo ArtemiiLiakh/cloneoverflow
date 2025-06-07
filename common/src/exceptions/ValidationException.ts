@@ -3,8 +3,8 @@ import { Exception, SerializedError } from './Exception';
 
 export class ValidationException extends Exception {
   constructor (
-    public errors: ValidationError[], 
-    public field='body'
+    public errors: ValidationError[] = [], 
+    public field='body',
   ) {
     super(`obj.${field}: wrong value`, 400);
   }

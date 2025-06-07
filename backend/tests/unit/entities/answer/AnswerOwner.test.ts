@@ -1,5 +1,5 @@
 import { UserStatusEnum } from '@cloneoverflow/common';
-import { AnswerOwner } from '@core/models/answer';
+import { AnswerOwner } from '@core/answer';
 
 describe('Entity: test AnswerOwner entity', () => {
   test('Create AnswerOwner entity with fullfiled fields', () => {

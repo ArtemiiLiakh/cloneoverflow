@@ -1,11 +1,13 @@
-import { ForbiddenException, VoteTypeEnum } from '@cloneoverflow/common';
-import { AnswerVoter } from '@core/models/answer';
-import { AnswerVoterRepository, UserRepository } from '@core/repositories';
-import { AnswerRepository } from '@core/repositories/answer/AnswerRepository';
-import { AnswerVoterRepoUpdateInput } from '@core/repositories/answer/answerVoter/dtos/Update';
-import { Unit, UnitOfWork } from '@core/repositories/UnitOfWork';
-import { AnswerVoteUseCase } from '@core/services/answer';
-import { IUserRatingValidator } from '@core/services/validators/types';
+import { AnswerVoteUseCase } from '@application/answer/usecases';
+import { IUserRatingValidator } from '@application/validators/types';
+import { VoteTypeEnum } from '@cloneoverflow/common';
+import { Unit, UnitOfWork } from '@common/repository/UnitOfWork';
+import { AnswerVoter } from '@core/answer';
+import { CannotVoteAnswerTwice, CannotVoteOwnAnswer } from '@core/answer/exceptions';
+import { AnswerRepository } from '@core/answer/repository/AnswerRepository';
+import { AnswerVoterRepository } from '@core/answer/repository/AnswerVoterRepository';
+import { AnswerVoterRepoUpdateInput } from '@core/answer/repository/dtos/answerVoter/Update';
+import { UserRepository } from '@core/user/repository/UserRepository';
 import { createAnswer, createAnswerVoter } from '@tests/utils/models/answer';
 
 describe('Answer service: test VoteUseCase', () => {
@@ -146,7 +148,7 @@ describe('Answer service: test VoteUseCase', () => {
       executorId,
       answerId: answer.answerId,
       vote,
-    })).rejects.toThrow(ForbiddenException);
+    })).rejects.toThrow(CannotVoteAnswerTwice);
 
     expect(answerVoterRepositoryMock.update).not.toHaveBeenCalled();
   });
@@ -172,7 +174,7 @@ describe('Answer service: test VoteUseCase', () => {
       executorId: answer.ownerId,
       answerId: answer.answerId,
       vote: VoteTypeEnum.UP,
-    })).rejects.toThrow(ForbiddenException);
+    })).rejects.toThrow(CannotVoteOwnAnswer);
 
     expect(userRatingValidatorMock.validate).not.toHaveBeenCalled();
   });

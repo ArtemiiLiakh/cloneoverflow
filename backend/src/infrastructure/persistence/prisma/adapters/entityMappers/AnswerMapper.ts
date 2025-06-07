@@ -1,4 +1,4 @@
-import { Answer } from '@core/models/answer/Answer';
+import { Answer } from '@core/answer/Answer';
 import Prisma from '@prisma/client';
 
 export class AnswerMapper {

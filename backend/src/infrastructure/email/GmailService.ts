@@ -1,4 +1,4 @@
-import { EmailService } from '@application/interfaces/EmailService';
+import { EmailService } from '@common/services/EmailService';
 import config from '@/config';
 import { createTransport, Transporter } from 'nodemailer';
 

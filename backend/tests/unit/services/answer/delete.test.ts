@@ -1,7 +1,8 @@
-import { AnswerRepository } from '@core/repositories/answer/AnswerRepository';
-import { QuestionRepository } from '@core/repositories/question/QuestionRepository';
-import { Unit, UnitOfWork } from '@core/repositories/UnitOfWork';
-import { AnswerDeleteUseCase } from '@core/services/answer';
+import { AnswerDeleteUseCase } from '@application/answer/usecases';
+import { AnswerOwnerInvalid } from '@core/answer/exceptions';
+import { AnswerRepository } from '@core/answer/repository/AnswerRepository';
+import { QuestionRepository } from '@core/question/repository/QuestionRepository';
+import { Unit, UnitOfWork } from '@common/repository/UnitOfWork';
 import { createAnswer } from '@tests/utils/models/answer';
 
 describe('Answer service: test DeleteUseCase', () => {
@@ -82,6 +83,6 @@ describe('Answer service: test DeleteUseCase', () => {
     expect(deleteUseCase.execute({ 
       executorId, 
       answerId: answer.answerId,
-    })).rejects.toThrow();
+    })).rejects.toThrow(AnswerOwnerInvalid);
   });
 });
