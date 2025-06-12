@@ -1,7 +1,3 @@
-export const checkModifiedData = (createdAt?: Date, updatedAt?: Date) => {
-  return new Date(createdAt ?? '').getTime() !== new Date(updatedAt ?? '').getTime();
-}
-
 export const GetPassedDate = (date: string | Date | undefined) => {
   if (!date) return '';
   if (typeof date === 'string') date = new Date(date);
@@ -29,9 +25,6 @@ export const GetPassedDate = (date: string | Date | undefined) => {
   }
   else if (minutes > 0) {
     return minutes + ' minutes ago';
-  }
-  else if (seconds > 0) {
-    return seconds + ' seconds ago';
   }
   else {
     return 'now';

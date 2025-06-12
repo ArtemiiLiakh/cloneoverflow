@@ -1,19 +1,24 @@
+import { AuthService } from '@/api/services/auth.service';
+import { AuthContextProps, AuthContext } from '@/contexts/authContext';
+import { BasicLoginBody, CreateAccountBody } from '@cloneoverflow/common/api/auth';
 import { useContext } from 'react';
-import { AuthContext, AuthContextProps } from '../contexts/authContext';
-import { AuthService } from '../api/services/auth.service';
-import { AuthLoginDTO, AuthSignupDTO } from '@cloneoverflow/common';
 
 export const useAuth = () => {
   const { user, authLoading, setUser, setAuthLoading } = useContext<AuthContextProps>(AuthContext);
 
-  const login = async (data: AuthLoginDTO) => {
-    const user = await AuthService.login(data);
+  const login = async (data: BasicLoginBody) => {
+    await AuthService.login(data);
+    const user = await AuthService.getMe().catch(() => null);
+
+    console.log('failed fetch auth user');
     setUser(user);
     return user;
   }
 
-  const singup = async (data: AuthSignupDTO) => {
-    const user = await AuthService.signup(data);
+  const createAccount = async (data: CreateAccountBody) => {
+    await AuthService.createAccount(data);
+    const user = await AuthService.getMe().catch(() => null);
+
     setUser(user);
     return user;
   }
@@ -26,7 +31,7 @@ export const useAuth = () => {
     user,
     authLoading,
     login,
-    singup,
+    createAccount,
     refresh,
     setUser,
     setAuthLoading,

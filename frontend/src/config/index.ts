@@ -1,5 +1,6 @@
 const config = {
-  defaultPage: 0,
+  API_URL: import.meta.env.VITE_API_URL,
+  defaultPage: 1,
   defaultPageSize: 10,
 };
 

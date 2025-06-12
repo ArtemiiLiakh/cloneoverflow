@@ -8,13 +8,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const req: Request = host.switchToHttp().getRequest();
     const res: Response = host.switchToHttp().getResponse();
     
-    
     if (exception instanceof Exception) {
       const body: ExceptionMessage = {
         path: req.url,
         status: exception.statusCode,
         error: exception.constructor.name,
-        message: exception.message,
+        message: exception.serializeError(),
         timestamp: new Date().toISOString(),
       };
 

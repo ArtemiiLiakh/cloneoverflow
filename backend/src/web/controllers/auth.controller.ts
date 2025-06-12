@@ -1,21 +1,21 @@
 import {
-  AuthPaths,
-  BasicLoginBody,
-  BasicLoginResponse,
-  ChangePasswordBody,
-  CreateAccountBody,
-  CreateAccountResponse,
-  DeleteAccountBody,
-  ForgotPasswordBody,
-  GetMeResponse,
-  SendVerificationCodeBody,
-} from '@cloneoverflow/common/api/auth';
+  ApiBasicLoginBody,
+  ApiBasicLoginResponse,
+  ApiChangePasswordBody,
+  ApiCreateAccountBody,
+  ApiCreateAccountResponse,
+  ApiDeleteAccountBody,
+  ApiForgotPasswordBody,
+  ApiGetMeResponse,
+  ApiSendVerificationCodeBody,
+} from '@web/dtos/auth';
 
 import { AuthController } from '@application/auth/AuthController';
 import { ExecutorPayload, TokenTypeEnum } from '@application/auth/data';
 import { UserUnauthorized } from '@application/auth/exceptions';
 import { AlreadyRegisteredException } from '@application/auth/exceptions/AlreadyRegistered';
 import { LoginException } from '@application/auth/exceptions/LoginException';
+import { AuthPaths } from '@cloneoverflow/common/api/auth';
 import { CoreResponse } from '@common/controllers/Response';
 import { UserWithEmailNotFound } from '@core/user/exceptions/UserWithEmailNotFound';
 import { Body, Controller, Delete, Get, Inject, Post } from '@nestjs/common';
@@ -40,7 +40,7 @@ export class NestAuthController {
     operationId: 'Login',
     response: {
       statusCode: 201,
-      type: BasicLoginResponse,
+      type: ApiBasicLoginResponse,
     },
     exceptions: [
       {
@@ -55,9 +55,9 @@ export class NestAuthController {
     useDataValidation: true,
   })
   login (
-    @Body() body: BasicLoginBody, 
+    @Body() body: ApiBasicLoginBody, 
     @CoreRes() res: CoreResponse,
-  ): Promise<BasicLoginResponse> {
+  ): Promise<ApiBasicLoginResponse> {
     return res.process(this.authController.login({ body }));
   }
 
@@ -68,7 +68,7 @@ export class NestAuthController {
     operationId: 'Create account',
     response: {
       statusCode: 201,
-      type: CreateAccountResponse,
+      type: ApiCreateAccountResponse,
     },
     exceptions: {
       title: 'Already registered',
@@ -77,10 +77,33 @@ export class NestAuthController {
     useDataValidation: true,
   })
   createAccount (
-    @Body() body: CreateAccountBody, 
+    @Body() body: ApiCreateAccountBody, 
     @CoreRes() res: CoreResponse,
-  ): Promise<CreateAccountResponse> {
+  ): Promise<ApiCreateAccountResponse> {
     return res.process(this.authController.createAccount({ body }));
+  }
+  
+  @Delete(AuthPaths.SignOut)
+  @ApiEndpointDocumentation({
+    path: AuthPaths.SignOut,
+    summary: 'Sign out from account',
+    operationId: 'Sign out',
+    response: {
+      statusCode: 204,
+      description: 'Successfully signed out',
+    },
+  })
+  async signOut (
+    @CoreRes() res: CoreResponse,
+  ): Promise<void> {
+    await res.process({
+      data: {},
+      status: 204,
+      cookies: {
+        accessToken: '',
+        refreshToken: '',
+      },
+    });
   }
 
   @Delete(AuthPaths.DeleteAccount)
@@ -103,7 +126,7 @@ export class NestAuthController {
   })
   async deleteAccount (
     @Executor() executor: ExecutorPayload, 
-    @Body() body: DeleteAccountBody, 
+    @Body() body: ApiDeleteAccountBody, 
     @CoreRes() res: CoreResponse,
   ): Promise<void> {
     await res.process(this.authController.deleteAccount({ 
@@ -119,7 +142,7 @@ export class NestAuthController {
     summary: 'Get information of authorized user',
     operationId: 'Get me',
     response: {
-      type: GetMeResponse,
+      type: ApiGetMeResponse,
       statusCode: 200,
     },
     useAuthValidation: {
@@ -133,7 +156,7 @@ export class NestAuthController {
   me (
     @Executor() executor: ExecutorPayload, 
     @CoreRes() res: CoreResponse,
-  ): Promise<GetMeResponse> {
+  ): Promise<ApiGetMeResponse> {
     return res.process(this.authController.getMe({ executor }));
   }
 
@@ -178,7 +201,7 @@ export class NestAuthController {
   })
   async changePassword (
     @Executor() executor: ExecutorPayload,
-    @Body() body: ChangePasswordBody, 
+    @Body() body: ApiChangePasswordBody, 
     @CoreRes() res: CoreResponse,
   ): Promise<void> {
     await res.process(this.authController.changePassword({ executor, body }));
@@ -201,7 +224,7 @@ export class NestAuthController {
     },
   })
   async forgotPassword (
-    @Body() body: ForgotPasswordBody, 
+    @Body() body: ApiForgotPasswordBody, 
     @CoreRes() res: CoreResponse,
   ): Promise<void> {
     await res.process(this.authController.forgotPassword({ body }));
@@ -223,7 +246,7 @@ export class NestAuthController {
   })
   @Post(AuthPaths.SendVerificationCode)
   async sendVerificationCode (
-    @Body() body: SendVerificationCodeBody, 
+    @Body() body: ApiSendVerificationCodeBody, 
     @CoreRes() res: CoreResponse,
   ): Promise<void> {
     await res.process(this.authController.sendVerificationCode({ body }));

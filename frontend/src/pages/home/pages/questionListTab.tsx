@@ -1,11 +1,13 @@
-import { MappedSearchQuestionResponse, PaginationResponse, SearchQuestionFilterBy, SearchQuestionSortBy, SearchQuestionsDTO } from '@cloneoverflow/common';
-import React, { useEffect, useState } from 'react';
+import * as React from 'react';
+import { PaginationInfo, SearchQuestionFilterByEnum, SearchQuestionSortByEnum } from '@cloneoverflow/common';
+import { SearchQuestionDataItem, SearchQuestionsQuery } from '@cloneoverflow/common/api/search';
+import { useEffect, useState } from 'react';
 import { Button, ListGroup, Nav } from 'react-bootstrap';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { SearchService } from '../../../api/services/search.service';
-import Pagination from '../../../components/pagination/pagination';
-import config from '../../../config';
 import QuestionItem from '../components/questionItem';
+import config from '@/config';
+import { SearchService } from '@/api/services/search.service';
+import Pagination from '@/components/pagination/pagination';
 
 enum QuestionPageSortEnum {
   NEWEST = 'newest',
@@ -16,35 +18,35 @@ enum QuestionPageSortEnum {
 }
 
 interface IQuestionSortMapper {
-  [key: string]: SearchQuestionsDTO;
+  [key: string]: SearchQuestionsQuery;
 }
 
 const QuestionSortMapper: IQuestionSortMapper = {
   [QuestionPageSortEnum.NEWEST]: {
-    sortBy: [SearchQuestionSortBy.DATE],
+    sortBy: SearchQuestionSortByEnum.DATE,
   },
   [QuestionPageSortEnum.ACTIVE]: {
-    sortBy: [SearchQuestionSortBy.DATE, SearchQuestionSortBy.RATE, SearchQuestionSortBy.ANSWERS, SearchQuestionSortBy.VIEWS],
-    filterBy: [SearchQuestionFilterBy.ACTIVE],
+    sortBy: SearchQuestionSortByEnum.DATE,
+    filterBy: SearchQuestionFilterByEnum.ACTIVE,
   },
   [QuestionPageSortEnum.CLOSED]: {
-    sortBy: [SearchQuestionSortBy.DATE, SearchQuestionSortBy.RATE, SearchQuestionSortBy.ANSWERS],
-    filterBy: [SearchQuestionFilterBy.CLOSED],
+    sortBy: SearchQuestionSortByEnum.DATE,
+    filterBy: SearchQuestionFilterByEnum.CLOSED,
   },
   [QuestionPageSortEnum.TOP]: {
-    sortBy: [SearchQuestionSortBy.RATE, SearchQuestionSortBy.ANSWERS, SearchQuestionSortBy.VIEWS],
+    sortBy: SearchQuestionSortByEnum.RATE,
   },
   [QuestionPageSortEnum.MOSTANSWERED]: {
-    sortBy: [SearchQuestionSortBy.ANSWERS, SearchQuestionSortBy.DATE],
+    sortBy: SearchQuestionSortByEnum.ANSWERS,
   },
 }
 
 const QuestionListTab = () => {
-  const [questions, setQuestions] = useState<MappedSearchQuestionResponse[]>([]);
+  const [questions, setQuestions] = useState<SearchQuestionDataItem[]>([]);
   const [activeTab, setActiveTab] = useState<QuestionPageSortEnum>(QuestionPageSortEnum.NEWEST);
 
   const [page, setPage] = useState<number>(config.defaultPage);
-  const [pagination, setPagination] = useState<Partial<PaginationResponse>>({
+  const [pagination, setPagination] = useState<Partial<PaginationInfo>>({
     page: config.defaultPage,
     pageSize: config.defaultPageSize,
     totalPages: 0,
@@ -58,10 +60,8 @@ const QuestionListTab = () => {
     SearchService.searchQuestion({
       search: searchParams.get('q') ?? '',
       ...QuestionSortMapper[activeTab],
-      pagination: {
-        page,
-        pageSize: pagination.pageSize,
-      },
+      page,
+      pageSize: pagination.pageSize,
     }).then((res) => {
       setQuestions(res.questions);
       setPagination(res.pagination);
@@ -72,7 +72,7 @@ const QuestionListTab = () => {
     <div className='page questionPage'>
       <div className="header">
         <h3>Questions</h3>
-        <p>Total amount: {pagination.totalAmount}</p>
+        { pagination.totalAmount ? <p>{pagination.totalAmount} questions</p> : ''}
         <div className="search">
           <div className="sort">
             <Nav variant='pills' defaultActiveKey={QuestionPageSortEnum.NEWEST} onSelect={(e) => {

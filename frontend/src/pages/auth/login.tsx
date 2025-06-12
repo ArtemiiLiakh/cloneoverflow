@@ -1,32 +1,41 @@
-import { ExceptionResponse } from '@cloneoverflow/common';
+import * as React from 'react';
+
+import ErrorList from '@/components/errorlist/ErrorList';
+import { useAuth } from '@/hooks/useAuth';
+import { formatArray } from '@/utils/stringUtils';
+import { ExceptionMessage } from '@cloneoverflow/common';
 import { AxiosError } from 'axios';
 import { FormEvent, useState } from 'react';
 import { Form } from 'react-bootstrap';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
-import { formatArray } from '../../utils/stringUtils';
-import { validateData } from '../../utils/validateData';
-import { LoginData } from './LoginData';
-import ErrorList from '../../components/errorlist/ErrorList';
+import { LoginData, LoginDataType } from './LoginData';
 
 const Login = () => {
   const { login } = useAuth();
-  const [ data ] = useState(new LoginData()); 
+  const [ data, setData ] = useState<LoginDataType>({
+    email: '',
+    password: '',
+  }); 
   const [ showPassword, setShowPassword ] = useState(false);
   const [ errMsg, setErrMsg ] = useState<string[] | null>();
   const navigator = useNavigate();
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    const errors = await validateData(data) ?? [];
-    
-    if (errors.length > 0) {
-      setErrMsg(errors);
+
+    const result = LoginData.safeParse(data);
+    if (!result.success) {
+      const fieldErrors = result.error.flatten().fieldErrors;
+
+      setErrMsg([
+        fieldErrors.email?.at(0) ?? '', 
+        fieldErrors.password?.at(0) ?? '',
+      ])
       return;
     }
 
-    const tokens = await login(data).catch((error: AxiosError<ExceptionResponse>) => {
-      setErrMsg(formatArray(error.response?.data.error) ?? ['Server error']);
+    const tokens = await login(data).catch((error: AxiosError<ExceptionMessage>) => {
+      setErrMsg(formatArray(error.response?.data.message) ?? ['Server error']);
     });
 
     if (!tokens) return;
@@ -40,8 +49,10 @@ const Login = () => {
         <Form.Group className='block'>
           <Form.Label>Email</Form.Label>
           <Form.Control type="text" placeholder="Enter email" onChange={async (e) => {
-            data.email = e.target.value;
-              setErrMsg(await validateData(data))
+            setData({
+              email: e.target.value,
+              password: data?.password ?? '',
+            })
           }}/>
         </Form.Group>
         <Form.Group className='block'>
@@ -50,8 +61,10 @@ const Login = () => {
             type={showPassword ? "text" : "password"} 
             placeholder="Password" 
             onChange={async (e) => {
-              data.password = e.target.value;
-              setErrMsg(await validateData(data))
+              setData({
+                email: data?.email ?? '',
+                password: e.target.value,
+              })
             }}
           />
           <Form.Check 
@@ -81,7 +94,7 @@ const Login = () => {
           </Form.Text>
         </Form.Group>
         <Form.Group className='block'>
-          <button className='btn btn-primary'>Login</button>
+          <button className='btn btn-primary' type='submit'>Login</button>
         </Form.Group>
       </Form>
     </div>

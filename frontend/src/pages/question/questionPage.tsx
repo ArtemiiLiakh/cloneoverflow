@@ -1,125 +1,79 @@
-import React, { useEffect, useState } from 'react';
-import { AnswerGetResponse, ExceptionResponse, OrderBy, QuestionAnswersSortBy, QuestionGetResponse, QuestionStatus, VoteType } from '@cloneoverflow/common';
-import MDEditor from '@uiw/react-md-editor';
+import * as React from 'react';
+import { AnswersSortByEnum, ExceptionMessage, VoteTypeEnum } from '@cloneoverflow/common';
+import { QuestionGetAnswersResponse, QuestionGetResponse } from '@cloneoverflow/common/api/question';
+import { AxiosError } from 'axios';
+import { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
-import { AnswerService } from '../../api/services/answer.service';
-import { QuestionService } from '../../api/services/question.service';
-import MDEditorCustom from '../../components/MDEditorCustom';
-import Taglist from '../../components/taglist/taglist';
-import { useAuth } from '../../hooks/useAuth';
 import AnswerItem from './components/answerItem';
-import { GetPassedDate, checkModifiedData } from '../../utils/dateUtils';
-import { formatArray } from '../../utils/stringUtils';
-import ErrorList from '../../components/errorlist/ErrorList';
-import { AxiosError } from 'axios';
-
-enum AnswersSort {
-  BEST = 'best',
-  NEWEST = 'newest',
-  OLDEST = 'oldest',
-}
-
-// const QuestionPage = () => {
-//   const [question, setQuestion] = useState<QuestionGetResponse | null>(null);
-//   const { questionId } = useParams()
-//   const [sortAnswers, setSortAnswers] = useState<AnswersSort>(AnswersSort.BEST);
-
-//   const sortAnswersMapper = {
-//     [AnswersSort.BEST]: {
-//       sortBy: QuestionAnswersSortBy.RATE,
-//       orderBy: OrderBy.DESC,
-//     },
-//     [AnswersSort.NEWEST]: {
-//       sortBy: QuestionAnswersSortBy.DATE,
-//       orderBy: OrderBy.DESC,
-//     },
-//     [AnswersSort.OLDEST]: {
-//       sortBy: QuestionAnswersSortBy.DATE,
-//       orderBy: OrderBy.ASC,
-//     },
-//   };
-
-//   useEffect(() => {
-//     QuestionService.get(questionId ?? '', {
-//       answers: sortAnswersMapper[sortAnswers],
-//     }).then((newQuestion) => {
-//       console.log("Fetched question:", newQuestion);
-//       setQuestion(newQuestion);
-//     }).catch(error => {
-//       console.error("Error fetching question:", error);
-//     });
-//   }, [sortAnswers]);
-
-//   return (
-    // <div className="question" data-color-mode="light">
-    //   {question ? (
-    //     question.answers.map((answer, index) => (
-    //       <div className="answer-list" key={answer.id || index}> {/* Ensure a unique key */}
-    //         <AnswerItem question={question} item={answer} />
-    //         <hr />
-    //       </div>
-    //     ))
-    //   ) : (
-    //     <p>Loading...</p> // Optional: Add a loading state
-    //   )}
-    //   <button onClick={() => {
-    //     setSortAnswers(AnswersSort.BEST);
-    //   }}>BEST</button>
-    //   <button onClick={() => {
-    //     setSortAnswers(AnswersSort.NEWEST);
-    //   }}>NEWEST</button>
-    //   <button onClick={() => {
-    //     setSortAnswers(AnswersSort.OLDEST);
-    //   }}>OLDEST</button>
-    // </div>
-//   );
-// };
-
-// export default QuestionPage;
-
+import { AnswerService } from '@/api/services/answer.service';
+import { QuestionService } from '@/api/services/question.service';
+import ErrorList from '@/components/errorlist/ErrorList';
+import MDEditorCustom from '@/components/MDEditorCustom';
+import Taglist from '@/components/taglist/taglist';
+import { useAuth } from '@/hooks/useAuth';
+import { GetPassedDate } from '@/utils/dateUtils';
+import { formatArray } from '@/utils/stringUtils';
+import MDEditor from '@uiw/react-md-editor';
 
 const QuestionPage = () => {
+  const { user } = useAuth();
   const { questionId } = useParams()
   const [question, setQuestion] = useState<QuestionGetResponse>();
-  const { user } = useAuth();
-  const [sortAnswers, setSortAnswers] = useState<AnswersSort>(AnswersSort.BEST);
-  const [answer, setAnswer] = useState<string>('');
+  const [answers, setAnswers] = useState<QuestionGetAnswersResponse['answers']>();
+  const [sortAnswers, setSortAnswers] = useState<AnswersSortByEnum>(AnswersSortByEnum.RATE);
+  const [newAnswer, setNewAnswer] = useState<string>('');
   const [errors, setErrors] = useState<string[]>([]);
   const navigate = useNavigate();
 
-  const sortAnswersMapper = {
-    [AnswersSort.BEST]: {
-      sortBy: QuestionAnswersSortBy.RATE,
-      orderBy: OrderBy.DESC,
-    },
-    [AnswersSort.NEWEST]: {
-      sortBy: QuestionAnswersSortBy.DATE,
-      orderBy: OrderBy.DESC,
-    },
-    [AnswersSort.OLDEST]: {
-      sortBy: QuestionAnswersSortBy.DATE,
-      orderBy: OrderBy.ASC,
-    },
-  };
+  const disableVoteDown = question?.myVoteType === VoteTypeEnum.DOWN || 
+                          question?.owner?.id === user?.id;
 
-  const createAnswer = () => {
+  const disableVoteUp = question?.myVoteType === VoteTypeEnum.UP || 
+                        question?.owner?.id === user?.id;
+
+  const createAnswer = React.useCallback(() => {
     AnswerService.create({
       questionId: questionId ?? '',
-      text: answer,
+      text: newAnswer,
     }).then(() => {
       window.location.reload();
-    }).catch((e: AxiosError<ExceptionResponse>) => {
+    }).catch((e: AxiosError<ExceptionMessage>) => {
       console.log(e);
       setErrors(formatArray(e.response?.data.error) ?? ['Server error']);
     });
-  };
+  }, [newAnswer]);
+
+  const toggleFavorite = React.useCallback(() => {
+    if (!questionId || !question) return;
+
+    console.log(question?.isFavorite);
+    if (question?.isFavorite) {
+      QuestionService.removeFavorite(questionId).then(() => setQuestion({
+        ...question,
+        isFavorite: false
+      }));
+    }
+    else {
+      QuestionService.makeFavorite(questionId).then(() => setQuestion({
+        ...question,
+        isFavorite: true
+      }));
+    }
+  }, [question]);
 
   useEffect(() => {
-    QuestionService.get(questionId ?? '', {
-      answers: sortAnswersMapper[sortAnswers],
-    }).then((newQuestion) => {
-      setQuestion(newQuestion);
+    if (questionId) {
+      QuestionService.get(questionId).then((newQuestion) => {
+        setQuestion(newQuestion);   
+      });
+      QuestionService.addViewer(questionId);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (questionId) QuestionService.getAnswers(questionId, sortAnswers).then((answersList) => {
+      setAnswers(answersList.answers);
     });
   }, [sortAnswers]);
 
@@ -129,10 +83,10 @@ const QuestionPage = () => {
         <div className="head">
           <h1>{question?.title}</h1>
           <div className='head-pannel'>
-            { question?.status === QuestionStatus.CLOSED ? <p className='closed'>Closed</p> : <></> }
+            { question?.isClosed ? <p className='closed'>Closed</p> : <></> }
             <p className='created-date'>Asked {GetPassedDate(question?.createdAt)}</p>
             {
-              checkModifiedData(question?.createdAt, question?.updatedAt) ?
+              question?.createdAt === question?.updatedAt ?
                 <p className='updated-date'>Modified {GetPassedDate(question?.updatedAt)}</p>
                 : <></>
             }
@@ -141,40 +95,43 @@ const QuestionPage = () => {
         </div>
         <div className="body">
           <div className="sidepanel">
-            <button className='vote-btn' disabled={question?.voteType === VoteType.UP || question?.owner.id === user?.id} onClick={() => {
-              QuestionService.voteQuestion(questionId ?? '', {
-                vote: VoteType.UP,
-              }).then(() => {
+            <button className='vote-btn' disabled={disableVoteUp} onClick={() => {
+              QuestionService.voteQuestion(questionId ?? '', 'up').then(() => {
                 if (question) {
                   setQuestion({
                     ...question,
-                    voteType: question?.voteType ? null : VoteType.UP,
-                    rate: question?.rate + 1,
+                    myVoteType: question?.myVoteType ? null : VoteTypeEnum.UP,
+                    rating: question?.rating + 1,
                   });
                 }
               }).catch(() => { });
             }}><i className="fa-solid fa-arrow-up"></i></button>
-            <p className='rating'>{question?.rate}</p>
-            <button className='vote-btn' disabled={question?.voteType === VoteType.DOWN || question?.owner.id === user?.id} onClick={() => {
-              QuestionService.voteQuestion(questionId ?? '', {
-                vote: VoteType.DOWN,
-              }).then(() => {
+            <p className='rating'>{question?.rating}</p>
+            <button className='vote-btn' disabled={disableVoteDown} onClick={() => {
+              QuestionService.voteQuestion(questionId ?? '', 'down').then(() => {
                 if (question) {
                   setQuestion({
                     ...question,
-                    voteType: question?.voteType ? null : VoteType.DOWN,
-                    rate: question?.rate - 1,
+                    myVoteType: question?.myVoteType ? null : VoteTypeEnum.DOWN,
+                    rating: question?.rating - 1,
                   });
                 }
-              }).catch(() => { });
+              }).catch(() => {});
             }}><i className="fa-solid fa-arrow-down"></i></button>
+            <button className='favorite' onClick={toggleFavorite}>
+              {
+                question?.isFavorite ? 
+                <i className="fa-solid fa-bookmark"></i> : 
+                <i className="fa-regular fa-bookmark"></i>
+              }             
+            </button>
           </div>
           <div className="question-text">
             <MDEditor.Markdown className='md-text' source={question?.text ?? ''} />
-            <Taglist tags={question?.tags.map((tag) => tag.name)} />
+            <Taglist tags={question?.tags.map((tag) => tag)} />
             <div className="footer">
               {
-                user?.id === question?.owner.id ?
+                user?.id === question?.owner?.id ?
                   <div className="actions">
                     <Button className="action-btn" onClick={() => {
                       navigate(`/questions/${questionId}/edit`)
@@ -190,8 +147,8 @@ const QuestionPage = () => {
               }
               <div className="author">
                 <p className='askedDate'>asked {new Date(question?.createdAt ?? '').toDateString()}</p>
-                <p>{question?.owner.name}</p>
-                <p><a href={`/users/${question?.owner.id}`}>@{question?.owner.username}</a> ● {question?.owner.reputation}</p>
+                <p>{question?.owner?.name}</p>
+                <p><a href={`/users/${question?.owner?.id}`}>@{question?.owner?.username}</a> ● {question?.owner?.rating}</p>
               </div>
             </div>
           </div>
@@ -199,19 +156,19 @@ const QuestionPage = () => {
       </div>
       <div className="answer-block">
         <div className="answer-head">
-          <h4>{question?.answers.length} Answers</h4>
+          <h4>{answers?.length} Answers</h4>
           <label htmlFor="sortByAnswer">Sort by:</label>
           <select id="sortByAnswer" className='sortAnswers' onChange={(e) => {
-            setSortAnswers(e.target.value as AnswersSort);
+            setSortAnswers(e.target.value as AnswersSortByEnum);
           }}>
-            <option value={AnswersSort.BEST}>Best</option>
-            <option value={AnswersSort.NEWEST}>Newest</option>
-            <option value={AnswersSort.OLDEST}>Oldest</option>
+            <option value={AnswersSortByEnum.RATE}>Rating</option>
+            <option value={AnswersSortByEnum.DATE}>Date</option>
+            <option value={AnswersSortByEnum.SOLUTION}>Solution</option>
           </select>
         </div>
         <div className="answer-list">
           { 
-            question?.answers.map((answer) => (
+            !question ? '' : answers?.map((answer) => (
               <>
                 <AnswerItem key={answer.id} question={question} item={answer} /> 
                 <hr />
@@ -223,9 +180,9 @@ const QuestionPage = () => {
           <h5>Your answer</h5>
           <MDEditorCustom
             className='answer-editor'
-            value={answer}
+            value={newAnswer}
             onChange={(e) => {
-              setAnswer(e ?? '');
+              setNewAnswer(e ?? '');
             }}
           />
           <Button onClick={() => createAnswer()}>Post Your Answer</Button>

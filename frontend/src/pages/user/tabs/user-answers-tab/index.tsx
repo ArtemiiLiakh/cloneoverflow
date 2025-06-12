@@ -1,27 +1,26 @@
 import * as React from 'react';
+import { AnswersSortByEnum, OrderByEnum } from '@cloneoverflow/common';
+import { UserGetAnswersQuery, UserGetAnswersResponse } from '@cloneoverflow/common/api/user';
 import { useState, useEffect } from 'react';
 import { Form, Table } from 'react-bootstrap';
-import { UserService } from '../../../../api/services/user.service';
-import { OrderBy, UserGASortBy, UserGetAnswersDTO, UserGetAnswersResponse } from '@cloneoverflow/common';
-import { GetPassedDate } from '../../../../utils/dateUtils';
 import { Link } from 'react-router-dom';
+import { UserService } from '@/api/services/user.service';
+import { GetPassedDate } from '@/utils/dateUtils';
 
 interface UserAnswersTabProps {
   userId?: string;   
 }
 
 const UserAnswersTab = ({ userId }: UserAnswersTabProps) => {
-  const [request, setRequest] = useState<UserGetAnswersDTO>({
-    sortBy: UserGASortBy.RATE,
-    orderBy: OrderBy.DESC,
-    pagination: {
-      page: 0,
-      pageSize: 10,
-    },
+  const [request, setRequest] = useState<UserGetAnswersQuery>({
+    sortBy: AnswersSortByEnum.RATE,
+    orderBy: OrderByEnum.DESC,
+    page: 0,
+    pageSize: 10,
   });
   const [answers, setAnswers] = useState<UserGetAnswersResponse>();
 
-  const handleRequest = (request: UserGetAnswersDTO) => {
+  const handleRequest = (request: UserGetAnswersQuery) => {
     if (!userId) return;
     
     UserService.getAnswers(userId, request).then((response: UserGetAnswersResponse) => {
@@ -49,22 +48,22 @@ const UserAnswersTab = ({ userId }: UserAnswersTabProps) => {
             onChange={(e) => {
               handleRequest({
                 ...request,
-                sortBy: e.target.value as UserGASortBy,
+                sortBy: e.target.value as AnswersSortByEnum,
               });
             }}
-            defaultValue={UserGASortBy.RATE}
+            defaultValue={AnswersSortByEnum.RATE}
           >
-            <option value={UserGASortBy.DATE}>Date</option>
-            <option value={UserGASortBy.RATE}>Rate</option>
-            <option value={UserGASortBy.SOLUTION}>Solution</option>
+            <option value={AnswersSortByEnum.DATE}>Date</option>
+            <option value={AnswersSortByEnum.RATE}>Rate</option>
+            <option value={AnswersSortByEnum.SOLUTION}>Solution</option>
           </Form.Select>
           <button id='orderBy' className='orderBy' onClick={() => {
             handleRequest({
               ...request,
-              orderBy: request.orderBy === OrderBy.ASC ? OrderBy.DESC : OrderBy.ASC,
+              orderBy: request.orderBy === OrderByEnum.ASC ? OrderByEnum.DESC : OrderByEnum.ASC,
             });
           }}>
-            {request.orderBy === OrderBy.ASC ? '↑' : '↓'}
+            {request.orderBy === OrderByEnum.ASC ? '↑' : '↓'}
           </button>
         </div>
         <div className="filter-block">
@@ -76,7 +75,7 @@ const UserAnswersTab = ({ userId }: UserAnswersTabProps) => {
             onChange={(e) => {
               setRequest({
                 ...request,
-                searchText: e.target.value,
+                search: e.target.value,
               });
             }}
             onBlur={() => {
@@ -103,7 +102,7 @@ const UserAnswersTab = ({ userId }: UserAnswersTabProps) => {
               <td></td>
               <td>{index + 1}</td>
               <td>{answer.text}</td>
-              <td>{answer.rate}</td>
+              <td>{answer.rating}</td>
               <td className={answer.isSolution ? 'solution' : ''}>{answer.isSolution ? 'Yes' : 'No'}</td>
               <td>{GetPassedDate(answer.createdAt)}</td>
               <td><Link to={`/questions/${answer.question.id}`}>{answer.question.title}</Link></td>

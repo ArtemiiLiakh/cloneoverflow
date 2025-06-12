@@ -1,32 +1,32 @@
 import {
-  QuestionAddViewerParams,
-  QuestionCloseBody,
-  QuestionCloseParams,
-  QuestionCreateBody,
-  QuestionCreateResponse,
-  QuestionDeleteParams,
-  QuestionGetAnswersParams,
-  QuestionGetAnswersQuery,
-  QuestionGetAnswersResponse,
-  QuestionGetParams,
-  QuestionGetResponse,
-  QuestionGetVoteParams,
-  QuestionGetVoteResponse,
-  QuestionMarkFavoriteParams,
-  QuestionOpenParams,
-  QuestionPaths,
-  QuestionRemoveFavoriteParams,
-  QuestionUpdateBody,
-  QuestionUpdateParams,
-  QuestionVoteDownParams,
-  QuestionVoteUpParams,
-} from '@cloneoverflow/common/api/question';
+  ApiQuestionAddViewerParams,
+  ApiQuestionCloseBody,
+  ApiQuestionCloseParams,
+  ApiQuestionCreateBody,
+  ApiQuestionCreateResponse,
+  ApiQuestionDeleteParams,
+  ApiQuestionGetAnswersParams,
+  ApiQuestionGetAnswersQuery,
+  ApiQuestionGetAnswersResponse,
+  ApiQuestionGetParams,
+  ApiQuestionGetResponse,
+  ApiQuestionGetVoteParams,
+  ApiQuestionGetVoteResponse,
+  ApiQuestionMarkFavoriteParams,
+  ApiQuestionOpenParams,
+  ApiQuestionRemoveFavoriteParams,
+  ApiQuestionUpdateBody,
+  ApiQuestionUpdateParams,
+  ApiQuestionVoteDownParams,
+  ApiQuestionVoteUpParams,
+} from '@web/dtos/question';
 
 import { ExecutorPayload, TokenTypeEnum } from '@application/auth/data';
 import { QuestionController } from '@application/question/QuestionController';
+import { QuestionPaths } from '@cloneoverflow/common/api/question';
 import { CoreResponse } from '@common/controllers/Response';
 import { AnswerNotBelongToQuestion } from '@core/answer/exceptions';
-import { CannotDeleteOthersQuestion, CannotVoteOwnQuestion, CannotVoteQuestionTwice, QuestionAlreadyClosed, QuestionAlreadyFavorite, QuestionAlreadyOpened, QuestionIdInvalid, QuestionNotFavorite, QuestionViewerAlreadyExists, QuestionVoteNotFound } from '@core/question/exceptions';
+import { CannotDeleteOthersQuestion, CannotVoteOwnQuestion, CannotVoteQuestionTwice, QuestionAlreadyFavorite, QuestionAlreadyOpened, QuestionIdInvalid, QuestionNotFavorite, QuestionViewerAlreadyExists, QuestionVoteNotFound } from '@core/question/exceptions';
 import { Body, Controller, Delete, Get, Inject, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiEndpointDocumentation } from '../decorators/apiEndpoint.decorator';
@@ -50,16 +50,16 @@ export class NestQuestionController {
     operationId: 'Create question',
     response: {
       statusCode: 201,
-      type: QuestionCreateResponse,
+      type: ApiQuestionCreateResponse,
     },
     useAuthValidation: true,
     useDataValidation: true,
   })
   create (
     @Executor() executor: ExecutorPayload,
-    @Body() body: QuestionCreateBody,
+    @Body() body: ApiQuestionCreateBody,
     @CoreRes() res: CoreResponse,
-  ): Promise<QuestionCreateResponse> {
+  ): Promise<ApiQuestionCreateResponse> {
     return res.process(this.questionController.create({
       executor,
       body,
@@ -74,7 +74,7 @@ export class NestQuestionController {
     operationId: 'Get question',
     response: {
       statusCode: 200,
-      type: QuestionGetResponse,
+      type: ApiQuestionGetResponse,
     },
     exceptions: {
       title: 'Question with this id not found',
@@ -88,9 +88,9 @@ export class NestQuestionController {
   })
   get (
     @Executor() executor: ExecutorPayload | undefined,
-    @Param() params: QuestionGetParams,
+    @Param() params: ApiQuestionGetParams,
     @CoreRes() res: CoreResponse,
-  ): Promise<QuestionGetResponse> {
+  ): Promise<ApiQuestionGetResponse> {
     return res.process(this.questionController.get({
       executor,
       params,
@@ -108,7 +108,7 @@ export class NestQuestionController {
     },
     response: {
       statusCode: 200,
-      type: QuestionGetAnswersResponse,
+      type: ApiQuestionGetAnswersResponse,
     },
     exceptions: {
       title: 'Question with this id not found',
@@ -117,10 +117,10 @@ export class NestQuestionController {
   })
   getAnswers (
     @Executor() executor: ExecutorPayload | undefined,
-    @Param() params: QuestionGetAnswersParams,
-    @Query() query: QuestionGetAnswersQuery,
+    @Param() params: ApiQuestionGetAnswersParams,
+    @Query() query: ApiQuestionGetAnswersQuery,
     @CoreRes() res: CoreResponse,
-  ): Promise<QuestionGetAnswersResponse> {
+  ): Promise<ApiQuestionGetAnswersResponse> {
     return res.process(this.questionController.getAnswers({
       executor,
       params,
@@ -148,8 +148,8 @@ export class NestQuestionController {
   })
   async update (
     @Executor() executor: ExecutorPayload,
-    @Param() { questionId }: QuestionUpdateParams,
-    @Body() body: QuestionUpdateBody,
+    @Param() { questionId }: ApiQuestionUpdateParams,
+    @Body() body: ApiQuestionUpdateBody,
     @CoreRes() res: CoreResponse,
   ): Promise<void> {
 
@@ -185,7 +185,7 @@ export class NestQuestionController {
   })
   async delete (
     @Executor() executor: ExecutorPayload,
-    @Param() params: QuestionDeleteParams,
+    @Param() params: ApiQuestionDeleteParams,
     @CoreRes() res: CoreResponse,
   ): Promise<void> {
 
@@ -218,7 +218,7 @@ export class NestQuestionController {
   })
   async addViewer (
     @Executor() executor: ExecutorPayload,
-    @Param() params: QuestionAddViewerParams,
+    @Param() params: ApiQuestionAddViewerParams,
     @CoreRes() res: CoreResponse,
   ): Promise<void> {
 
@@ -255,7 +255,7 @@ export class NestQuestionController {
   })
   async voteUp (
     @Executor() executor: ExecutorPayload,
-    @Param() params: QuestionVoteUpParams,
+    @Param() params: ApiQuestionVoteUpParams,
     @CoreRes() res: CoreResponse,
   ): Promise<void> {
 
@@ -291,7 +291,7 @@ export class NestQuestionController {
   })
   async voteDown (
     @Executor() executor: ExecutorPayload,
-    @Param() params: QuestionVoteDownParams,
+    @Param() params: ApiQuestionVoteDownParams,
     @CoreRes() res: CoreResponse,
   ): Promise<void> {
 
@@ -309,7 +309,7 @@ export class NestQuestionController {
     operationId: 'Question vote up',
     response: {
       statusCode: 200,
-      type: QuestionGetVoteResponse,
+      type: ApiQuestionGetVoteResponse,
     },
     useAuthValidation: {
       access: true,
@@ -323,9 +323,9 @@ export class NestQuestionController {
   })
   getVote (
     @Executor() executor: ExecutorPayload,
-    @Param() params: QuestionGetVoteParams,
+    @Param() params: ApiQuestionGetVoteParams,
     @CoreRes() res: CoreResponse,
-  ): Promise<QuestionGetVoteResponse> {
+  ): Promise<ApiQuestionGetVoteResponse> {
     return res.process(this.questionController.getVoter({
       params,
       executor,
@@ -352,7 +352,7 @@ export class NestQuestionController {
   })
   async open (
     @Executor() executor: ExecutorPayload,
-    @Param() params: QuestionOpenParams,
+    @Param() params: ApiQuestionOpenParams,
     @CoreRes() res: CoreResponse,
   ): Promise<void> {
 
@@ -372,24 +372,18 @@ export class NestQuestionController {
       statusCode: 204,
       description: 'Question was successfully closed',
     },
-    exceptions: [
-      {
-        title: 'Question already closed',
-        exception: new QuestionAlreadyClosed(),
-      },
-      {
-        title: 'Answer id is wrong',
-        exception: new AnswerNotBelongToQuestion(),
-      },
-    ],
+    exceptions: {
+      title: 'Answer id is wrong',
+      exception: new AnswerNotBelongToQuestion(),
+    },
     useAuthValidation: true,
     useDataValidation: true,
     useRatingValidation: true,
   })
   async close (
     @Executor() executor: ExecutorPayload,
-    @Param() params: QuestionCloseParams,
-    @Body() body: QuestionCloseBody, 
+    @Param() params: ApiQuestionCloseParams,
+    @Body() body: ApiQuestionCloseBody, 
     @CoreRes() res: CoreResponse,
   ): Promise<void> {
     await res.process(this.questionController.closeQuestion({
@@ -426,7 +420,7 @@ export class NestQuestionController {
   })
   async markFavorite (
     @Executor() executor: ExecutorPayload,
-    @Param() params: QuestionMarkFavoriteParams,
+    @Param() params: ApiQuestionMarkFavoriteParams,
     @CoreRes() res: CoreResponse,
   ): Promise<void> {
     await res.process(this.questionController.markFavorite({
@@ -462,7 +456,7 @@ export class NestQuestionController {
   })
   async removeFavorite (
     @Executor() executor: ExecutorPayload,
-    @Param() params: QuestionRemoveFavoriteParams,
+    @Param() params: ApiQuestionRemoveFavoriteParams,
     @CoreRes() res: CoreResponse,
   ): Promise<void> {
     await res.process(this.questionController.removeFavorite({

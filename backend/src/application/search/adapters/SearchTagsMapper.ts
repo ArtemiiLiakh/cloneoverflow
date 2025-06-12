@@ -1,5 +1,5 @@
 import { SearchTagsResponse } from '@cloneoverflow/common/api/search';
-import { SerachTagsOutput } from '../usercases/dtos';
+import { SerachTagsOutput } from '../usecases/dtos';
 
 export function SearchTagsMapperOutput ({
   data,

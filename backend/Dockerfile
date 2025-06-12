@@ -8,8 +8,8 @@ COPY ./package-lock.json /app/package-lock.json
 COPY ./common/package.json /app/common/package.json
 COPY ./backend/package.json /app/backend/package.json
 
-RUN npm ci --workspace=common --ignore-scripts && \
-    npm ci --workspace=backend --ignore-scripts
+RUN npm ci --workspaces=common --ignore-scripts && \
+    npm ci --workspaces=backend --ignore-scripts
 
 WORKDIR /app/common
 COPY ./common /app/common
@@ -31,8 +31,8 @@ COPY ./package-lock.json /app/package-lock.json
 COPY ./common/package.json /app/common/package.json
 COPY ./backend/package.json /app/backend/package.json
 
-RUN npm ci --workspace=common --omit=dev --ignore-scripts && \
-    npm ci --workspace=backend --omit=dev --ignore-scripts
+RUN npm ci --workspaces=common --omit=dev --ignore-scripts && \
+    npm ci --workspaces=backend --omit=dev --ignore-scripts
 
 WORKDIR /app/backend
 COPY ./backend/prisma/schema.prisma /app/backend/prisma/schema.prisma

@@ -1,15 +1,17 @@
-import { UserGetResponse, UserStatus } from '@cloneoverflow/common';
+import * as React from 'react';
+import { UserGetResponse } from '@cloneoverflow/common/api/user';
 import { useEffect, useState } from 'react';
 import { Tab, Tabs } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
-import { UserService } from '../../api/services/user.service';
-import Username from '../../components/username/username';
-import { useAuth } from '../../hooks/useAuth';
 import UserAboutTab from './tabs/user-about-tab';
 import UserAnswersTab from './tabs/user-answers-tab';
 import UserQuestionsTab from './tabs/user-questions-tab';
 import UserSettingsTab from './tabs/user-settings-tab';
-import { GetPassedDate } from '../../utils/dateUtils';
+import { UserStatusEnum } from '@cloneoverflow/common';
+import { UserService } from '@/api/services/user.service';
+import Username from '@/components/username/username';
+import { useAuth } from '@/hooks/useAuth';
+import { GetPassedDate } from '@/utils/dateUtils';
 
 const UserProfile = () => {
   const { userId } = useParams();
@@ -17,18 +19,17 @@ const UserProfile = () => {
   const [userProfile, setUserProfile] = useState<UserGetResponse>({
     id: '',
     name: '',
-    email: '',
     username: '',
-    reputation: 0,
-    about: '',
-    status: UserStatus.USER,
-    createdAt: new Date(),
+    rating: 0,
+    status: UserStatusEnum.USER,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   });
 
   useEffect(() => {
     if (!userId) return;
     UserService.get(userId).then((user) => setUserProfile(user));
-  }, [])
+  }, []);
 
   return (
     <div className="profile">

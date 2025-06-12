@@ -87,6 +87,7 @@ export class PrismaTagRepository implements TagRepository {
           questions: orderBy?.popular ? {
             _count: orderBy?.popular,
           } : undefined,
+          createdAt: orderBy?.newest,
         },
       },
       pagination,

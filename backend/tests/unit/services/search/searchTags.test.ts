@@ -1,5 +1,5 @@
-import { SearchTagsUseCase } from '@application/search/usercases';
-import { SearchTagsInput } from '@application/search/usercases/dtos';
+import { SearchTagsUseCase } from '@application/search/usecases';
+import { SearchTagsInput } from '@application/search/usecases/dtos';
 import { PaginationInfo } from '@cloneoverflow/common';
 import { TagRepoSearchOutput } from '@core/tag/repository/dtos/Search';
 import { TagRepository } from '@core/tag/repository/TagRepository';

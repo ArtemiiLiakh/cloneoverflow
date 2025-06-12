@@ -10,7 +10,7 @@ export class QuestionGetDetailsUseCase implements IQuestionGetDetailsUseCase {
   execute ({ questionId, executorId }: QuestionGetDetailsInput): Promise<QuestionGetDetailsOutput> {
     return this.questionRepository.getDetailedById({
       questionId,
-      voterId: executorId,
+      executorId,
     });
   }
 }

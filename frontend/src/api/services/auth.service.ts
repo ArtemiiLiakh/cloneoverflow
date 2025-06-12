@@ -1,31 +1,31 @@
 import {
-  AuthChangePasswordDTO,
-  AuthLoginDTO,
-  AuthSignupDTO,
+  BasicLoginBody,
+  BasicLoginResponse,
+  ChangePasswordBody,
+  CreateAccountBody,
+  CreateAccountResponse,
   GetMeResponse,
-  OkResponse
-} from '@cloneoverflow/common';
+} from '@cloneoverflow/common/api/auth';
 import api from '..';
 import urls from '../urls';
-import { AxiosResponse } from 'axios';
 
 export class AuthService {
-  static async login(body: AuthLoginDTO): Promise<GetMeResponse> {
+  static async login(body: BasicLoginBody): Promise<BasicLoginResponse> {
     return api.post(
       urls.login, 
       body,
     ).then((res) => res.data);
   }
 
-  static async signup(body: AuthSignupDTO): Promise<GetMeResponse> {
+  static async createAccount(body: CreateAccountBody): Promise<CreateAccountResponse> {
     return api.post(
-      urls.signup, 
+      urls.createAccount, 
       body,
     ).then((res) => res.data);
   }
 
-  static async signout(): Promise<OkResponse> {
-    return api.get(
+  static async signout(): Promise<void> {
+    return api.delete(
       urls.signout,
     ).then((res) => res.data);
   }
@@ -36,13 +36,13 @@ export class AuthService {
     ).then((res) => res.data);
   }
 
-  static async refreshToken(): Promise<OkResponse> {
+  static async refreshToken(): Promise<void> {
     return api.post(
-      urls.refreshToken, {},
+      urls.refreshToken,
     ).then((res) => res.data);
   }
 
-  static async changePassword(body: AuthChangePasswordDTO): Promise<OkResponse> {
+  static async changePassword(body: ChangePasswordBody): Promise<void> {
     return api.patch(
       urls.changePassword, 
       body,

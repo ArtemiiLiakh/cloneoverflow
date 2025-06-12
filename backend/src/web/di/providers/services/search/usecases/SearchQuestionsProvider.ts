@@ -1,4 +1,4 @@
-import { SearchQuestionsUseCase } from '@application/search/usercases';
+import { SearchQuestionsUseCase } from '@application/search/usecases';
 import { QuestionRepository } from '@core/question/repository/QuestionRepository';
 import { Provider } from '@nestjs/common';
 import { PrismaRepositoryDITokens } from '@web/di/tokens/persistence';

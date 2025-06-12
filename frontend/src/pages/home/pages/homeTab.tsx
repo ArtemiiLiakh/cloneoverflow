@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { SearchQuestionFilterByEnum, SearchQuestionSortByEnum } from '@cloneoverflow/common';
+import { SearchQuestionDataItem, SearchQuestionsQuery } from '@cloneoverflow/common/api/search';
 import { Button, ListGroup, Nav } from 'react-bootstrap';
-import config from '../../../config';
-import QuestionItem from '../components/questionItem';
-import { MappedSearchQuestionResponse, SearchQuestionFilterBy, SearchQuestionSortBy, SearchQuestionsDTO } from '@cloneoverflow/common';
-import { SearchService } from '../../../api/services/search.service';
 import { useNavigate } from 'react-router-dom';
+import QuestionItem from '../components/questionItem';
+import { SearchService } from '@/api/services/search.service';
+import config from '@/config';
 
 enum HomePageSortEnum {
   INTERESTING = 'interesting',
@@ -14,41 +15,41 @@ enum HomePageSortEnum {
 }
 
 interface IQuestionSortMapper {
-  [key: string]: SearchQuestionsDTO;
+  [key: string]: SearchQuestionsQuery;
 }
 
 const QuestionSortMapper: IQuestionSortMapper = {
   [HomePageSortEnum.INTERESTING]: {
-    sortBy: [SearchQuestionSortBy.DATE, SearchQuestionSortBy.RATE, SearchQuestionSortBy.ANSWERS, SearchQuestionSortBy.VIEWS],
+    sortBy: SearchQuestionSortByEnum.DATE,
   },
   [HomePageSortEnum.HOT]: {
-    sortBy: [SearchQuestionSortBy.RATE, SearchQuestionSortBy.ANSWERS, SearchQuestionSortBy.VIEWS, SearchQuestionSortBy.DATE],
-    filterBy: [SearchQuestionFilterBy.MONTHLY],
+    sortBy: SearchQuestionSortByEnum.RATE,
+    filterBy: SearchQuestionFilterByEnum.MONTHLY,
   },
   [HomePageSortEnum.WEEK]: {
-    sortBy: [SearchQuestionSortBy.DATE, SearchQuestionSortBy.RATE, SearchQuestionSortBy.ANSWERS, SearchQuestionSortBy.VIEWS],
-    filterBy: [SearchQuestionFilterBy.WEEKLY],
+    sortBy: SearchQuestionSortByEnum.DATE,
+    filterBy: SearchQuestionFilterByEnum.WEEKLY,
   },
   [HomePageSortEnum.MONTH]: {
-    sortBy: [SearchQuestionSortBy.DATE, SearchQuestionSortBy.RATE, SearchQuestionSortBy.ANSWERS, SearchQuestionSortBy.VIEWS],
-    filterBy: [SearchQuestionFilterBy.MONTHLY],
+    sortBy: SearchQuestionSortByEnum.DATE,
+    filterBy: SearchQuestionFilterByEnum.MONTHLY,
   },
 }
 
 const HomeTab = () => {
-  const [questions, setQuestions] = useState<MappedSearchQuestionResponse[]>([]);
+  const [totalQuestions, setTotalQuestions] = useState<number>();
+  const [questions, setQuestions] = useState<SearchQuestionDataItem[]>([]);
   const [activeTab, setActiveTab] = useState<HomePageSortEnum>(HomePageSortEnum.INTERESTING);
   const navigate = useNavigate();
 
   useEffect(() => {
     SearchService.searchQuestion({
       ...QuestionSortMapper[activeTab],
-      pagination: {
-        page: config.defaultPage,
-        pageSize: 30,
-      },
+      page: config.defaultPage,
+      pageSize: 30,
     }).then((data) => {
       setQuestions(data.questions);
+      setTotalQuestions(data.pagination.totalAmount);
     });
   }, [activeTab]);
 
@@ -56,8 +57,8 @@ const HomeTab = () => {
     <div className="page homePage">
       <div className="header">
         <h3>Home page</h3>
+        { totalQuestions ? <p>{totalQuestions} questions</p> : ''}
         <div className="search">
-
           <div className="sort">
             <Nav variant='pills' defaultActiveKey={HomePageSortEnum.INTERESTING} onSelect={(e) => {
               setActiveTab(e as HomePageSortEnum);

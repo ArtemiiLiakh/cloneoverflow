@@ -52,6 +52,7 @@ export const createQuestionDetails = (params?: Partial<QuestionDetails>): Questi
     rating: params?.rating ?? 0,
     views: params?.views ?? 0,
     isClosed: params?.isClosed ?? false,
+    isFavorite: params?.isFavorite ?? false,
     createdAt: params?.createdAt ?? new Date(),
     updatedAt: params?.updatedAt ?? new Date(),
     owner: params?.owner ?? createQuestionOwner(),

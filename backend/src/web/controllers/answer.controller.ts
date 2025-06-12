@@ -1,20 +1,6 @@
-import {
-  AnswerCreateBody,
-  AnswerCreateResponse,
-  AnswerDeleteParams,
-  AnswerGetParams,
-  AnswerGetResponse,
-  AnswerGetVoteParams,
-  AnswerGetVoteResponse,
-  AnswerPaths,
-  AnswerUpdateBody,
-  AnswerUpdateParams,
-  AnswerVoteDownParams,
-  AnswerVoteUpParams,
-} from '@cloneoverflow/common/api/answer';
-
 import { AnswerController } from '@application/answer/AnswerController';
 import { ExecutorPayload, TokenTypeEnum } from '@application/auth/data';
+import { AnswerPaths } from '@cloneoverflow/common/api/answer';
 import { CoreResponse } from '@common/controllers/Response';
 import { AnswerIdInvalid } from '@core/answer/exceptions/AnswerIdInvalid';
 import { AnswerOwnerInvalid } from '@core/answer/exceptions/AnswerOwnerInvalid';
@@ -24,6 +10,19 @@ import { CannotVoteOwnAnswer } from '@core/answer/exceptions/CannotVoteOwnAnswer
 import { QuestionIdInvalid } from '@core/question/exceptions/QuestionIdInvalid';
 import { Body, Controller, Delete, Get, Inject, Param, Patch, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiAnswerCreateBody,
+  ApiAnswerCreateResponse,
+  ApiAnswerDeleteParams,
+  ApiAnswerGetParams,
+  ApiAnswerGetResponse,
+  ApiAnswerGetVoteParams,
+  ApiAnswerGetVoteResponse,
+  ApiAnswerUpdateBody,
+  ApiAnswerUpdateParams,
+  ApiAnswerVoteDownParams,
+  ApiAnswerVoteUpParams,
+} from '@web/dtos/answer';
 import { ApiEndpointDocumentation } from '../decorators/apiEndpoint.decorator';
 import { Auth } from '../decorators/auth.decorator';
 import { Executor } from '../decorators/executor.decorator';
@@ -44,7 +43,7 @@ export class NestAnswerController {
     summary: 'Creates a new answer for the question',
     operationId: 'Create answer',
     response: {
-      type: AnswerCreateResponse,
+      type: ApiAnswerCreateResponse,
       statusCode: 201,
     },
     useDataValidation: true,
@@ -56,9 +55,9 @@ export class NestAnswerController {
   })
   create (
     @Executor() executor: ExecutorPayload,
-    @Body() body: AnswerCreateBody,
+    @Body() body: ApiAnswerCreateBody,
     @CoreRes() res: CoreResponse,
-  ): Promise<AnswerCreateResponse> {
+  ): Promise<ApiAnswerCreateResponse> {
     return res.process(this.answerController.create({
       body,
       executor,
@@ -73,7 +72,7 @@ export class NestAnswerController {
     operationId: 'Get answer by id',
     response: {
       statusCode: 200,
-      type: AnswerGetResponse,
+      type: ApiAnswerGetResponse,
     },
     exceptions: {
       title: 'Question with this id not found', 
@@ -86,9 +85,9 @@ export class NestAnswerController {
   })
   get (
     @Executor() executor: ExecutorPayload,
-    @Param() params: AnswerGetParams,
+    @Param() params: ApiAnswerGetParams,
     @CoreRes() res: CoreResponse,
-  ): Promise<AnswerGetResponse> {
+  ): Promise<ApiAnswerGetResponse> {
     return res.process(this.answerController.get({
       params,
       executor,
@@ -115,8 +114,8 @@ export class NestAnswerController {
   })
   async update (
     @Executor() executor: ExecutorPayload,
-    @Param() params: AnswerUpdateParams,
-    @Body() body: AnswerUpdateBody,
+    @Param() params: ApiAnswerUpdateParams,
+    @Body() body: ApiAnswerUpdateBody,
     @CoreRes() res: CoreResponse,
   ): Promise<void> {
     await res.process(this.answerController.update({
@@ -151,7 +150,7 @@ export class NestAnswerController {
   })
   async delete (
     @Executor() executor: ExecutorPayload,
-    @Param() params: AnswerDeleteParams,
+    @Param() params: ApiAnswerDeleteParams,
     @CoreRes() res: CoreResponse,
   ): Promise<void> {
     await res.process(this.answerController.delete({
@@ -190,7 +189,7 @@ export class NestAnswerController {
   })
   async voteUp (
     @Executor() executor: ExecutorPayload,
-    @Param() params: AnswerVoteUpParams,
+    @Param() params: ApiAnswerVoteUpParams,
     @CoreRes() res: CoreResponse,
   ): Promise<void> {
     await res.process(this.answerController.voteUp({
@@ -229,7 +228,7 @@ export class NestAnswerController {
   })
   async voteDown (
     @Executor() executor: ExecutorPayload,
-    @Param() params: AnswerVoteDownParams,
+    @Param() params: ApiAnswerVoteDownParams,
     @CoreRes() res: CoreResponse,
   ): Promise<void> {
     await res.process(this.answerController.voteDown({
@@ -246,7 +245,7 @@ export class NestAnswerController {
     operationId: 'Get answer vote',
     response: {
       statusCode: 200,
-      type: AnswerGetVoteResponse,
+      type: ApiAnswerGetVoteResponse,
     },
     exceptions: {
       title: 'Answer vote not found',
@@ -259,9 +258,9 @@ export class NestAnswerController {
   })
   getVote (
     @Executor() executor: ExecutorPayload,
-    @Param() params: AnswerGetVoteParams,
+    @Param() params: ApiAnswerGetVoteParams,
     @CoreRes() res: CoreResponse,
-  ): Promise<AnswerGetVoteResponse> {
+  ): Promise<ApiAnswerGetVoteResponse> {
     return res.process(this.answerController.getVoter({
       params,
       executor,

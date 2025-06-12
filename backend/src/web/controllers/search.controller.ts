@@ -8,14 +8,8 @@ import { Executor } from '../decorators/executor.decorator';
 import { CoreRes } from '../decorators/response.decorator';
 import { ControllerDITokens } from '../di/tokens/ControllerDITokens';
 import { SearchController } from '@application/search/SearchController';
-
-import {
-  SearchPaths,
-  SearchQuestionsQuery,
-  SearchQuestionsResponse,
-  SearchTagsQuery,
-  SearchTagsResponse,
-} from '@cloneoverflow/common/api/search';
+import { SearchPaths } from '@cloneoverflow/common/api/search';
+import { ApiSearchQuestionsQuery, ApiSearchQuestionsResponse, ApiSearchTagsQuery, ApiSearchTagsResponse } from '@web/dtos/search';
 
 @ApiTags('search')
 @Controller()
@@ -31,14 +25,14 @@ export class NestSearchController {
     operationId: 'Search tags',
     response: {
       statusCode: 200,
-      type: SearchTagsResponse,
+      type: ApiSearchTagsResponse,
     },
     useDataValidation: true,
   })
   async searchTags (
-    @Query() query: SearchTagsQuery, 
+    @Query() query: ApiSearchTagsQuery, 
     @CoreRes() res: CoreResponse,
-  ): Promise<SearchTagsResponse> {
+  ): Promise<ApiSearchTagsResponse> {
     return res.process(this.searchController.searchTags({ query }));
   }
 
@@ -50,7 +44,7 @@ export class NestSearchController {
     operationId: 'Search questions',
     response: {
       statusCode: 200,
-      type: SearchQuestionsResponse,
+      type: ApiSearchQuestionsResponse,
     },
     useDataValidation: true,
     useAuthValidation: {
@@ -60,9 +54,9 @@ export class NestSearchController {
   })
   searchQuestions (
     @Executor() executor: ExecutorPayload,
-    @Query() query: SearchQuestionsQuery,
+    @Query() query: ApiSearchQuestionsQuery,
     @CoreRes() res: CoreResponse,
-  ): Promise<SearchQuestionsResponse> {
+  ): Promise<ApiSearchQuestionsResponse> {
     return res.process(this.searchController.searchQuestions({ executor, query }));
   }
 }

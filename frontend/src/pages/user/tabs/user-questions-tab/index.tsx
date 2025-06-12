@@ -1,35 +1,28 @@
-import React, { useEffect, useState } from 'react';
-import { UserService } from '../../../../api/services/user.service';
+import * as React from 'react';
+import { OrderByEnum, QuestionsSortByEnum } from '@cloneoverflow/common';
+import { UserGetQuestionDataItem, UserGetQuestionsQuery, UserGetQuestionsResponse } from '@cloneoverflow/common/api/user';
+import { useEffect, useState } from 'react';
 import { Form, Table } from 'react-bootstrap';
-import Taglist from '../../../../components/taglist/taglist';
-import { 
-  MappedUserGetQuestionResponse, 
-  UserGetQuestionsDTO, 
-  UserGQSortBy, 
-  UserGetQuestionResponse, 
-  OrderBy,
-  QuestionStatus
-} from '@cloneoverflow/common';
-import { GetPassedDate } from '../../../../utils/dateUtils';
+import { UserService } from '@/api/services/user.service';
+import Taglist from '@/components/taglist/taglist';
+import { GetPassedDate } from '@/utils/dateUtils';
 
 interface UserQuestionsTabProps {
   userId?: string;   
 }
 
 const UserQuestionsTab = ({ userId }: UserQuestionsTabProps) => {
-  const [questions, setQuestions] = useState<MappedUserGetQuestionResponse[]>();
-  const [request, setRequest] = useState<UserGetQuestionsDTO>({
-    sortBy: UserGQSortBy.RATE,
-    orderBy: OrderBy.DESC,
-    pagination: {
-      page: 0,
-      pageSize: 10,
-    },
+  const [questions, setQuestions] = useState<UserGetQuestionDataItem[]>();
+  const [request, setRequest] = useState<UserGetQuestionsQuery>({
+    sortBy: QuestionsSortByEnum.RATE,
+    orderBy: OrderByEnum.DESC,
+    page: 0,
+    pageSize: 10,
   });
 
-  const handleRequest = (request: UserGetQuestionsDTO) => {
+  const handleRequest = (request: UserGetQuestionsQuery) => {
     if (!userId) return;
-    UserService.getQuestions(userId, request).then((response: UserGetQuestionResponse) => {
+    UserService.getQuestions(userId, request).then((response: UserGetQuestionsResponse) => {
       setQuestions(response.questions);
     });
     setRequest(request);
@@ -37,7 +30,7 @@ const UserQuestionsTab = ({ userId }: UserQuestionsTabProps) => {
 
   useEffect(() => {
     if (userId) {
-      UserService.getQuestions(userId, request).then((response: UserGetQuestionResponse) => {
+      UserService.getQuestions(userId, request).then((response: UserGetQuestionsResponse) => {
         setQuestions(response.questions);
       });
     }
@@ -73,21 +66,21 @@ const UserQuestionsTab = ({ userId }: UserQuestionsTabProps) => {
             onChange={(e) => {
               handleRequest({
                 ...request,
-                sortBy: e.target.value as UserGQSortBy,
+                sortBy: e.target.value as QuestionsSortByEnum,
               });
             }}
           >
-            <option value={UserGQSortBy.DATE}>Date</option>
-            <option value={UserGQSortBy.RATE}>Rate</option>
-            <option value={UserGQSortBy.ANSWERS}>Answers</option>
+            <option value={QuestionsSortByEnum.DATE}>Date</option>
+            <option value={QuestionsSortByEnum.RATE}>Rate</option>
+            <option value={QuestionsSortByEnum.ANSWERS}>Answers</option>
           </Form.Select>
           <button id='orderBy' className='orderBy' onClick={() => {
             handleRequest({
               ...request,
-              orderBy: request.orderBy === OrderBy.ASC ? OrderBy.DESC : OrderBy.ASC,
+              orderBy: request.orderBy === OrderByEnum.ASC ? OrderByEnum.DESC : OrderByEnum.ASC,
             });
           }}>
-            {request.orderBy === OrderBy.ASC ? '↑' : '↓'}
+            {request.orderBy === OrderByEnum.ASC ? '↑' : '↓'}
           </button>
         </div>
         <div className="filter-block">
@@ -129,9 +122,9 @@ const UserQuestionsTab = ({ userId }: UserQuestionsTabProps) => {
               <td></td>
               <td>{index + 1}</td>
               <td>{question.title}</td>
-              <td>{question.rate}</td>
+              <td>{question.rating}</td>
               <td>{question.answersAmount}</td>
-              <td className={question.status === QuestionStatus.CLOSED ? 'closed' : ''}>{question.status}</td>
+              <td className={question.isClosed ? 'closed' : ''}>{question.isClosed ? 'CLOSED' : 'ACTIVE'}</td>
               <td>{GetPassedDate(question.createdAt)}</td>
               <td><Taglist tags={question.tags}/></td>
             </tr>

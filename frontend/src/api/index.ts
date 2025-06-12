@@ -1,7 +1,6 @@
-import axios, { AxiosError } from 'axios';
-import urls from './urls';
-import { useCookie } from '../hooks/useCookie';
+import axios from 'axios';
 import axiosRetry from 'axios-retry';
+import urls from './urls';
 
 const api = axios.create({
   withCredentials: true,
@@ -9,7 +8,7 @@ const api = axios.create({
 
 axiosRetry(api, {
   retries: 1,
-  onRetry: async (count) => {
+  onRetry: async () => {
     await axios.post(urls.refreshToken, {}, {
       withCredentials: true,
     }).catch(() => null);

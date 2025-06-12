@@ -1,38 +1,53 @@
+import { basePath } from '@cloneoverflow/common/api';
+import { AnswerPaths } from '@cloneoverflow/common/api/answer';
+import { AuthPaths } from '@cloneoverflow/common/api/auth';
+import { QuestionPaths } from '@cloneoverflow/common/api/question';
+import { SearchPaths } from '@cloneoverflow/common/api/search';
+import { UserPaths } from '@cloneoverflow/common/api/user';
+import { UrlParamsReplacer } from './utils/UrlParamsReplacer';
+import config from '@/config';
+
 class URLS {
-  API = process.env.REACT_APP_API_URL + '/api';
+  API = config.API_URL + basePath;
 
-  private AUTH = this.API+'/auth';
-  login = this.AUTH + '/login';
-  signup = this.AUTH + '/signup'
-  signout = this.AUTH + '/signout';
-  me = this.AUTH + '/me';
-  refreshToken = this.AUTH+'/refreshToken';
-  changePassword = this.AUTH+'/changePassword';
+  login = this.API+AuthPaths.BasicLogin;
+  createAccount = this.API+AuthPaths.CreateAccount
+  signout = this.API+AuthPaths.SignOut;
+  me = this.API+AuthPaths.GetMe;
+  refreshToken = this.API+AuthPaths.RefeshToken;
+  changePassword = this.API+AuthPaths.ChangePassword;
 
-  private USER = this.API+'/users';
-  getUser = (userId: string) => `${this.USER}/${userId}/get`;
-  getQuestions = (userId: string) => `${this.USER}/${userId}/questions`;
-  getAnswers = (userId: string) => `${this.USER}/${userId}/answers`;
-  getProfile = (userId: string) => `${this.USER}/${userId}/profile`;
-  updateUser = (userId: string) => `${this.USER}/${userId}/update`;
+  getUser = (userId: string) => this.API+UrlParamsReplacer(UserPaths.Get, userId);
+  updateUser = (userId: string) => this.API+UrlParamsReplacer(UserPaths.Update, userId);
+  getQuestions = (userId: string) => this.API+UrlParamsReplacer(UserPaths.GetQuestions, userId);
+  getAnswers = (userId: string) => this.API+UrlParamsReplacer(UserPaths.GetAnswers, userId);
+  getProfile = (userId: string) => this.API+UrlParamsReplacer(UserPaths.GetProfile, userId);
 
-  private QUESTION = this.API+'/questions';
-  createQuestion = this.QUESTION + '/create';
-  getQuestion = (questionId: string) => `${this.QUESTION}/${questionId}/get`;
-  updateQuestion = (questionId: string) => `${this.QUESTION}/${questionId}/update`;
-  closeQuestion = (questionId: string) => `${this.QUESTION}/${questionId}/closed`;
-  voteQuestion = (questionId: string) => `${this.QUESTION}/${questionId}/vote`;
-  deleteQuestion = (questionId: string) => `${this.QUESTION}/${questionId}/delete`;
-  searchQuestion = this.QUESTION + '/search';
+  createQuestion = this.API+QuestionPaths.Create;
+  getQuestion = (questionId: string) => this.API+UrlParamsReplacer(QuestionPaths.Get, questionId);
+  getQuestionAnswers = (questionId: string) => this.API+UrlParamsReplacer(QuestionPaths.GetAnswers, questionId);
+  updateQuestion = (questionId: string) => this.API+UrlParamsReplacer(QuestionPaths.Update, questionId);
+  closeQuestion = (questionId: string) => this.API+UrlParamsReplacer(QuestionPaths.Close, questionId);
+  openQuestion = (questionId: string) => this.API+UrlParamsReplacer(QuestionPaths.Open, questionId);
+  voteQuestion = (questionId: string, vote: 'up' | 'down') => {
+    if (vote === 'up') return this.API+UrlParamsReplacer(QuestionPaths.VoteUp, questionId);
+    else return this.API+UrlParamsReplacer(QuestionPaths.VoteDown, questionId);
+  }
+  deleteQuestion = (questionId: string) => this.API+UrlParamsReplacer(QuestionPaths.Delete, questionId);
+  addQuestionViewer = (questionId: string) => this.API+UrlParamsReplacer(QuestionPaths.AddViewer, questionId);
+  makeFavorite = (questionId: string) => this.API+UrlParamsReplacer(QuestionPaths.MarkFavorite, questionId);
+  removeFavorite = (questionId: string) => this.API+UrlParamsReplacer(QuestionPaths.RemoveFavorite, questionId);
+  searchQuestion = this.API+SearchPaths.SearchQuestions;
 
-  private ANSWER = this.API+'/answers';
-  createAnswer = this.ANSWER + '/create';
-  updateAnswer = (answerId: string) => `${this.ANSWER}/${answerId}/update`;
-  deleteAnswer = (answerId: string) => `${this.ANSWER}/${answerId}/delete`;
-  voteAnswer = (answerId: string) => `${this.ANSWER}/${answerId}/vote`;
+  createAnswer = this.API+AnswerPaths.Create;
+  updateAnswer = (answerId: string) => this.API+UrlParamsReplacer(AnswerPaths.Update, answerId);
+  deleteAnswer = (answerId: string) => this.API+UrlParamsReplacer(AnswerPaths.Delete, answerId);
+  voteAnswer = (answerId: string, vote: 'up' | 'down') => {
+    if (vote === 'up') return this.API+UrlParamsReplacer(AnswerPaths.VoteUp, answerId);
+    else return this.API+UrlParamsReplacer(AnswerPaths.VoteDown, answerId);
+  };
 
-  private TAG = this.API+'/tags';
-  searchTags = this.TAG + '/search';
+  searchTags = this.API+SearchPaths.SearchTags;
 }
 
 const urls = new URLS()

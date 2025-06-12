@@ -1,6 +1,8 @@
+import * as React from 'react';
+
+import { AuthService } from '@/api/services/auth.service';
+import { GetMeResponse } from '@cloneoverflow/common/api/auth';
 import { Dispatch, PropsWithChildren, SetStateAction, createContext, useEffect, useState } from 'react';
-import { AuthService } from '../api/services/auth.service';
-import { GetMeResponse } from '@cloneoverflow/common';
 
 export interface AuthContextProps {
   user: GetMeResponse | null;

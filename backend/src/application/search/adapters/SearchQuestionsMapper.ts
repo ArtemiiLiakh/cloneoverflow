@@ -1,5 +1,5 @@
 import { SearchQuestionsResponse } from '@cloneoverflow/common/api/search';
-import { SearchQuestionsOutput } from '../usercases/dtos';
+import { SearchQuestionsOutput } from '../usecases/dtos';
 
 export function SearchQuestionsMapperOutput (
   questions: SearchQuestionsOutput,
@@ -12,6 +12,7 @@ export function SearchQuestionsMapperOutput (
       views: question.entity.views,
       isClosed: question.entity.isClosed,
       createdAt: question.entity.createdAt.toISOString(),
+      updatedAt: question.entity.createdAt.toISOString(),
       answersAmount: question.answersAmount,
       owner: question.owner ? {
         id: question.owner.userId,

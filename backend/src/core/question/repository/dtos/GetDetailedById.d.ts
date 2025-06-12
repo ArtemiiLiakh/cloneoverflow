@@ -2,7 +2,7 @@ import { QuestionDetails } from '@core/question';
 
 export type QuestionRepoGetDetailedByIdInput = {
   questionId: string,
-  voterId?: string,
+  executorId?: string,
 }
 
 export type QuestionRepoGetDetailedByIdOutput = QuestionDetails;
