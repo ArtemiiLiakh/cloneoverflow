@@ -1,4 +1,4 @@
-import React, { useState, SetStateAction, Dispatch } from 'react';
+import React, { SetStateAction, Dispatch } from 'react';
 import { Pagination as BSPagination } from 'react-bootstrap';
 
 interface BootPaginationProps {
@@ -10,7 +10,7 @@ interface BootPaginationProps {
 const Pagination = ({ page, setPage, totalPages }: BootPaginationProps) => {
   const getPageItems = () => {
     const minPages = Math.floor(page/5)*5;
-    const maxPages = Math.min(minPages+5, totalPages+1);
+    const maxPages = Math.min(minPages+5, totalPages);
     const items = [];
     for (let number = minPages; number < maxPages; number++) {
       items.push(
@@ -24,7 +24,7 @@ const Pagination = ({ page, setPage, totalPages }: BootPaginationProps) => {
     return items;
   }
 
-  const prev = <BSPagination.Prev disabled={page === 0} onClick={() => setPage(page > 0 ? page-1 : 0)}/>
+  const prev = <BSPagination.Prev disabled={page === 1} onClick={() => setPage(page > 0 ? page : 0)}/>
   const next = <BSPagination.Next disabled={page === totalPages} onClick={() => setPage(page < totalPages ? page+1 : totalPages)}/>
 
   return (

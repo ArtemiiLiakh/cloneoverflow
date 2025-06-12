@@ -1,13 +1,14 @@
 import React, { FormEvent, useEffect } from 'react';
 import { useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
-import { UserService } from '../../../../api/services/user.service';
 import { AxiosError } from 'axios';
-import { formatArray } from '../../../../utils/stringUtils';
-import { ExceptionResponse, UserGetResponse, UserUpdateDTO } from '@cloneoverflow/common';
-import { AuthService } from '../../../../api/services/auth.service';
-import MDEditorCustom from '../../../../components/MDEditorCustom';
-import ErrorList from '../../../../components/errorlist/ErrorList';
+import { UserGetResponse, UserUpdateBody } from '@cloneoverflow/common/api/user';
+import { ExceptionMessage } from '@cloneoverflow/common';
+import { AuthService } from '@/api/services/auth.service';
+import { UserService } from '@/api/services/user.service';
+import ErrorList from '@/components/errorlist/ErrorList';
+import MDEditorCustom from '@/components/MDEditorCustom';
+import { formatArray } from '@/utils/stringUtils';
 
 interface UserSettingsTabProps {
   user: UserGetResponse;
@@ -20,8 +21,8 @@ interface ChangePasswordData {
 }
 
 const UserSettingsTab = ({ user }: UserSettingsTabProps) => {
-  const [oldUser, setOldUser] = useState<UserUpdateDTO>(user);
-  const [newUser, setNewUser] = useState<UserUpdateDTO>({});
+  const [oldUser, setOldUser] = useState<UserUpdateBody>(user);
+  const [newUser, setNewUser] = useState<UserUpdateBody>({});
   const [changePasswordData, setChangePasswordData] = useState<ChangePasswordData>({
     oldPassword: '',
     newPassword: '',
@@ -41,13 +42,12 @@ const UserSettingsTab = ({ user }: UserSettingsTabProps) => {
 
   const onChangeSettings = async (event: FormEvent) => {
     event.preventDefault();
-    const res = await UserService.update(user.id, newUser).catch((error: AxiosError<ExceptionResponse>) => {
+    UserService.update(user.id, newUser).catch((error: AxiosError<ExceptionMessage>) => {
       setErrMsg(formatArray(error.response?.data.error) ?? ['Server error']);
-    });
-    if (res) {
+    }).then(() => {
       setErrMsg(undefined);
       window.location.reload();
-    }
+    });
   };
 
   const onChangePassword = async (event: FormEvent) => {
@@ -57,25 +57,24 @@ const UserSettingsTab = ({ user }: UserSettingsTabProps) => {
       return;
     }
     
-    const res = await AuthService.changePassword({
-      oldPassword: changePasswordData.oldPassword,
-      newPassword: changePasswordData.newPassword,
-    }).catch((error: AxiosError<ExceptionResponse>) => {
-      setPasswordErrors(formatArray(error.response?.data.error) ?? ['Server error']);
-    });
+    // const res = await AuthService.changePassword({
+    //   oldPassword: changePasswordData.oldPassword,
+    //   newPassword: changePasswordData.newPassword,
+    // }).catch((error: AxiosError<ExceptionResponse>) => {
+    //   setPasswordErrors(formatArray(error.response?.data.error) ?? ['Server error']);
+    // });
 
-    if (res) {
-      setPasswordErrors(undefined);
-      setIsUpdatedPassword(true);
-    }
+    // if (res) {
+    //   setPasswordErrors(undefined);
+    //   setIsUpdatedPassword(true);
+    // }
   };
 
   const onLeaveAccount = async () => {
-    const res = await AuthService.signout().catch((error: AxiosError<ExceptionResponse>) => {});
-    if (res) {
+    AuthService.signout().then(() => {
       setErrMsg(undefined);
       window.location.assign('/');
-    }
+    });
   }
 
   return (

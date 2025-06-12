@@ -2,7 +2,7 @@ import React, { PropsWithChildren, useEffect, useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { Navigate } from 'react-router-dom';
 import { useCookie } from '../hooks/useCookie';
-import { AuthService } from '../api/services/auth.service';
+import { AuthService } from '@/api/services/auth.service';
 
 export const PrivateRoute = ({ children }: PropsWithChildren) => {
   const { user, setUser, authLoading } = useAuth();

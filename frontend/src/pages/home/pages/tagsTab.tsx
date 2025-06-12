@@ -1,38 +1,38 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { MappedSearchTagsResponse, PaginationResponse, SearchTagsSortBy } from '@cloneoverflow/common';
-import { SearchService } from '../../../api/services/search.service';
-import config from '../../../config';
+import * as React from 'react';
+
+import { PaginationInfo, SearchTagsSortByEnum } from '@cloneoverflow/common';
+import { SearchTagsDataItem } from '@cloneoverflow/common/api/search';
+import { useEffect, useRef, useState } from 'react';
 import { Card, Col, Form, Nav, Row } from 'react-bootstrap';
-import Pagination from '../../../components/pagination/pagination';
 import { Link, createSearchParams } from 'react-router-dom';
-import { GetPassedDate } from '../../../utils/dateUtils';
+import config from '@/config';
+import { SearchService } from '@/api/services/search.service';
+import Pagination from '@/components/pagination/pagination';
 
 const TagsTab = () => {
-  const [tags, setTags] = useState<MappedSearchTagsResponse[]>([]);
+  const [tags, setTags] = useState<SearchTagsDataItem[]>([]);
   const [name, setName] = useState<string>('');
-  const [sortBy, setSortBy] = useState<SearchTagsSortBy>(SearchTagsSortBy.POPULAR);
-  const [pagination, setPagination] = useState<Partial<PaginationResponse>>({
+  const [sortBy, setSortBy] = useState<SearchTagsSortByEnum>(SearchTagsSortByEnum.POPULAR);
+  const [pagination, setPagination] = useState<Partial<PaginationInfo>>({
     page: config.defaultPage,
     pageSize: 20,
     totalPages: 0,
     totalAmount: 0,
   });
-  const [page, setPage] = useState<number>(0);
+  const [page, setPage] = useState<number>(config.defaultPage);
   const currTimeout = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
     SearchService.searchTags({
       name,
       sortBy,
-      pagination: {
-        page,
-        pageSize: 20,
-      }
+      page,
+      pageSize: 20,
     }).then((res) => {
       setTags(res.tags);
       setPagination(res.pagination);
     })
-  }, [sortBy, name])
+  }, [sortBy, name, page])
 
   const tagList = [];
 
@@ -53,7 +53,6 @@ const TagsTab = () => {
                 })}`}
                 >{tag.name}</Link>
               </Card.Title>
-              <Card.Text>{GetPassedDate(tag.createdAt)}</Card.Text>
               <Card.Text>Questions: {tag.questionsAmount}</Card.Text>
             </Card.Body>
           </Card>
@@ -88,18 +87,18 @@ const TagsTab = () => {
             }} />
           </Form>
           <div className="sort">
-            <Nav variant='pills' defaultActiveKey={SearchTagsSortBy.POPULAR} onSelect={(e) => {
-              setSortBy(e as SearchTagsSortBy);
+            <Nav variant='pills' defaultActiveKey={SearchTagsSortByEnum.POPULAR} onSelect={(e) => {
+              setSortBy(e as SearchTagsSortByEnum);
               setPage(0);
             }}>
               <Nav.Item>
-                <Nav.Link eventKey={SearchTagsSortBy.POPULAR}>Popular</Nav.Link>
+                <Nav.Link eventKey={SearchTagsSortByEnum.POPULAR}>Popular</Nav.Link>
               </Nav.Item>
               <Nav.Item>
-                <Nav.Link eventKey={SearchTagsSortBy.NEWEST}>Newest</Nav.Link>
+                <Nav.Link eventKey={SearchTagsSortByEnum.NEWEST}>Newest</Nav.Link>
               </Nav.Item>
               <Nav.Item>
-                <Nav.Link eventKey={SearchTagsSortBy.NAME}>Name</Nav.Link>
+                <Nav.Link eventKey={SearchTagsSortByEnum.NAME}>Name</Nav.Link>
               </Nav.Item>
             </Nav>
           </div>

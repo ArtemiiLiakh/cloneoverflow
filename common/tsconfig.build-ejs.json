@@ -1,0 +1,9 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "outDir": "./dist/build/ejs",
+        "noEmit": false,
+        "module": "esnext",
+        "moduleResolution": "bundler"
+    }
+}

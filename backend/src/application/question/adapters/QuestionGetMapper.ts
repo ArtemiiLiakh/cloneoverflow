@@ -9,6 +9,7 @@ export const QuestionGetDetailsMapper = (question: QuestionGetDetailsOutput): Qu
     rating: question.rating,
     views: question.views,
     isClosed: question.isClosed,
+    isFavorite: question.isFavorite,
     createdAt: question.createdAt,
     updatedAt: question.updatedAt,
     myVoteType: question.voter ? question.voter.voteType : null,

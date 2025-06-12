@@ -1,5 +1,5 @@
 import { SearchService } from '@application/search/SearchService';
-import { SearchQuestionsUseCase, SearchTagsUseCase } from '@application/search/usercases';
+import { SearchQuestionsUseCase, SearchTagsUseCase } from '@application/search/usecases';
 
 export const SearchUseCaseDITokens = {
   SearchQuestions: Symbol(SearchQuestionsUseCase.name),

@@ -80,7 +80,7 @@ export class PrismaQuestionRepository implements QuestionRepository {
   }
 
   async getDetailedById (
-    { questionId, voterId }: QuestionRepoGetDetailedByIdInput,
+    { questionId, executorId }: QuestionRepoGetDetailedByIdInput,
   ): Promise<QuestionRepoGetDetailedByIdOutput> {
     const question = await this.client.question.findFirst({
       where: {
@@ -91,8 +91,12 @@ export class PrismaQuestionRepository implements QuestionRepository {
         tags: true,
         voters: {
           where: { 
-            userId: voterId, 
-            questionId: questionId ? +questionId : undefined,
+            userId: executorId, 
+          },
+        },
+        favorites: {
+          where: {
+            userId: executorId,
           },
         },
       },
@@ -107,6 +111,7 @@ export class PrismaQuestionRepository implements QuestionRepository {
       question.owner,
       question.voters[0],
       question.tags,
+      question.favorites.length > 0,
     );
   }
 

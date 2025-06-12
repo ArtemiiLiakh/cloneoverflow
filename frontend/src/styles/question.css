@@ -51,6 +51,14 @@
   background: transparent;
 }
 
+.question .body .sidepanel .favorite {
+  width: 20px;
+  height: 20px;
+  font-size: 1.2em;
+  border: none;
+  background: transparent;
+}
+
 .answer-item .sidepanel .vote-btn.solution {
   background: #c3ffbb;
 }

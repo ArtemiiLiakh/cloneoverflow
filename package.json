@@ -5,7 +5,8 @@
   "keywords": [],
   "author": "",
   "scripts": {
-    "build:backend": "docker build -t cloneoverflow:backend --file=./backend/Dockerfile ."
+    "build:backend": "docker build -t cloneoverflow:backend --file=./backend/Dockerfile .",
+    "build:frontend": "docker build -t cloneoverflow:frontend --file=./frontend/Dockerfile ."
   },
   "license": "ISC",
   "workspaces": [

@@ -1,4 +1,4 @@
-import { SearchTagsUseCase } from '@application/search/usercases';
+import { SearchTagsUseCase } from '@application/search/usecases';
 import { TagRepository } from '@core/tag/repository/TagRepository';
 import { Provider } from '@nestjs/common';
 import { PrismaRepositoryDITokens } from '@web/di/tokens/persistence';

@@ -12,6 +12,7 @@ export class QuestionDetailsMapper {
     owner: Nullable<Prisma.User>,
     voter: Nullable<Prisma.QuestionVoter>,
     tags: Prisma.Tag[],
+    isFavorite: boolean,
   ): QuestionDetails {
     return QuestionDetails.new({
       questionId: question.id.toString(),
@@ -21,6 +22,7 @@ export class QuestionDetailsMapper {
       rating: question.rating,
       views: question.views,
       isClosed: question.isClosed,
+      isFavorite,
       createdAt: question.createdAt,
       updatedAt: question.updatedAt,
 

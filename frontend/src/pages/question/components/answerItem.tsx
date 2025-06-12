@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { AnswerGetResponse, QuestionGetResponse, VoteType } from '@cloneoverflow/common';
 import MDEditor from '@uiw/react-md-editor';
 import { Button } from 'react-bootstrap';
-import MDEditorCustom from '../../../components/MDEditorCustom';
-import { useAuth } from '../../../hooks/useAuth';
-import { AnswerService } from '../../../api/services/answer.service';
-import { GetPassedDate } from '../../../utils/dateUtils';
-import { QuestionService } from '../../../api/services/question.service';
+import { AnswerGetResponse } from '@cloneoverflow/common/api/answer';
+import { QuestionGetAnswersDataItem, QuestionGetResponse } from '@cloneoverflow/common/api/question';
+import { VoteTypeEnum } from '@cloneoverflow/common';
+import { AnswerService } from '@/api/services/answer.service';
+import { QuestionService } from '@/api/services/question.service';
+import MDEditorCustom from '@/components/MDEditorCustom';
+import { useAuth } from '@/hooks/useAuth';
+import { GetPassedDate } from '@/utils/dateUtils';
 
 interface AnswerItemProps {
   question: QuestionGetResponse;
@@ -16,7 +18,7 @@ interface AnswerItemProps {
 const AnswerItem = ({ question, item }: AnswerItemProps) => {
   const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
-  const [answer, setAnswer] = useState<AnswerGetResponse>(item);
+  const [answer, setAnswer] = useState<QuestionGetAnswersDataItem>(item);
 
   const onRead = () => {
     return (
@@ -24,7 +26,7 @@ const AnswerItem = ({ question, item }: AnswerItemProps) => {
         <MDEditor.Markdown className='answer-text' source={answer.text}/>
         <div className="answer-pannel">
           {
-            answer.owner.id === user?.id ? 
+            answer.owner?.id === user?.id ? 
               <div className="actions">
                 <Button className='action-btn' onClick={() => {
                   setIsEditing(true);
@@ -38,9 +40,9 @@ const AnswerItem = ({ question, item }: AnswerItemProps) => {
              : <></>
           }
           <div className="author">
-            <p className='answerDate'>answered {GetPassedDate(answer?.createdAt)}</p>
-            <p>{answer?.owner.name}</p>
-            <p><a href={`/users/${answer?.owner.id}`}>@{answer?.owner.username}</a> ● {answer?.owner.reputation}</p>
+            <p className='answerDate'>answered {GetPassedDate(answer.createdAt)}</p>
+            <p>{answer?.owner?.name}</p>
+            <p><a href={`/users/${answer.owner?.id}`}>@{answer.owner?.username}</a> ● {answer.owner?.rating}</p>
           </div>
         </div>
       </>
@@ -77,36 +79,44 @@ const AnswerItem = ({ question, item }: AnswerItemProps) => {
   return ( 
     <div className="answer-item">
       <div className="sidepanel">
-        <button className='vote-btn' disabled={answer.voteType === VoteType.UP || answer.owner.id === user?.id} onClick={() => {
-          AnswerService.voteAnswer(answer.id, { vote: VoteType.UP }).then(() => {
+        <button className='vote-btn' disabled={answer.myVoteType === VoteTypeEnum.UP || answer.owner?.id === user?.id} onClick={() => {
+          AnswerService.voteAnswer(answer.id, 'up').then(() => {
             setAnswer({
               ...answer,
-              voteType: answer?.voteType ? null : VoteType.UP,
-              rate: answer.rate + 1
+              myVoteType: answer.myVoteType ? null : VoteTypeEnum.UP,
+              rating: answer.rating + 1
             });
           }).catch(() => {});
         }}><i className="fa-solid fa-arrow-up"></i></button>
-        <p className='rating'>{answer.rate}</p>
-        <button className='vote-btn' disabled={answer.voteType === VoteType.DOWN || answer.owner.id === user?.id} onClick={() => {
-          AnswerService.voteAnswer(answer.id, { vote: VoteType.DOWN }).then(() => {
+        <p className='rating'>{answer.rating}</p>
+        <button className='vote-btn' disabled={answer.myVoteType === VoteTypeEnum.DOWN || answer.owner?.id === user?.id} onClick={() => {
+          AnswerService.voteAnswer(answer.id, 'down').then(() => {
             setAnswer({
               ...answer,
-              voteType: answer?.voteType ? null : VoteType.DOWN,
-              rate: answer.rate - 1
+              myVoteType: answer?.myVoteType ? null : VoteTypeEnum.DOWN,
+              rating: answer.rating - 1
             });
           }).catch(() => {});
         }}><i className="fa-solid fa-arrow-down"></i></button>
         {
-          question.owner.id === user?.id ?
+          question.owner?.id === user?.id ?
             <button className={`vote-btn ${answer.isSolution ? 'solution' : ''}`} onClick={() => {
-              QuestionService.closeQuestion(question.id, answer.id).then(() => {
-                window.location.reload();
-              });
+              if (answer.isSolution) {
+                QuestionService.openQuestion(question.id).then(() => {
+                  window.location.reload();
+                })
+              } else {
+                QuestionService.closeQuestion(question.id ?? '', {
+                  answerId: answer.id
+                }).then(() => {
+                  window.location.reload();
+                });
+              }
             }}><i className="fa-solid fa-check"></i></button>
           : <></>
         }
         {
-          question.owner.id !== user?.id && answer.isSolution ?
+          question.owner?.id !== user?.id && answer.isSolution ?
             <p className='solution'>Solution</p>
           : <></> 
         }

@@ -1,3 +1,17 @@
+import {
+  ApiUserGetAnswersParams,
+  ApiUserGetAnswersQuery,
+  ApiUserGetAnswersResponse,
+  ApiUserGetParams,
+  ApiUserGetProfileParams,
+  ApiUserGetProfileResponse,
+  ApiUserGetQuestionsParams,
+  ApiUserGetQuestionsQuery,
+  ApiUserGetQuestionsResponse,
+  ApiUserGetResponse,
+  ApiUserUpdateBody,
+} from '@web/dtos/user';
+
 import { ExecutorPayload } from '@application/auth/data';
 import { CoreResponse } from '@common/controllers/Response';
 import { UserIdInvalid, UsernameAlreadyExists } from '@core/user/exceptions';
@@ -9,21 +23,7 @@ import { Executor } from '../decorators/executor.decorator';
 import { CoreRes } from '../decorators/response.decorator';
 import { ControllerDITokens } from '../di/tokens/ControllerDITokens';
 import { UserController } from '@application/user/UserController';
-
-import {
-  UserGetAnswersParams,
-  UserGetAnswersQuery,
-  UserGetAnswersResponse,
-  UserGetParams,
-  UserGetProfileParams,
-  UserGetProfileResponse,
-  UserGetQuestionsParams,
-  UserGetQuestionsQuery,
-  UserGetQuestionsResponse,
-  UserGetResponse,
-  UserPaths,
-  UserUpdateBody,
-} from '@cloneoverflow/common/api/user';
+import { UserPaths } from '@cloneoverflow/common/api/user';
 
 @ApiTags('users')
 @Controller()
@@ -39,7 +39,7 @@ export class NestUserController {
     operationId: 'Get by id',
     response: {
       statusCode: 200,
-      type: UserGetResponse,
+      type: ApiUserGetResponse,
     },
     useDataValidation: true,
     exceptions: {
@@ -48,9 +48,9 @@ export class NestUserController {
     },
   })
   get (
-    @Param() params: UserGetParams, 
+    @Param() params: ApiUserGetParams, 
     @CoreRes() res: CoreResponse,
-  ): Promise<UserGetResponse> {
+  ): Promise<ApiUserGetResponse> {
     return res.process(this.userController.getUser({ params }));
   }
 
@@ -60,7 +60,7 @@ export class NestUserController {
     operationId: 'Get user profile',
     response: {
       statusCode: 200,
-      type: UserGetProfileParams,
+      type: ApiUserGetProfileParams,
     },
     useDataValidation: true,
     exceptions: {
@@ -70,9 +70,9 @@ export class NestUserController {
   })  
   @Get(UserPaths.GetProfile)
   getProfile (
-    @Param() params: UserGetProfileParams, 
+    @Param() params: ApiUserGetProfileParams, 
     @CoreRes() res: CoreResponse,
-  ): Promise<UserGetProfileResponse> {
+  ): Promise<ApiUserGetProfileResponse> {
     return res.process(this.userController.getProfile({ params }));
   }
 
@@ -82,16 +82,16 @@ export class NestUserController {
     operationId: 'Get user answers',
     response: {
       statusCode: 200,
-      type: UserGetAnswersResponse,
+      type: ApiUserGetAnswersResponse,
     },
     useDataValidation: true,
   }) 
   @Get(UserPaths.GetAnswers)
   getAnswers (
-    @Param() params: UserGetAnswersParams, 
-    @Query() query: UserGetAnswersQuery,
+    @Param() params: ApiUserGetAnswersParams, 
+    @Query() query: ApiUserGetAnswersQuery,
     @CoreRes() res: CoreResponse,
-  ): Promise<UserGetAnswersResponse> {
+  ): Promise<ApiUserGetAnswersResponse> {
     return res.process(this.userController.getOwnAnswers({ params, query }));
   }
 
@@ -102,15 +102,15 @@ export class NestUserController {
     operationId: 'Get user questions',
     response: {
       statusCode: 200,
-      type: UserGetQuestionsResponse,
+      type: ApiUserGetQuestionsResponse,
     },
     useDataValidation: true,
   })
   getQuestions (
-    @Param() params: UserGetQuestionsParams, 
-    @Query() query: UserGetQuestionsQuery,
+    @Param() params: ApiUserGetQuestionsParams, 
+    @Query() query: ApiUserGetQuestionsQuery,
     @CoreRes() res: CoreResponse,
-  ): Promise<UserGetQuestionsResponse> {
+  ): Promise<ApiUserGetQuestionsResponse> {
     return res.process(this.userController.getOwnQuestions({ 
       params,
       query,
@@ -136,7 +136,7 @@ export class NestUserController {
   })
   async update (
     @Executor() executor: ExecutorPayload,
-    @Body() body: UserUpdateBody,
+    @Body() body: ApiUserUpdateBody,
     @CoreRes() res: CoreResponse,
   ): Promise<void> {
 

@@ -13,6 +13,10 @@ export const SearchTagsSortByMapper = (
     popular: {
       popular: orderBy ?? OrderByEnum.DESC,
     },
+
+    newest: {
+      newest: orderBy ?? OrderByEnum.DESC,
+    },
   };
 
   return sortByMapper[sortBy ?? SearchTagsSortByEnum.POPULAR];

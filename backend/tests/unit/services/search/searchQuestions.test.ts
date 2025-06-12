@@ -1,5 +1,6 @@
-import { SearchQuestionsUseCase } from '@application/search/usercases';
-import { SearchQuestionsInput } from '@application/search/usercases/dtos';
+import { FavoriteUnavailableForUnauthorized } from '@application/search/exceptions/FavoriteUnavailableForUnauthorized';
+import { SearchQuestionsUseCase } from '@application/search/usecases';
+import { SearchQuestionsInput } from '@application/search/usecases/dtos';
 import { SearchQuestionFilterByEnum, UnauthorizedException } from '@cloneoverflow/common';
 import { QuestionRepoSearchOutput } from '@core/question/repository/dtos/Search';
 import { QuestionRepository } from '@core/question/repository/QuestionRepository';
@@ -93,6 +94,6 @@ describe('Search service: test QuestionUseCase', () => {
     );
 
     expect(searchQuestionUseCase.execute(inputData))
-      .rejects.toThrow(UnauthorizedException);
+      .rejects.toThrow(FavoriteUnavailableForUnauthorized);
   });
 });

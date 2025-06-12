@@ -7,16 +7,14 @@
 /**/.env*
 /**/.idea
 /**/package-lock.json
+/**/credentials.example.json
 
 /backend/prisma/migrations
 /backend/prisma/.client
 /backend/environment/*
 /backend/coverage
 
-/Kubernetes
-
 !/backend/**/.env.example
-!/backend/environment/credentials.example.json
 !/backend/environment/redis
 !/backend/environment/postgres
 !/backend/environment/ratings.json

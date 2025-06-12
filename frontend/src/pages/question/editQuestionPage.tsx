@@ -1,20 +1,24 @@
-import React, { useEffect, useRef, useState } from 'react';
+import * as React from 'react';
+
+import { SearchTagsSortByEnum } from '@cloneoverflow/common';
+import { QuestionUpdateBody } from '@cloneoverflow/common/api/question';
+import { SearchTagsResponse } from '@cloneoverflow/common/api/search';
+import { useEffect, useRef, useState } from 'react';
 import { Button, Col, Form, Overlay, Row, Tooltip } from 'react-bootstrap';
-import MDEditorCustom from '../../components/MDEditorCustom';
-import { MappedSearchTagsResponse, QuestionUpdateDTO, SearchTagsSortBy } from '@cloneoverflow/common';
-import { SearchService } from '../../api/services/search.service';
-import { QuestionService } from '../../api/services/question.service';
 import { useNavigate, useParams } from 'react-router-dom';
-import ErrorList from '../../components/errorlist/ErrorList';
-import { useAuth } from '../../hooks/useAuth';
+import { QuestionService } from '@/api/services/question.service';
+import { SearchService } from '@/api/services/search.service';
+import ErrorList from '@/components/errorlist/ErrorList';
+import MDEditorCustom from '@/components/MDEditorCustom';
+import { useAuth } from '@/hooks/useAuth';
 
 const EditQuestionPage = () => {
   const { user } = useAuth();
   const { questionId } = useParams();
-  const [question, setQuestion] = useState<QuestionUpdateDTO>();
+  const [question, setQuestion] = useState<QuestionUpdateBody>();
   const [tag, setTag] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [suggestedTags, setSuggestedTags] = useState<MappedSearchTagsResponse[]>([]);
+  const [suggestedTags, setSuggestedTags] = useState<SearchTagsResponse['tags']>([]);
   const [errMsg, setErrMsg] = useState<string[] | null>();
   const tagInputTarget = useRef(null);
   const currTimeout = useRef<NodeJS.Timeout>();
@@ -28,11 +32,9 @@ const EditQuestionPage = () => {
     currTimeout.current = setTimeout(async () => {
       await SearchService.searchTags({
         name: tag,
-        pagination: {
-          page: 0,
-          pageSize: 6,
-        },
-        sortBy: SearchTagsSortBy.POPULAR,
+        page: 0,
+        pageSize: 6,
+        sortBy: SearchTagsSortByEnum.POPULAR,
       }).then((res) => {
         if (res.tags.length === 0) {
           setShowSuggestions(false);
@@ -102,14 +104,14 @@ const EditQuestionPage = () => {
       return;
     }
     QuestionService.get(questionId).then((question) => {
-      if (question.owner.id !== user?.id) {
+      if (question.owner?.id !== user?.id) {
         navigate(`/questions/${questionId}`);
         return;
       }
       setQuestion({
         title: question.title,
         text: question.text,
-        tags: question.tags.map((tag) => tag.name),
+        tags: question.tags.map((tag) => tag),
       });
     });
   }, []);

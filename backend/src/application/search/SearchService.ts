@@ -3,12 +3,12 @@ import {
   SearchQuestionsOutput,
   SearchTagsInput,
   SerachTagsOutput,
-} from '@application/search/usercases/dtos';
+} from '@application/search/usecases/dtos';
 
 import {
   ISearchQuestionsUseCase,
   ISearchTagsUseCase,
-} from '@application/search/usercases/types';
+} from '@application/search/usecases/types';
 
 export class SearchService {
   constructor (

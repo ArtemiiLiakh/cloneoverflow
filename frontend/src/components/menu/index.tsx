@@ -47,7 +47,7 @@ export const Menu = () => {
                 }
               }}>
                 <span>
-                  { user ? `${user?.name} ● ${user?.reputation ?? 0}` : 'Login'}
+                  { user ? `${user?.name} ● ${user?.rating ?? 0}` : 'Login'}
                 </span>
               </button>
           }

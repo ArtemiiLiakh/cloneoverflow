@@ -1,22 +1,30 @@
-import { IsEmail, IsNotEmpty, Matches } from 'class-validator';
-import { ValidateByFunction } from '../../utils/validationConstraints';
+import { z } from 'zod';
 
-export class SignupData {
-  @IsNotEmpty({ message: 'Name is required' })
-    name: string;
-  
-  @IsNotEmpty({ message: 'Username is required' })
-    username: string;
-  
-  @IsNotEmpty({ message: 'Email is required' })
-  @IsEmail({}, { message: 'Invalid email' })
-    email: string;
-  
-  @IsNotEmpty({ message: 'Password is required' })
-  @Matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/, { message: 'Password must contain at least 8 characters, one letter and one number' })
-    password: string;
+export const SignupData = z.object({
+  name: z
+    .string()
+    .min(1, 'Name is required'),
 
-  @IsNotEmpty({ message: 'Repeat password is required' })
-  @ValidateByFunction((_, o) => o.password === o.repeatPassword, { message: 'Passwords do not match' })
-    repeatPassword: string;
-}
+  username: z
+    .string()
+    .min(1, 'Username is required'),
+
+  email: z
+    .string()
+    .min(1, 'Email is required')
+    .email('Invalid email'),
+
+  password: z
+    .string()
+    .min(1, 'Password is required'),
+
+  repeatPassword: z
+    .string()
+    .min(1, 'RepeatPassword is required'),
+
+  about: z
+    .string()
+    .optional()
+});
+
+export type SignupDataType = z.infer<typeof SignupData>;

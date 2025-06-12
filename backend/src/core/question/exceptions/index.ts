@@ -1,7 +1,6 @@
 export * from './CannotDeleteOthersQuestion';
 export * from './CannotVoteOwnQuestion';
 export * from './CannotVoteQuestionTwice';
-export * from './QuestionAlreadyClosed';
 export * from './QuestionAlreadyFavorite';
 export * from './QuestionAlreadyOpened';
 export * from './QuestionIdInvalid';

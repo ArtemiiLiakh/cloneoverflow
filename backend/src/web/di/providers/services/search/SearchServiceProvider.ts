@@ -1,5 +1,5 @@
 import { SearchService } from '@application/search/SearchService';
-import { SearchQuestionsUseCase, SearchTagsUseCase } from '@application/search/usercases';
+import { SearchQuestionsUseCase, SearchTagsUseCase } from '@application/search/usecases';
 import { Provider } from '@nestjs/common';
 import { SearchServiceDIToken, SearchUseCaseDITokens } from '@web/di/tokens/services';
 

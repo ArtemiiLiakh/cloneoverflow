@@ -15,7 +15,10 @@ export const initApplication = async (): Promise<INestApplication> => {
     ApplicationModule, 
     new ExpressAdapter(), 
     {
-      cors: true,
+      cors: {
+        origin: 'http://localhost:3000',
+        credentials: true,
+      },
       bodyParser: true,
     },
   );
